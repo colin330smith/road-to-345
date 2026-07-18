@@ -1,0 +1,24 @@
+<meta charset="utf-8">
+<title>fig test</title>
+<style>
+  body{background:#101216;color:#8b919c;font:12px -apple-system,sans-serif;padding:10px}
+  .g{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;max-width:960px}
+  .cell{background:#1a1e24;border:1px solid #2a303a;border-radius:8px;padding:4px;text-align:center}
+  canvas{width:100%;background:#101216;border-radius:6px}
+</style>
+<div class="g" id="g"></div>
+<script src="fig.js"></script>
+<script>
+const g = document.getElementById("g");
+for (const arch of Object.keys(ARCHS)) {
+  for (const k of [0, 0.5, 1]) {
+    const cell = document.createElement("div"); cell.className = "cell";
+    const cv = document.createElement("canvas"); cv.width = 200; cv.height = 200;
+    cell.appendChild(cv);
+    const lab = document.createElement("div"); lab.textContent = `${arch} k=${k}`;
+    cell.appendChild(lab);
+    g.appendChild(cell);
+    paintScene(cv, arch, k);
+  }
+}
+</script>

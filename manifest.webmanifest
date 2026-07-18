@@ -1,0 +1,15 @@
+{
+  "name": "Road to 3/4/5",
+  "short_name": "3/4/5",
+  "description": "PowerBuilding tracker — 19 waves to a 315/405/495 total",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#101216",
+  "theme_color": "#101216",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

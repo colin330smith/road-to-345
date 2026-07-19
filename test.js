@@ -20,7 +20,7 @@ eq(E.whereIs(d(2026, 7, 20)), { wave: 1, week: 1, day: 1, dow: 0 }, "date w1w1d1
 eq(E.whereIs(d(2026, 8, 31)), { wave: 2, week: 3, day: 1, dow: 0 }, "date w2w3d1");
 eq(E.whereIs(d(2026, 11, 6)), { wave: 4, week: 4, day: 5, dow: 4 }, "date w4w4d5");
 eq(E.whereIs(d(2027, 12, 6)), { wave: 19, week: 1, day: 1, dow: 0 }, "date w19w1d1");
-eq(E.whereIs(d(2026, 7, 25)).day, 0, "saturday is rest");
+eq(E.whereIs(d(2026, 7, 25)).day, 6, "saturday is spec day (7-day week)");
 
 // ── accessory machine reproduces the hand-built notes (waves 1–4) ──
 const A = Object.fromEntries(E.ACC.map(a => [a.id + ":" + a.day, a]));
@@ -138,6 +138,90 @@ const yb = E.yellowW({ type: "backoff", w: 245, reps: 4, sets: 5 });
 eq(yb.w, 235, "yellow -5% w3 sq wave2 245→235");
 const rs = E.redSession(2, 1);
 eq([rs[0].w, rs[0].reps, rs[0].sets], [195, 3, 3], "red day w2 squat 195");
+
+// ═══ Weekend weak-point specialization (7-day week) ═══
+console.log("\n── specialization tests ──");
+const d2 = (y, m, dd) => Date.UTC(y, m - 1, dd);
+// 7-day mapping: Sat=6, Sun=7, Thursday still day 4 (no rest)
+eq(E.whereIs(d2(2026, 7, 23)).day, 4, "Thu = day 4 (not rest)");
+eq(E.whereIs(d2(2026, 7, 25)).day, 6, "Sat = day 6");
+eq(E.whereIs(d2(2026, 7, 26)).day, 7, "Sun = day 7");
+eq(E.whereIs(d2(2026, 8, 1)).day, 6, "next Sat = day 6");
+
+const DEF = E.DEFAULT_SPEC;
+// Saturday default (shoulder-width primary): frame module = 2 lateral variants ×3
+const sat = E.sessionFor(1, 1, 6, {}, DEF);
+ok(sat[0].type === "spechead" && /Shoulder width/.test(sat[0].name), "Sat header names priority");
+const satEx = sat.filter((b) => b.type === "accessory");
+ok(satEx.length >= 4, "Sat has frame exercises");
+ok(satEx[0].sets === 3 && /Lateral/.test(satEx[0].name), "Sat primary frame 3 sets laterals");
+ok(satEx.some((b) => /Overhead Cable/.test(b.name)), "Sat triceps slot present");
+ok(satEx.some((b) => /Crunch/.test(b.name)), "Sat abs present");
+// default (triceps detail) → secondary frame slot omitted, extra pushdown present
+ok(satEx.some((b) => /Pushdown/.test(b.name)), "Sat triceps-spec adds pushdown");
+// Saturday set cap ~15 excl abs
+const satUpper = satEx.filter((b) => !/Crunch/.test(b.name)).reduce((n, b) => n + b.sets, 0);
+ok(satUpper <= 15, `Sat upper set cap ${satUpper} <= 15`);
+
+// Sunday default runs Wk1-2 of cycles 1-4
+ok(E.sundayPlanned(1, 1, DEF) === true, "Sun planned Wk1");
+ok(E.sundayPlanned(1, 3, DEF) === false, "Sun NOT planned Wk3");
+ok(E.sundayPlanned(5, 1, DEF) === false, "Sun NOT planned Cycle5");
+ok(E.sundayPlanned(1, 1, { ...DEF, sundayOn: false }) === false, "Sun off when toggled");
+const sun = E.sessionFor(1, 1, 7, {}, DEF);
+ok(sun[0].type === "spechead", "Sun header");
+const sunEx = sun.filter((b) => b.type === "accessory");
+ok(sunEx.length >= 5 && sunEx.reduce((n, b) => n + b.sets, 0) <= 14, "Sun ≤14 sets");
+// Sunday off Wk3
+const sun3 = E.sessionFor(1, 3, 7, {}, DEF);
+ok(sun3.length === 1 && /off/.test(sun3[0].name), "Sun Wk3 = off card");
+
+// Thursday sheds delt/tri isolation but keeps paused bench + OHP + crunch + wrist
+const thu = E.sessionFor(1, 1, 4, {}, DEF);
+ok(thu.some((b) => b.type === "paused" && b.lift === "bn"), "Thu keeps paused bench");
+ok(thu.some((b) => b.type === "ohp"), "Thu keeps OHP");
+ok(!thu.some((b) => /Rear-Delt Fly|Cross-Body/.test(b.name)), "Thu dropped rear-delt & cross-body");
+ok(thu.some((b) => /Crunch/.test(b.name)) && thu.some((b) => /Wrist/.test(b.name)), "Thu keeps abs + wrist");
+
+// Transfers fire Wk1 (Sunday runs): Tue laterals gone, Wed EZ + hammer gone, incline curl kept
+const tue1 = E.sessionFor(1, 1, 2, {}, DEF);
+ok(!tue1.some((b) => /Lateral Raise/.test(b.name)), "Tue laterals transferred out Wk1");
+const wed1 = E.sessionFor(1, 1, 3, {}, DEF);
+ok(!wed1.some((b) => /EZ-Bar Curl/.test(b.name)) && !wed1.some((b) => /Hammer Curl/.test(b.name)), "Wed EZ+hammer transferred out");
+ok(wed1.some((b) => /Incline DB Curl/.test(b.name)), "Wed incline curl kept");
+// Wk3 (Sunday off): transfers do NOT fire — Tue laterals return
+const tue3 = E.sessionFor(1, 3, 2, {}, DEF);
+ok(tue3.some((b) => /Lateral Raise/.test(b.name)), "Tue laterals return Wk3 (no transfer)");
+
+// Frame variants build without error and pick right module
+for (const fp of E.FRAME_OPTS) {
+  const s = E.sessionFor(2, 1, 6, {}, { framePrimary: fp, frameSecondary: "none", detail: "biceps", sundayOn: true });
+  ok(s.filter((b) => b.type === "accessory").length >= 3, `frame ${fp} builds`);
+}
+for (const dt of E.DETAIL_OPTS) {
+  const s = E.sessionFor(2, 1, 7, {}, { framePrimary: "shoulders", frameSecondary: "latwidth", detail: dt, sundayOn: true });
+  ok(s.filter((b) => b.type === "accessory").length >= 4, `detail ${dt} builds`);
+}
+// lat-width frame trims Friday row to 2
+const friLat = E.sessionFor(2, 1, 5, {}, { framePrimary: "latwidth", frameSecondary: "none", detail: "biceps", sundayOn: false });
+const rowf = friLat.find((b) => /Chest-Supported DB Row/.test(b.name));
+ok(rowf && rowf.sets <= 2, "Fri row trimmed to 2 for lat-width");
+
+// Week 3 Saturday reduced (frame 2 sets), Cycle 5 reduced, peak = no spec, Wk4 = maintenance
+ok(E.sessionFor(1, 3, 6, {}, DEF).filter((b) => b.type === "accessory")[0].sets === 2, "Sat Wk3 frame 2 sets");
+ok(E.sessionFor(5, 1, 6, {}, DEF).filter((b) => b.type === "accessory")[0].sets === 2, "Sat Cycle5 frame 2 sets");
+ok(E.sessionFor(6, 1, 6, {}, DEF).some((b) => /Peak/.test(b.name)), "Sat peak = no spec");
+ok(E.sessionFor(1, 4, 6, {}, DEF).filter((b) => b.type === "accessory").every((b) => /6/.test(String(b.rpe))), "Sat Wk4 maintenance easy");
+
+// every 7-day slot builds cleanly across waves 1-19
+let built7 = 0;
+for (let w = 1; w <= 19; w++) for (let wk = 1; wk <= 4; wk++) for (let dy = 1; dy <= 7; dy++) {
+  const s = E.sessionFor(w, wk, dy, {}, DEF);
+  ok(Array.isArray(s) && s.length >= 1, `7day session w${w}wk${wk}d${dy}`);
+  for (const b of s) if (b.type === "accessory") ok(Number.isFinite(b.w) && ((b.repN ?? b.reps) >= 1), `acc finite w${w}d${dy} ${b.name}`);
+  built7++;
+}
+ok(built7 === 19 * 4 * 7, "all 532 seven-day sessions built");
 
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

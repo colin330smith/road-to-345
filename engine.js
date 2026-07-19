@@ -47,8 +47,8 @@ function whereIs(utcMid, offsetWeeks = 0) {
   if (d < 0) return { wave: 0, week: 0, day: 0, pre: true };
   const wave = Math.floor(d / 28) + 1;
   const week = Math.floor((d % 28) / 7) + 1;
-  const dow = d % 7; // 0=Mon
-  return { wave, week, day: dow <= 4 ? dow + 1 : 0, dow };
+  const dow = d % 7; // 0=Mon … 6=Sun
+  return { wave, week, day: dow + 1, dow }; // 7-day week: 1=Mon Squat … 6=Sat Spec, 7=Sun optional
 }
 
 // ── explicit waves 1–4 (the published notes, verbatim) ──────────────
@@ -225,6 +225,145 @@ function accFor(a, wave, week) {
   return { w, reps, sets, rpe: week === 3 ? "8" : "8–9", top: topSet };
 }
 
+// ── weekend weak-point specialization (Sat = frame overload, Sun = optional detail) ──
+const FRAME_OPTS = ["shoulders", "upperchest", "latwidth", "upperback", "traps"];
+const FRAME_LABEL = { shoulders: "Shoulder width", upperchest: "Upper chest", latwidth: "Lat width", upperback: "Upper-back / rear delt", traps: "Traps / upper yoke", none: "None" };
+const DETAIL_OPTS = ["triceps", "biceps", "brachialis"];
+const DETAIL_LABEL = { triceps: "Triceps", biceps: "Biceps", brachialis: "Brachialis / forearms" };
+const DEFAULT_SPEC = { framePrimary: "shoulders", frameSecondary: "latwidth", detail: "triceps", sundayOn: true };
+
+// ex helper — renders through the accessory path; repN = numeric default for logging
+const sx = (name, w, reps, sets, rpe, arch, moveId, db, cap) => ({
+  type: "accessory", name, w, reps, sets, rpe, arch, moveId, db: !!db, cap: cap || "",
+  spec: true, repN: parseInt(String(reps), 10) || 8,
+});
+
+// primary frame module: 2 exercises × 3 sets (starting loads are suggestions — drive by double progression)
+const FRAME_MODULE = {
+  shoulders: () => [
+    sx("Machine / DB Lateral Raise", 15, "10–15", 3, "8–9", "lateral", "lattue", true, "Lead with the elbow; traps quiet"),
+    sx("Cable Lateral Raise", 20, "15–25", 3, "8–9", "lateral", "latwed", false, "Constant tension; final set 9–10 OK Wks 1–2"),
+  ],
+  upperchest: () => [
+    sx("Low-Incline Press (Smith/Machine/DB)", 55, "6–10", 3, "7.5–8.5", "incpress", "incline", true, "Low incline so the upper chest works, not the front delt"),
+    sx("Low-to-High Cable Fly", 25, "12–20", 3, "8–9", "rearfly", "revpec", false, "Sweep up and in; squeeze the top"),
+  ],
+  latwidth: () => [
+    sx("Unilateral Cable / Machine Pulldown", 70, "8–12", 3, "8", "pulldown", "pulldown", false, "One side at a time; straps welcome"),
+    sx("Machine Pullover / Straight-Arm Pulldown", 60, "12–20", 3, "8–9", "pulldown", "pulldown", false, "Feel the lat stretch; arms stay long"),
+  ],
+  upperback: () => [
+    sx("Chest-Supported High Row", 90, "8–12", 3, "8", "row", "rowtue", false, "High-elbow path only if shoulder-friendly"),
+    sx("Reverse-Pec-Deck", 70, "15–25", 3, "8–9", "rearfly", "revpec", false, "Arms long; throw, don't lift"),
+  ],
+  traps: () => [
+    sx("Machine / Chest-Supported Shrug", 120, "8–15", 3, "8", "row", "rowtue", false, "Brief hold at the top; no rolling"),
+    sx("Chest-Supported Rear-Delt / Upper-Back Row", 70, "10–15", 3, "8", "row", "rowtue", false, "Stable, supported — deadlifts already load traps"),
+  ],
+};
+const SECONDARY_SLOT = {
+  shoulders: () => sx("Cable Lateral Raise", 20, "15–25", 2, "8–9", "lateral", "latwed", false),
+  upperchest: () => sx("Low-to-High Cable Fly", 25, "12–20", 2, "8–9", "rearfly", "revpec", false),
+  latwidth: () => sx("Unilateral Cable Pulldown", 70, "10–15", 2, "8", "pulldown", "pulldown", false),
+  upperback: () => sx("Reverse-Pec-Deck", 70, "15–25", 2, "8–9", "rearfly", "revpec", false),
+  traps: () => sx("Machine Shrug", 120, "10–15", 2, "8", "row", "rowtue", false),
+  none: () => null,
+};
+// balance slot: whichever delt area the primary frame is NOT hitting
+function balanceSlot(framePrimary) {
+  if (framePrimary === "upperback" || framePrimary === "traps") return sx("Cable Lateral Raise", 20, "15–25", 2, "8–9", "lateral", "latwed", false, "Balance: side delt");
+  return sx("Reverse-Pec-Deck / Cable Rear-Delt Fly", 70, "15–25", 2, "8–9", "rearfly", "revpec", false, "Balance: rear delt");
+}
+
+// Sunday detail templates (optional day)
+const DETAIL_TEMPLATE = {
+  // the doc's "recommended first block" Sunday (hybrid, biceps-led) — default
+  recommended: () => [
+    sx("Cable Preacher Curl", 40, "8–12", 3, "8–9", "curl", "inccurl", false, "Full stretch at the bottom"),
+    sx("Bayesian Cable Curl", 25, "12–20", 3, "8–9", "curl", "cablecurl", false, "Arm behind the body; constant tension"),
+    sx("Hammer Curl", 25, "10–15", 2, "8", "curl", "hammer", true, "Neutral grip; slow negative"),
+    sx("Rope Pushdown", 50, "12–20", 2, "8", "pushdown", "pushdown", false, "Elbows pinned; spread at the bottom"),
+    sx("Reverse Cable Curl", 30, "15–25", 2, "8", "curl", "cablecurl", false, "Brachialis + forearm"),
+    sx("Cable Lateral / Wrist Curl", 15, "15–25", 2, "8–9", "lateral", "latwed", false, "Silhouette detail"),
+  ],
+  biceps: () => [
+    sx("Cable / Machine Preacher Curl", 40, "8–12", 3, "8–9", "curl", "inccurl", false, "Final set 9–10 OK Wk2 if elbows fresh"),
+    sx("Bayesian Cable Curl", 25, "12–20", 3, "8–9", "curl", "cablecurl", false, "Peak stretch; constant tension"),
+    sx("Hammer Curl", 25, "10–15", 2, "8", "curl", "hammer", true, "Brachialis"),
+    sx("Rope Pushdown", 50, "12–20", 2, "8", "pushdown", "pushdown", false, "Antagonist"),
+    sx("Frame-Priority Isolation", 20, "15–25", 2, "8–9", "lateral", "latwed", false, "2 sets for your secondary frame area"),
+  ],
+  triceps: () => [
+    sx("Single-Arm Cross-Body Extension", 20, "12–20", 2, "7–8", "ohtri", "crossbody", false, "The hard triceps work was Saturday — keep this light"),
+    sx("Cable Preacher Curl", 40, "10–15", 3, "8–9", "curl", "inccurl", false, "Antagonist balance"),
+    sx("Hammer Curl", 25, "10–15", 3, "8", "curl", "hammer", true, "Brachialis"),
+    sx("Cable Lateral Raise", 20, "15–25", 2, "8–9", "lateral", "latwed", false, "Delt detail"),
+    sx("Reverse Cable Curl", 30, "15–25", 2, "8", "curl", "cablecurl", false, "Forearm"),
+  ],
+  brachialis: () => [
+    sx("Rope Hammer Curl", 50, "8–12", 3, "8–9", "curl", "hammer", false, "Brachialis emphasis"),
+    sx("Reverse Cable / EZ-Bar Curl", 40, "12–20", 3, "8–9", "curl", "cablecurl", false, "Forearm extensors"),
+    sx("Cable Wrist Curl", 30, "15–25", 2, "8", "wrist", "wrist", false, "Flexors"),
+    sx("Cable Wrist Extension", 20, "15–25", 2, "8", "wrist", "wrist", false, "Extensors — elbow insurance"),
+    sx("Rope Pushdown", 50, "12–20", 2, "8", "pushdown", "pushdown", false, "Antagonist"),
+  ],
+};
+
+// is Sunday actually planned/running this wave-week? (Wks 1–2 of Cycles 1–4, and enabled)
+function sundayPlanned(wave, week, spec) {
+  return !!(spec && spec.sundayOn) && cycleOf(wave) <= 4 && week <= 2;
+}
+// do the weekday volume transfers fire this week? (only when Sunday runs)
+function transfersActive(wave, week, spec) { return sundayPlanned(wave, week, spec); }
+
+// Saturday: paused bench is on Thursday, so Saturday = pure frame-isolation overload
+function saturdaySession(wave, week, spec) {
+  spec = spec || DEFAULT_SPEC;
+  const cyc = cycleOf(wave);
+  const blocks = [];
+  if (cyc === 6) { // peak: no specialization
+    blocks.push({ type: "test", name: "Peak week — no specialization", note: "Brief maintenance only if anything. Frame work resumes next macro — the peak exposes strength, it doesn't build the physique." });
+    return blocks;
+  }
+  if (week === 4) { // light week / deload: maintenance only
+    blocks.push(sx("Machine / Cable Lateral Raise", 12.5, "12–15", 2, "6–7", "lateral", "latwed", false, "Light maintenance"));
+    blocks.push(sx("Reverse-Pec-Deck", 50, "15", 2, "6–7", "rearfly", "revpec", false, "Light maintenance"));
+    blocks.push(sx("Cable Triceps", 40, "12–15", 2, "6–7", "pushdown", "pushdown", false, "Light maintenance"));
+    blocks.push(sx("Ab Wheel / Cable Crunch", 50, "10–15", 2, "6–7", "crunch", "crunch", false, ""));
+    return blocks;
+  }
+  const reduced = week === 3 || cyc === 5; // Wk3 and Cycle 5: fewer sets
+  const frame = FRAME_MODULE[spec.framePrimary]();
+  frame.forEach((ex) => blocks.push({ ...ex, sets: reduced ? 2 : ex.sets, primary: true }));
+  const triSpec = spec.detail === "triceps";
+  if (!reduced) {
+    if (!triSpec) { // secondary frame slot only when triceps ISN'T the detail focus
+      const sec = SECONDARY_SLOT[spec.frameSecondary || "none"]();
+      if (sec) blocks.push(sec);
+    }
+  }
+  if (triSpec) {
+    blocks.push(sx("Overhead Cable Extension", 50, "10–15", reduced ? 2 : 3, "8–9", "ohtri", "ohrope", false, "Long-head bias — arms overhead"));
+    if (!reduced) blocks.push(sx("Rope / Single-Arm Pushdown", 50, "12–20", 2, "8–9", "pushdown", "pushdown", false, ""));
+  } else {
+    blocks.push(sx("Overhead Cable Extension", 50, "10–15", reduced ? 2 : 3, "8–9", "ohtri", "ohrope", false, "Triceps slot"));
+  }
+  if (!reduced) blocks.push(balanceSlot(spec.framePrimary));
+  blocks.push(sx("Ab Wheel / Cable Crunch", 70, "8–15", 2, "8–9", "crunch", "crunch", false, ""));
+  return blocks;
+}
+
+// Sunday: optional detail — only Wks 1–2 of Cycles 1–4 and enabled
+function sundaySession(wave, week, spec) {
+  spec = spec || DEFAULT_SPEC;
+  if (!sundayPlanned(wave, week, spec)) return null;
+  const tmpl = isDefaultSpec(spec) ? DETAIL_TEMPLATE.recommended() : (DETAIL_TEMPLATE[spec.detail] || DETAIL_TEMPLATE.recommended)();
+  return tmpl;
+}
+function isDefaultSpec(spec) {
+  return spec && spec.framePrimary === "shoulders" && spec.frameSecondary === "latwidth" && spec.detail === "triceps";
+}
+
 // ── warm-ups ────────────────────────────────────────────────────────
 function warmups(lift, wave, gates) {
   const { t } = mainTables(wave, gates);
@@ -242,12 +381,29 @@ const WARM_PB = [["Bar", 15], [95, 8], [115, 5], [135, 3]];
 
 // ── session builder ─────────────────────────────────────────────────
 // returns ordered blocks for wave/week/day (1=Mon…5=Fri)
-function sessionFor(wave, week, day, gates) {
+function sessionFor(wave, week, day, gates, spec) {
+  spec = spec || DEFAULT_SPEC;
+  const cycEarly = cycleOf(wave);
+  // ── Saturday (day 6): frame-specialization overload ──
+  if (day === 6) {
+    const label = FRAME_LABEL[spec.framePrimary] || "Frame";
+    const head = { type: "spechead", name: "Frame Specialization — " + label + " priority", note: cycEarly === 6 ? "Peak macro — spec paused." : week === 4 ? "Light week — maintenance only." : (week === 3 || cycEarly === 5) ? "Reduced sets this week." : "Overload day. Hit your weak point fresh — quality reps, not a set count.", moveId: null };
+    return [head, ...saturdaySession(wave, week, spec)];
+  }
+  // ── Sunday (day 7): optional detail ──
+  if (day === 7) {
+    const s = sundaySession(wave, week, spec);
+    if (!s) return [{ type: "spechead", name: "Optional detail day — off", note: cycEarly > 4 ? "No weekend specialization in this cycle. Rest or an easy walk + conditioning." : week > 2 ? "Sunday detail runs only Weeks 1–2 of a cycle. Rest today." : (spec && spec.sundayOn) ? "Rest today." : "Sunday is toggled off in Specialize. Rest or an easy walk.", moveId: null }];
+    const label = DETAIL_LABEL[spec.detail] || "Detail";
+    const head = { type: "spechead", name: "Optional Detail — " + (isDefaultSpec(spec) ? "Arms & silhouette" : label), note: "Green only: 7h+ sleep, normal Fri deadlift + Sat, no elbow/shoulder pain, no flat session. 35–45 min, antagonist supersets, 60–90s rest.", moveId: null };
+    return [head, ...s];
+  }
   const { cb, cyc, t } = mainTables(wave, gates);
   const blocks = [];
   const wk = week - 1; // 0-index for arrays of 3
   const dayLift = { 1: "sq", 2: "bn", 5: "dl" }[day];
   const push = (b) => blocks.push(b);
+  const xfer = transfersActive(wave, week, spec); // volume transfers fund Sunday
 
   if (cyc === 6) return peakSession(wave, week, day, cb, gates);
 
@@ -274,11 +430,20 @@ function sessionFor(wave, week, day, gates) {
     const o = ohpFor(wave, gates)[week - 1];
     push({ type: "ohp", name: "Overhead Press", w: o[0], reps: o[1], sets: o[2], rpe: week === 4 ? "5–6" : "7–8", note: "Add reps to 3×8 clean → +5 lb → back to 3×6", moveId: "ohp" });
   }
+  // Thursday sheds its delt/triceps isolation → migrated into Saturday's specialization
+  const THU_DROP = new Set(["latthu", "rdf", "pushdown", "crossbody"]);
   for (const a of ACC.filter((x) => x.day === day)) {
+    if (day === 4 && THU_DROP.has(a.id)) continue;
+    if (xfer && a.id === "lattue") continue;             // transfer: Tue laterals → Sunday
+    if (xfer && (a.id === "ezcurl" || a.id === "hammer")) continue; // transfer: Wed EZ + hammer → Sunday (incline curl kept)
     const p = accFor(a, wave, week);
     if (!p) continue;
-    push({ type: "accessory", name: a.name, w: p.w, reps: p.reps, sets: p.sets, rpe: p.rpe, db: a.db, top: p.top, moveId: a.id, cap: a.cap });
+    // frame bias: lat-width / upper-back priority trims the Friday row to 2 sets
+    let sets = p.sets;
+    if (day === 5 && a.id === "rowfri" && (spec.framePrimary === "latwidth" || spec.framePrimary === "upperback") && week < 4) sets = Math.min(sets, 2);
+    push({ type: "accessory", name: a.name, w: p.w, reps: p.reps, sets, rpe: p.rpe, db: a.db, top: p.top, moveId: a.id, cap: a.cap });
   }
+  if (day === 4 && week < 4 && xfer) push({ type: "note", name: "Delt & triceps isolation → Saturday", note: "Your side-delt, rear-delt and pushdown work lives in Saturday's frame day now — keeps weekly volume under cap." });
   if (day === 3 && cyc !== 6) {
     const walk = week === 4 ? "15 min · 2.8 mph · 4%" : ["20 min · 3 mph · 6%", "20 min · 3 mph · 7%", "15 min · 3 mph · 5%"][wk];
     push({ type: "conditioning", name: "Incline Walk", note: walk });
@@ -350,6 +515,8 @@ function yellowW(block) {
   return block;
 }
 function redSession(wave, day, gates) {
+  if (day === 6) return [{ type: "spechead", name: "RED — skip specialization", note: "Frame work is optional physique volume (priority 5–6). On a Red day it's the first thing to cut. Rest, eat, sleep." }];
+  if (day === 7) return [{ type: "spechead", name: "RED — no optional day", note: "Sunday is skippable at the best of times. Today, skip it. Recover." }];
   const { t } = mainTables(wave, gates);
   const dayLift = { 1: "sq", 2: "bn", 5: "dl" }[day];
   const reds = t.red || [R5(cbFor(wave, gates).sq * 0.6), R5(cbFor(wave, gates).bn * 0.6), R5(cbFor(wave, gates).dl * 0.6)];
@@ -360,5 +527,6 @@ function redSession(wave, day, gates) {
   return blocks;
 }
 
-const ENGINE = { R5, R25, START, LIFTS, LIFT_NAME, gateDelta, cbFor, cycleOf, macroOf, CYCLE_NAME, waveStartUTC, whereIs, NOTES, mainTables, ohpFor, ACC, accState, accFor, sessionFor, testAttempts, yellowW, redSession, WAVE1_MONDAY, MS_DAY };
+const ENGINE = { R5, R25, START, LIFTS, LIFT_NAME, gateDelta, cbFor, cycleOf, macroOf, CYCLE_NAME, waveStartUTC, whereIs, NOTES, mainTables, ohpFor, ACC, accState, accFor, sessionFor, testAttempts, yellowW, redSession, WAVE1_MONDAY, MS_DAY,
+  FRAME_OPTS, FRAME_LABEL, DETAIL_OPTS, DETAIL_LABEL, DEFAULT_SPEC, isDefaultSpec, saturdaySession, sundaySession, sundayPlanned };
 if (typeof module !== "undefined") module.exports = ENGINE;

@@ -167,12 +167,14 @@ const ACC = [
   { id: "legpress",  name: "Leg Press",              day: 1, sets: 3, w3: 2, steps: [10, 12],         w: 360,  inc: 20,  db: false, comp: true,  arch: "legpress",  cap: "Final set: technical failure OK Wks 1–2 only, safeties set" },
   { id: "seatcurl",  name: "Seated Leg Curl",        day: 1, sets: 3, w3: 2, steps: [10, 12, 15],     w: 80,   inc: 10,  db: false, comp: false, arch: "legcurl",   cap: "Final set RPE 9–10 OK Wks 1–2" },
   { id: "calf",      name: "Standing Calf Raise",    day: 1, sets: 3, w3: 3, steps: [10, 12, 15],     w: 180,  inc: 10,  db: false, comp: false, arch: "calf",      cap: "Pause the stretch; no bouncing" },
+  { id: "seatcalf",  name: "Seated Calf Raise",      day: 1, sets: 3, w3: 2, steps: [12, 15, 20],     w: 90,   inc: 10,  db: false, comp: false, arch: "calf",      cap: "Soleus — bent knee. Pause the stretch" },
   { id: "hlr",       name: "Hanging Leg Raise",      day: 1, sets: 3, w3: 3, steps: [10, 12, 15],     w: 0,    inc: 0,   db: false, comp: false, arch: "hlr",       cap: "Progress by stricter form, then add a light DB" },
   { id: "rowtue",    name: "Chest-Supported DB Row", day: 2, sets: 4, w3: 3, steps: [8, 10, 12],      w: 50,   inc: 5,   db: true,  comp: true,  arch: "row",       cap: "Strict, chest stays on pad" },
   { id: "incline",   name: "Incline DB Press",       day: 2, sets: 3, w3: 2, steps: [8, 10, 12],      w: 55,   inc: 5,   db: true,  comp: true,  arch: "incpress",  cap: "RPE 8 cap — secondary press" },
   { id: "lattue",    name: "Lateral Raise (Tue)",    day: 2, sets: 3, w3: 3, steps: [12, 15, 20], i0: 1, w: 15, inc: 2.5, db: true,  comp: false, arch: "lateral",   cap: "Final set RPE 9–10 OK Wks 1–2" },
   { id: "ohrope",    name: "Overhead Rope Extension",day: 2, sets: 3, w3: 3, steps: [10, 12, 15],     w: 50,   inc: 5,   db: false, comp: false, arch: "ohtri",     cap: "Elbows healthy? may approach RPE 9" },
   { id: "revpec",    name: "Reverse Pec Deck",       day: 2, sets: 2, w3: 2, steps: [15, 20, 25],     w: 70,   inc: 10,  db: false, comp: false, arch: "rearfly",   cap: "Light + strict beats heavy + sloppy" },
+  { id: "lowhigh",   name: "Low-to-High Cable Fly",  day: 2, sets: 3, w3: 2, steps: [12, 15, 20],     w: 25,   inc: 5,   db: false, comp: false, arch: "rearfly",   cap: "Upper-chest shelf — sweep up and in, squeeze the top" },
   { id: "lyingcurl", name: "Lying Leg Curl",         day: 3, sets: 3, w3: 2, steps: [10, 12, 15],     w: 80,   inc: 10,  db: false, comp: false, arch: "legcurl",   cap: "Control the eccentric" },
   { id: "legext",    name: "Leg Extension",          day: 3, sets: 2, w3: 1, steps: [12, 15],         w: 90,   inc: 10,  db: false, comp: false, arch: "legext",    cap: "Final set RPE 9–10 OK Wks 1–2" },
   { id: "inccurl",   name: "Incline DB Curl",        day: 3, sets: 3, w3: 3, steps: [10, 12, 15],     w: 25,   inc: 5,   db: true,  comp: false, arch: "curl",      cap: "Priority curl — always first, full stretch" },
@@ -183,10 +185,11 @@ const ACC = [
   { id: "rdf",       name: "Rear-Delt Fly",          day: 4, sets: 3, w3: 3, steps: [15, 20, 25],     w: 12.5, inc: 2.5, db: true,  comp: false, arch: "rearfly",   cap: "Think 'throw, don't lift'" },
   { id: "pushdown",  name: "Rope Pushdown",          day: 4, sets: 3, w3: 3, steps: [10, 12, 15],     w: 50,   inc: 5,   db: false, comp: false, arch: "pushdown",  cap: "May approach RPE 9 if elbows feel normal" },
   { id: "crossbody", name: "Cross-Body Extension",   day: 4, sets: 2, w3: 2, steps: [12, 15, 18, 20], w: 20,   inc: 5,   db: false, comp: false, arch: "ohtri",     cap: "Per arm; lock the upper arm still" },
+  { id: "facepull",  name: "Face Pull",              day: 4, sets: 3, w3: 2, steps: [15, 20, 25],     w: 40,   inc: 5,   db: false, comp: false, arch: "rearfly",   cap: "Rear delts + posture. Pull to the forehead, elbows high" },
   { id: "crunch",    name: "Cable Crunch",           day: 4, sets: 3, w3: 3, steps: [10, 12, 15],     w: 70,   inc: 10,  db: false, comp: false, arch: "crunch",    cap: "Flex the spine, don't pull with arms" },
   { id: "wrist",     name: "Wrist Extension",        day: 4, sets: 2, w3: 2, steps: [15, 20, 25],     w: 10,   inc: 2.5, db: true,  comp: false, arch: "wrist",     cap: "Elbow-health insurance — never skip" },
   { id: "rdl",       name: "RDL",                    day: 5, sets: 2, w3: 1, steps: [6, 8],           w: 225,  inc: 10,  db: false, comp: true,  arch: "hinge",     cap: "RPE 7 CAP — assistance, not a second deadlift" },
-  { id: "pulldown",  name: "Lat Pulldown",           day: 5, sets: 4, w3: 3, steps: [8, 10, 12],      w: 120,  inc: 10,  db: false, comp: true,  arch: "pulldown",  cap: "Straps welcome when grip limits back" },
+  { id: "pulldown",  name: "Wide-Grip Lat Pulldown", day: 5, sets: 5, w3: 4, steps: [8, 10, 12],      w: 120,  inc: 10,  db: false, comp: true,  arch: "pulldown",  cap: "Wide grip, chest to the bar. Straps when grip limits the lats" },
   { id: "rowfri",    name: "Chest-Supported DB Row", day: 5, sets: 3, w3: 3, steps: [8, 10, 12],      w: 50,   inc: 5,   db: true,  comp: true,  arch: "row",       cap: "No unsupported barbell rows" },
   { id: "cablecurl", name: "Cable Curl",             day: 5, sets: 2, w3: 2, steps: [12, 15],         w: 40,   inc: 5,   db: false, comp: false, arch: "curl",      cap: "Constant tension; strict" },
 ];
@@ -230,7 +233,7 @@ const FRAME_OPTS = ["shoulders", "upperchest", "latwidth", "upperback", "traps"]
 const FRAME_LABEL = { shoulders: "Shoulder width", upperchest: "Upper chest", latwidth: "Lat width", upperback: "Upper-back / rear delt", traps: "Traps / upper yoke", none: "None" };
 const DETAIL_OPTS = ["triceps", "biceps", "brachialis"];
 const DETAIL_LABEL = { triceps: "Triceps", biceps: "Biceps", brachialis: "Brachialis / forearms" };
-const DEFAULT_SPEC = { framePrimary: "shoulders", frameSecondary: "latwidth", detail: "triceps", sundayOn: true };
+const DEFAULT_SPEC = { framePrimary: "latwidth", frameSecondary: "shoulders", detail: "triceps", sundayOn: true };
 
 // ex helper — renders through the accessory path; repN = numeric default for logging
 const sx = (name, w, reps, sets, rpe, arch, moveId, db, cap) => ({

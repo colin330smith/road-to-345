@@ -151,10 +151,10 @@ eq(E.whereIs(d2(2026, 8, 1)).day, 6, "next Sat = day 6");
 const DEF = E.DEFAULT_SPEC;
 // Saturday default (shoulder-width primary): frame module = 2 lateral variants ×3
 const sat = E.sessionFor(1, 1, 6, {}, DEF);
-ok(sat[0].type === "spechead" && /Shoulder width/.test(sat[0].name), "Sat header names priority");
+ok(sat[0].type === "spechead" && /Lat width/.test(sat[0].name), "Sat header names priority (lat width default)");
 const satEx = sat.filter((b) => b.type === "accessory");
 ok(satEx.length >= 4, "Sat has frame exercises");
-ok(satEx[0].sets === 3 && /Lateral/.test(satEx[0].name), "Sat primary frame 3 sets laterals");
+ok(satEx[0].sets === 3 && /Pulldown/.test(satEx[0].name), "Sat primary frame 3 sets unilateral pulldown");
 ok(satEx.some((b) => /Overhead Cable/.test(b.name)), "Sat triceps slot present");
 ok(satEx.some((b) => /Crunch/.test(b.name)), "Sat abs present");
 // default (triceps detail) → secondary frame slot omitted, extra pushdown present

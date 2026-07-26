@@ -408,80 +408,87 @@ const DETAIL_OPTS = ["triceps", "biceps", "brachialis"];
 const DETAIL_LABEL = { triceps: "Triceps", biceps: "Biceps", brachialis: "Brachialis / forearms" };
 const DEFAULT_SPEC = { framePrimary: "latwidth", frameSecondary: "shoulders", detail: "triceps", sundayOn: true };
 
-// ex helper — renders through the accessory path; repN = numeric default for logging
-const sx = (name, w, reps, sets, rpe, arch, moveId, db, cap) => ({
-  type: "accessory", name, w, reps, sets, rpe, arch, moveId, db: !!db, cap: cap || "",
-  spec: true, repN: parseInt(String(reps), 10) || 8,
-});
+// ex helper — spec exercises run the SAME double-progression machine as weekday
+// accessories: `steps` are rep waypoints, weight climbs by `inc` once the top of the
+// range is cleared. `wv` (wave) is threaded in, so Wave 19 is not Wave 1.
+function sx(name, seed, steps, sets, rpe, arch, moveId, db, cap, inc, wv) {
+  const st = accState({ w: seed, steps, inc: inc == null ? 5 : inc, db: !!db, i0: 0 }, wv || 1);
+  const last = steps.length - 1;
+  const lo = steps[st.i], hi = steps[Math.min(st.i + 1, last)];
+  return {
+    type: "accessory", name, w: st.w, reps: lo === hi ? String(lo) : lo + "\u2013" + hi,
+    sets, rpe, arch, moveId, db: !!db, cap: cap || "", spec: true, repN: lo,
+    top: hi === steps[last] && steps.length > 1,
+  };
+}
 
 // primary frame module: 2 exercises × 3 sets (starting loads are suggestions — drive by double progression)
 const FRAME_MODULE = {
-  shoulders: () => [
-    sx("Machine / DB Lateral Raise", 15, "10–15", 3, "8–9", "lateral", "lattue", true, "Lead with the elbow; traps quiet"),
-    sx("Cable Lateral Raise", 20, "15–25", 3, "8–9", "lateral", "latwed", false, "Constant tension; final set 9–10 OK Wks 1–2"),
+  shoulders: (v) => [
+    sx("Machine / DB Lateral Raise", 15, [10, 12, 15], 3, "8–9", "lateral", "lattue", true, "Lead with the elbow; traps quiet", 2.5, v),
+    sx("Cable Lateral Raise", 20, [15, 20, 25], 3, "8–9", "lateral", "latwed", false, "Constant tension; final set 9–10 OK Wks 1–2", 5, v),
   ],
-  upperchest: () => [
-    sx("Low-Incline Press (Smith/Machine/DB)", 55, "6–10", 3, "7.5–8.5", "incpress", "incline", true, "Low incline so the upper chest works, not the front delt"),
-    sx("Low-to-High Cable Fly", 25, "12–20", 3, "8–9", "rearfly", "revpec", false, "Sweep up and in; squeeze the top"),
+  upperchest: (v) => [
+    sx("Low-Incline Press (Smith/Machine/DB)", 55, [6, 8, 10], 3, "7.5–8.5", "incpress", "incline", true, "Low incline so the upper chest works, not the front delt", 5, v),
+    sx("Low-to-High Cable Fly", 25, [12, 15, 20], 3, "8–9", "rearfly", "revpec", false, "Sweep up and in; squeeze the top", 5, v),
   ],
-  latwidth: () => [
-    sx("Unilateral Cable / Machine Pulldown", 70, "8–12", 3, "8", "pulldown", "pulldown", false, "One side at a time; straps welcome"),
-    sx("Machine Pullover / Straight-Arm Pulldown", 60, "12–20", 3, "8–9", "pulldown", "pulldown", false, "Feel the lat stretch; arms stay long"),
+  latwidth: (v) => [
+    sx("Unilateral Cable / Machine Pulldown", 70, [8, 10, 12], 3, "8", "pulldown", "pulldown", false, "One side at a time; straps welcome", 10, v),
+    sx("Machine Pullover / Straight-Arm Pulldown", 60, [12, 15, 20], 3, "8–9", "pulldown", "pulldown", false, "Feel the lat stretch; arms stay long", 10, v),
   ],
-  upperback: () => [
-    sx("Chest-Supported High Row", 90, "8–12", 3, "8", "row", "rowtue", false, "High-elbow path only if shoulder-friendly"),
-    sx("Reverse-Pec-Deck", 70, "15–25", 3, "8–9", "rearfly", "revpec", false, "Arms long; throw, don't lift"),
+  upperback: (v) => [
+    sx("Chest-Supported High Row", 90, [8, 10, 12], 3, "8", "row", "rowtue", false, "High-elbow path only if shoulder-friendly", 10, v),
+    sx("Reverse-Pec-Deck", 70, [15, 20, 25], 3, "8–9", "rearfly", "revpec", false, "Arms long; throw, don't lift", 10, v),
   ],
-  traps: () => [
-    sx("Machine / Chest-Supported Shrug", 120, "8–15", 3, "8", "row", "rowtue", false, "Brief hold at the top; no rolling"),
-    sx("Chest-Supported Rear-Delt / Upper-Back Row", 70, "10–15", 3, "8", "row", "rowtue", false, "Stable, supported — deadlifts already load traps"),
+  traps: (v) => [
+    sx("Machine / Chest-Supported Shrug", 120, [8, 10, 15], 3, "8", "row", "rowtue", false, "Brief hold at the top; no rolling", 10, v),
+    sx("Chest-Supported Rear-Delt / Upper-Back Row", 70, [10, 12, 15], 3, "8", "row", "rowtue", false, "Stable, supported — deadlifts already load traps", 10, v),
   ],
 };
 const SECONDARY_SLOT = {
-  shoulders: () => sx("Cable Lateral Raise", 20, "15–25", 2, "8–9", "lateral", "latwed", false),
-  upperchest: () => sx("Low-to-High Cable Fly", 25, "12–20", 2, "8–9", "rearfly", "revpec", false),
-  latwidth: () => sx("Unilateral Cable Pulldown", 70, "10–15", 2, "8", "pulldown", "pulldown", false),
-  upperback: () => sx("Reverse-Pec-Deck", 70, "15–25", 2, "8–9", "rearfly", "revpec", false),
-  traps: () => sx("Machine Shrug", 120, "10–15", 2, "8", "row", "rowtue", false),
+  shoulders: (v) => sx("Cable Lateral Raise", 20, [15, 20, 25], 2, "8–9", "lateral", "latwed", false, "", 5, v),
+  upperchest: (v) => sx("Low-to-High Cable Fly", 25, [12, 15, 20], 2, "8–9", "rearfly", "revpec", false, "", 5, v),
+  latwidth: (v) => sx("Unilateral Cable Pulldown", 70, [10, 12, 15], 2, "8", "pulldown", "pulldown", false, "", 10, v),
+  upperback: (v) => sx("Reverse-Pec-Deck", 70, [15, 20, 25], 2, "8–9", "rearfly", "revpec", false, "", 10, v),
+  traps: (v) => sx("Machine Shrug", 120, [10, 12, 15], 2, "8", "row", "rowtue", false, "", 10, v),
   none: () => null,
 };
 // balance slot: whichever delt area the primary frame is NOT hitting
-function balanceSlot(framePrimary) {
-  if (framePrimary === "upperback" || framePrimary === "traps") return sx("Cable Lateral Raise", 20, "15–25", 2, "8–9", "lateral", "latwed", false, "Balance: side delt");
-  return sx("Reverse-Pec-Deck / Cable Rear-Delt Fly", 70, "15–25", 2, "8–9", "rearfly", "revpec", false, "Balance: rear delt");
+function balanceSlot(framePrimary, v) {
+  if (framePrimary === "upperback" || framePrimary === "traps") return sx("Cable Lateral Raise", 20, [15, 20, 25], 2, "8–9", "lateral", "latwed", false, "Balance: side delt", 5, v);
+  return sx("Reverse-Pec-Deck / Cable Rear-Delt Fly", 70, [15, 20, 25], 2, "8–9", "rearfly", "revpec", false, "Balance: rear delt", 10, v);
 }
 
 // Sunday detail templates (optional day)
 const DETAIL_TEMPLATE = {
-  // the doc's "recommended first block" Sunday (hybrid, biceps-led) — default
-  recommended: () => [
-    sx("Cable Preacher Curl", 40, "8–12", 3, "8–9", "curl", "inccurl", false, "Full stretch at the bottom"),
-    sx("Bayesian Cable Curl", 25, "12–20", 3, "8–9", "curl", "cablecurl", false, "Arm behind the body; constant tension"),
-    sx("Hammer Curl", 25, "10–15", 2, "8", "curl", "hammer", true, "Neutral grip; slow negative"),
-    sx("Rope Pushdown", 50, "12–20", 2, "8", "pushdown", "pushdown", false, "Elbows pinned; spread at the bottom"),
-    sx("Reverse Cable Curl", 30, "15–25", 2, "8", "curl", "cablecurl", false, "Brachialis + forearm"),
-    sx("Cable Lateral / Wrist Curl", 15, "15–25", 2, "8–9", "lateral", "latwed", false, "Silhouette detail"),
+  recommended: (v) => [
+    sx("Cable Preacher Curl", 40, [8, 10, 12], 3, "8–9", "curl", "inccurl", false, "Full stretch at the bottom", 5, v),
+    sx("Bayesian Cable Curl", 25, [12, 15, 20], 3, "8–9", "curl", "cablecurl", false, "Arm behind the body; constant tension", 5, v),
+    sx("Hammer Curl", 25, [10, 12, 15], 2, "8", "curl", "hammer", true, "Neutral grip; slow negative", 5, v),
+    sx("Rope Pushdown", 50, [12, 15, 20], 2, "8", "pushdown", "pushdown", false, "Elbows pinned; spread at the bottom", 5, v),
+    sx("Reverse Cable Curl", 30, [15, 20, 25], 2, "8", "curl", "cablecurl", false, "Brachialis + forearm", 5, v),
+    sx("Cable Lateral / Wrist Curl", 15, [15, 20, 25], 2, "8–9", "lateral", "latwed", false, "Silhouette detail", 2.5, v),
   ],
-  biceps: () => [
-    sx("Cable / Machine Preacher Curl", 40, "8–12", 3, "8–9", "curl", "inccurl", false, "Final set 9–10 OK Wk2 if elbows fresh"),
-    sx("Bayesian Cable Curl", 25, "12–20", 3, "8–9", "curl", "cablecurl", false, "Peak stretch; constant tension"),
-    sx("Hammer Curl", 25, "10–15", 2, "8", "curl", "hammer", true, "Brachialis"),
-    sx("Rope Pushdown", 50, "12–20", 2, "8", "pushdown", "pushdown", false, "Antagonist"),
-    sx("Frame-Priority Isolation", 20, "15–25", 2, "8–9", "lateral", "latwed", false, "2 sets for your secondary frame area"),
+  biceps: (v) => [
+    sx("Cable / Machine Preacher Curl", 40, [8, 10, 12], 3, "8–9", "curl", "inccurl", false, "Final set 9–10 OK Wk2 if elbows fresh", 5, v),
+    sx("Bayesian Cable Curl", 25, [12, 15, 20], 3, "8–9", "curl", "cablecurl", false, "Peak stretch; constant tension", 5, v),
+    sx("Hammer Curl", 25, [10, 12, 15], 2, "8", "curl", "hammer", true, "Brachialis", 5, v),
+    sx("Rope Pushdown", 50, [12, 15, 20], 2, "8", "pushdown", "pushdown", false, "Antagonist", 5, v),
+    sx("Frame-Priority Isolation", 20, [15, 20, 25], 2, "8–9", "lateral", "latwed", false, "2 sets for your secondary frame area", 5, v),
   ],
-  triceps: () => [
-    sx("Single-Arm Cross-Body Extension", 20, "12–20", 2, "7–8", "ohtri", "crossbody", false, "The hard triceps work was Saturday — keep this light"),
-    sx("Cable Preacher Curl", 40, "10–15", 3, "8–9", "curl", "inccurl", false, "Antagonist balance"),
-    sx("Hammer Curl", 25, "10–15", 3, "8", "curl", "hammer", true, "Brachialis"),
-    sx("Cable Lateral Raise", 20, "15–25", 2, "8–9", "lateral", "latwed", false, "Delt detail"),
-    sx("Reverse Cable Curl", 30, "15–25", 2, "8", "curl", "cablecurl", false, "Forearm"),
+  triceps: (v) => [
+    sx("Single-Arm Cross-Body Extension", 20, [12, 15, 20], 2, "7–8", "ohtri", "crossbody", false, "The hard triceps work was Saturday — keep this light", 5, v),
+    sx("Cable Preacher Curl", 40, [10, 12, 15], 3, "8–9", "curl", "inccurl", false, "Antagonist balance", 5, v),
+    sx("Hammer Curl", 25, [10, 12, 15], 3, "8", "curl", "hammer", true, "Brachialis", 5, v),
+    sx("Cable Lateral Raise", 20, [15, 20, 25], 2, "8–9", "lateral", "latwed", false, "Delt detail", 5, v),
+    sx("Reverse Cable Curl", 30, [15, 20, 25], 2, "8", "curl", "cablecurl", false, "Forearm", 5, v),
   ],
-  brachialis: () => [
-    sx("Rope Hammer Curl", 50, "8–12", 3, "8–9", "curl", "hammer", false, "Brachialis emphasis"),
-    sx("Reverse Cable / EZ-Bar Curl", 40, "12–20", 3, "8–9", "curl", "cablecurl", false, "Forearm extensors"),
-    sx("Cable Wrist Curl", 30, "15–25", 2, "8", "wrist", "wrist", false, "Flexors"),
-    sx("Cable Wrist Extension", 20, "15–25", 2, "8", "wrist", "wrist", false, "Extensors — elbow insurance"),
-    sx("Rope Pushdown", 50, "12–20", 2, "8", "pushdown", "pushdown", false, "Antagonist"),
+  brachialis: (v) => [
+    sx("Rope Hammer Curl", 50, [8, 10, 12], 3, "8–9", "curl", "hammer", false, "Brachialis emphasis", 5, v),
+    sx("Reverse Cable / EZ-Bar Curl", 40, [12, 15, 20], 3, "8–9", "curl", "cablecurl", false, "Forearm extensors", 5, v),
+    sx("Cable Wrist Curl", 30, [15, 20, 25], 2, "8", "wrist", "wrist", false, "Flexors", 5, v),
+    sx("Cable Wrist Extension", 20, [15, 20, 25], 2, "8", "wrist", "wrist", false, "Extensors — elbow insurance", 5, v),
+    sx("Rope Pushdown", 50, [12, 15, 20], 2, "8", "pushdown", "pushdown", false, "Antagonist", 5, v),
   ],
 };
 
@@ -502,30 +509,30 @@ function saturdaySession(wave, week, spec) {
     return blocks;
   }
   if (week === 4) { // light week / deload: maintenance only
-    blocks.push(sx("Machine / Cable Lateral Raise", 12.5, "12–15", 2, "6–7", "lateral", "latwed", false, "Light maintenance"));
-    blocks.push(sx("Reverse-Pec-Deck", 50, "15", 2, "6–7", "rearfly", "revpec", false, "Light maintenance"));
-    blocks.push(sx("Cable Triceps", 40, "12–15", 2, "6–7", "pushdown", "pushdown", false, "Light maintenance"));
-    blocks.push(sx("Ab Wheel / Cable Crunch", 50, "10–15", 2, "6–7", "crunch", "crunch", false, ""));
+    blocks.push(sx("Machine / Cable Lateral Raise", 12.5, [12, 15], 2, "6–7", "lateral", "latwed", false, "Light maintenance — deliberately flat", 0, 1));
+    blocks.push(sx("Reverse-Pec-Deck", 50, [15], 2, "6–7", "rearfly", "revpec", false, "Light maintenance", 0, 1));
+    blocks.push(sx("Cable Triceps", 40, [12, 15], 2, "6–7", "pushdown", "pushdown", false, "Light maintenance", 0, 1));
+    blocks.push(sx("Ab Wheel / Cable Crunch", 50, [10, 15], 2, "6–7", "crunch", "crunch", false, "", 0, 1));
     return blocks;
   }
   const reduced = week === 3 || cyc === 5; // Wk3 and Cycle 5: fewer sets
-  const frame = FRAME_MODULE[spec.framePrimary]();
+  const frame = FRAME_MODULE[spec.framePrimary](wave);
   frame.forEach((ex) => blocks.push({ ...ex, sets: reduced ? 2 : ex.sets, primary: true }));
   const triSpec = spec.detail === "triceps";
   if (!reduced) {
     if (!triSpec) { // secondary frame slot only when triceps ISN'T the detail focus
-      const sec = SECONDARY_SLOT[spec.frameSecondary || "none"]();
+      const sec = SECONDARY_SLOT[spec.frameSecondary || "none"](wave);
       if (sec) blocks.push(sec);
     }
   }
   if (triSpec) {
-    blocks.push(sx("Overhead Cable Extension", 50, "10–15", reduced ? 2 : 3, "8–9", "ohtri", "ohrope", false, "Long-head bias — arms overhead"));
-    if (!reduced) blocks.push(sx("Rope / Single-Arm Pushdown", 50, "12–20", 2, "8–9", "pushdown", "pushdown", false, ""));
+    blocks.push(sx("Overhead Cable Extension", 50, [10, 12, 15], reduced ? 2 : 3, "8–9", "ohtri", "ohrope", false, "Long-head bias — arms overhead", 5, wave));
+    if (!reduced) blocks.push(sx("Rope / Single-Arm Pushdown", 50, [12, 15, 20], 2, "8–9", "pushdown", "pushdown", false, "", 5, wave));
   } else {
-    blocks.push(sx("Overhead Cable Extension", 50, "10–15", reduced ? 2 : 3, "8–9", "ohtri", "ohrope", false, "Triceps slot"));
+    blocks.push(sx("Overhead Cable Extension", 50, [10, 12, 15], reduced ? 2 : 3, "8–9", "ohtri", "ohrope", false, "Triceps slot", 5, wave));
   }
-  if (!reduced) blocks.push(balanceSlot(spec.framePrimary));
-  blocks.push(sx("Ab Wheel / Cable Crunch", 70, "8–15", 2, "8–9", "crunch", "crunch", false, ""));
+  if (!reduced) blocks.push(balanceSlot(spec.framePrimary, wave));
+  blocks.push(sx("Ab Wheel / Cable Crunch", 70, [8, 10, 12, 15], 2, "8–9", "crunch", "crunch", false, "", 10, wave));
   return blocks;
 }
 
@@ -533,7 +540,7 @@ function saturdaySession(wave, week, spec) {
 function sundaySession(wave, week, spec) {
   spec = spec || DEFAULT_SPEC;
   if (!sundayPlanned(wave, week, spec)) return null;
-  const tmpl = isDefaultSpec(spec) ? DETAIL_TEMPLATE.recommended() : (DETAIL_TEMPLATE[spec.detail] || DETAIL_TEMPLATE.recommended)();
+  const tmpl = isDefaultSpec(spec) ? DETAIL_TEMPLATE.recommended(wave) : (DETAIL_TEMPLATE[spec.detail] || DETAIL_TEMPLATE.recommended)(wave);
   return tmpl;
 }
 function isDefaultSpec(spec) {

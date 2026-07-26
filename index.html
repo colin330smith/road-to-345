@@ -421,7 +421,7 @@ const FRAME_OPTS = ["shoulders", "upperchest", "latwidth", "upperback", "traps",
 const FRAME_LABEL = { shoulders: "Shoulder width", upperchest: "Upper chest", latwidth: "Lat width", upperback: "Upper-back / rear delt", traps: "Traps / upper yoke", arms: "Arms (bi + tri)", none: "None" };
 const DETAIL_OPTS = ["triceps", "biceps", "brachialis"];
 const DETAIL_LABEL = { triceps: "Triceps", biceps: "Biceps", brachialis: "Brachialis / forearms" };
-const DEFAULT_SPEC = { framePrimary: "latwidth", frameSecondary: "shoulders", detail: "triceps", sundayOn: true };
+const DEFAULT_SPEC = { framePrimary: "arms", frameSecondary: "latwidth", detail: "triceps", sundayOn: true };
 
 // ex helper — spec exercises run the SAME double-progression machine as weekday
 // accessories: `steps` are rep waypoints, weight climbs by `inc` once the top of the
@@ -467,7 +467,7 @@ const FRAME_MODULE = {
 const SECONDARY_SLOT = {
   shoulders: (v) => sx("Cable Lateral Raise", 20, [15, 20, 25], 2, "8–9", "lateral", "latwed", false, "", 5, v),
   upperchest: (v) => sx("Low-to-High Cable Fly", 25, [12, 15, 20], 2, "8–9", "rearfly", "revpec", false, "", 5, v),
-  latwidth: (v) => sx("Unilateral Cable Pulldown", 70, [10, 12, 15], 2, "8", "pulldown", "pulldown", false, "", 10, v),
+  latwidth: (v) => sx("Unilateral Cable Pulldown", 70, [10, 12, 15], 3, "8", "pulldown", "pulldown", false, "Keeps the taper visible while arms take priority", 10, v),
   upperback: (v) => sx("Reverse-Pec-Deck", 70, [15, 20, 25], 2, "8–9", "rearfly", "revpec", false, "", 10, v),
   arms: (v) => sx("Cable Preacher Curl", 40, [10, 12, 15], 2, "8–9", "curl", "inccurl", false, "", 5, v),
   traps: (v) => sx("Machine Shrug", 120, [10, 12, 15], 2, "8", "row", "rowtue", false, "", 10, v),
@@ -475,7 +475,7 @@ const SECONDARY_SLOT = {
 };
 // balance slot: whichever delt area the primary frame is NOT hitting
 function balanceSlot(framePrimary, v) {
-  if (framePrimary === "upperback" || framePrimary === "traps") return sx("Cable Lateral Raise", 20, [15, 20, 25], 2, "8–9", "lateral", "latwed", false, "Balance: side delt", 5, v);
+  if (framePrimary === "upperback" || framePrimary === "traps" || framePrimary === "arms") return sx("Cable Lateral Raise", 20, [15, 20, 25], 2, "8–9", "lateral", "latwed", false, "Balance: side delt \u2014 shoulder width is half the taper", 5, v);
   return sx("Reverse-Pec-Deck / Cable Rear-Delt Fly", 70, [15, 20, 25], 2, "8–9", "rearfly", "revpec", false, "Balance: rear delt", 10, v);
 }
 
@@ -540,7 +540,9 @@ function saturdaySession(wave, week, spec) {
   frame.forEach((ex) => blocks.push({ ...ex, sets: reduced ? 2 : ex.sets, primary: true }));
   const triSpec = spec.detail === "triceps";
   if (!reduced) {
-    if (!triSpec) { // secondary frame slot only when triceps ISN'T the detail focus
+    // the "omit secondary on triceps weeks" rule assumes a TORSO primary; when arms IS
+    // the primary, dropping it would leave the day with zero back work.
+    if (!triSpec || spec.framePrimary === "arms") {
       const sec = SECONDARY_SLOT[spec.frameSecondary || "none"](wave);
       if (sec) blocks.push(sec);
     }

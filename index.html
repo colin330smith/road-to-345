@@ -1324,9 +1324,13 @@ function renderRoad() {
   const now = E.whereIs(todayUTC(), off);
   const cbNow = E.cbFor(Math.max(1, Math.min(now.wave || 1, 19)), S.gates);
   const GOALS = { bn: [225, 315], sq: [315, 405], dl: [405, 495] };
-  let h = `<div class="card"><div class="eyebrow sig">Summit progress — cycle base vs 3 / 4 / 5</div><div class="summit">
+  const bwRows = Object.entries(S.bw).filter(([k]) => DK_RE.test(k)).sort();
+  const bwNow = bwRows.length ? bwRows[bwRows.length - 1][1] : 182;
+  const bwPct = Math.max(0, Math.min(100, Math.round(((bwNow - 182) / (200 - 182)) * 100)));
+  let h = `<div class="card single"><div class="eyebrow sig">The Goal — 200 lb @ 15% · 315 / 405 / 495</div><div class="summit">
     ${E.LIFTS.map((L) => { const [s0, g] = GOALS[L]; const pct = Math.max(0, Math.min(100, Math.round(((cbNow[L] - s0) / (g - s0)) * 100))); return `<div class="srow"><span>${E.LIFT_NAME[L]}</span><div class="sbar"><i style="width:${pct}%"></i></div><span class="sval">${cbNow[L]} / ${g}</span></div>`; }).join("")}
-  </div><p class="note">Cycle bases, not tested maxes — the bar catches up at each peak.</p></div>
+    <div class="srow" style="border-top:1px solid var(--steel);padding-top:8px"><span>Bodyweight</span><div class="sbar"><i style="width:${bwPct}%"></i></div><span class="sval">${bwNow} / 200</span></div>
+  </div><p class="note">Lifts are cycle bases, not tested maxes. Bodyweight only counts if the waist stays flat while it climbs.</p></div>
   <p class="note">19 waves · 4 macros. Projections re-compute from your gate results; untouched gates assume clean.</p>`;
   for (let w = 1; w <= 19; w++) {
     const cb = E.cbFor(w, S.gates);
@@ -1348,8 +1352,16 @@ function renderRoad() {
       <div class="cbline">CB ${cb.bn} / ${cb.sq} / ${cb.dl}</div>
       ${mid}</button>`;
   }
-  h += `<div class="card" style="border-color:#2c5c42"><div class="eyebrow" style="color:var(--go)">Wave 19 · The Summit</div>
-    <p class="note">On the clean chain, bench CB reads <b style="color:var(--chalk)">315</b> here — 3/4/5 territory, ~Dec 2027. Every repeated gate shifts it right. That's the plan working, not failing.</p></div>`;
+  h += `<div class="card" style="border-color:#2c5c42"><div class="eyebrow" style="color:var(--go)">The Four-Year Road to 200 @ 15% + 3/4/5</div>
+    <div class="tablewrap"><table><tr><th>By</th><th>Weight</th><th>Bench</th><th>Squat</th><th>Dead</th></tr>
+      <tr><td>2026</td><td>185</td><td>240</td><td>350</td><td>440</td></tr>
+      <tr><td>2027</td><td>188</td><td>265</td><td>385</td><td>475</td></tr>
+      <tr><td>2028</td><td>194</td><td>285</td><td class="warn">405</td><td class="warn">495</td></tr>
+      <tr><td>2029</td><td>199</td><td>300</td><td>415</td><td>510</td></tr>
+      <tr><td><b>2030</b></td><td><b>200 @15%</b></td><td class="warn"><b>315</b></td><td>425</td><td>520</td></tr>
+    </table></div>
+    <p class="note" style="margin-top:8px">Squat and deadlift land in 2028; bench is the slow lift and closes it out in 2030, age 31. Waves 1–19 above cover the first 17 months of that.</p>
+    <p class="note">Gaining is the strength plan: at 200 lb, 3/4/5 is 1.57× / 2.02× / 2.47× bodyweight. At 180 it would be 1.75× / 2.25× / 2.75×.</p></div>`;
   $("#view").innerHTML = h;
 }
 window.waveSheet = (w) => {
@@ -1512,7 +1524,8 @@ let trendLift = "sq";
 function renderTrends() {
   const bwPts = Object.entries(S.bw).filter(([k]) => DK_RE.test(k)).sort().map(([k, v]) => ({ x: Date.parse(k), y: v }));
   const band = [];
-  for (let wk = 0; wk <= 78; wk += 2) band.push({ x: E.WAVE1_MONDAY + wk * 7 * E.MS_DAY, lo: Math.round((180 + 0.25 * wk) * 10) / 10, hi: Math.round((180 + 0.5 * wk) * 10) / 10 });
+  // lo = net pace incl. annual trim blocks · hi = gain-phase pace (+0.25/wk)
+  for (let wk = 0; wk <= 210; wk += 2) band.push({ x: E.WAVE1_MONDAY + wk * 7 * E.MS_DAY, lo: Math.round((182 + 0.085 * wk) * 10) / 10, hi: Math.round((182 + 0.25 * wk) * 10) / 10 });
   const tops = [], e1s = [];
   for (const [dk, log] of Object.entries(S.logs).filter(([k]) => DK_RE.test(k)).sort()) {
     if (!log.sets) continue;
@@ -1543,7 +1556,7 @@ function renderTrends() {
       <div class="chartwrap">${svgChart(bwPts, { band, empty: "Log a morning weigh-in on the Today tab and the road to 200 draws itself." })}</div>
       <div class="legend"><span><span class="k" style="background:#e9e7e1"></span>morning weigh-ins</span><span><span class="k" style="background:rgba(255,178,36,.5)"></span>on-pace band (0.25–0.5 lb/wk)</span></div>
       ${wkAvg.length ? `<div class="tablewrap" style="margin-top:10px"><table><tr><th>Week of</th><th>Avg</th><th>Δ</th><th>Call</th></tr>${wkAvg.map((r) => `<tr><td>${r.wk}</td><td>${r.avg}</td><td>${r.d === null ? "—" : (r.d > 0 ? "+" : "") + r.d}</td><td class="note">${r.call}</td></tr>`).join("")}</table></div>` : ""}
-      <p class="note" style="margin-top:8px">Current tier: 3,100 cal · P 180 · Sunday rules live in the 🍚 nutrition note.</p></div>
+      <p class="note" style="margin-top:8px">Gain mode: 3,050 cal · P 190 · +0.25 lb/wk. Trim only at ~18% BF (4–6 wks, stop at 15%). Goal: <b style="color:var(--chalk)">200 @ 15%</b> ≈ 170 lb lean.</p></div>
     <div class="card"><div class="eyebrow sig">Strength</div>
       <div class="seg">${E.LIFTS.map((L) => `<button class="y ${trendLift === L ? "on" : ""}" onclick="trendLift='${L}';render()">${E.LIFT_NAME[L]}</button>`).join("")}</div>
       <div class="chartwrap">${svgChart(tops, { line2: e1s, empty: "Log sets on a " + E.LIFT_NAME[trendLift] + " day to start this chart." })}</div>

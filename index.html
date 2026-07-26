@@ -417,8 +417,8 @@ function accFor(a, wave, week) {
 }
 
 // ── weekend weak-point specialization (Sat = frame overload, Sun = optional detail) ──
-const FRAME_OPTS = ["shoulders", "upperchest", "latwidth", "upperback", "traps"];
-const FRAME_LABEL = { shoulders: "Shoulder width", upperchest: "Upper chest", latwidth: "Lat width", upperback: "Upper-back / rear delt", traps: "Traps / upper yoke", none: "None" };
+const FRAME_OPTS = ["shoulders", "upperchest", "latwidth", "upperback", "traps", "arms"];
+const FRAME_LABEL = { shoulders: "Shoulder width", upperchest: "Upper chest", latwidth: "Lat width", upperback: "Upper-back / rear delt", traps: "Traps / upper yoke", arms: "Arms (bi + tri)", none: "None" };
 const DETAIL_OPTS = ["triceps", "biceps", "brachialis"];
 const DETAIL_LABEL = { triceps: "Triceps", biceps: "Biceps", brachialis: "Brachialis / forearms" };
 const DEFAULT_SPEC = { framePrimary: "latwidth", frameSecondary: "shoulders", detail: "triceps", sundayOn: true };
@@ -455,6 +455,10 @@ const FRAME_MODULE = {
     sx("Chest-Supported High Row", 90, [8, 10, 12], 3, "8", "row", "rowtue", false, "High-elbow path only if shoulder-friendly", 10, v),
     sx("Reverse-Pec-Deck", 70, [15, 20, 25], 3, "8–9", "rearfly", "revpec", false, "Arms long; throw, don't lift", 10, v),
   ],
+  arms: (v) => [
+    sx("Incline DB Curl", 30, [10, 12, 15], 3, "8–9", "curl", "inccurl", true, "Arms hang behind you \u2014 full stretch. The priority curl.", 5, v),
+    sx("Overhead Cable Extension", 55, [10, 12, 15], 3, "8–9", "ohtri", "ohrope", false, "Long head \u2014 the biggest triceps head, and only overhead work hits it", 5, v),
+  ],
   traps: (v) => [
     sx("Machine / Chest-Supported Shrug", 120, [8, 10, 15], 3, "8", "row", "rowtue", false, "Brief hold at the top; no rolling", 10, v),
     sx("Chest-Supported Rear-Delt / Upper-Back Row", 70, [10, 12, 15], 3, "8", "row", "rowtue", false, "Stable, supported — deadlifts already load traps", 10, v),
@@ -465,6 +469,7 @@ const SECONDARY_SLOT = {
   upperchest: (v) => sx("Low-to-High Cable Fly", 25, [12, 15, 20], 2, "8–9", "rearfly", "revpec", false, "", 5, v),
   latwidth: (v) => sx("Unilateral Cable Pulldown", 70, [10, 12, 15], 2, "8", "pulldown", "pulldown", false, "", 10, v),
   upperback: (v) => sx("Reverse-Pec-Deck", 70, [15, 20, 25], 2, "8–9", "rearfly", "revpec", false, "", 10, v),
+  arms: (v) => sx("Cable Preacher Curl", 40, [10, 12, 15], 2, "8–9", "curl", "inccurl", false, "", 5, v),
   traps: (v) => sx("Machine Shrug", 120, [10, 12, 15], 2, "8", "row", "rowtue", false, "", 10, v),
   none: () => null,
 };
@@ -541,10 +546,12 @@ function saturdaySession(wave, week, spec) {
     }
   }
   if (triSpec) {
-    blocks.push(sx("Overhead Cable Extension", 50, [10, 12, 15], reduced ? 2 : 3, "8–9", "ohtri", "ohrope", false, "Long-head bias — arms overhead", 5, wave));
+    // when arms IS the priority the module already has overhead work — don't double it
+    if (spec.framePrimary !== "arms") blocks.push(sx("Overhead Cable Extension", 50, [10, 12, 15], reduced ? 2 : 3, "8–9", "ohtri", "ohrope", false, "Long-head bias — arms overhead", 5, wave));
     if (!reduced) blocks.push(sx("Rope / Single-Arm Pushdown", 50, [12, 15, 20], 2, "8–9", "pushdown", "pushdown", false, "", 5, wave));
   } else {
-    blocks.push(sx("Overhead Cable Extension", 50, [10, 12, 15], reduced ? 2 : 3, "8–9", "ohtri", "ohrope", false, "Triceps slot", 5, wave));
+    if (spec.framePrimary === "arms") blocks.push(sx("Rope Pushdown", 50, [12, 15, 20], reduced ? 2 : 3, "8–9", "pushdown", "pushdown", false, "Lateral + medial head \u2014 overhead work is already in the module", 5, wave));
+    else blocks.push(sx("Overhead Cable Extension", 50, [10, 12, 15], reduced ? 2 : 3, "8–9", "ohtri", "ohrope", false, "Triceps slot", 5, wave));
   }
   if (!reduced) blocks.push(balanceSlot(spec.framePrimary, wave));
   blocks.push(sx("Ab Wheel / Cable Crunch", 70, [8, 10, 12, 15], 2, "8–9", "crunch", "crunch", false, "", 10, wave));
@@ -629,11 +636,12 @@ function sessionFor(wave, week, day, gates, spec) {
     push({ type: "ohp", name: "Overhead Press", w: o[0], reps: o[1], sets: o[2], rpe: week === 4 ? "5–6" : "7–8", note: "Add reps to 3×8 clean → +5 lb → back to 3×6", moveId: "ohp" });
   }
   // Thursday sheds its delt/triceps isolation → migrated into Saturday's specialization
-  const THU_DROP = new Set(["latthu", "rdf", "pushdown", "crossbody"]);
+  const THU_DROP = new Set(["latthu", "rdf"]); // delt work migrates to Sat; triceps STAYS on Thu
   for (const a of ACC.filter((x) => x.day === day)) {
     if (day === 4 && THU_DROP.has(a.id)) continue;
     if (xfer && a.id === "lattue") continue;             // transfer: Tue laterals → Sunday
     if (xfer && (a.id === "ezcurl" || a.id === "hammer")) continue; // transfer: Wed EZ + hammer → Sunday (incline curl kept)
+    if (xfer && a.id === "crossbody") continue;         // transfer: Thu cross-body → Sunday
     const p = accFor(a, wave, week);
     if (!p) continue;
     // frame bias: lat-width / upper-back priority trims the Friday row to 2 sets

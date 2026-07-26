@@ -233,7 +233,10 @@ const FRAME_OPTS = ["shoulders", "upperchest", "latwidth", "upperback", "traps",
 const FRAME_LABEL = { shoulders: "Shoulder width", upperchest: "Upper chest", latwidth: "Lat width", upperback: "Upper-back / rear delt", traps: "Traps / upper yoke", arms: "Arms (bi + tri)", none: "None" };
 const DETAIL_OPTS = ["triceps", "biceps", "brachialis"];
 const DETAIL_LABEL = { triceps: "Triceps", biceps: "Biceps", brachialis: "Brachialis / forearms" };
-const DEFAULT_SPEC = { framePrimary: "arms", frameSecondary: "latwidth", detail: "triceps", sundayOn: true };
+// secondaryPress: "incline" = hypertrophy default (v7 "Default for size")
+//                 "closegrip" = v7 "Lockout/triceps weakness" option. Real arm STRENGTH
+//                 transfer lives here, not in heavy curls.
+const DEFAULT_SPEC = { framePrimary: "arms", frameSecondary: "latwidth", detail: "triceps", sundayOn: true, secondaryPress: "incline" };
 
 // ex helper — spec exercises run the SAME double-progression machine as weekday
 // accessories: `steps` are rep waypoints, weight climbs by `inc` once the top of the
@@ -453,6 +456,13 @@ function sessionFor(wave, week, day, gates, spec) {
   const THU_DROP = new Set(["latthu", "rdf"]); // delt work migrates to Sat; triceps STAYS on Thu
   for (const a of ACC.filter((x) => x.day === day)) {
     if (day === 4 && THU_DROP.has(a.id)) continue;
+    if (a.id === "incline" && spec.secondaryPress === "closegrip") {
+      const cg = mainTables(wave, gates).cb.bn;
+      push({ type: "accessory", name: "Close-Grip Bench", w: R5(cg * 0.62), reps: week === 2 ? 8 : 6, sets: week === 3 ? 2 : 3,
+        rpe: "7\u20138", db: false, moveId: "bn", spec: false, repN: 6,
+        cap: "RPE 8 HARD CAP \u2014 lockout + triceps strength. Never a second bench day." });
+      continue;
+    }
     if (xfer && a.id === "lattue") continue;             // transfer: Tue laterals → Sunday
     if (xfer && (a.id === "ezcurl" || a.id === "hammer")) continue; // transfer: Wed EZ + hammer → Sunday (incline curl kept)
     if (xfer && a.id === "crossbody") continue;         // transfer: Thu cross-body → Sunday
@@ -462,6 +472,10 @@ function sessionFor(wave, week, day, gates, spec) {
     let sets = p.sets;
     if (day === 5 && a.id === "rowfri" && (spec.framePrimary === "latwidth" || spec.framePrimary === "upperback") && week < 4) sets = Math.min(sets, 2);
     push({ type: "accessory", name: a.name, w: p.w, reps: p.reps, sets, rpe: p.rpe, db: a.db, top: p.top, moveId: a.id, cap: a.cap });
+  }
+  if (day === 4 && week < 4 && !sundayPlanned(wave, week, spec) && cyc <= 4) {
+    push(sx("Cable Preacher Curl", 40, [8, 10, 12], 3, "8" + "\u2013" + "9", "curl", "inccurl", false,
+      "Backfill \u2014 covers the biceps volume Sunday would have supplied", 5, wave));
   }
   if (day === 4 && week < 4 && xfer) push({ type: "note", name: "Delt & triceps isolation → Saturday", note: "Your side-delt, rear-delt and pushdown work lives in Saturday's frame day now — keeps weekly volume under cap." });
   if (day === 3 && cyc !== 6) {

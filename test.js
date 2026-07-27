@@ -174,6 +174,10 @@ const sun = E.sessionFor(1, 1, 7, {}, DEF);
 ok(sun[0].type === "spechead", "Sun header");
 const sunEx = sun.filter((b) => b.type === "accessory");
 ok(sunEx.length >= 5 && sunEx.reduce((n, b) => n + b.sets, 0) <= 14, "Sun ≤14 sets");
+ok(/Preacher/.test(sunEx[0].name), "Sun opens with the anchor curl (not the light cross-body)");
+ok(sunEx.some((b) => /Bayesian/.test(b.name)), "Sun arms-primary includes Bayesian curl");
+ok(sunEx.reduce((n, b) => n + b.sets, 0) === 12, "Sun arms-primary = 12 sets (doc default)");
+ok(/Biceps-led/.test(sun[0].name), "Sun header billed honestly (biceps-led)");
 // Sunday off Wk3
 const sun3 = E.sessionFor(1, 3, 7, {}, DEF);
 ok(sun3.length === 1 && /off/.test(sun3[0].name), "Sun Wk3 = off card");

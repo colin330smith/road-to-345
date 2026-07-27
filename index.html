@@ -500,11 +500,21 @@ const DETAIL_TEMPLATE = {
     sx("Frame-Priority Isolation", 20, [15, 20, 25], 2, "8–9", "lateral", "latwed", false, "2 sets for your secondary frame area", 5, v),
   ],
   triceps: (v) => [
-    sx("Single-Arm Cross-Body Extension", 20, [12, 15, 20], 2, "7–8", "ohtri", "crossbody", false, "The hard triceps work was Saturday — keep this light", 5, v),
-    sx("Cable Preacher Curl", 40, [10, 12, 15], 3, "8–9", "curl", "inccurl", false, "Antagonist balance", 5, v),
+    sx("Cable Preacher Curl", 40, [10, 12, 15], 3, "8–9", "curl", "inccurl", false, "ANCHOR — first, fresh", 5, v),
     sx("Hammer Curl", 25, [10, 12, 15], 3, "8", "curl", "hammer", true, "Brachialis", 5, v),
+    sx("Single-Arm Cross-Body Extension", 20, [12, 15, 20], 2, "7–8", "ohtri", "crossbody", false, "Light on purpose — the hard triceps work was Saturday", 5, v),
     sx("Cable Lateral Raise", 20, [15, 20, 25], 2, "8–9", "lateral", "latwed", false, "Delt detail", 5, v),
     sx("Reverse Cable Curl", 30, [15, 20, 25], 2, "8", "curl", "cablecurl", false, "Forearm", 5, v),
+  ],
+  // used when arms is the SATURDAY primary: Saturday already carried the heavy
+  // triceps (overhead + pushdown), so Sunday flips biceps-led. Anchor first,
+  // antagonist supersets, one hard top set allowed in Week 2.
+  armsPrimary: (v) => [
+    sx("Cable / Machine Preacher Curl", 40, [8, 10, 12], 3, "8–9", "curl", "inccurl", false, "ANCHOR — first, fresh. Week 2: final set may go RPE 9–10", 5, v),
+    sx("Bayesian Cable Curl", 25, [12, 15, 20], 3, "8–9", "curl", "cablecurl", false, "Superset with cross-body — arm behind the body, full stretch", 5, v),
+    sx("Single-Arm Cross-Body Extension", 20, [12, 15, 20], 2, "8", "ohtri", "crossbody", false, "Superset partner — the one triceps pattern Saturday didn't use", 5, v),
+    sx("Hammer Curl", 25, [10, 12, 15], 2, "8–9", "curl", "hammer", true, "Superset with laterals — brachialis", 5, v),
+    sx("Cable Lateral Raise", 20, [15, 20, 25], 2, "8–9", "lateral", "latwed", false, "Finisher — chase the burn", 5, v),
   ],
   brachialis: (v) => [
     sx("Rope Hammer Curl", 50, [8, 10, 12], 3, "8–9", "curl", "hammer", false, "Brachialis emphasis", 5, v),
@@ -567,7 +577,9 @@ function saturdaySession(wave, week, spec) {
 function sundaySession(wave, week, spec) {
   spec = spec || DEFAULT_SPEC;
   if (!sundayPlanned(wave, week, spec)) return null;
-  const tmpl = isDefaultSpec(spec) ? DETAIL_TEMPLATE.recommended(wave) : (DETAIL_TEMPLATE[spec.detail] || DETAIL_TEMPLATE.recommended)(wave);
+  const tmpl = spec.framePrimary === "arms" ? DETAIL_TEMPLATE.armsPrimary(wave)
+    : isDefaultSpec(spec) ? DETAIL_TEMPLATE.recommended(wave)
+    : (DETAIL_TEMPLATE[spec.detail] || DETAIL_TEMPLATE.recommended)(wave);
   return tmpl;
 }
 function isDefaultSpec(spec) {
@@ -605,7 +617,7 @@ function sessionFor(wave, week, day, gates, spec) {
     const s = sundaySession(wave, week, spec);
     if (!s) return [{ type: "spechead", name: "Optional detail day — off", note: cycEarly > 4 ? "No weekend specialization in this cycle. Rest or an easy walk + conditioning." : week > 2 ? "Sunday detail runs only Weeks 1–2 of a cycle. Rest today." : (spec && spec.sundayOn) ? "Rest today." : "Sunday is toggled off in Specialize. Rest or an easy walk.", moveId: null }];
     const label = DETAIL_LABEL[spec.detail] || "Detail";
-    const head = { type: "spechead", name: "Optional Detail — " + (isDefaultSpec(spec) ? "Arms & silhouette" : label), note: "Green only: 7h+ sleep, normal Fri deadlift + Sat, no elbow/shoulder pain, no flat session. 35–45 min, antagonist supersets, 60–90s rest.", moveId: null };
+    const head = { type: "spechead", name: "Optional Detail — " + (spec.framePrimary === "arms" ? "Biceps-led (Sat carried the triceps)" : isDefaultSpec(spec) ? "Arms & silhouette" : label), note: "Green only: 7h+ sleep, normal Fri deadlift + Sat, no elbow/shoulder pain, no flat session. Anchor first, then supersets — 35–45 min, 60–90s rest. Printed loads are FLOORS: if a set is easy, jump the weight and log what you did.", moveId: null };
     return [head, ...s];
   }
   const { cb, cyc, t } = mainTables(wave, gates);

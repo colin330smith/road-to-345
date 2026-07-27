@@ -337,7 +337,7 @@ const SECONDARY_SLOT = {
 };
 // balance slot: whichever delt area the primary frame is NOT hitting
 function balanceSlot(framePrimary, v) {
-  if (framePrimary === "upperback" || framePrimary === "traps" || framePrimary === "arms") return sx("Cable Lateral Raise", 20, [15, 20, 25], 2, "8–9", "lateral", "latwed", false, "Balance: side delt \u2014 shoulder width is half the taper", 5, v);
+  if (framePrimary === "upperback" || framePrimary === "traps" || framePrimary === "arms") return sx("Cable Lateral Raise", 20, [15, 20, 25], 3, "8–9", "lateral", "latwed", false, "Balance: side delt \u2014 shoulder width is half the taper", 5, v);
   return sx("Reverse-Pec-Deck / Cable Rear-Delt Fly", 70, [15, 20, 25], 2, "8–9", "rearfly", "revpec", false, "Balance: rear delt", 10, v);
 }
 
@@ -373,7 +373,7 @@ const DETAIL_TEMPLATE = {
     sx("Bayesian Cable Curl", 25, [12, 15, 20], 3, "8–9", "curl", "cablecurl", false, "Superset with cross-body — arm behind the body, full stretch", 5, v),
     sx("Single-Arm Cross-Body Extension", 20, [12, 15, 20], 2, "8", "ohtri", "crossbody", false, "Superset partner — the one triceps pattern Saturday didn't use", 5, v),
     sx("Hammer Curl", 25, [10, 12, 15], 2, "8–9", "curl", "hammer", true, "Superset with laterals — brachialis", 5, v),
-    sx("Cable Lateral Raise", 20, [15, 20, 25], 2, "8–9", "lateral", "latwed", false, "Finisher — chase the burn", 5, v),
+    sx("Cable Lateral Raise", 20, [15, 20, 25], 3, "8–9", "lateral", "latwed", false, "Finisher — chase the burn", 5, v),
   ],
   brachialis: (v) => [
     sx("Rope Hammer Curl", 50, [8, 10, 12], 3, "8–9", "curl", "hammer", false, "Brachialis emphasis", 5, v),

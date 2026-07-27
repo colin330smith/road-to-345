@@ -206,9 +206,56 @@ function accState(a, wave) {
   }
   return { w, i };
 }
+// ── log-driven progression ──────────────────────────────────────────
+// Every logged set is stamped with a stable exercise key (`k`). At each wave
+// boundary the rung advances ONLY if some session that wave hit the top of the
+// rep range on 2+ sets at >= the rung weight. Logged heavier + cleared reps →
+// the user's weight is adopted (loads are floors). Unlogged waves fall back to
+// the schedule, so casual use degrades gracefully.
+const pkeyOf = (name) => String(name).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+let HISTCTX = null; // set per sessionFor call: { index: {pkey: [{t,w,r}]}, offsetWeeks }
+
+function accStateLogged(def, wave, ctx) {
+  if (!ctx || !ctx.index) return accState(def, wave);
+  const hist = ctx.index[def.pkey];
+  if (!hist || !hist.length) { const st = accState(def, wave); return { ...st, prog: null }; }
+  let w = def.w, i = def.i0 || 0;
+  const last = def.steps.length - 1;
+  for (let k = 1; k < wave; k++) {
+    const atTop = i + 1 >= last;
+    const topReq = def.steps[Math.min(i + 1, last)];
+    const from = waveStartUTC(k, ctx.offsetWeeks || 0), to = from + 28 * MS_DAY;
+    const inWave = hist.filter((e) => e.t >= from && e.t < to);
+    // group into sessions by calendar day
+    const byDay = new Map();
+    for (const e of inWave) { const d = Math.floor(e.t / MS_DAY); if (!byDay.has(d)) byDay.set(d, []); byDay.get(d).push(e); }
+    let qualified = null;
+    for (const sess of byDay.values()) {
+      if (sess.length < 2) continue; // one set is a fluke, not a rung clear
+      if (sess.every((e) => e.r >= topReq && e.w >= w - 0.01)) { qualified = sess; break; }
+    }
+    if (qualified) {
+      const minW = Math.min(...qualified.map((e) => e.w));
+      const base = Math.max(w, def.db ? R25(minW) : R5(minW)); // adopt heavier logged weight
+      if (atTop) { w = def.inc > 0 ? (def.db ? R25(base + def.inc) : base + def.inc) : base; i = 0; }
+      else { w = base; i = i + 1; }
+    } else if (!byDay.size) {
+      // nothing logged this wave → scheduled fallback
+      if (atTop) { if (def.inc > 0) w = def.db ? R25(w + def.inc) : w + def.inc; i = 0; }
+      else i++;
+    }
+    // logged but failed → hold the rung
+  }
+  const sched = accState(def, wave);
+  const prog = (w === sched.w && i === sched.i) ? "on"
+    : (w < sched.w || (w === sched.w && i < sched.i)) ? "held" : "ahead";
+  return { w, i, prog };
+}
+
 // prescription for accessory a at wave/week (week 1–4), with cycle trims
 function accFor(a, wave, week) {
-  const { w, i } = accState(a, wave);
+  const st = accStateLogged({ w: a.w, steps: a.steps, inc: a.inc, db: a.db, i0: a.i0, pkey: a.id }, wave, HISTCTX);
+  const { w, i } = st;
   const cyc = cycleOf(wave);
   const last = a.steps.length - 1;
   const repLow = a.steps[i], repHigh = a.steps[Math.min(i + 1, last)];
@@ -225,7 +272,7 @@ function accFor(a, wave, week) {
   }
   const reps = week === 2 ? repHigh : repLow;
   const topSet = repHigh === a.steps[last] && week === 2;
-  return { w, reps, sets, rpe: week === 3 ? "8" : "8–9", top: topSet };
+  return { w, reps, sets, rpe: week === 3 ? "8" : "8–9", top: topSet, prog: st.prog };
 }
 
 // ── weekend weak-point specialization (Sat = frame overload, Sun = optional detail) ──
@@ -242,13 +289,13 @@ const DEFAULT_SPEC = { framePrimary: "arms", frameSecondary: "latwidth", detail:
 // accessories: `steps` are rep waypoints, weight climbs by `inc` once the top of the
 // range is cleared. `wv` (wave) is threaded in, so Wave 19 is not Wave 1.
 function sx(name, seed, steps, sets, rpe, arch, moveId, db, cap, inc, wv) {
-  const st = accState({ w: seed, steps, inc: inc == null ? 5 : inc, db: !!db, i0: 0 }, wv || 1);
+  const st = accStateLogged({ w: seed, steps, inc: inc == null ? 5 : inc, db: !!db, i0: 0, pkey: pkeyOf(name) }, wv || 1, HISTCTX);
   const last = steps.length - 1;
   const lo = steps[st.i], hi = steps[Math.min(st.i + 1, last)];
   return {
     type: "accessory", name, w: st.w, reps: lo === hi ? String(lo) : lo + "\u2013" + hi,
     sets, rpe, arch, moveId, db: !!db, cap: cap || "", spec: true, repN: lo,
-    top: hi === steps[last] && steps.length > 1,
+    top: hi === steps[last] && steps.length > 1, pkey: pkeyOf(name), prog: st.prog,
   };
 }
 
@@ -415,7 +462,12 @@ const WARM_PB = [["Bar", 15], [95, 8], [115, 5], [135, 3]];
 
 // ── session builder ─────────────────────────────────────────────────
 // returns ordered blocks for wave/week/day (1=Mon…5=Fri)
-function sessionFor(wave, week, day, gates, spec) {
+function sessionFor(wave, week, day, gates, spec, histCtx) {
+  HISTCTX = histCtx || null;
+  try { return sessionForInner(wave, week, day, gates, spec); }
+  finally { HISTCTX = null; }
+}
+function sessionForInner(wave, week, day, gates, spec) {
   spec = spec || DEFAULT_SPEC;
   const cycEarly = cycleOf(wave);
   // ── Saturday (day 6): frame-specialization overload ──
@@ -483,7 +535,7 @@ function sessionFor(wave, week, day, gates, spec) {
     // frame bias: lat-width / upper-back priority trims the Friday row to 2 sets
     let sets = p.sets;
     if (day === 5 && a.id === "rowfri" && (spec.framePrimary === "latwidth" || spec.framePrimary === "upperback") && week < 4) sets = Math.min(sets, 2);
-    push({ type: "accessory", name: a.name, w: p.w, reps: p.reps, sets, rpe: p.rpe, db: a.db, top: p.top, moveId: a.id, cap: a.cap });
+    push({ type: "accessory", name: a.name, w: p.w, reps: p.reps, sets, rpe: p.rpe, db: a.db, top: p.top, moveId: a.id, cap: a.cap, pkey: a.id, prog: p.prog });
   }
   if (day === 4 && week < 4 && !sundayPlanned(wave, week, spec) && cyc <= 4) {
     push(sx("Cable Preacher Curl", 40, [8, 10, 12], 3, "8" + "\u2013" + "9", "curl", "inccurl", false,
@@ -573,6 +625,6 @@ function redSession(wave, day, gates) {
   return blocks;
 }
 
-const ENGINE = { R5, R25, START, LIFTS, LIFT_NAME, gateDelta, cbFor, cycleOf, macroOf, CYCLE_NAME, waveStartUTC, whereIs, NOTES, mainTables, ohpFor, ACC, accState, accFor, sessionFor, testAttempts, yellowW, redSession, WAVE1_MONDAY, MS_DAY,
+const ENGINE = { pkeyOf, accStateLogged, R5, R25, START, LIFTS, LIFT_NAME, gateDelta, cbFor, cycleOf, macroOf, CYCLE_NAME, waveStartUTC, whereIs, NOTES, mainTables, ohpFor, ACC, accState, accFor, sessionFor, testAttempts, yellowW, redSession, WAVE1_MONDAY, MS_DAY,
   FRAME_OPTS, FRAME_LABEL, DETAIL_OPTS, DETAIL_LABEL, DEFAULT_SPEC, isDefaultSpec, saturdaySession, sundaySession, sundayPlanned };
 if (typeof module !== "undefined") module.exports = ENGINE;

@@ -197,6 +197,19 @@ S.settings = S.settings || { offsetWeeks: 0 };
 S.spec = S.spec || { ...E.DEFAULT_SPEC };
 S.ledger = S.ledger || {};
 const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} };
+// exercise history for log-driven progression: pkey -> [{t,w,r}]
+function histIndex() {
+  const ix = {};
+  for (const [dk, log] of Object.entries(S.logs)) {
+    if (!DK_RE.test(dk) || !log.sets) continue;
+    const t = Date.parse(dk);
+    for (const arr of Object.values(log.sets)) for (const st of arr) {
+      if (!st || !st.k) continue;
+      (ix[st.k] = ix[st.k] || []).push({ t, w: +st.w || 0, r: +st.r || 0 });
+    }
+  }
+  return ix;
+}
 
 const fmt = (ms) => new Date(ms).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", timeZone: "UTC" });
 const fmtShort = (ms) => new Date(ms).toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "UTC" });
@@ -383,7 +396,8 @@ function renderToday() {
 
   if (loc.day === 6 || loc.day === 7) inner += `<div class="rowbtns" style="margin:-2px 0 6px"><button class="btn ghost" onclick="specSheet()">⚙ Specialize · ${esc(E.FRAME_LABEL[S.spec.framePrimary])}</button></div>`;
 
-  let blocks = E.sessionFor(loc.wave, loc.week, loc.day, S.gates, S.spec);
+  const hctx = { index: histIndex(), offsetWeeks: off };
+  let blocks = E.sessionFor(loc.wave, loc.week, loc.day, S.gates, S.spec, hctx);
   if (ready === "R") blocks = E.redSession(loc.wave, loc.day, S.gates);
   else if (ready === "Y") blocks = blocks.map(E.yellowW).filter(Boolean);
 
@@ -424,12 +438,13 @@ function renderToday() {
         <div class="eyebrow ${isSingle ? "sig" : ""}">${esc(b.name)}${b.top ? " · range top → weight bumps next wave" : ""}</div>
         <div class="rx">${isSingle ? `<b>${b.w}</b> <small>× 1 · cap RPE ${esc(String(b.rpe))}</small>` : `${blockRx(b)} <small>@ RPE ${esc(String(b.rpe))}</small>`}</div>
         ${b.note ? `<div class="capnote warn">${esc(b.note)}</div>` : ""}
+        ${b.prog === "held" ? `<div class="capnote warn">⏸ Holding — your logs haven't cleared the top reps at this weight yet</div>` : b.prog === "ahead" ? `<div class="capnote" style="color:var(--go)">▲ Advanced off your logs</div>` : ""}
       </div>${b.moveId ? `<button class="ibtn" onclick="moveSheet('${b.moveId}')" aria-label="How to">?</button>` : ""}</div>
       <div class="setrow">${Array.from({ length: isSingle ? 1 : b.sets }, (_, si) =>
         si < sets.length
           ? `<button class="chip hit" onclick="editSet('${dk}','${bkey}',${si})">${sets[si].w === 0 ? "BW" : esc(String(sets[si].w))}×${esc(String(sets[si].r))}${sets[si].rpe != null ? "@" + esc(String(sets[si].rpe)) : ""}</button>`
-          : `<button class="chip" onclick="hitSet('${dk}','${bkey}',${b.w},${b.repN ?? b.reps})" aria-label="Log set ${si + 1}">×${esc(String(b.reps))}</button>`).join("")}
-        ${sets.length >= (isSingle ? 1 : b.sets) ? `<button class="chip add" onclick="hitSet('${dk}','${bkey}',${b.w},${b.repN ?? b.reps})">＋</button>` : ""}
+          : `<button class="chip" onclick="hitSet('${dk}','${bkey}',${b.w},${b.repN ?? b.reps},'${esc(b.pkey || "")}')" aria-label="Log set ${si + 1}">×${esc(String(b.reps))}</button>`).join("")}
+        ${sets.length >= (isSingle ? 1 : b.sets) ? `<button class="chip add" onclick="hitSet('${dk}','${bkey}',${b.w},${b.repN ?? b.reps},'${esc(b.pkey || "")}')">＋</button>` : ""}
       </div></div>`;
   });
 
@@ -449,10 +464,12 @@ window.setLog = (dk, k, v) => {
   save();
 };
 window.setReady = (dk, r) => { S.logs[dk] = S.logs[dk] || {}; S.logs[dk].r = r; save(); render(); };
-window.hitSet = (dk, bkey, w, reps) => {
+window.hitSet = (dk, bkey, w, reps, pk) => {
   S.logs[dk] = S.logs[dk] || {}; S.logs[dk].sets = S.logs[dk].sets || {};
   const arr = (S.logs[dk].sets[bkey] = S.logs[dk].sets[bkey] || []);
-  arr.push({ w, r: reps, rpe: null }); save(); render();
+  const st = { w, r: reps, rpe: null };
+  if (pk) st.k = pk;
+  arr.push(st); save(); render();
 };
 window.editSet = (dk, bkey, si) => {
   const st = S.logs[dk].sets[bkey][si];
@@ -800,6 +817,8 @@ $("#rulesbtn").addEventListener("click", () => openSheet(`<button class="closex"
   <p class="note">Single 1+ RPE too hard · back-offs miss the cap · technique degrading across sets · bar speed clearly down · multiple exercises declining · focus gone. One flat → next related session Yellow. Two → Full Deload.</p>
   <div class="eyebrow sig" style="margin-top:10px">Gate (end of every wave, per lift)</div>
   <p class="note">Wk3 single ≤8 + back-offs inside cap + technique stable + 3 normal weeks → clean bump (+5 bench / +10 squat·dead). At the ceiling → small. Inconsistent → repeat. Two stalls → −5% and rebuild.</p>
+  <div class="eyebrow sig" style="margin-top:10px">Log-driven accessories</div>
+  <p class="note">Accessory weights advance only when your logged sets clear the TOP of the rep range on 2+ sets at (or above) the prescribed weight. Miss it → the app holds the rung. Log heavier and clear it → the app adopts your weight. Unlogged exercises follow the schedule.</p>
   <div class="eyebrow sig" style="margin-top:10px">Priorities</div>
   <p class="note">1 Health &amp; sleep · 2 School · 3 Work · 4 Comp lifts · 5 Required hypertrophy · 6 Optional pump.<br>Consistency &gt; intensity theater. Peak by removing fatigue, not proving fitness.</p>`));
 

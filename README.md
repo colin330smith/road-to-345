@@ -124,9 +124,19 @@ No backend. Export/import lives in the app under **More → Data** — export af
 
 ---
 
+## Log-driven progression (how it decides)
+
+Every logged set is stamped with a stable exercise key (`k`: the `ACC` id for weekday work, a name slug for weekend spec work). At each wave boundary, `accStateLogged()` replays the log:
+
+- **Advance** — some session that wave hit the **top of the rep range on 2+ sets** at ≥ the rung weight.
+- **Adopt** — if that qualifying session was logged *heavier* than prescribed, the user's weight becomes the new rung (printed loads are floors).
+- **Hold** — logged sets exist but didn't clear the top → the rung stays put, and the card shows "⏸ Holding".
+- **Fallback** — nothing logged for an exercise that wave → scheduled advance, same as the old behavior.
+
+Sets logged before this feature (no `k` stamp) are ignored by the replay; the fallback covers those waves. Mains stay gate-driven; Week 4 stays flat.
+
 ## Known gaps / next up
 
-- **Progression is scheduled, not log-driven.** Accessory weights advance by wave number, assuming you hit the rep range on time. The correct version reads logged sets and only advances when the top of the range was actually cleared. Blocked on the log keying sets by position in the session (`b0`, `b1`…) rather than by exercise id.
 - The Claude Artifact copy is behind the PWA and has a version conflict.
 
 ---

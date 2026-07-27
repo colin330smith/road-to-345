@@ -229,5 +229,43 @@ for (let w = 1; w <= 19; w++) for (let wk = 1; wk <= 4; wk++) for (let dy = 1; d
 }
 ok(built7 === 19 * 4 * 7, "all 532 seven-day sessions built");
 
+
+// ═══ log-driven progression ═══
+console.log("\n── log-driven progression ──");
+const W1M = E.WAVE1_MONDAY;
+const mkh = (dayOff, w, r, n) => Array.from({ length: n }, () => ({ t: W1M + dayOff * E.MS_DAY, w, r }));
+const LPD = { w: 360, steps: [10, 12], inc: 20, db: false, i0: 0, pkey: "legpress" };
+eq(E.accStateLogged(LPD, 2).w, 380, "logdrv: no ctx = scheduled");
+eq(E.accStateLogged(LPD, 2, { index: {}, offsetWeeks: 0 }).w, 380, "logdrv: empty index = scheduled");
+eq(E.accStateLogged(LPD, 2, { index: { legpress: mkh(2, 360, 12, 3) }, offsetWeeks: 0 }).w, 380, "logdrv: cleared top = bump");
+const heldSt = E.accStateLogged(LPD, 2, { index: { legpress: mkh(2, 360, 10, 3) }, offsetWeeks: 0 });
+eq(heldSt.w, 360, "logdrv: missed top = hold");
+eq(heldSt.prog, "held", "logdrv: prog flag");
+eq(E.accStateLogged(LPD, 2, { index: { legpress: mkh(2, 380, 12, 3) }, offsetWeeks: 0 }).w, 400, "logdrv: heavier logs adopted then bumped");
+const SCD = { w: 80, steps: [10, 12, 15], inc: 10, db: false, i0: 0, pkey: "seatcurl" };
+eq(E.accStateLogged(SCD, 2, { index: { seatcurl: mkh(2, 80, 12, 3) }, offsetWeeks: 0 }).i, 1, "logdrv: mid-ladder advance");
+eq(E.accStateLogged(SCD, 2, { index: { seatcurl: mkh(2, 80, 10, 3) }, offsetWeeks: 0 }).i, 0, "logdrv: mid-ladder hold");
+eq(E.accStateLogged(SCD, 2, { index: { seatcurl: mkh(2, 80, 15, 1) }, offsetWeeks: 0 }).i, 0, "logdrv: single-set fluke ignored");
+// unlogged wave between logged waves falls back to schedule for that wave
+const twoWave = [...mkh(2, 360, 12, 3)]; // wave1 cleared, wave2 unlogged
+eq(E.accStateLogged(LPD, 3, { index: { legpress: twoWave }, offsetWeeks: 0 }).w, 400, "logdrv: unlogged wave uses schedule");
+// end-to-end: Monday of wave 2 reflects a hold
+const ctxHold = { index: { legpress: mkh(2, 360, 10, 3) }, offsetWeeks: 0 };
+const monLP = E.sessionFor(2, 1, 1, {}, E.DEFAULT_SPEC, ctxHold).find((b) => /Leg Press/.test(b.name || ""));
+eq(monLP.w, 360, "logdrv: session shows held weight");
+eq(monLP.prog, "held", "logdrv: block carries prog");
+// ctx does not leak into later ctx-less calls
+const after = E.sessionFor(2, 1, 1, {}, E.DEFAULT_SPEC).find((b) => /Leg Press/.test(b.name || ""));
+eq(after.w, 380, "logdrv: HISTCTX cleared after call");
+// spec exercise via name slug
+eq(E.pkeyOf("Cable / Machine Preacher Curl"), "cable-machine-preacher-curl", "logdrv: slug");
+const PKPC = "cable-machine-preacher-curl";
+const sunAdv = E.sessionFor(2, 1, 7, {}, E.DEFAULT_SPEC, { index: { [PKPC]: mkh(6, 40, 10, 3) }, offsetWeeks: 0 }).find((b) => /Preacher/.test(b.name || ""));
+eq(sunAdv.reps, "10–12", "logdrv: spec advance via slug");
+const sunHold = E.sessionFor(2, 1, 7, {}, E.DEFAULT_SPEC, { index: { [PKPC]: mkh(6, 40, 8, 3) }, offsetWeeks: 0 }).find((b) => /Preacher/.test(b.name || ""));
+eq(sunHold.reps, "8–10", "logdrv: spec hold via slug");
+// blocks expose pkey for stamping
+ok(E.sessionFor(1, 1, 1, {}, E.DEFAULT_SPEC).filter((b) => b.type === "accessory").every((b) => b.pkey), "logdrv: all accessory blocks carry pkey");
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

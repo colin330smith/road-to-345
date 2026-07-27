@@ -172,7 +172,7 @@ const ACC = [
   { id: "rowtue",    name: "Chest-Supported DB Row", day: 2, sets: 4, w3: 3, steps: [8, 10, 12],      w: 50,   inc: 5,   db: true,  comp: true,  arch: "row",       cap: "Strict, chest stays on pad" },
   { id: "incline",   name: "Incline DB Press",       day: 2, sets: 3, w3: 2, steps: [8, 10, 12],      w: 55,   inc: 5,   db: true,  comp: true,  arch: "incpress",  cap: "RPE 8 cap — secondary press" },
   { id: "lattue",    name: "Lateral Raise (Tue)",    day: 2, sets: 3, w3: 3, steps: [12, 15, 20], i0: 1, w: 15, inc: 2.5, db: true,  comp: false, arch: "lateral",   cap: "Final set RPE 9–10 OK Wks 1–2" },
-  { id: "ohrope",    name: "Overhead Rope Extension",day: 2, sets: 3, w3: 3, steps: [10, 12, 15],     w: 50,   inc: 5,   db: false, comp: false, arch: "ohtri",     cap: "Elbows healthy? may approach RPE 9" },
+  { id: "shrug",     name: "Machine / DB Shrug",     day: 2, sets: 3, w3: 2, steps: [10, 12, 15],     w: 120,  inc: 10,  db: false, comp: false, arch: "shrug",     cap: "Hold the top 1s, no rolling. 3 quality sets + your deadlifts = developed, not overdeveloped" },
   { id: "revpec",    name: "Reverse Pec Deck",       day: 2, sets: 2, w3: 2, steps: [15, 20, 25],     w: 70,   inc: 10,  db: false, comp: false, arch: "rearfly",   cap: "Light + strict beats heavy + sloppy" },
   { id: "lowhigh",   name: "Low-to-High Cable Fly",  day: 2, sets: 3, w3: 2, steps: [12, 15, 20],     w: 25,   inc: 5,   db: false, comp: false, arch: "rearfly",   cap: "Upper-chest shelf — sweep up and in, squeeze the top" },
   { id: "lyingcurl", name: "Lying Leg Curl",         day: 3, sets: 3, w3: 2, steps: [10, 12, 15],     w: 80,   inc: 10,  db: false, comp: false, arch: "legcurl",   cap: "Control the eccentric" },
@@ -322,7 +322,7 @@ const FRAME_MODULE = {
     sx("Overhead Cable Extension", 55, [10, 12, 15], 3, "8–9", "ohtri", "ohrope", false, "Long head \u2014 the biggest triceps head, and only overhead work hits it", 5, v),
   ],
   traps: (v) => [
-    sx("Machine / Chest-Supported Shrug", 120, [8, 10, 15], 3, "8", "row", "rowtue", false, "Brief hold at the top; no rolling", 10, v),
+    sx("Machine / Chest-Supported Shrug", 120, [8, 10, 15], 3, "8", "shrug", "shrug", false, "Brief hold at the top; no rolling", 10, v),
     sx("Chest-Supported Rear-Delt / Upper-Back Row", 70, [10, 12, 15], 3, "8", "row", "rowtue", false, "Stable, supported — deadlifts already load traps", 10, v),
   ],
 };
@@ -332,7 +332,7 @@ const SECONDARY_SLOT = {
   latwidth: (v) => sx("Unilateral Cable Pulldown", 70, [10, 12, 15], 3, "8", "pulldown", "pulldown", false, "Keeps the taper visible while arms take priority", 10, v),
   upperback: (v) => sx("Reverse-Pec-Deck", 70, [15, 20, 25], 2, "8–9", "rearfly", "revpec", false, "", 10, v),
   arms: (v) => sx("Cable Preacher Curl", 40, [10, 12, 15], 2, "8–9", "curl", "inccurl", false, "", 5, v),
-  traps: (v) => sx("Machine Shrug", 120, [10, 12, 15], 2, "8", "row", "rowtue", false, "", 10, v),
+  traps: (v) => sx("Machine Shrug", 120, [10, 12, 15], 2, "8", "shrug", "shrug", false, "", 10, v),
   none: () => null,
 };
 // balance slot: whichever delt area the primary frame is NOT hitting

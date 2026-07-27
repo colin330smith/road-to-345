@@ -267,5 +267,28 @@ eq(sunHold.reps, "8–10", "logdrv: spec hold via slug");
 // blocks expose pkey for stamping
 ok(E.sessionFor(1, 1, 1, {}, E.DEFAULT_SPEC).filter((b) => b.type === "accessory").every((b) => b.pkey), "logdrv: all accessory blocks carry pkey");
 
+
+// ═══ masculine frame: traps / shoulders / upper chest ═══
+console.log("\n── frame requirements ──");
+{
+  const isTri = (n) => /(Extension|Pushdown)/i.test(n) && !/Leg|Wrist/i.test(n);
+  const isBi = (n) => /Curl/i.test(n) && !/Leg Curl/i.test(n);
+  const cnt = (re) => { let t = 0; for (let d = 1; d <= 7; d++) for (const b of E.sessionFor(1, 1, d, {}, E.DEFAULT_SPEC)) if (b.type === "accessory" && re.test(b.name)) t += b.sets; return t; };
+  ok(cnt(/Shrug/) >= 3, "frame: 3+ direct trap sets weekly");
+  ok(cnt(/Lateral/) >= 9, "frame: 9+ side-delt sets weekly");
+  ok(cnt(/Incline DB Press|Low-to-High/) >= 6, "frame: 6+ upper-chest sets weekly");
+  let bi = 0, tri = 0;
+  for (let d = 1; d <= 7; d++) for (const b of E.sessionFor(1, 1, d, {}, E.DEFAULT_SPEC)) {
+    if (b.type !== "accessory") continue;
+    if (isBi(b.name)) bi += b.sets; else if (isTri(b.name)) tri += b.sets;
+  }
+  eq(bi, 16, "frame: biceps still at the 16 cap");
+  ok(tri >= 8 && tri <= 14, "frame: triceps direct in 8-14 band after shrug trade");
+  const tue = E.sessionFor(1, 1, 2, {}, E.DEFAULT_SPEC);
+  ok(tue.some((b) => /Shrug/.test(b.name || "") && b.sets === 3), "frame: Tue carries the shrug");
+  ok(!tue.some((b) => /Overhead Rope/.test(b.name || "")), "frame: Tue overhead rope traded out");
+  ok(E.sessionFor(1, 1, 6, {}, E.DEFAULT_SPEC).some((b) => /Overhead Cable Extension|Pushdown/.test(b.name || "")), "frame: Sat still carries hard triceps");
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

@@ -217,6 +217,18 @@ const ARCHS = {
       torso: [t.seg], head: t.head,
       equip: [{ t: "cable", a: [64, 5], b: hand }] };
   },
+  shrug(k) {
+    const up = 3.2 * k; // pure scapular elevation: shoulders + head rise, arms stay long
+    const pelvis = [47, 58];
+    const shoulder = [48.2, 35.2 - up];
+    const head = [48.8, 28.6 - up];
+    const handL = [41.5, 57 - up], handR = [55, 57 - up];
+    return { floor: 1,
+      limbs: [...leg(pelvis, [48.5, 87.3], -1),
+        [...shoulder, ...handL], [...shoulder, ...handR]],
+      torso: [[...pelvis, ...shoulder]], head,
+      equip: [{ t: "db", p: handL }, { t: "db", p: handR }] };
+  },
   wrist(k) {
     const hand = padd([54, 58.5], dirv(lp(-52, 55, k)), 7);
     return { props: [[30, 63, 58, 63], [34, 63, 34, 87], [52, 63, 52, 87]],

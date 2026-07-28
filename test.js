@@ -271,8 +271,8 @@ ok(E.sessionFor(1, 1, 1, {}, E.DEFAULT_SPEC).filter((b) => b.type === "accessory
 // ═══ masculine frame: traps / shoulders / upper chest ═══
 console.log("\n── frame requirements ──");
 {
-  const isTri = (n) => /(Extension|Pushdown)/i.test(n) && !/Leg|Wrist/i.test(n);
-  const isBi = (n) => /Curl/i.test(n) && !/Leg Curl/i.test(n);
+  const isTri = (n) => /(Extension|Pushdown)/i.test(n) && !/Leg|Wrist|Neck/i.test(n);
+  const isBi = (n) => /Curl/i.test(n) && !/Leg Curl|Neck/i.test(n);
   const cnt = (re) => { let t = 0; for (let d = 1; d <= 7; d++) for (const b of E.sessionFor(1, 1, d, {}, E.DEFAULT_SPEC)) if (b.type === "accessory" && re.test(b.name)) t += b.sets; return t; };
   ok(cnt(/Shrug/) >= 3, "frame: 3+ direct trap sets weekly");
   ok(cnt(/Lateral/) >= 9, "frame: 9+ side-delt sets weekly");
@@ -322,6 +322,20 @@ console.log("\n── frame requirements ──");
     const upper = acc.filter((b) => !isLower(b.name) && !/Leg Raise|Crunch/i.test(b.name));
     ok(upper.length >= 1, `preference: day ${d} includes upper-body accessory work`);
   }
+}
+
+
+// ═══ neck work (masculine frame: the collar) ═══
+{
+  const tueN = E.sessionFor(1, 1, 2, {}, E.DEFAULT_SPEC).find((b) => /Neck Curl/.test(b.name || ""));
+  const thuN = E.sessionFor(1, 1, 4, {}, E.DEFAULT_SPEC).find((b) => /Neck Extension/.test(b.name || ""));
+  ok(tueN && tueN.sets === 2, "neck: Tue has neck curls x2");
+  ok(thuN && thuN.sets === 2, "neck: Thu has neck extensions x2");
+  ok(tueN.w <= 10 && thuN.w <= 15, "neck: starting loads embarrassingly light by design");
+  let bi = 0;
+  for (let d = 1; d <= 7; d++) for (const b of E.sessionFor(1, 1, d, {}, E.DEFAULT_SPEC))
+    if (b.type === "accessory" && /Curl/i.test(b.name) && !/Leg Curl|Neck/i.test(b.name)) bi += b.sets;
+  eq(bi, 16, "neck: biceps count uncontaminated by neck curls");
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

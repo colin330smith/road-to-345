@@ -217,6 +217,24 @@ const ARCHS = {
       torso: [t.seg], head: t.head,
       equip: [{ t: "cable", a: [64, 5], b: hand }] };
   },
+  neckflex(k) {
+    // supine on bench, head off the end, plate on forehead — chin curls up
+    const head = [lp(20, 22.5, k), lp(71, 63.5, k)];
+    const plate = [head[0] + 1.5, head[1] - 5];
+    return { props: [[26, 72, 72, 72], [32, 72, 32, 86], [64, 72, 64, 86]],
+      limbs: [[52, 69, 62, 78], [62, 78, 60, 90], [30, 69, lp(23, 25, k), lp(66, 59, k)]],
+      torso: [[27, 69, 52, 69]], head,
+      equip: [{ t: "db", p: plate }] };
+  },
+  neckext(k) {
+    // prone on bench, face down, plate on back of head — head extends up
+    const head = [lp(20, 18, k), lp(73, 64, k)];
+    const plate = [head[0] + 1, head[1] - 4.5];
+    return { props: [[26, 72, 72, 72], [32, 72, 32, 86], [64, 72, 64, 86]],
+      limbs: [[52, 67, 63, 74], [63, 74, 62, 88], [30, 67, lp(23, 21, k), lp(70, 62, k)]],
+      torso: [[27, 67, 52, 67]], head,
+      equip: [{ t: "db", p: plate }] };
+  },
   shrug(k) {
     const up = 3.2 * k; // pure scapular elevation: shoulders + head rise, arms stay long
     const pelvis = [47, 58];

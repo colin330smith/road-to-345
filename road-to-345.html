@@ -347,6 +347,7 @@ const ACC = [
   { id: "lattue",    name: "Lateral Raise (Tue)",    day: 2, sets: 3, w3: 3, steps: [12, 15, 20], i0: 1, w: 15, inc: 2.5, db: true,  comp: false, arch: "lateral",   cap: "Final set RPE 9–10 OK Wks 1–2" },
   { id: "revpec",    name: "Reverse Pec Deck",       day: 2, sets: 2, w3: 2, steps: [15, 20, 25],     w: 70,   inc: 10,  db: false, comp: false, arch: "rearfly",   cap: "Light + strict beats heavy + sloppy" },
   { id: "seatcalf",  name: "Seated Calf Raise",      day: 2, sets: 3, w3: 2, steps: [12, 15, 20],     w: 90,   inc: 10,  db: false, comp: false, arch: "calf",      cap: "Soleus — bent knee. Pause the stretch" },
+  { id: "neckcurl",  name: "Neck Curl",              day: 2, sets: 2, w3: 2, steps: [12, 15, 20],     w: 5,    inc: 2.5, db: false, comp: false, arch: "neckflex",  cap: "Lying face-up, plate on forehead with a towel. SLOW. Start 2.5–5 lb – the neck grows on embarrassingly little" },
   { id: "lyingcurl", name: "Lying Leg Curl",         day: 3, sets: 3, w3: 2, steps: [10, 12, 15],     w: 80,   inc: 10,  db: false, comp: false, arch: "legcurl",   cap: "Control the eccentric" },
   { id: "legext",    name: "Leg Extension",          day: 3, sets: 2, w3: 1, steps: [12, 15],         w: 90,   inc: 10,  db: false, comp: false, arch: "legext",    cap: "Final set RPE 9–10 OK Wks 1–2" },
   { id: "inccurl",   name: "Incline DB Curl",        day: 3, sets: 3, w3: 3, steps: [10, 12, 15],     w: 25,   inc: 5,   db: true,  comp: false, arch: "curl",      cap: "Priority curl — always first, full stretch" },
@@ -360,6 +361,7 @@ const ACC = [
   { id: "facepull",  name: "Face Pull",              day: 4, sets: 3, w3: 2, steps: [15, 20, 25],     w: 40,   inc: 5,   db: false, comp: false, arch: "rearfly",   cap: "Rear delts + posture. Pull to the forehead, elbows high" },
   { id: "crunch",    name: "Cable Crunch",           day: 4, sets: 3, w3: 3, steps: [10, 12, 15],     w: 70,   inc: 10,  db: false, comp: false, arch: "crunch",    cap: "Flex the spine, don't pull with arms" },
   { id: "wrist",     name: "Wrist Extension",        day: 4, sets: 2, w3: 2, steps: [15, 20, 25],     w: 10,   inc: 2.5, db: true,  comp: false, arch: "wrist",     cap: "Elbow-health insurance — never skip" },
+  { id: "neckext",   name: "Neck Extension",         day: 4, sets: 2, w3: 2, steps: [12, 15, 20],     w: 10,   inc: 2.5, db: false, comp: false, arch: "neckext",   cap: "Prone, plate on the back of the head. Slow, no jerking, NEVER through pain" },
   { id: "rdl",       name: "RDL",                    day: 5, sets: 2, w3: 1, steps: [6, 8],           w: 225,  inc: 10,  db: false, comp: true,  arch: "hinge",     cap: "RPE 7 CAP — assistance, not a second deadlift" },
   { id: "seatcurl",  name: "Seated Leg Curl",        day: 5, sets: 3, w3: 2, steps: [10, 12, 15],     w: 80,   inc: 10,  db: false, comp: false, arch: "legcurl",   cap: "Final set RPE 9–10 OK Wks 1–2" },
   { id: "pulldown",  name: "Wide-Grip Lat Pulldown", day: 5, sets: 5, w3: 4, steps: [8, 10, 12],      w: 120,  inc: 10,  db: false, comp: true,  arch: "pulldown",  cap: "Wide grip, chest to the bar. Straps when grip limits the lats" },
@@ -925,6 +927,10 @@ const MOVES = {
     cues:["Straight up, hold the top for a second","No rolling — elevation only","Arms are straps, traps do the work","3 sets is the dose — your deadlifts do the rest"],cap:"Developed, not overdeveloped: quality over load. RPE 8–9."},
   crunch:{name:"Cable Crunch",grp:"Trunk & Grip",arch:"crunch",yt:"kneeling cable crunch",
     cues:["Hips still — flex the SPINE, not the hips","Exhale hard at the bottom"],cap:"RPE 8–9."},
+  neckcurl:{name:"Neck Curl",grp:"Trunk & Grip",arch:"neckflex",yt:"lying neck curl plate",
+    cues:["Bench, face up, head off the end","Plate on forehead, towel under it","Chin to chest, SLOW both directions","Start 2.5–5 lb. Reps before weight, always"],cap:"Never jerk, never bridge, never through pain. The neck is the fastest-growing muscle you own – it needs almost nothing."},
+  neckext:{name:"Neck Extension",grp:"Trunk & Grip",arch:"neckext",yt:"lying neck extension plate",
+    cues:["Bench, face down, head off the end","Plate on the back of the head","Look up slowly, lower slowly","Pairs with Tuesday neck curls – flexion + extension = the full collar"],cap:"Slow only. Stop at any pain – cervical spine outranks aesthetics."},
   wrist:{name:"Wrist Extension",grp:"Trunk & Grip",arch:"wrist",yt:"dumbbell wrist extension forearm",
     cues:["Forearm supported, only the wrist moves","Elbow insurance — never skip, never heavy"],cap:"Light. 15–25 reps."},
   rdl:{name:"Romanian Deadlift",grp:"Main Lifts",arch:"hinge",yt:"romanian deadlift form",
@@ -1150,6 +1156,24 @@ const ARCHS = {
       limbs: [[...pelvis, ...knee], [...knee, 60, 87.2], [...t.shoulder, ...hand]],
       torso: [t.seg], head: t.head,
       equip: [{ t: "cable", a: [64, 5], b: hand }] };
+  },
+  neckflex(k) {
+    // supine on bench, head off the end, plate on forehead — chin curls up
+    const head = [lp(20, 22.5, k), lp(71, 63.5, k)];
+    const plate = [head[0] + 1.5, head[1] - 5];
+    return { props: [[26, 72, 72, 72], [32, 72, 32, 86], [64, 72, 64, 86]],
+      limbs: [[52, 69, 62, 78], [62, 78, 60, 90], [30, 69, lp(23, 25, k), lp(66, 59, k)]],
+      torso: [[27, 69, 52, 69]], head,
+      equip: [{ t: "db", p: plate }] };
+  },
+  neckext(k) {
+    // prone on bench, face down, plate on back of head — head extends up
+    const head = [lp(20, 18, k), lp(73, 64, k)];
+    const plate = [head[0] + 1, head[1] - 4.5];
+    return { props: [[26, 72, 72, 72], [32, 72, 32, 86], [64, 72, 64, 86]],
+      limbs: [[52, 67, 63, 74], [63, 74, 62, 88], [30, 67, lp(23, 21, k), lp(70, 62, k)]],
+      torso: [[27, 67, 52, 67]], head,
+      equip: [{ t: "db", p: plate }] };
   },
   shrug(k) {
     const up = 3.2 * k; // pure scapular elevation: shoulders + head rise, arms stay long

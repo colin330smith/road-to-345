@@ -312,5 +312,17 @@ console.log("\n── frame requirements ──");
   ok(E.sessionFor(1, 1, 6, {}, E.DEFAULT_SPEC).some((b) => /Overhead Cable Extension|Pushdown/.test(b.name || "")), "frame: Sat still carries hard triceps");
 }
 
+
+// ═══ his standing preference: no legs-only training day, ever ═══
+// (stated 2026-07-27: "i hate specializing exclusively with legs")
+{
+  const isLower = (n) => /Leg Press|Leg Curl|Leg Extension|Calf|RDL/i.test(n);
+  for (let d = 1; d <= 5; d++) {
+    const acc = E.sessionFor(1, 1, d, {}, E.DEFAULT_SPEC).filter((b) => b.type === "accessory");
+    const upper = acc.filter((b) => !isLower(b.name) && !/Leg Raise|Crunch/i.test(b.name));
+    ok(upper.length >= 1, `preference: day ${d} includes upper-body accessory work`);
+  }
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

@@ -27,12 +27,12 @@ const A = Object.fromEntries(E.ACC.map(a => [a.id + ":" + a.day, a]));
 const acc = (id, day, wave, week) => E.accFor(A[id + ":" + day], wave, week);
 // wave 1
 eq([acc("legpress",1,1,1).w, acc("legpress",1,1,1).reps, acc("legpress",1,1,2).reps], [360,10,12], "w1 legpress");
-eq([acc("seatcurl",1,1,1).reps, acc("seatcurl",1,1,2).reps], [10,12], "w1 seatcurl");
+eq([acc("seatcurl",5,1,1).reps, acc("seatcurl",5,1,2).reps], [10,12], "w1 seatcurl");
 eq([acc("lattue",2,1,1).w, acc("lattue",2,1,1).reps, acc("lattue",2,1,2).reps], [15,15,20], "w1 lattue");
 eq([acc("rdl",5,1,1).w, acc("rdl",5,1,1).reps, acc("rdl",5,1,2).reps], [225,6,8], "w1 rdl");
 // wave 2
 eq([acc("legpress",1,2,1).w, acc("legpress",1,2,1).reps], [380,10], "w2 legpress 380");
-eq([acc("seatcurl",1,2,1).w, acc("seatcurl",1,2,1).reps, acc("seatcurl",1,2,2).reps], [80,12,15], "w2 seatcurl 80 12/15");
+eq([acc("seatcurl",5,2,1).w, acc("seatcurl",5,2,1).reps, acc("seatcurl",5,2,2).reps], [80,12,15], "w2 seatcurl 80 12/15");
 eq([acc("lattue",2,2,1).w, acc("lattue",2,2,1).reps, acc("lattue",2,2,2).reps], [17.5,12,15], "w2 lattue 17.5");
 eq([acc("legext",3,2,1).w], [100], "w2 legext 100");
 eq([acc("cablecurl",5,2,1).w, acc("cablecurl",5,2,1).reps], [45,12], "w2 cablecurl 45");
@@ -41,7 +41,7 @@ eq([acc("rowtue",2,2,1).w, acc("rowtue",2,2,1).reps, acc("rowtue",2,2,2).reps], 
 eq([acc("crossbody",4,2,1).reps, acc("crossbody",4,2,2).reps], [15,18], "w2 crossbody 15/18");
 // wave 3
 eq([acc("legpress",1,3,1).w], [400], "w3 legpress 400");
-eq([acc("seatcurl",1,3,1).w, acc("seatcurl",1,3,1).reps], [90,10], "w3 seatcurl 90");
+eq([acc("seatcurl",5,3,1).w, acc("seatcurl",5,3,1).reps], [90,10], "w3 seatcurl 90");
 eq([acc("rowtue",2,3,1).w, acc("rowtue",2,3,1).reps], [55,8], "w3 row 55x8");
 eq([acc("incline",2,3,1).w], [60], "w3 incline 60");
 eq([acc("lattue",2,3,1).reps, acc("lattue",2,3,2).reps], [15,20], "w3 lattue 15/20");
@@ -53,7 +53,7 @@ eq([acc("rdl",5,3,1).w], [245], "w3 rdl 245");
 eq([acc("crossbody",4,3,1).reps, acc("crossbody",4,3,2).reps], [18,20], "w3 crossbody 18/20");
 // wave 4
 eq([acc("legpress",1,4,1).w], [420], "w4 legpress 420");
-eq([acc("seatcurl",1,4,1).reps, acc("seatcurl",1,4,2).reps], [12,15], "w4 seatcurl 12/15");
+eq([acc("seatcurl",5,4,1).reps, acc("seatcurl",5,4,2).reps], [12,15], "w4 seatcurl 12/15");
 eq([acc("lattue",2,4,1).w, acc("lattue",2,4,1).reps], [20,12], "w4 lattue 20s");
 eq([acc("latthu",4,4,1).w, acc("latthu",4,4,1).reps], [17.5,12], "w4 latthu 17.5");
 eq([acc("crossbody",4,4,1).w, acc("crossbody",4,4,1).reps], [25,12], "w4 crossbody 25");
@@ -285,8 +285,30 @@ console.log("\n── frame requirements ──");
   eq(bi, 16, "frame: biceps still at the 16 cap");
   ok(tri >= 8 && tri <= 14, "frame: triceps direct in 8-14 band after shrug trade");
   const tue = E.sessionFor(1, 1, 2, {}, E.DEFAULT_SPEC);
-  ok(tue.some((b) => /Shrug/.test(b.name || "") && b.sets === 3), "frame: Tue carries the shrug");
+  const mon = E.sessionFor(1, 1, 1, {}, E.DEFAULT_SPEC);
+  ok(mon.some((b) => /Shrug/.test(b.name || "") && b.sets === 3), "frame: Mon carries the shrug (full-body split)");
   ok(!tue.some((b) => /Overhead Rope/.test(b.name || "")), "frame: Tue overhead rope traded out");
+
+  // ═══ full-body redistribution ═══
+  ok(mon.some((b) => /Low-to-High/.test(b.name || "")), "split: Mon gets upper-chest fly");
+  {
+    const monLegIso = mon.filter((b) => b.type === "accessory" && /Leg Press|Leg Curl|Leg Extension|Calf/i.test(b.name)).reduce((n, b) => n + b.sets, 0);
+    ok(monLegIso <= 6, "split: Mon leg isolation trimmed to <=6 sets");
+  }
+  ok(tue.some((b) => /Seated Calf/.test(b.name || "")), "split: Tue gets seated calf");
+  ok(!tue.some((b) => /Shrug/.test(b.name || "")), "split: Tue sheds the shrug");
+  {
+    const fri = E.sessionFor(1, 1, 5, {}, E.DEFAULT_SPEC).filter((b) => b.type === "accessory").map((b) => b.name);
+    ok(fri.some((n) => /Seated Leg Curl/.test(n)), "split: Fri gets seated leg curl (posterior day)");
+    ok(fri.indexOf("RDL") < fri.findIndex((n) => /Seated Leg Curl/.test(n)), "split: RDL stays first on Fri");
+  }
+  {
+    let hams = 0, calves = 0;
+    for (let d = 1; d <= 7; d++) for (const b of E.sessionFor(1, 1, d, {}, E.DEFAULT_SPEC))
+      if (b.type === "accessory") { if (/Leg Curl|RDL/i.test(b.name)) hams += b.sets; if (/Calf/i.test(b.name)) calves += b.sets; }
+    eq(hams, 8, "split: weekly hams unchanged at 8");
+    eq(calves, 6, "split: weekly calves unchanged at 6");
+  }
   ok(E.sessionFor(1, 1, 6, {}, E.DEFAULT_SPEC).some((b) => /Overhead Cable Extension|Pushdown/.test(b.name || "")), "frame: Sat still carries hard triceps");
 }
 

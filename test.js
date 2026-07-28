@@ -272,7 +272,7 @@ ok(E.sessionFor(1, 1, 1, {}, E.DEFAULT_SPEC).filter((b) => b.type === "accessory
 console.log("\n── frame requirements ──");
 {
   const isTri = (n) => /(Extension|Pushdown)/i.test(n) && !/Leg|Wrist|Neck/i.test(n);
-  const isBi = (n) => /Curl/i.test(n) && !/Leg Curl|Neck/i.test(n);
+  const isBi = (n) => /Curl/i.test(n) && !/Leg Curl|Neck|Wrist/i.test(n);
   const cnt = (re) => { let t = 0; for (let d = 1; d <= 7; d++) for (const b of E.sessionFor(1, 1, d, {}, E.DEFAULT_SPEC)) if (b.type === "accessory" && re.test(b.name)) t += b.sets; return t; };
   ok(cnt(/Shrug/) >= 3, "frame: 3+ direct trap sets weekly");
   ok(cnt(/Lateral/) >= 9, "frame: 9+ side-delt sets weekly");
@@ -334,8 +334,33 @@ console.log("\n── frame requirements ──");
   ok(tueN.w <= 10 && thuN.w <= 15, "neck: starting loads embarrassingly light by design");
   let bi = 0;
   for (let d = 1; d <= 7; d++) for (const b of E.sessionFor(1, 1, d, {}, E.DEFAULT_SPEC))
-    if (b.type === "accessory" && /Curl/i.test(b.name) && !/Leg Curl|Neck/i.test(b.name)) bi += b.sets;
-  eq(bi, 16, "neck: biceps count uncontaminated by neck curls");
+    if (b.type === "accessory" && /Curl/i.test(b.name) && !/Leg Curl|Neck|Wrist/i.test(b.name)) bi += b.sets;
+  eq(bi, 16, "neck: biceps count uncontaminated by neck or wrist curls");
+}
+
+
+// ═══ final bodybuilding sweep: obliques, forearm flexion, mobility ═══
+{
+  const wed = E.sessionFor(1, 1, 3, {}, E.DEFAULT_SPEC);
+  const fri = E.sessionFor(1, 1, 5, {}, E.DEFAULT_SPEC);
+  ok(wed.some((b) => /Woodchop/.test(b.name || "") && b.sets === 2), "sweep: Wed has oblique woodchops x2");
+  ok(fri.some((b) => /Wrist Curl/.test(b.name || "") && b.sets === 2), "sweep: Fri has wrist curls x2 (flexion)");
+  for (let d = 1; d <= 5; d++)
+    ok(E.sessionFor(1, 1, d, {}, E.DEFAULT_SPEC).some((b) => b.type === "cooldown"), `sweep: day ${d} ends with mobility cooldown`);
+  // Yellow keeps the cooldown even though it drops conditioning
+  const yWed = E.sessionFor(1, 1, 3, {}, E.DEFAULT_SPEC).map(E.yellowW).filter(Boolean);
+  ok(yWed.some((b) => b.type === "cooldown"), "sweep: Yellow day keeps the cooldown");
+  ok(!yWed.some((b) => b.type === "conditioning"), "sweep: Yellow day still drops cardio");
+  // dedicated forearm volume now >= 4 weekly (ext 2 + flex 2, before Sunday extras)
+  let fa = 0;
+  for (let d = 1; d <= 5; d++) for (const b of E.sessionFor(1, 1, d, {}, E.DEFAULT_SPEC))
+    if (b.type === "accessory" && /Wrist/i.test(b.name)) fa += b.sets;
+  ok(fa >= 4, "sweep: 4+ dedicated forearm sets on weekdays");
+  // biceps count still uncontaminated
+  let bi = 0;
+  for (let d = 1; d <= 7; d++) for (const b of E.sessionFor(1, 1, d, {}, E.DEFAULT_SPEC))
+    if (b.type === "accessory" && /Curl/i.test(b.name) && !/Leg Curl|Neck|Wrist/i.test(b.name)) bi += b.sets;
+  eq(bi, 16, "sweep: biceps still exactly 16");
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

@@ -295,6 +295,10 @@ const MOVES = {
     cues:["Straight up, hold the top for a second","No rolling — elevation only","Arms are straps, traps do the work","3 sets is the dose — your deadlifts do the rest"],cap:"Developed, not overdeveloped: quality over load. RPE 8–9."},
   crunch:{name:"Cable Crunch",grp:"Trunk & Grip",arch:"crunch",yt:"kneeling cable crunch",
     cues:["Hips still — flex the SPINE, not the hips","Exhale hard at the bottom"],cap:"RPE 8–9."},
+  woodchop:{name:"Cable Woodchop",grp:"Trunk & Grip",arch:"woodchop",yt:"cable woodchop high to low",
+    cues:["High pulley, arms stay long","Rotate the TRUNK – hips follow, arms just hold","Control the return – that's half the set","Light and crisp: obliques already brace your squats and pulls"],cap:"Per side. RPE 8. The visible obliques come from leanness – this just builds the frame under it."},
+  wristcurl:{name:"Cable / DB Wrist Curl",grp:"Trunk & Grip",arch:"wrist",yt:"wrist curl forearm flexor",
+    cues:["Forearm supported, palm up","Full stretch at the bottom, squeeze up","Pairs with Thursday's extensions – both sides of the forearm"],cap:"Flexors are the forearm mass. 15–25 reps, no ego."},
   neckcurl:{name:"Neck Curl",grp:"Trunk & Grip",arch:"neckflex",yt:"lying neck curl plate",
     cues:["Bench, face up, head off the end","Plate on forehead, towel under it","Chin to chest, SLOW both directions","Start 2.5–5 lb. Reps before weight, always"],cap:"Never jerk, never bridge, never through pain. The neck is the fastest-growing muscle you own – it needs almost nothing."},
   neckext:{name:"Neck Extension",grp:"Trunk & Grip",arch:"neckext",yt:"lying neck extension plate",
@@ -430,6 +434,7 @@ function renderToday() {
       return;
     }
     if (b.type === "conditioning") { inner += `<div class="card"><div class="eyebrow">Conditioning</div><div class="rx" style="font-size:16px">${esc(b.name)} <small>${esc(b.note)}</small></div></div>`; return; }
+    if (b.type === "cooldown") { inner += `<div class="card"><div class="eyebrow">Mobility</div><div class="rx" style="font-size:15px">${esc(b.name)} <small>${esc(b.note)}</small></div></div>`; return; }
     if (b.type === "spechead") { inner += `<div class="card single"><div class="eyebrow sig">${esc(b.name)}</div>${b.note ? `<p class="note" style="margin-top:3px">${esc(b.note)}</p>` : ""}</div>`; return; }
     if (b.type === "note") { inner += `<div class="card" style="padding:9px 12px"><p class="note">${esc(b.name)} — ${esc(b.note || "")}</p></div>`; return; }
     if (b.type === "test") {

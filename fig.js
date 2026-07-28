@@ -217,6 +217,16 @@ const ARCHS = {
       torso: [t.seg], head: t.head,
       equip: [{ t: "cable", a: [64, 5], b: hand }] };
   },
+  woodchop(k) {
+    // standing rotation: hands sweep high-right to low-left across the body
+    const pelvis = [47, 58];
+    const t = trunk(pelvis, lp(-82, -96, k));
+    const hand = [lp(63, 34, k), lp(30, 66, k)];
+    return { floor: 1, props: [[68, 6, 68, 20]],
+      limbs: [...leg(pelvis, [48.5, 87.3], -1), [...t.shoulder, ...hand]],
+      torso: [t.seg], head: t.head,
+      equip: [{ t: "cable", a: [68, 7], b: hand }, { t: "db", p: hand }] };
+  },
   neckflex(k) {
     // supine on bench, head off the end, plate on forehead — chin curls up
     const head = [lp(20, 22.5, k), lp(71, 63.5, k)];

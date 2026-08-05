@@ -109,6 +109,29 @@ const PCT = {
   ps: [0.635, 0.665, 0.71], pb: [0.655, 0.695, 0.74],
   bridge: { sq: 0.76, bn: 0.79, dl: 0.81 },
 };
+// ── incline bench: a tracked secondary press ramping to a 225 goal ──────
+// Starts at 180 (≈0.80× his 225 bench CB, the usual flat:incline ratio) and
+// gains in lockstep with the bench gate — one gate decision, two lifts. Reaches
+// 225 when the bench CB reaches 270, i.e. wave 10 on a clean chain.
+const INCLINE_START = 180, INCLINE_GOAL = 225;
+const inclineCB = (wave, gates) => INCLINE_START + (cbFor(wave, gates).bn - START.bn);
+// [topPct, topReps, rpe, backPct, backReps, backSets]
+const INCLINE_WK = [
+  [0.78, 5, "7", 0.70, 8, 3],
+  [0.82, 4, "7.5", 0.73, 7, 3],
+  [0.86, 3, "8", 0.76, 6, 3],
+  [null, 0, "5" + "\u2013" + "6", 0.62, 6, 3],
+];
+function inclineFor(wave, week, gates) {
+  const cb = inclineCB(wave, gates), [tp, tr, rpe, bp, br, bs] = INCLINE_WK[week - 1];
+  const out = [];
+  if (tp) out.push({ type: "single", lift: "inc", name: "Incline Bench \u2014 top set", w: R5(cb * tp), reps: tr, sets: 1, rpe, moveId: "incbb", pkey: "incbb-top",
+    note: "Ramping to " + INCLINE_GOAL + ". Barbell, 30\u201345\u00b0, touch the upper chest." });
+  out.push({ type: "backoff", lift: "inc", name: "Incline Bench \u2014 " + (tp ? "back-offs" : "light"), w: R5(cb * bp), reps: br, sets: bs,
+    rpe: tp ? "7" + "\u2013" + "8" : "5" + "\u2013" + "6", moveId: "incbb", pkey: "incbb-back", light: !tp });
+  return out;
+}
+
 const RPE_CAP = { 1: 7, 2: 7.5, 3: 8 };
 const RPE_CAP_C5 = { 1: 7.5, 2: 8, 3: "8–8.5" };
 
@@ -175,9 +198,9 @@ const ACC = [
   { id: "lowhigh",   name: "Low-to-High Cable Fly",  day: 1, sets: 3, w3: 2, steps: [12, 15, 20],     w: 30,   inc: 5,   db: false, comp: false, arch: "rearfly",   cap: "Upper-chest shelf — sweep up and in, squeeze the top" },
   { id: "shrug",     name: "Machine / DB Shrug",     day: 1, sets: 3, w3: 2, steps: [10, 12, 15],     w: 160,  inc: 10,  db: false, comp: false, arch: "shrug",     cap: "Hold the top 1s, no rolling. 3 quality sets + your deadlifts = developed, not overdeveloped" },
   { id: "rowtue",    name: "Chest-Supported DB Row", day: 2, sets: 4, w3: 3, steps: [8, 10, 12],      w: 60,   inc: 5,   db: true,  comp: true,  arch: "row",       cap: "Strict, chest stays on pad" },
-  { id: "incline",   name: "Incline DB Press",       day: 2, sets: 3, w3: 2, steps: [8, 10, 12],      w: 65,   inc: 5,   db: true,  comp: true,  arch: "incpress",  cap: "RPE 8 cap — secondary press" },
   { id: "lattue",    name: "Lateral Raise (Tue)",    day: 2, sets: 3, w3: 3, steps: [12, 15, 20], i0: 1, w: 17.5, inc: 2.5, db: true,  comp: false, arch: "lateral",   cap: "Final set RPE 9–10 OK Wks 1–2" },
   { id: "revpec",    name: "Reverse Pec Deck",       day: 2, sets: 2, w3: 2, steps: [15, 20, 25],     w: 90,   inc: 10,  db: false, comp: false, arch: "rearfly",   cap: "Light + strict beats heavy + sloppy" },
+  { id: "pullapart", name: "Band Pull-Apart",        day: 2, sets: 2, w3: 2, steps: [20, 25, 30],     w: 0,    inc: 0,   db: false, comp: false, arch: "rearfly",   cap: "PRIMER \u2014 do these BEFORE pressing. 60 seconds, opens the chest, sets the shoulders back" },
   { id: "seatcalf",  name: "Seated Calf Raise",      day: 2, sets: 3, w3: 2, steps: [12, 15, 20],     w: 120,   inc: 10,  db: false, comp: false, arch: "calf",      cap: "Soleus — bent knee. Pause the stretch" },
   { id: "neckcurl",  name: "Neck Curl",              day: 2, sets: 2, w3: 2, steps: [12, 15, 20],     w: 5,    inc: 2.5, db: false, comp: false, arch: "neckflex",  cap: "Lying face-up, plate on forehead with a towel. SLOW. Start 2.5–5 lb – the neck grows on embarrassingly little" },
   { id: "lyingcurl", name: "Lying Leg Curl",         day: 3, sets: 3, w3: 2, steps: [10, 12, 15],     w: 105,   inc: 10,  db: false, comp: false, arch: "legcurl",   cap: "Control the eccentric" },
@@ -192,6 +215,7 @@ const ACC = [
   { id: "pushdown",  name: "Rope Pushdown",          day: 4, sets: 3, w3: 3, steps: [10, 12, 15],     w: 70,   inc: 5,   db: false, comp: false, arch: "pushdown",  cap: "May approach RPE 9 if elbows feel normal" },
   { id: "crossbody", name: "Cross-Body Extension",   day: 4, sets: 2, w3: 2, steps: [12, 15, 18, 20], w: 30,   inc: 5,   db: false, comp: false, arch: "ohtri",     cap: "Per arm; lock the upper arm still" },
   { id: "facepull",  name: "Face Pull",              day: 4, sets: 3, w3: 2, steps: [15, 20, 25],     w: 55,   inc: 5,   db: false, comp: false, arch: "rearfly",   cap: "Rear delts + posture. Pull to the forehead, elbows high" },
+  { id: "proneY",    name: "Prone Y-Raise",          day: 4, sets: 2, w3: 2, steps: [12, 15, 20],     w: 5,    inc: 2.5, db: true,  comp: false, arch: "proneY",    cap: "LOWER traps \u2014 the muscle that actually holds your shoulders back. Thumbs up, arms at 45\u00b0, tiny weight" },
   { id: "crunch",    name: "Cable Crunch",           day: 4, sets: 3, w3: 3, steps: [10, 12, 15],     w: 100,   inc: 10,  db: false, comp: false, arch: "crunch",    cap: "Flex the spine, don't pull with arms" },
   { id: "wrist",     name: "Wrist Extension",        day: 4, sets: 2, w3: 2, steps: [15, 20, 25],     w: 12.5,   inc: 2.5, db: true,  comp: false, arch: "wrist",     cap: "Elbow-health insurance — never skip" },
   { id: "neckext",   name: "Neck Extension",         day: 4, sets: 2, w3: 2, steps: [12, 15, 20],     w: 10,   inc: 2.5, db: false, comp: false, arch: "neckext",   cap: "Prone, plate on the back of the head. Slow, no jerking, NEVER through pain" },
@@ -513,6 +537,10 @@ function sessionForInner(wave, week, day, gates, spec) {
 
   if (dayLift) {
     push({ type: "warmup", name: LIFT_NAME[dayLift] + " warm-up", rows: warmups(dayLift, wave, gates) });
+    if (day === 2 && cyc !== 6) {   // primer: 60 seconds, before the bar touches your chest
+      const pa = ACC.find((x) => x.id === "pullapart"), p = accFor(pa, wave, week);
+      if (p) push({ type: "accessory", name: pa.name, w: p.w, reps: p.reps, sets: p.sets, rpe: "7", db: false, moveId: pa.id, cap: pa.cap, pkey: pa.id, prog: p.prog });
+    }
     if (week < 4) {
       const cap = cyc === 5 ? RPE_CAP_C5[week] : RPE_CAP[week];
       push({ type: "single", lift: dayLift, name: LIFT_NAME[dayLift] + " — top single", w: t[dayLift].s[wk], reps: 1, sets: 1, rpe: cap, moveId: dayLift });
@@ -536,8 +564,10 @@ function sessionForInner(wave, week, day, gates, spec) {
   }
   // Thursday sheds its delt/triceps isolation → migrated into Saturday's specialization
   const THU_DROP = new Set(["latthu", "rdf"]); // delt work migrates to Sat; triceps STAYS on Thu
+  if (day === 2 && cyc !== 6) for (const b of inclineFor(wave, week, gates)) push(b);
   for (const a of ACC.filter((x) => x.day === day)) {
     if (day === 4 && THU_DROP.has(a.id)) continue;
+    if (a.id === "pullapart") continue;   // already pushed as the pre-press primer
     if (a.id === "incline" && spec.secondaryPress === "closegrip") {
       const cg = mainTables(wave, gates).cb.bn;
       push({ type: "accessory", name: "Close-Grip Bench", w: R5(cg * 0.62), reps: week === 2 ? 8 : 6, sets: week === 3 ? 2 : 3,
@@ -566,7 +596,7 @@ function sessionForInner(wave, week, day, gates, spec) {
   }
   // 5-min mobility cooldown — flexibility lives inside sessions or it doesn't live at all.
   // Distinct type: Yellow mode drops conditioning but KEEPS the cooldown.
-  const COOL = { 1: "Couch stretch 2×30s/side · ankle rocks 15/side · dead hang 30s", 2: "Doorway pec stretch 2×30s · cross-body delt 30s/side · dead hang 30s", 3: "90/90 hips 60s/side · standing hamstring 45s/side", 4: "Lat hang 45s · thoracic extension over bench 45s", 5: "Hamstring 60s/side · figure-4 glute 45s/side · shake the grip out" };
+  const COOL = { 1: "POSTURE: couch stretch 2×30s/side (hip flexors = the anterior tilt fix) · ankle rocks 15/side · dead hang 30s", 2: "POSTURE: doorway pec stretch 2×30s (tight pecs pull you forward) · cross-body delt 30s/side · wall slides ×10", 3: "90/90 hips 60s/side · standing hamstring 45s/side", 4: "POSTURE: thoracic extension over bench 45s · lat hang 45s · chin tucks ×10 (the tech-neck fix)", 5: "Hamstring 60s/side · figure-4 glute 45s/side · shake the grip out" };
   if (COOL[day]) push({ type: "cooldown", name: "Cooldown — 5 min", note: COOL[day] + " · easy breathing, no bouncing" });
   return blocks;
 }
@@ -647,6 +677,6 @@ function redSession(wave, day, gates) {
   return blocks;
 }
 
-const ENGINE = { pkeyOf, accStateLogged, R5, R25, START, LIFTS, LIFT_NAME, gateDelta, cbFor, cycleOf, macroOf, CYCLE_NAME, waveStartUTC, whereIs, NOTES, mainTables, ohpFor, ACC, accState, accFor, sessionFor, testAttempts, yellowW, redSession, WAVE1_MONDAY, MS_DAY,
+const ENGINE = { inclineCB, inclineFor, INCLINE_START, INCLINE_GOAL, pkeyOf, accStateLogged, R5, R25, START, LIFTS, LIFT_NAME, gateDelta, cbFor, cycleOf, macroOf, CYCLE_NAME, waveStartUTC, whereIs, NOTES, mainTables, ohpFor, ACC, accState, accFor, sessionFor, testAttempts, yellowW, redSession, WAVE1_MONDAY, MS_DAY,
   FRAME_OPTS, FRAME_LABEL, DETAIL_OPTS, DETAIL_LABEL, DEFAULT_SPEC, isDefaultSpec, saturdaySession, sundaySession, sundayPlanned };
 if (typeof module !== "undefined") module.exports = ENGINE;

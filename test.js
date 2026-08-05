@@ -46,7 +46,7 @@ eq([acc("crossbody",4,2,1).reps, acc("crossbody",4,2,2).reps], [15,18], "w2 cros
 eq([acc("legpress",1,3,1).w], [490], "w3 legpress 400");
 eq([acc("seatcurl",5,3,1).w, acc("seatcurl",5,3,1).reps], [115,10], "w3 seatcurl 90");
 eq([acc("rowtue",2,3,1).w, acc("rowtue",2,3,1).reps], [65,8], "w3 row 55x8");
-eq([acc("incline",2,3,1).w], [70], "w3 incline 60");
+// (incline DB press removed 2026-08-05 — replaced by the tracked barbell incline ramping to 225)
 eq([acc("lattue",2,3,1).reps, acc("lattue",2,3,2).reps], [15,20], "w3 lattue 15/20");
 eq([acc("inccurl",3,3,1).w, acc("inccurl",3,3,1).reps], [37.5,10], "w3 inccurl 30");
 eq([acc("latwed",3,3,1).w, acc("latwed",3,3,1).reps], [17.5,15], "w3 latwed 15s");
@@ -279,7 +279,7 @@ console.log("\n── frame requirements ──");
   const cnt = (re) => { let t = 0; for (let d = 1; d <= 7; d++) for (const b of E.sessionFor(1, 1, d, {}, E.DEFAULT_SPEC)) if (b.type === "accessory" && re.test(b.name)) t += b.sets; return t; };
   ok(cnt(/Shrug/) >= 3, "frame: 3+ direct trap sets weekly");
   ok(cnt(/Lateral/) >= 9, "frame: 9+ side-delt sets weekly");
-  ok(cnt(/Incline DB Press|Low-to-High/) >= 6, "frame: 6+ upper-chest sets weekly");
+  ok(cnt(/Low-to-High/) + E.sessionFor(1, 1, 2, {}, E.DEFAULT_SPEC).filter((b) => /Incline Bench/.test(b.name || "")).reduce((n, b) => n + b.sets, 0) >= 6, "frame: 6+ upper-chest sets weekly (barbell incline + fly)");
   let bi = 0, tri = 0;
   for (let d = 1; d <= 7; d++) for (const b of E.sessionFor(1, 1, d, {}, E.DEFAULT_SPEC)) {
     if (b.type !== "accessory") continue;
@@ -401,6 +401,28 @@ console.log("\n── frame requirements ──");
   eq(run([10, 9, 9, 9, 9]).i, 0, "prog: only 1 clearing set holds");
   eq(run([8, 8, 8, 8, 8]).i, 0, "prog: nothing clears holds");
   ok(run([10, 9, 9, 9, 9]).prog === "held", "prog: held flag set");
+}
+
+
+// ═══ incline ramp to 225 + posture block ═══
+{
+  eq(E.inclineCB(1, {}), 180, "incline: starts at 180");
+  eq(E.inclineCB(10, {}), 225, "incline: reaches the 225 goal at wave 10 on a clean chain");
+  eq(E.inclineCB(10, { 3: { bn: "repeat" } }), 220, "incline: a failed bench gate holds the incline too");
+  const tue = E.sessionFor(1, 1, 2, {}, E.DEFAULT_SPEC);
+  const names = tue.map((b) => b.name || "");
+  ok(names.some((n) => /Incline Bench — top set/.test(n)), "incline: Tue has a ramping top set");
+  ok(names.some((n) => /Incline Bench — back-offs/.test(n)), "incline: Tue has back-offs");
+  ok(!names.some((n) => /Incline DB Press/.test(n)), "incline: DB version replaced by the barbell");
+  ok(names.indexOf("Band Pull-Apart") < names.findIndex((n) => /Bench — top single/.test(n)), "posture: pull-apart primes BEFORE pressing");
+  ok(names.filter((n) => n === "Band Pull-Apart").length === 1, "posture: pull-apart appears exactly once");
+  ok(E.sessionFor(1, 1, 4, {}, E.DEFAULT_SPEC).some((b) => /Prone Y/.test(b.name || "")), "posture: Thu has prone Y (lower trap)");
+  ok(!E.sessionFor(6, 1, 2, {}, E.DEFAULT_SPEC).some((b) => /Incline Bench/.test(b.name || "")), "incline: peak week drops it");
+  const wk4 = E.sessionFor(1, 4, 2, {}, E.DEFAULT_SPEC);
+  ok(!wk4.some((b) => /Incline Bench — top set/.test(b.name || "")), "incline: deload has no top set");
+  ok(wk4.some((b) => /Incline Bench — light/.test(b.name || "")), "incline: deload keeps light volume");
+  for (let d = 1; d <= 5; d++)
+    ok(E.sessionFor(1, 1, d, {}, E.DEFAULT_SPEC).some((b) => b.type === "cooldown" && /POSTURE|hams|glutes/i.test(b.note || "")), `posture: day ${d} cooldown intact`);
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

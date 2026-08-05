@@ -245,6 +245,16 @@ const ARCHS = {
       torso: [[27, 67, 52, 67]], head,
       equip: [{ t: "db", p: plate }] };
   },
+  proneY(k) {
+    // prone on an incline bench, arms sweeping overhead into a Y — lower traps
+    const sh = [44, 52], hip = [62, 62];
+    const a = lp(96, 28, k);                     // arm angle: hanging -> overhead Y
+    const hand = padd(sh, dirv(a - 180), 20);
+    return { props: [[34, 74, 70, 44], [40, 78, 56, 74]],
+      limbs: [[...hip, 72, 78], [72, 78, 70, 90], [...sh, ...hand]],
+      torso: [[...hip, ...sh]], head: [39, 46],
+      equip: [{ t: "db", p: hand, r: 2.2 }] };
+  },
   shrug(k) {
     const up = 3.2 * k; // pure scapular elevation: shoulders + head rise, arms stay long
     const pelvis = [47, 58];

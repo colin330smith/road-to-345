@@ -293,6 +293,12 @@ const MOVES = {
     cues:["Elbows by the ears — only forearms move","Full stretch behind the head"],cap:"High on the elbow pain ladder — drop early if cranky."},
   crossbody:{name:"Cross-Body Extension",grp:"Arms & Delts",arch:"ohtri",yt:"cross body cable tricep extension",
     cues:["Upper arm pinned across the body — pure elbow","Match reps on both arms"],cap:"RPE 9 OK when elbows are quiet."},
+  incbb:{name:"Incline Bench Press",grp:"Main Lifts",arch:"incpress",yt:"incline barbell bench press form",
+    cues:["30–45° — steeper turns it into an overhead press","Touch the UPPER chest, just below the collarbone","Shoulder blades still pinned back and down","Ramping to 225: the upper-chest shelf and a bigger flat bench, same lift"],cap:"Top set to the week's RPE cap. Back-offs 7–8. It supports the comp bench, never competes with it."},
+  proneY:{name:"Prone Y-Raise",grp:"Arms & Delts",arch:"proneY",yt:"prone y raise lower trap",
+    cues:["Face down on an incline bench, arms hanging","Thumbs UP, sweep to a Y at about 45°","2.5–5 lb is plenty — this is not a strength lift","Lower traps: the muscle that actually holds your shoulders back"],cap:"Light and strict. Posture work, not hypertrophy volume."},
+  pullapart:{name:"Band Pull-Apart",grp:"Arms & Delts",arch:"rearfly",yt:"band pull apart form",
+    cues:["BEFORE you press, not after","Arms straight, pull to the chest, squeeze","20–30 reps, no strain — this is a primer","Opens the chest and sets the shoulders back for the bench"],cap:"60 seconds. The cheapest posture insurance in the program."},
   shrug:{name:"Machine / DB Shrug",grp:"Press & Pull",arch:"shrug",yt:"dumbbell shrug technique",
     cues:["Straight up, hold the top for a second","No rolling — elevation only","Arms are straps, traps do the work","3 sets is the dose — your deadlifts do the rest"],cap:"Developed, not overdeveloped: quality over load. RPE 8–9."},
   crunch:{name:"Cable Crunch",grp:"Trunk & Grip",arch:"crunch",yt:"kneeling cable crunch",
@@ -375,7 +381,7 @@ window.stopTimer = () => { clearInterval(tInt); tEnd = null; timerBtn.classList.
 /* ── TODAY ── */
 function blockRx(b) {
   if (b.type === "warmup") return "";
-  const w = b.w === 0 ? "BW" : b.w;
+  const w = b.w === 0 ? (/Band/.test(b.name) ? "Band" : "BW") : b.w;
   return `${w} <small>×</small> ${b.reps} <small>× ${b.sets}${b.db ? " · per hand" : ""}</small>`;
 }
 function renderToday() {
@@ -512,8 +518,9 @@ function renderRoad() {
   const bwRows = Object.entries(S.bw).filter(([k]) => DK_RE.test(k)).sort();
   const bwNow = bwRows.length ? bwRows[bwRows.length - 1][1] : 182;
   const bwPct = Math.max(0, Math.min(100, Math.round(((bwNow - 182) / (200 - 182)) * 100)));
-  let h = `<div class="card single"><div class="eyebrow sig">The Goal — 200 lb @ 15% · 315 / 405 / 495</div><div class="summit">
+  let h = `<div class="card single"><div class="eyebrow sig">The Goal — 200 @ 15% · 315/405/495 · 225 incline</div><div class="summit">
     ${E.LIFTS.map((L) => { const [s0, g] = GOALS[L]; const pct = Math.max(0, Math.min(100, Math.round(((cbNow[L] - s0) / (g - s0)) * 100))); return `<div class="srow"><span>${E.LIFT_NAME[L]}</span><div class="sbar"><i style="width:${pct}%"></i></div><span class="sval">${cbNow[L]} / ${g}</span></div>`; }).join("")}
+    ${(() => { const ic = E.inclineCB(Math.max(1, Math.min(now.wave || 1, 19)), S.gates); const p = Math.max(0, Math.min(100, Math.round(((ic - E.INCLINE_START) / (E.INCLINE_GOAL - E.INCLINE_START)) * 100))); return `<div class="srow"><span>Incline</span><div class="sbar"><i style="width:${p}%"></i></div><span class="sval">${ic} / ${E.INCLINE_GOAL}</span></div>`; })()}
     <div class="srow" style="border-top:1px solid var(--steel);padding-top:8px"><span>Bodyweight</span><div class="sbar"><i style="width:${bwPct}%"></i></div><span class="sval">${bwNow} / 200</span></div>
   </div><p class="note">Lifts are cycle bases, not tested maxes. Bodyweight only counts if the waist stays flat while it climbs.</p></div>
   <p class="note">19 waves · 4 macros. Projections re-compute from your gate results; untouched gates assume clean.</p>`;

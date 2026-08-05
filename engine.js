@@ -161,41 +161,46 @@ function ohpFor(wave, gates) {
 }
 
 // ── accessory double-progression machine ────────────────────────────
+// SEED CALIBRATION (2026-07-28): starting loads were originally invented and ran
+// far too light for this lifter (leg press 360 for a 315 squatter). Now anchored to
+// his cycle bases — leg press 1.43x squat, RDL 0.60x deadlift, pulldown 0.40x
+// deadlift, pressing accessories ~0.30x bench. Neck work stays deliberately light.
+// These remain FLOORS: log-driven progression adopts whatever he actually lifts.
 // steps: rep waypoints; each wave uses (steps[i], steps[i+1]); when the
 // second lands on the last step, next wave adds `inc` and resets i.
 const ACC = [
-  { id: "legpress",  name: "Leg Press",              day: 1, sets: 3, w3: 2, steps: [10, 12],         w: 360,  inc: 20,  db: false, comp: true,  arch: "legpress",  cap: "Final set: technical failure OK Wks 1–2 only, safeties set" },
-  { id: "calf",      name: "Standing Calf Raise",    day: 1, sets: 3, w3: 3, steps: [10, 12, 15],     w: 180,  inc: 10,  db: false, comp: false, arch: "calf",      cap: "Pause the stretch; no bouncing" },
+  { id: "legpress",  name: "Leg Press",              day: 1, sets: 3, w3: 2, steps: [10, 12],         w: 450,  inc: 20,  db: false, comp: true,  arch: "legpress",  cap: "Final set: technical failure OK Wks 1–2 only, safeties set" },
+  { id: "calf",      name: "Standing Calf Raise",    day: 1, sets: 3, w3: 3, steps: [10, 12, 15],     w: 220,  inc: 10,  db: false, comp: false, arch: "calf",      cap: "Pause the stretch; no bouncing" },
   { id: "hlr",       name: "Hanging Leg Raise",      day: 1, sets: 3, w3: 3, steps: [10, 12, 15],     w: 0,    inc: 0,   db: false, comp: false, arch: "hlr",       cap: "Progress by stricter form, then add a light DB" },
-  { id: "lowhigh",   name: "Low-to-High Cable Fly",  day: 1, sets: 3, w3: 2, steps: [12, 15, 20],     w: 25,   inc: 5,   db: false, comp: false, arch: "rearfly",   cap: "Upper-chest shelf — sweep up and in, squeeze the top" },
-  { id: "shrug",     name: "Machine / DB Shrug",     day: 1, sets: 3, w3: 2, steps: [10, 12, 15],     w: 120,  inc: 10,  db: false, comp: false, arch: "shrug",     cap: "Hold the top 1s, no rolling. 3 quality sets + your deadlifts = developed, not overdeveloped" },
-  { id: "rowtue",    name: "Chest-Supported DB Row", day: 2, sets: 4, w3: 3, steps: [8, 10, 12],      w: 50,   inc: 5,   db: true,  comp: true,  arch: "row",       cap: "Strict, chest stays on pad" },
-  { id: "incline",   name: "Incline DB Press",       day: 2, sets: 3, w3: 2, steps: [8, 10, 12],      w: 55,   inc: 5,   db: true,  comp: true,  arch: "incpress",  cap: "RPE 8 cap — secondary press" },
-  { id: "lattue",    name: "Lateral Raise (Tue)",    day: 2, sets: 3, w3: 3, steps: [12, 15, 20], i0: 1, w: 15, inc: 2.5, db: true,  comp: false, arch: "lateral",   cap: "Final set RPE 9–10 OK Wks 1–2" },
-  { id: "revpec",    name: "Reverse Pec Deck",       day: 2, sets: 2, w3: 2, steps: [15, 20, 25],     w: 70,   inc: 10,  db: false, comp: false, arch: "rearfly",   cap: "Light + strict beats heavy + sloppy" },
-  { id: "seatcalf",  name: "Seated Calf Raise",      day: 2, sets: 3, w3: 2, steps: [12, 15, 20],     w: 90,   inc: 10,  db: false, comp: false, arch: "calf",      cap: "Soleus — bent knee. Pause the stretch" },
+  { id: "lowhigh",   name: "Low-to-High Cable Fly",  day: 1, sets: 3, w3: 2, steps: [12, 15, 20],     w: 30,   inc: 5,   db: false, comp: false, arch: "rearfly",   cap: "Upper-chest shelf — sweep up and in, squeeze the top" },
+  { id: "shrug",     name: "Machine / DB Shrug",     day: 1, sets: 3, w3: 2, steps: [10, 12, 15],     w: 160,  inc: 10,  db: false, comp: false, arch: "shrug",     cap: "Hold the top 1s, no rolling. 3 quality sets + your deadlifts = developed, not overdeveloped" },
+  { id: "rowtue",    name: "Chest-Supported DB Row", day: 2, sets: 4, w3: 3, steps: [8, 10, 12],      w: 60,   inc: 5,   db: true,  comp: true,  arch: "row",       cap: "Strict, chest stays on pad" },
+  { id: "incline",   name: "Incline DB Press",       day: 2, sets: 3, w3: 2, steps: [8, 10, 12],      w: 65,   inc: 5,   db: true,  comp: true,  arch: "incpress",  cap: "RPE 8 cap — secondary press" },
+  { id: "lattue",    name: "Lateral Raise (Tue)",    day: 2, sets: 3, w3: 3, steps: [12, 15, 20], i0: 1, w: 17.5, inc: 2.5, db: true,  comp: false, arch: "lateral",   cap: "Final set RPE 9–10 OK Wks 1–2" },
+  { id: "revpec",    name: "Reverse Pec Deck",       day: 2, sets: 2, w3: 2, steps: [15, 20, 25],     w: 90,   inc: 10,  db: false, comp: false, arch: "rearfly",   cap: "Light + strict beats heavy + sloppy" },
+  { id: "seatcalf",  name: "Seated Calf Raise",      day: 2, sets: 3, w3: 2, steps: [12, 15, 20],     w: 120,   inc: 10,  db: false, comp: false, arch: "calf",      cap: "Soleus — bent knee. Pause the stretch" },
   { id: "neckcurl",  name: "Neck Curl",              day: 2, sets: 2, w3: 2, steps: [12, 15, 20],     w: 5,    inc: 2.5, db: false, comp: false, arch: "neckflex",  cap: "Lying face-up, plate on forehead with a towel. SLOW. Start 2.5–5 lb – the neck grows on embarrassingly little" },
-  { id: "lyingcurl", name: "Lying Leg Curl",         day: 3, sets: 3, w3: 2, steps: [10, 12, 15],     w: 80,   inc: 10,  db: false, comp: false, arch: "legcurl",   cap: "Control the eccentric" },
-  { id: "legext",    name: "Leg Extension",          day: 3, sets: 2, w3: 1, steps: [12, 15],         w: 90,   inc: 10,  db: false, comp: false, arch: "legext",    cap: "Final set RPE 9–10 OK Wks 1–2" },
-  { id: "inccurl",   name: "Incline DB Curl",        day: 3, sets: 3, w3: 3, steps: [10, 12, 15],     w: 25,   inc: 5,   db: true,  comp: false, arch: "curl",      cap: "Priority curl — always first, full stretch" },
-  { id: "ezcurl",    name: "EZ-Bar Curl",            day: 3, sets: 3, w3: 3, steps: [8, 10, 12],      w: 50,   inc: 5,   db: false, comp: false, arch: "curl",      cap: "No swinging; elbows pinned" },
-  { id: "hammer",    name: "Hammer Curl",            day: 3, sets: 2, w3: 2, steps: [10, 12, 15],     w: 25,   inc: 5,   db: true,  comp: false, arch: "curl",      cap: "Neutral grip; slow negative" },
-  { id: "latwed",    name: "Lateral Raise (Wed)",    day: 3, sets: 3, w3: 3, steps: [15, 20, 25],     w: 12.5, inc: 2.5, db: true,  comp: false, arch: "lateral",   cap: "Higher-rep day: chase the burn, not the load" },
-  { id: "woodchop",  name: "Cable Woodchop",         day: 3, sets: 2, w3: 2, steps: [10, 12, 15],     w: 30,   inc: 5,   db: false, comp: false, arch: "woodchop",  cap: "High-to-low, per side. Rotate through the trunk, arms stay long. Light – obliques brace heavy 5 days a week already" },
-  { id: "latthu",    name: "Lateral Raise (Thu)",    day: 4, sets: 4, w3: 3, steps: [12, 15, 18, 20], w: 15,   inc: 2.5, db: true,  comp: false, arch: "lateral",   cap: "4 sets — the big side-delt day" },
-  { id: "rdf",       name: "Rear-Delt Fly",          day: 4, sets: 3, w3: 3, steps: [15, 20, 25],     w: 12.5, inc: 2.5, db: true,  comp: false, arch: "rearfly",   cap: "Think 'throw, don't lift'" },
-  { id: "pushdown",  name: "Rope Pushdown",          day: 4, sets: 3, w3: 3, steps: [10, 12, 15],     w: 50,   inc: 5,   db: false, comp: false, arch: "pushdown",  cap: "May approach RPE 9 if elbows feel normal" },
-  { id: "crossbody", name: "Cross-Body Extension",   day: 4, sets: 2, w3: 2, steps: [12, 15, 18, 20], w: 20,   inc: 5,   db: false, comp: false, arch: "ohtri",     cap: "Per arm; lock the upper arm still" },
-  { id: "facepull",  name: "Face Pull",              day: 4, sets: 3, w3: 2, steps: [15, 20, 25],     w: 40,   inc: 5,   db: false, comp: false, arch: "rearfly",   cap: "Rear delts + posture. Pull to the forehead, elbows high" },
-  { id: "crunch",    name: "Cable Crunch",           day: 4, sets: 3, w3: 3, steps: [10, 12, 15],     w: 70,   inc: 10,  db: false, comp: false, arch: "crunch",    cap: "Flex the spine, don't pull with arms" },
-  { id: "wrist",     name: "Wrist Extension",        day: 4, sets: 2, w3: 2, steps: [15, 20, 25],     w: 10,   inc: 2.5, db: true,  comp: false, arch: "wrist",     cap: "Elbow-health insurance — never skip" },
+  { id: "lyingcurl", name: "Lying Leg Curl",         day: 3, sets: 3, w3: 2, steps: [10, 12, 15],     w: 105,   inc: 10,  db: false, comp: false, arch: "legcurl",   cap: "Control the eccentric" },
+  { id: "legext",    name: "Leg Extension",          day: 3, sets: 2, w3: 1, steps: [12, 15],         w: 125,   inc: 10,  db: false, comp: false, arch: "legext",    cap: "Final set RPE 9–10 OK Wks 1–2" },
+  { id: "inccurl",   name: "Incline DB Curl",        day: 3, sets: 3, w3: 3, steps: [10, 12, 15],     w: 32.5,   inc: 5,   db: true,  comp: false, arch: "curl",      cap: "Priority curl — always first, full stretch" },
+  { id: "ezcurl",    name: "EZ-Bar Curl",            day: 3, sets: 3, w3: 3, steps: [8, 10, 12],      w: 70,   inc: 5,   db: false, comp: false, arch: "curl",      cap: "No swinging; elbows pinned" },
+  { id: "hammer",    name: "Hammer Curl",            day: 3, sets: 2, w3: 2, steps: [10, 12, 15],     w: 35,   inc: 5,   db: true,  comp: false, arch: "curl",      cap: "Neutral grip; slow negative" },
+  { id: "latwed",    name: "Lateral Raise (Wed)",    day: 3, sets: 3, w3: 3, steps: [15, 20, 25],     w: 15, inc: 2.5, db: true,  comp: false, arch: "lateral",   cap: "Higher-rep day: chase the burn, not the load" },
+  { id: "woodchop",  name: "Cable Woodchop",         day: 3, sets: 2, w3: 2, steps: [10, 12, 15],     w: 40,   inc: 5,   db: false, comp: false, arch: "woodchop",  cap: "High-to-low, per side. Rotate through the trunk, arms stay long. Light – obliques brace heavy 5 days a week already" },
+  { id: "latthu",    name: "Lateral Raise (Thu)",    day: 4, sets: 4, w3: 3, steps: [12, 15, 18, 20], w: 17.5,   inc: 2.5, db: true,  comp: false, arch: "lateral",   cap: "4 sets — the big side-delt day" },
+  { id: "rdf",       name: "Rear-Delt Fly",          day: 4, sets: 3, w3: 3, steps: [15, 20, 25],     w: 17.5, inc: 2.5, db: true,  comp: false, arch: "rearfly",   cap: "Think 'throw, don't lift'" },
+  { id: "pushdown",  name: "Rope Pushdown",          day: 4, sets: 3, w3: 3, steps: [10, 12, 15],     w: 70,   inc: 5,   db: false, comp: false, arch: "pushdown",  cap: "May approach RPE 9 if elbows feel normal" },
+  { id: "crossbody", name: "Cross-Body Extension",   day: 4, sets: 2, w3: 2, steps: [12, 15, 18, 20], w: 30,   inc: 5,   db: false, comp: false, arch: "ohtri",     cap: "Per arm; lock the upper arm still" },
+  { id: "facepull",  name: "Face Pull",              day: 4, sets: 3, w3: 2, steps: [15, 20, 25],     w: 55,   inc: 5,   db: false, comp: false, arch: "rearfly",   cap: "Rear delts + posture. Pull to the forehead, elbows high" },
+  { id: "crunch",    name: "Cable Crunch",           day: 4, sets: 3, w3: 3, steps: [10, 12, 15],     w: 100,   inc: 10,  db: false, comp: false, arch: "crunch",    cap: "Flex the spine, don't pull with arms" },
+  { id: "wrist",     name: "Wrist Extension",        day: 4, sets: 2, w3: 2, steps: [15, 20, 25],     w: 12.5,   inc: 2.5, db: true,  comp: false, arch: "wrist",     cap: "Elbow-health insurance — never skip" },
   { id: "neckext",   name: "Neck Extension",         day: 4, sets: 2, w3: 2, steps: [12, 15, 20],     w: 10,   inc: 2.5, db: false, comp: false, arch: "neckext",   cap: "Prone, plate on the back of the head. Slow, no jerking, NEVER through pain" },
-  { id: "rdl",       name: "RDL",                    day: 5, sets: 2, w3: 1, steps: [6, 8],           w: 225,  inc: 10,  db: false, comp: true,  arch: "hinge",     cap: "RPE 7 CAP — assistance, not a second deadlift" },
-  { id: "seatcurl",  name: "Seated Leg Curl",        day: 5, sets: 3, w3: 2, steps: [10, 12, 15],     w: 80,   inc: 10,  db: false, comp: false, arch: "legcurl",   cap: "Final set RPE 9–10 OK Wks 1–2" },
-  { id: "pulldown",  name: "Wide-Grip Lat Pulldown", day: 5, sets: 5, w3: 4, steps: [8, 10, 12],      w: 120,  inc: 10,  db: false, comp: true,  arch: "pulldown",  cap: "Wide grip, chest to the bar. Straps when grip limits the lats" },
-  { id: "rowfri",    name: "Chest-Supported DB Row", day: 5, sets: 3, w3: 3, steps: [8, 10, 12],      w: 50,   inc: 5,   db: true,  comp: true,  arch: "row",       cap: "No unsupported barbell rows" },
-  { id: "cablecurl", name: "Cable Curl",             day: 5, sets: 2, w3: 2, steps: [12, 15],         w: 40,   inc: 5,   db: false, comp: false, arch: "curl",      cap: "Constant tension; strict" },
-  { id: "wristcurl", name: "Cable / DB Wrist Curl",  day: 5, sets: 2, w3: 2, steps: [15, 20, 25],     w: 20,   inc: 5,   db: false, comp: false, arch: "wrist",     cap: "Flexors – the meat of the forearm. Grip is pre-fried from deadlifts: perfect placement" },
+  { id: "rdl",       name: "RDL",                    day: 5, sets: 2, w3: 1, steps: [6, 8],           w: 245,  inc: 10,  db: false, comp: true,  arch: "hinge",     cap: "RPE 7 CAP — assistance, not a second deadlift" },
+  { id: "seatcurl",  name: "Seated Leg Curl",        day: 5, sets: 3, w3: 2, steps: [10, 12, 15],     w: 105,   inc: 10,  db: false, comp: false, arch: "legcurl",   cap: "Final set RPE 9–10 OK Wks 1–2" },
+  { id: "pulldown",  name: "Wide-Grip Lat Pulldown", day: 5, sets: 5, w3: 4, steps: [8, 10, 12],      w: 160,  inc: 10,  db: false, comp: true,  arch: "pulldown",  cap: "Wide grip, chest to the bar. Straps when grip limits the lats" },
+  { id: "rowfri",    name: "Chest-Supported DB Row", day: 5, sets: 3, w3: 3, steps: [8, 10, 12],      w: 60,   inc: 5,   db: true,  comp: true,  arch: "row",       cap: "No unsupported barbell rows" },
+  { id: "cablecurl", name: "Cable Curl",             day: 5, sets: 2, w3: 2, steps: [12, 15],         w: 60,   inc: 5,   db: false, comp: false, arch: "curl",      cap: "Constant tension; strict" },
+  { id: "wristcurl", name: "Cable / DB Wrist Curl",  day: 5, sets: 2, w3: 2, steps: [15, 20, 25],     w: 30,   inc: 5,   db: false, comp: false, arch: "wrist",     cap: "Flexors – the meat of the forearm. Grip is pre-fried from deadlifts: perfect placement" },
 ];
 
 // state of an accessory at a given wave (1-indexed): {w, i} where reps = (steps[i], steps[i+1])
@@ -310,66 +315,66 @@ function sx(name, seed, steps, sets, rpe, arch, moveId, db, cap, inc, wv) {
 // primary frame module: 2 exercises × 3 sets (starting loads are suggestions — drive by double progression)
 const FRAME_MODULE = {
   shoulders: (v) => [
-    sx("Machine / DB Lateral Raise", 15, [10, 12, 15], 3, "8–9", "lateral", "lattue", true, "Lead with the elbow; traps quiet", 2.5, v),
-    sx("Cable Lateral Raise", 20, [15, 20, 25], 3, "8–9", "lateral", "latwed", false, "Constant tension; final set 9–10 OK Wks 1–2", 5, v),
+    sx("Machine / DB Lateral Raise", 17.5, [10, 12, 15], 3, "8–9", "lateral", "lattue", true, "Lead with the elbow; traps quiet", 2.5, v),
+    sx("Cable Lateral Raise", 25, [15, 20, 25], 3, "8–9", "lateral", "latwed", false, "Constant tension; final set 9–10 OK Wks 1–2", 5, v),
   ],
   upperchest: (v) => [
-    sx("Low-Incline Press (Smith/Machine/DB)", 55, [6, 8, 10], 3, "7.5–8.5", "incpress", "incline", true, "Low incline so the upper chest works, not the front delt", 5, v),
-    sx("Low-to-High Cable Fly", 25, [12, 15, 20], 3, "8–9", "rearfly", "revpec", false, "Sweep up and in; squeeze the top", 5, v),
+    sx("Low-Incline Press (Smith/Machine/DB)", 65, [6, 8, 10], 3, "7.5–8.5", "incpress", "incline", true, "Low incline so the upper chest works, not the front delt", 5, v),
+    sx("Low-to-High Cable Fly", 30, [12, 15, 20], 3, "8–9", "rearfly", "revpec", false, "Sweep up and in; squeeze the top", 5, v),
   ],
   latwidth: (v) => [
-    sx("Unilateral Cable / Machine Pulldown", 70, [8, 10, 12], 3, "8", "pulldown", "pulldown", false, "One side at a time; straps welcome", 10, v),
-    sx("Machine Pullover / Straight-Arm Pulldown", 60, [12, 15, 20], 3, "8–9", "pulldown", "pulldown", false, "Feel the lat stretch; arms stay long", 10, v),
+    sx("Unilateral Cable / Machine Pulldown", 95, [8, 10, 12], 3, "8", "pulldown", "pulldown", false, "One side at a time; straps welcome", 10, v),
+    sx("Machine Pullover / Straight-Arm Pulldown", 90, [12, 15, 20], 3, "8–9", "pulldown", "pulldown", false, "Feel the lat stretch; arms stay long", 10, v),
   ],
   upperback: (v) => [
-    sx("Chest-Supported High Row", 90, [8, 10, 12], 3, "8", "row", "rowtue", false, "High-elbow path only if shoulder-friendly", 10, v),
-    sx("Reverse-Pec-Deck", 70, [15, 20, 25], 3, "8–9", "rearfly", "revpec", false, "Arms long; throw, don't lift", 10, v),
+    sx("Chest-Supported High Row", 110, [8, 10, 12], 3, "8", "row", "rowtue", false, "High-elbow path only if shoulder-friendly", 10, v),
+    sx("Reverse-Pec-Deck", 90, [15, 20, 25], 3, "8–9", "rearfly", "revpec", false, "Arms long; throw, don't lift", 10, v),
   ],
   arms: (v) => [
-    sx("Incline DB Curl", 30, [10, 12, 15], 3, "8–9", "curl", "inccurl", true, "Arms hang behind you \u2014 full stretch. The priority curl.", 5, v),
-    sx("Overhead Cable Extension", 55, [10, 12, 15], 3, "8–9", "ohtri", "ohrope", false, "Long head \u2014 the biggest triceps head, and only overhead work hits it", 5, v),
+    sx("Incline DB Curl", 35, [10, 12, 15], 3, "8–9", "curl", "inccurl", true, "Arms hang behind you \u2014 full stretch. The priority curl.", 5, v),
+    sx("Overhead Cable Extension", 70, [10, 12, 15], 3, "8–9", "ohtri", "ohrope", false, "Long head \u2014 the biggest triceps head, and only overhead work hits it", 5, v),
   ],
   traps: (v) => [
-    sx("Machine / Chest-Supported Shrug", 120, [8, 10, 15], 3, "8", "shrug", "shrug", false, "Brief hold at the top; no rolling", 10, v),
-    sx("Chest-Supported Rear-Delt / Upper-Back Row", 70, [10, 12, 15], 3, "8", "row", "rowtue", false, "Stable, supported — deadlifts already load traps", 10, v),
+    sx("Machine / Chest-Supported Shrug", 160, [8, 10, 15], 3, "8", "shrug", "shrug", false, "Brief hold at the top; no rolling", 10, v),
+    sx("Chest-Supported Rear-Delt / Upper-Back Row", 95, [10, 12, 15], 3, "8", "row", "rowtue", false, "Stable, supported — deadlifts already load traps", 10, v),
   ],
 };
 const SECONDARY_SLOT = {
   shoulders: (v) => sx("Cable Lateral Raise", 20, [15, 20, 25], 2, "8–9", "lateral", "latwed", false, "", 5, v),
   upperchest: (v) => sx("Low-to-High Cable Fly", 25, [12, 15, 20], 2, "8–9", "rearfly", "revpec", false, "", 5, v),
-  latwidth: (v) => sx("Unilateral Cable Pulldown", 70, [10, 12, 15], 3, "8", "pulldown", "pulldown", false, "Keeps the taper visible while arms take priority", 10, v),
+  latwidth: (v) => sx("Unilateral Cable Pulldown", 95, [10, 12, 15], 3, "8", "pulldown", "pulldown", false, "Keeps the taper visible while arms take priority", 10, v),
   upperback: (v) => sx("Reverse-Pec-Deck", 70, [15, 20, 25], 2, "8–9", "rearfly", "revpec", false, "", 10, v),
-  arms: (v) => sx("Cable Preacher Curl", 40, [10, 12, 15], 2, "8–9", "curl", "inccurl", false, "", 5, v),
-  traps: (v) => sx("Machine Shrug", 120, [10, 12, 15], 2, "8", "shrug", "shrug", false, "", 10, v),
+  arms: (v) => sx("Cable Preacher Curl", 60, [10, 12, 15], 2, "8–9", "curl", "inccurl", false, "", 5, v),
+  traps: (v) => sx("Machine Shrug", 160, [10, 12, 15], 2, "8", "shrug", "shrug", false, "", 10, v),
   none: () => null,
 };
 // balance slot: whichever delt area the primary frame is NOT hitting
 function balanceSlot(framePrimary, v) {
   if (framePrimary === "upperback" || framePrimary === "traps" || framePrimary === "arms") return sx("Cable Lateral Raise", 20, [15, 20, 25], 3, "8–9", "lateral", "latwed", false, "Balance: side delt \u2014 shoulder width is half the taper", 5, v);
-  return sx("Reverse-Pec-Deck / Cable Rear-Delt Fly", 70, [15, 20, 25], 2, "8–9", "rearfly", "revpec", false, "Balance: rear delt", 10, v);
+  return sx("Reverse-Pec-Deck / Cable Rear-Delt Fly", 90, [15, 20, 25], 2, "8–9", "rearfly", "revpec", false, "Balance: rear delt", 10, v);
 }
 
 // Sunday detail templates (optional day)
 const DETAIL_TEMPLATE = {
   recommended: (v) => [
     sx("Cable Preacher Curl", 40, [8, 10, 12], 3, "8–9", "curl", "inccurl", false, "Full stretch at the bottom", 5, v),
-    sx("Bayesian Cable Curl", 25, [12, 15, 20], 3, "8–9", "curl", "cablecurl", false, "Arm behind the body; constant tension", 5, v),
-    sx("Hammer Curl", 25, [10, 12, 15], 2, "8", "curl", "hammer", true, "Neutral grip; slow negative", 5, v),
-    sx("Rope Pushdown", 50, [12, 15, 20], 2, "8", "pushdown", "pushdown", false, "Elbows pinned; spread at the bottom", 5, v),
-    sx("Reverse Cable Curl", 30, [15, 20, 25], 2, "8", "curl", "cablecurl", false, "Brachialis + forearm", 5, v),
-    sx("Cable Lateral / Wrist Curl", 15, [15, 20, 25], 2, "8–9", "lateral", "latwed", false, "Silhouette detail", 2.5, v),
+    sx("Bayesian Cable Curl", 35, [12, 15, 20], 3, "8–9", "curl", "cablecurl", false, "Arm behind the body; constant tension", 5, v),
+    sx("Hammer Curl", 35, [10, 12, 15], 2, "8", "curl", "hammer", true, "Neutral grip; slow negative", 5, v),
+    sx("Rope Pushdown", 70, [12, 15, 20], 2, "8", "pushdown", "pushdown", false, "Elbows pinned; spread at the bottom", 5, v),
+    sx("Reverse Cable Curl", 40, [15, 20, 25], 2, "8", "curl", "cablecurl", false, "Brachialis + forearm", 5, v),
+    sx("Cable Lateral / Wrist Curl", 20, [15, 20, 25], 2, "8–9", "lateral", "latwed", false, "Silhouette detail", 2.5, v),
   ],
   biceps: (v) => [
-    sx("Cable / Machine Preacher Curl", 40, [8, 10, 12], 3, "8–9", "curl", "inccurl", false, "Final set 9–10 OK Wk2 if elbows fresh", 5, v),
+    sx("Cable / Machine Preacher Curl", 60, [8, 10, 12], 3, "8–9", "curl", "inccurl", false, "Final set 9–10 OK Wk2 if elbows fresh", 5, v),
     sx("Bayesian Cable Curl", 25, [12, 15, 20], 3, "8–9", "curl", "cablecurl", false, "Peak stretch; constant tension", 5, v),
     sx("Hammer Curl", 25, [10, 12, 15], 2, "8", "curl", "hammer", true, "Brachialis", 5, v),
     sx("Rope Pushdown", 50, [12, 15, 20], 2, "8", "pushdown", "pushdown", false, "Antagonist", 5, v),
-    sx("Frame-Priority Isolation", 20, [15, 20, 25], 2, "8–9", "lateral", "latwed", false, "2 sets for your secondary frame area", 5, v),
+    sx("Frame-Priority Isolation", 25, [15, 20, 25], 2, "8–9", "lateral", "latwed", false, "2 sets for your secondary frame area", 5, v),
   ],
   triceps: (v) => [
     sx("Cable Preacher Curl", 40, [10, 12, 15], 3, "8–9", "curl", "inccurl", false, "ANCHOR — first, fresh", 5, v),
     sx("Hammer Curl", 25, [10, 12, 15], 3, "8", "curl", "hammer", true, "Brachialis", 5, v),
-    sx("Single-Arm Cross-Body Extension", 20, [12, 15, 20], 2, "7–8", "ohtri", "crossbody", false, "Light on purpose — the hard triceps work was Saturday", 5, v),
+    sx("Single-Arm Cross-Body Extension", 30, [12, 15, 20], 2, "7–8", "ohtri", "crossbody", false, "Light on purpose — the hard triceps work was Saturday", 5, v),
     sx("Cable Lateral Raise", 20, [15, 20, 25], 2, "8–9", "lateral", "latwed", false, "Delt detail", 5, v),
     sx("Reverse Cable Curl", 30, [15, 20, 25], 2, "8", "curl", "cablecurl", false, "Forearm", 5, v),
   ],
@@ -384,8 +389,8 @@ const DETAIL_TEMPLATE = {
     sx("Cable Lateral Raise", 20, [15, 20, 25], 3, "8–9", "lateral", "latwed", false, "Finisher — chase the burn", 5, v),
   ],
   brachialis: (v) => [
-    sx("Rope Hammer Curl", 50, [8, 10, 12], 3, "8–9", "curl", "hammer", false, "Brachialis emphasis", 5, v),
-    sx("Reverse Cable / EZ-Bar Curl", 40, [12, 15, 20], 3, "8–9", "curl", "cablecurl", false, "Forearm extensors", 5, v),
+    sx("Rope Hammer Curl", 65, [8, 10, 12], 3, "8–9", "curl", "hammer", false, "Brachialis emphasis", 5, v),
+    sx("Reverse Cable / EZ-Bar Curl", 50, [12, 15, 20], 3, "8–9", "curl", "cablecurl", false, "Forearm extensors", 5, v),
     sx("Cable Wrist Curl", 30, [15, 20, 25], 2, "8", "wrist", "wrist", false, "Flexors", 5, v),
     sx("Cable Wrist Extension", 20, [15, 20, 25], 2, "8", "wrist", "wrist", false, "Extensors — elbow insurance", 5, v),
     sx("Rope Pushdown", 50, [12, 15, 20], 2, "8", "pushdown", "pushdown", false, "Antagonist", 5, v),
@@ -412,7 +417,7 @@ function saturdaySession(wave, week, spec) {
     blocks.push(sx("Machine / Cable Lateral Raise", 12.5, [12, 15], 2, "6–7", "lateral", "latwed", false, "Light maintenance — deliberately flat", 0, 1));
     blocks.push(sx("Reverse-Pec-Deck", 50, [15], 2, "6–7", "rearfly", "revpec", false, "Light maintenance", 0, 1));
     blocks.push(sx("Cable Triceps", 40, [12, 15], 2, "6–7", "pushdown", "pushdown", false, "Light maintenance", 0, 1));
-    blocks.push(sx("Ab Wheel / Cable Crunch", 50, [10, 15], 2, "6–7", "crunch", "crunch", false, "", 0, 1));
+    blocks.push(sx("Ab Wheel / Cable Crunch", 100, [10, 15], 2, "6–7", "crunch", "crunch", false, "", 0, 1));
     return blocks;
   }
   const reduced = week === 3 || cyc === 5; // Wk3 and Cycle 5: fewer sets
@@ -430,7 +435,7 @@ function saturdaySession(wave, week, spec) {
   if (triSpec) {
     // when arms IS the priority the module already has overhead work — don't double it
     if (spec.framePrimary !== "arms") blocks.push(sx("Overhead Cable Extension", 50, [10, 12, 15], reduced ? 2 : 3, "8–9", "ohtri", "ohrope", false, "Long-head bias — arms overhead", 5, wave));
-    if (!reduced) blocks.push(sx("Rope / Single-Arm Pushdown", 50, [12, 15, 20], 2, "8–9", "pushdown", "pushdown", false, "", 5, wave));
+    if (!reduced) blocks.push(sx("Rope / Single-Arm Pushdown", 70, [12, 15, 20], 2, "8–9", "pushdown", "pushdown", false, "", 5, wave));
   } else {
     if (spec.framePrimary === "arms") blocks.push(sx("Rope Pushdown", 50, [12, 15, 20], reduced ? 2 : 3, "8–9", "pushdown", "pushdown", false, "Lateral + medial head \u2014 overhead work is already in the module", 5, wave));
     else blocks.push(sx("Overhead Cable Extension", 50, [10, 12, 15], reduced ? 2 : 3, "8–9", "ohtri", "ohrope", false, "Triceps slot", 5, wave));

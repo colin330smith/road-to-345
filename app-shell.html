@@ -451,7 +451,7 @@ function renderToday() {
         <div class="eyebrow ${isSingle ? "sig" : ""}">${esc(b.name)}${b.top ? " · range top → weight bumps next wave" : ""}</div>
         <div class="rx">${isSingle ? `<b>${b.w}</b> <small>× 1 · cap RPE ${esc(String(b.rpe))}</small>` : `${blockRx(b)} <small>@ RPE ${esc(String(b.rpe))}</small>`}</div>
         ${b.note ? `<div class="capnote warn">${esc(b.note)}</div>` : ""}
-        ${b.prog === "held" ? `<div class="capnote warn">⏸ Holding — your logs haven't cleared the top reps at this weight yet</div>` : b.prog === "ahead" ? `<div class="capnote" style="color:var(--go)">▲ Advanced off your logs</div>` : ""}
+        ${b.prog === "held" ? `<div class="capnote warn">⏸ Holding — your logs haven't cleared the top reps at this weight yet</div>` : b.prog === "ahead" ? `<div class="capnote" style="color:var(--go)">▲ Advanced off your logs</div>` : b.type === "accessory" && b.prog == null ? `<div class="capnote">Estimate — no history yet. If this is easy, add weight and log what you actually did.</div>` : ""}
       </div>${b.moveId ? `<button class="ibtn" onclick="moveSheet('${b.moveId}')" aria-label="How to">?</button>` : ""}</div>
       <div class="setrow">${Array.from({ length: isSingle ? 1 : b.sets }, (_, si) =>
         si < sets.length

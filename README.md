@@ -145,3 +145,14 @@ Sets logged before this feature (no `k` stamp) are ignored by the replay; the fa
 
 - **Apple Notes** — `💪 Powerlifting + Juicy Arms v7` (master program), `💪 WAVE 1–4` (printed wave notes), `🍚 NUTRITION — 200 @ 15% + 3/4/5`
 - **Apple Calendar** — one calendar per wave; sessions 7:00–8:30 AM with a 30-minute alert
+
+## Keeping Notes and Calendar in sync
+
+The Apple Notes wave notes and the calendar event descriptions used to be hand-written, so every program change silently made them wrong. They are now **generated from the engine**:
+
+```bash
+python3 sync.py notes 1 2 3 4   # -> out/note-waveN.txt   (paste into Apple Notes)
+python3 sync.py cal   1 2 3 4   # -> out/cal-waveN.json   (drives the AppleScript push)
+```
+
+Run both after any program change. The app is the source of truth; those artifacts are downstream copies.

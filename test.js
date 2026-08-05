@@ -22,45 +22,48 @@ eq(E.whereIs(d(2026, 11, 6)), { wave: 4, week: 4, day: 5, dow: 4 }, "date w4w4d5
 eq(E.whereIs(d(2027, 12, 6)), { wave: 19, week: 1, day: 1, dow: 0 }, "date w19w1d1");
 eq(E.whereIs(d(2026, 7, 25)).day, 6, "saturday is spec day (7-day week)");
 
-// ── accessory machine reproduces the hand-built notes (waves 1–4) ──
+// ── accessory seed + ladder regression (waves 1–4) ──
+// These were once note-fidelity checks. Seeds were recalibrated 2026-07-28 (the
+// originals ran far too light), and the printed notes are now GENERATED from this
+// engine — so the app is canonical and these guard against accidental drift.
 const A = Object.fromEntries(E.ACC.map(a => [a.id + ":" + a.day, a]));
 const acc = (id, day, wave, week) => E.accFor(A[id + ":" + day], wave, week);
 // wave 1
-eq([acc("legpress",1,1,1).w, acc("legpress",1,1,1).reps, acc("legpress",1,1,2).reps], [360,10,12], "w1 legpress");
+eq([acc("legpress",1,1,1).w, acc("legpress",1,1,1).reps, acc("legpress",1,1,2).reps], [450,10,12], "w1 legpress");
 eq([acc("seatcurl",5,1,1).reps, acc("seatcurl",5,1,2).reps], [10,12], "w1 seatcurl");
-eq([acc("lattue",2,1,1).w, acc("lattue",2,1,1).reps, acc("lattue",2,1,2).reps], [15,15,20], "w1 lattue");
-eq([acc("rdl",5,1,1).w, acc("rdl",5,1,1).reps, acc("rdl",5,1,2).reps], [225,6,8], "w1 rdl");
+eq([acc("lattue",2,1,1).w, acc("lattue",2,1,1).reps, acc("lattue",2,1,2).reps], [17.5,15,20], "w1 lattue");
+eq([acc("rdl",5,1,1).w, acc("rdl",5,1,1).reps, acc("rdl",5,1,2).reps], [245,6,8], "w1 rdl");
 // wave 2
-eq([acc("legpress",1,2,1).w, acc("legpress",1,2,1).reps], [380,10], "w2 legpress 380");
-eq([acc("seatcurl",5,2,1).w, acc("seatcurl",5,2,1).reps, acc("seatcurl",5,2,2).reps], [80,12,15], "w2 seatcurl 80 12/15");
-eq([acc("lattue",2,2,1).w, acc("lattue",2,2,1).reps, acc("lattue",2,2,2).reps], [17.5,12,15], "w2 lattue 17.5");
-eq([acc("legext",3,2,1).w], [100], "w2 legext 100");
-eq([acc("cablecurl",5,2,1).w, acc("cablecurl",5,2,1).reps], [45,12], "w2 cablecurl 45");
-eq([acc("rdl",5,2,1).w], [235], "w2 rdl 235");
-eq([acc("rowtue",2,2,1).w, acc("rowtue",2,2,1).reps, acc("rowtue",2,2,2).reps], [50,10,12], "w2 row 50 10/12");
+eq([acc("legpress",1,2,1).w, acc("legpress",1,2,1).reps], [470,10], "w2 legpress 380");
+eq([acc("seatcurl",5,2,1).w, acc("seatcurl",5,2,1).reps, acc("seatcurl",5,2,2).reps], [105,12,15], "w2 seatcurl 80 12/15");
+eq([acc("lattue",2,2,1).w, acc("lattue",2,2,1).reps, acc("lattue",2,2,2).reps], [20,12,15], "w2 lattue 17.5");
+eq([acc("legext",3,2,1).w], [135], "w2 legext 100");
+eq([acc("cablecurl",5,2,1).w, acc("cablecurl",5,2,1).reps], [65,12], "w2 cablecurl 45");
+eq([acc("rdl",5,2,1).w], [255], "w2 rdl 235");
+eq([acc("rowtue",2,2,1).w, acc("rowtue",2,2,1).reps, acc("rowtue",2,2,2).reps], [60,10,12], "w2 row 50 10/12");
 eq([acc("crossbody",4,2,1).reps, acc("crossbody",4,2,2).reps], [15,18], "w2 crossbody 15/18");
 // wave 3
-eq([acc("legpress",1,3,1).w], [400], "w3 legpress 400");
-eq([acc("seatcurl",5,3,1).w, acc("seatcurl",5,3,1).reps], [90,10], "w3 seatcurl 90");
-eq([acc("rowtue",2,3,1).w, acc("rowtue",2,3,1).reps], [55,8], "w3 row 55x8");
-eq([acc("incline",2,3,1).w], [60], "w3 incline 60");
+eq([acc("legpress",1,3,1).w], [490], "w3 legpress 400");
+eq([acc("seatcurl",5,3,1).w, acc("seatcurl",5,3,1).reps], [115,10], "w3 seatcurl 90");
+eq([acc("rowtue",2,3,1).w, acc("rowtue",2,3,1).reps], [65,8], "w3 row 55x8");
+eq([acc("incline",2,3,1).w], [70], "w3 incline 60");
 eq([acc("lattue",2,3,1).reps, acc("lattue",2,3,2).reps], [15,20], "w3 lattue 15/20");
-eq([acc("inccurl",3,3,1).w, acc("inccurl",3,3,1).reps], [30,10], "w3 inccurl 30");
-eq([acc("latwed",3,3,1).w, acc("latwed",3,3,1).reps], [15,15], "w3 latwed 15s");
-eq([acc("pushdown",4,3,1).w, acc("pushdown",4,3,1).reps], [55,10], "w3 pushdown 55");
-eq([acc("pulldown",5,3,1).w, acc("pulldown",5,3,1).reps], [130,8], "w3 pulldown 130");
-eq([acc("rdl",5,3,1).w], [245], "w3 rdl 245");
+eq([acc("inccurl",3,3,1).w, acc("inccurl",3,3,1).reps], [37.5,10], "w3 inccurl 30");
+eq([acc("latwed",3,3,1).w, acc("latwed",3,3,1).reps], [17.5,15], "w3 latwed 15s");
+eq([acc("pushdown",4,3,1).w, acc("pushdown",4,3,1).reps], [75,10], "w3 pushdown 55");
+eq([acc("pulldown",5,3,1).w, acc("pulldown",5,3,1).reps], [170,8], "w3 pulldown 130");
+eq([acc("rdl",5,3,1).w], [265], "w3 rdl 245");
 eq([acc("crossbody",4,3,1).reps, acc("crossbody",4,3,2).reps], [18,20], "w3 crossbody 18/20");
 // wave 4
-eq([acc("legpress",1,4,1).w], [420], "w4 legpress 420");
+eq([acc("legpress",1,4,1).w], [510], "w4 legpress 420");
 eq([acc("seatcurl",5,4,1).reps, acc("seatcurl",5,4,2).reps], [12,15], "w4 seatcurl 12/15");
-eq([acc("lattue",2,4,1).w, acc("lattue",2,4,1).reps], [20,12], "w4 lattue 20s");
-eq([acc("latthu",4,4,1).w, acc("latthu",4,4,1).reps], [17.5,12], "w4 latthu 17.5");
-eq([acc("crossbody",4,4,1).w, acc("crossbody",4,4,1).reps], [25,12], "w4 crossbody 25");
-eq([acc("legext",3,4,1).w], [120], "w4 legext 120");
-eq([acc("rdl",5,4,1).w], [255], "w4 rdl 255");
-eq([acc("cablecurl",5,4,1).w], [55], "w4 cablecurl 55");
-eq([acc("ezcurl",3,4,1).w, acc("ezcurl",3,4,1).reps], [55,10], "w4 ez 55 10/12");
+eq([acc("lattue",2,4,1).w, acc("lattue",2,4,1).reps], [22.5,12], "w4 lattue 20s");
+eq([acc("latthu",4,4,1).w, acc("latthu",4,4,1).reps], [20,12], "w4 latthu 17.5");
+eq([acc("crossbody",4,4,1).w, acc("crossbody",4,4,1).reps], [35,12], "w4 crossbody 25");
+eq([acc("legext",3,4,1).w], [155], "w4 legext 120");
+eq([acc("rdl",5,4,1).w], [275], "w4 rdl 255");
+eq([acc("cablecurl",5,4,1).w], [75], "w4 cablecurl 55");
+eq([acc("ezcurl",3,4,1).w, acc("ezcurl",3,4,1).reps], [75,10], "w4 ez 55 10/12");
 // week-3 set trims
 eq(acc("legpress",1,2,3).sets, 2, "wk3 trim legpress");
 eq(acc("legext",3,2,3).sets, 1, "wk3 trim legext");
@@ -234,29 +237,29 @@ ok(built7 === 19 * 4 * 7, "all 532 seven-day sessions built");
 console.log("\n── log-driven progression ──");
 const W1M = E.WAVE1_MONDAY;
 const mkh = (dayOff, w, r, n) => Array.from({ length: n }, () => ({ t: W1M + dayOff * E.MS_DAY, w, r }));
-const LPD = { w: 360, steps: [10, 12], inc: 20, db: false, i0: 0, pkey: "legpress" };
-eq(E.accStateLogged(LPD, 2).w, 380, "logdrv: no ctx = scheduled");
-eq(E.accStateLogged(LPD, 2, { index: {}, offsetWeeks: 0 }).w, 380, "logdrv: empty index = scheduled");
-eq(E.accStateLogged(LPD, 2, { index: { legpress: mkh(2, 360, 12, 3) }, offsetWeeks: 0 }).w, 380, "logdrv: cleared top = bump");
-const heldSt = E.accStateLogged(LPD, 2, { index: { legpress: mkh(2, 360, 10, 3) }, offsetWeeks: 0 });
-eq(heldSt.w, 360, "logdrv: missed top = hold");
+const LPD = { w: 450, steps: [10, 12], inc: 20, db: false, i0: 0, pkey: "legpress" };
+eq(E.accStateLogged(LPD, 2).w, 470, "logdrv: no ctx = scheduled");
+eq(E.accStateLogged(LPD, 2, { index: {}, offsetWeeks: 0 }).w, 470, "logdrv: empty index = scheduled");
+eq(E.accStateLogged(LPD, 2, { index: { legpress: mkh(2, 450, 12, 3) }, offsetWeeks: 0 }).w, 470, "logdrv: cleared top = bump");
+const heldSt = E.accStateLogged(LPD, 2, { index: { legpress: mkh(2, 450, 10, 3) }, offsetWeeks: 0 });
+eq(heldSt.w, 450, "logdrv: missed top = hold");
 eq(heldSt.prog, "held", "logdrv: prog flag");
-eq(E.accStateLogged(LPD, 2, { index: { legpress: mkh(2, 380, 12, 3) }, offsetWeeks: 0 }).w, 400, "logdrv: heavier logs adopted then bumped");
-const SCD = { w: 80, steps: [10, 12, 15], inc: 10, db: false, i0: 0, pkey: "seatcurl" };
-eq(E.accStateLogged(SCD, 2, { index: { seatcurl: mkh(2, 80, 12, 3) }, offsetWeeks: 0 }).i, 1, "logdrv: mid-ladder advance");
-eq(E.accStateLogged(SCD, 2, { index: { seatcurl: mkh(2, 80, 10, 3) }, offsetWeeks: 0 }).i, 0, "logdrv: mid-ladder hold");
-eq(E.accStateLogged(SCD, 2, { index: { seatcurl: mkh(2, 80, 15, 1) }, offsetWeeks: 0 }).i, 0, "logdrv: single-set fluke ignored");
+eq(E.accStateLogged(LPD, 2, { index: { legpress: mkh(2, 470, 12, 3) }, offsetWeeks: 0 }).w, 490, "logdrv: heavier logs adopted then bumped");
+const SCD = { w: 105, steps: [10, 12, 15], inc: 10, db: false, i0: 0, pkey: "seatcurl" };
+eq(E.accStateLogged(SCD, 2, { index: { seatcurl: mkh(2, 105, 12, 3) }, offsetWeeks: 0 }).i, 1, "logdrv: mid-ladder advance");
+eq(E.accStateLogged(SCD, 2, { index: { seatcurl: mkh(2, 105, 10, 3) }, offsetWeeks: 0 }).i, 0, "logdrv: mid-ladder hold");
+eq(E.accStateLogged(SCD, 2, { index: { seatcurl: mkh(2, 105, 15, 1) }, offsetWeeks: 0 }).i, 0, "logdrv: single-set fluke ignored");
 // unlogged wave between logged waves falls back to schedule for that wave
-const twoWave = [...mkh(2, 360, 12, 3)]; // wave1 cleared, wave2 unlogged
-eq(E.accStateLogged(LPD, 3, { index: { legpress: twoWave }, offsetWeeks: 0 }).w, 400, "logdrv: unlogged wave uses schedule");
+const twoWave = [...mkh(2, 450, 12, 3)]; // wave1 cleared, wave2 unlogged
+eq(E.accStateLogged(LPD, 3, { index: { legpress: twoWave }, offsetWeeks: 0 }).w, 490, "logdrv: unlogged wave uses schedule");
 // end-to-end: Monday of wave 2 reflects a hold
-const ctxHold = { index: { legpress: mkh(2, 360, 10, 3) }, offsetWeeks: 0 };
+const ctxHold = { index: { legpress: mkh(2, 450, 10, 3) }, offsetWeeks: 0 };
 const monLP = E.sessionFor(2, 1, 1, {}, E.DEFAULT_SPEC, ctxHold).find((b) => /Leg Press/.test(b.name || ""));
-eq(monLP.w, 360, "logdrv: session shows held weight");
+eq(monLP.w, 450, "logdrv: session shows held weight");
 eq(monLP.prog, "held", "logdrv: block carries prog");
 // ctx does not leak into later ctx-less calls
 const after = E.sessionFor(2, 1, 1, {}, E.DEFAULT_SPEC).find((b) => /Leg Press/.test(b.name || ""));
-eq(after.w, 380, "logdrv: HISTCTX cleared after call");
+eq(after.w, 470, "logdrv: HISTCTX cleared after call");
 // spec exercise via name slug
 eq(E.pkeyOf("Cable / Machine Preacher Curl"), "cable-machine-preacher-curl", "logdrv: slug");
 const PKPC = "cable-machine-preacher-curl";

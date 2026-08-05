@@ -1,0 +1,308 @@
+💪 WAVE 3 — ACCUMULATE
+
+CYCLE BASES: bench 235 · squat 335 · deadlift 425
+
+⚠️ THIS NOTE IS GENERATED FROM THE APP. The app is the source of truth —
+it adapts loads to what you actually log. Use this only as a reference.
+Printed weights are FLOORS: if a set is easy, add weight and log it.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+WEEK 1
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Mon — Comp Squat + Legs
+  Bar × 10 · 95 × 5 · 135 × 5 · 185 × 3 · 225 × 1 · indicator — film · 255 × 1 · bridge
+  Squat — top single: 285 × 1 × 1 @ RPE 7
+  Squat — back-offs: 245 × 5 × 4 @ RPE 6.5–7
+  Leg Press: 490 × 10 × 3 @ RPE 8–9
+  Standing Calf Raise: 230 × 10 × 3 @ RPE 8–9  ← last set RPE 9–10
+  Hanging Leg Raise: BW × 10 × 3 @ RPE 8–9  ← last set RPE 9–10
+  Low-to-High Cable Fly: 35 × 12 × 3 @ RPE 8–9  ← last set RPE 9–10
+  Machine / DB Shrug: 170 × 10 × 3 @ RPE 8–9  ← last set RPE 9–10
+  Cooldown — 5 min — Couch stretch 2×30s/side · ankle rocks 15/side · dead hang 30s · easy breathing, no bouncing
+
+Tue — Comp Bench + Back
+  Bar × 15 · 95 × 8 · 135 × 5 · 155 × 3 · 165 × 1 · indicator — film · 185 × 1 · bridge
+  Bench — top single: 200 × 1 × 1 @ RPE 7
+  Bench — back-offs: 170 × 5 × 5 @ RPE 6.5–7
+  Chest-Supported DB Row: 65 × 8 × 4 @ RPE 8–9 · per hand
+  Incline DB Press: 70 × 8 × 3 @ RPE 8–9 · per hand
+  Reverse Pec Deck: 100 × 15 × 2 @ RPE 8–9  ← last set RPE 9–10
+  Seated Calf Raise: 130 × 12 × 3 @ RPE 8–9  ← last set RPE 9–10
+  Neck Curl: 7.5 × 12 × 2 @ RPE 8–9  ← last set RPE 9–10
+  Cooldown — 5 min — Doorway pec stretch 2×30s · cross-body delt 30s/side · dead hang 30s · easy breathing, no bouncing
+
+Wed — Paused Squat + Arms
+  Bar × 10 · 95 × 5 · 135 × 5 · 175 × 3
+  Paused Squat (2-sec pause): 215 × 5 × 4 @ RPE 6
+  Lying Leg Curl: 115 × 10 × 3 @ RPE 8–9  ← last set RPE 9–10
+  Leg Extension: 145 × 12 × 2 @ RPE 8–9  ← last set RPE 9–10
+  Incline DB Curl: 37.5 × 10 × 3 @ RPE 8–9 · per hand  ← last set RPE 9–10
+  Lateral Raise (Wed): 17.5 × 15 × 3 @ RPE 8–9 · per hand  ← last set RPE 9–10
+  Cable Woodchop: 45 × 10 × 2 @ RPE 8–9  ← last set RPE 9–10
+  Incline Walk — 20 min · 3 mph · 6%
+  Cooldown — 5 min — 90/90 hips 60s/side · standing hamstring 45s/side · easy breathing, no bouncing
+
+Thu — Paused Bench + OHP
+  Bar × 15 · 95 × 8 · 115 × 5 · 135 × 3
+  Paused Bench (1–2 sec pause): 155 × 6 × 4 @ RPE 6.5–7
+  Overhead Press: 100 × 7 × 3 @ RPE 7–8
+  Rope Pushdown: 75 × 10 × 3 @ RPE 8–9  ← last set RPE 9–10
+  Face Pull: 60 × 15 × 3 @ RPE 8–9  ← last set RPE 9–10
+  Cable Crunch: 110 × 10 × 3 @ RPE 8–9  ← last set RPE 9–10
+  Wrist Extension: 15 × 15 × 2 @ RPE 8–9 · per hand  ← last set RPE 9–10
+  Neck Extension: 12.5 × 12 × 2 @ RPE 8–9  ← last set RPE 9–10
+  Delt & triceps isolation → Saturday — Your side-delt, rear-delt and pushdown work lives in Saturday's frame day now — keeps weekly volume under cap.
+  Cooldown — 5 min — Lat hang 45s · thoracic extension over bench 45s · easy breathing, no bouncing
+
+Fri — Comp Deadlift + Back
+  135 × 5 · 225 × 3 · 275 × 2 · 315 × 1 · indicator — film · 345 × 1 · bridge
+  Deadlift — top single: 360 × 1 × 1 @ RPE 7
+  Deadlift — back-offs: 305 × 5 × 3 @ RPE 6.5–7
+  RDL: 265 × 6 × 2 @ RPE 8–9
+  Seated Leg Curl: 115 × 10 × 3 @ RPE 8–9  ← last set RPE 9–10
+  Wide-Grip Lat Pulldown: 170 × 8 × 5 @ RPE 8–9
+  Chest-Supported DB Row: 65 × 8 × 3 @ RPE 8–9 · per hand
+  Cable Curl: 70 × 12 × 2 @ RPE 8–9  ← last set RPE 9–10
+  Cable / DB Wrist Curl: 35 × 15 × 2 @ RPE 8–9  ← last set RPE 9–10
+  Cooldown — 5 min — Hamstring 60s/side · figure-4 glute 45s/side · shake the grip out · easy breathing, no bouncing
+
+Sat — Frame Spec
+  Frame Specialization — Arms (bi + tri) priority — Overload day. Hit your weak point fresh — quality reps, not a set count.
+  Incline DB Curl: 40 × 10–12 × 3 @ RPE 8–9 · per hand
+  Overhead Cable Extension: 75 × 10–12 × 3 @ RPE 8–9
+  Unilateral Cable Pulldown: 105 × 10–12 × 3 @ RPE 8
+  Rope / Single-Arm Pushdown: 75 × 12–15 × 2 @ RPE 8–9
+  Cable Lateral Raise: 25 × 15–20 × 3 @ RPE 8–9
+  Ab Wheel / Cable Crunch: 70 × 12–15 × 2 @ RPE 8–9
+
+Sun — Optional Arms
+  Optional Detail — Biceps-led (Sat carried the triceps) — Green only: 7h+ sleep, normal Fri deadlift + Sat, no elbow/shoulder pain, no flat session. Anchor first, then supersets — 35–45 min, 60–90s rest. Printed loads are FLOORS: if a set is easy, jump the weight and log what you did.
+  Cable / Machine Preacher Curl: 45 × 8–10 × 3 @ RPE 8–9
+  Bayesian Cable Curl: 30 × 12–15 × 3 @ RPE 8–9
+  Single-Arm Cross-Body Extension: 25 × 12–15 × 2 @ RPE 8
+  Hammer Curl: 30 × 10–12 × 2 @ RPE 8–9 · per hand
+  Cable Lateral Raise: 25 × 15–20 × 3 @ RPE 8–9
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+WEEK 2
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Mon — Comp Squat + Legs
+  Bar × 10 · 95 × 5 · 135 × 5 · 185 × 3 · 225 × 1 · indicator — film · 255 × 1 · bridge
+  Squat — top single: 295 × 1 × 1 @ RPE 7.5
+  Squat — back-offs: 255 × 4 × 5 @ RPE 7–7.5
+  Leg Press: 490 × 12 × 3 @ RPE 8–9
+  Standing Calf Raise: 230 × 12 × 3 @ RPE 8–9  ← last set RPE 9–10
+  Hanging Leg Raise: BW × 12 × 3 @ RPE 8–9  ← last set RPE 9–10
+  Low-to-High Cable Fly: 35 × 15 × 3 @ RPE 8–9  ← last set RPE 9–10
+  Machine / DB Shrug: 170 × 12 × 3 @ RPE 8–9  ← last set RPE 9–10
+  Cooldown — 5 min — Couch stretch 2×30s/side · ankle rocks 15/side · dead hang 30s · easy breathing, no bouncing
+
+Tue — Comp Bench + Back
+  Bar × 15 · 95 × 8 · 135 × 5 · 155 × 3 · 165 × 1 · indicator — film · 185 × 1 · bridge
+  Bench — top single: 205 × 1 × 1 @ RPE 7.5
+  Bench — back-offs: 180 × 4 × 5 @ RPE 7–7.5
+  Chest-Supported DB Row: 65 × 10 × 4 @ RPE 8–9 · per hand
+  Incline DB Press: 70 × 10 × 3 @ RPE 8–9 · per hand
+  Reverse Pec Deck: 100 × 20 × 2 @ RPE 8–9  ← last set RPE 9–10
+  Seated Calf Raise: 130 × 15 × 3 @ RPE 8–9  ← last set RPE 9–10
+  Neck Curl: 7.5 × 15 × 2 @ RPE 8–9  ← last set RPE 9–10
+  Cooldown — 5 min — Doorway pec stretch 2×30s · cross-body delt 30s/side · dead hang 30s · easy breathing, no bouncing
+
+Wed — Paused Squat + Arms
+  Bar × 10 · 95 × 5 · 135 × 5 · 175 × 3
+  Paused Squat (2-sec pause): 225 × 4 × 4 @ RPE 6.5
+  Lying Leg Curl: 115 × 12 × 3 @ RPE 8–9  ← last set RPE 9–10
+  Leg Extension: 145 × 15 × 2 @ RPE 8–9  ← last set RPE 9–10
+  Incline DB Curl: 37.5 × 12 × 3 @ RPE 8–9 · per hand  ← last set RPE 9–10
+  Lateral Raise (Wed): 17.5 × 20 × 3 @ RPE 8–9 · per hand  ← last set RPE 9–10
+  Cable Woodchop: 45 × 12 × 2 @ RPE 8–9  ← last set RPE 9–10
+  Incline Walk — 20 min · 3 mph · 7%
+  Cooldown — 5 min — 90/90 hips 60s/side · standing hamstring 45s/side · easy breathing, no bouncing
+
+Thu — Paused Bench + OHP
+  Bar × 15 · 95 × 8 · 115 × 5 · 135 × 3
+  Paused Bench (1–2 sec pause): 165 × 5 × 5 @ RPE 7
+  Overhead Press: 100 × 8 × 3 @ RPE 7–8
+  Rope Pushdown: 75 × 12 × 3 @ RPE 8–9  ← last set RPE 9–10
+  Face Pull: 60 × 20 × 3 @ RPE 8–9  ← last set RPE 9–10
+  Cable Crunch: 110 × 12 × 3 @ RPE 8–9  ← last set RPE 9–10
+  Wrist Extension: 15 × 20 × 2 @ RPE 8–9 · per hand  ← last set RPE 9–10
+  Neck Extension: 12.5 × 15 × 2 @ RPE 8–9  ← last set RPE 9–10
+  Delt & triceps isolation → Saturday — Your side-delt, rear-delt and pushdown work lives in Saturday's frame day now — keeps weekly volume under cap.
+  Cooldown — 5 min — Lat hang 45s · thoracic extension over bench 45s · easy breathing, no bouncing
+
+Fri — Comp Deadlift + Back
+  135 × 5 · 225 × 3 · 275 × 2 · 315 × 1 · indicator — film · 345 × 1 · bridge
+  Deadlift — top single: 375 × 1 × 1 @ RPE 7.5
+  Deadlift — back-offs: 320 × 4 × 4 @ RPE 7–7.5
+  RDL: 265 × 8 × 2 @ RPE 8–9
+  Seated Leg Curl: 115 × 12 × 3 @ RPE 8–9  ← last set RPE 9–10
+  Wide-Grip Lat Pulldown: 170 × 10 × 5 @ RPE 8–9
+  Chest-Supported DB Row: 65 × 10 × 3 @ RPE 8–9 · per hand
+  Cable Curl: 70 × 15 × 2 @ RPE 8–9  ← last set RPE 9–10
+  Cable / DB Wrist Curl: 35 × 20 × 2 @ RPE 8–9  ← last set RPE 9–10
+  Cooldown — 5 min — Hamstring 60s/side · figure-4 glute 45s/side · shake the grip out · easy breathing, no bouncing
+
+Sat — Frame Spec
+  Frame Specialization — Arms (bi + tri) priority — Overload day. Hit your weak point fresh — quality reps, not a set count.
+  Incline DB Curl: 40 × 10–12 × 3 @ RPE 8–9 · per hand
+  Overhead Cable Extension: 75 × 10–12 × 3 @ RPE 8–9
+  Unilateral Cable Pulldown: 105 × 10–12 × 3 @ RPE 8
+  Rope / Single-Arm Pushdown: 75 × 12–15 × 2 @ RPE 8–9
+  Cable Lateral Raise: 25 × 15–20 × 3 @ RPE 8–9
+  Ab Wheel / Cable Crunch: 70 × 12–15 × 2 @ RPE 8–9
+
+Sun — Optional Arms
+  Optional Detail — Biceps-led (Sat carried the triceps) — Green only: 7h+ sleep, normal Fri deadlift + Sat, no elbow/shoulder pain, no flat session. Anchor first, then supersets — 35–45 min, 60–90s rest. Printed loads are FLOORS: if a set is easy, jump the weight and log what you did.
+  Cable / Machine Preacher Curl: 45 × 8–10 × 3 @ RPE 8–9
+  Bayesian Cable Curl: 30 × 12–15 × 3 @ RPE 8–9
+  Single-Arm Cross-Body Extension: 25 × 12–15 × 2 @ RPE 8
+  Hammer Curl: 30 × 10–12 × 2 @ RPE 8–9 · per hand
+  Cable Lateral Raise: 25 × 15–20 × 3 @ RPE 8–9
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+WEEK 3  (reduced sets)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Mon — Comp Squat + Legs
+  Bar × 10 · 95 × 5 · 135 × 5 · 185 × 3 · 225 × 1 · indicator — film · 255 × 1 · bridge
+  Squat — top single: 305 × 1 × 1 @ RPE 8
+  Squat — back-offs: 270 × 3 × 5 @ RPE 7.5–8
+  Leg Press: 490 × 10 × 2 @ RPE 8
+  Standing Calf Raise: 230 × 10 × 3 @ RPE 8
+  Hanging Leg Raise: BW × 10 × 3 @ RPE 8
+  Low-to-High Cable Fly: 35 × 12 × 2 @ RPE 8
+  Machine / DB Shrug: 170 × 10 × 2 @ RPE 8
+  Cooldown — 5 min — Couch stretch 2×30s/side · ankle rocks 15/side · dead hang 30s · easy breathing, no bouncing
+
+Tue — Comp Bench + Back
+  Bar × 15 · 95 × 8 · 135 × 5 · 155 × 3 · 165 × 1 · indicator — film · 185 × 1 · bridge
+  Bench — top single: 210 × 1 × 1 @ RPE 8
+  Bench — back-offs: 190 × 3 × 6 @ RPE 7.5–8
+  Chest-Supported DB Row: 65 × 8 × 3 @ RPE 8 · per hand
+  Incline DB Press: 70 × 8 × 2 @ RPE 8 · per hand
+  Lateral Raise (Tue): 20 × 15 × 3 @ RPE 8 · per hand
+  Reverse Pec Deck: 100 × 15 × 2 @ RPE 8
+  Seated Calf Raise: 130 × 12 × 2 @ RPE 8
+  Neck Curl: 7.5 × 12 × 2 @ RPE 8
+  Cooldown — 5 min — Doorway pec stretch 2×30s · cross-body delt 30s/side · dead hang 30s · easy breathing, no bouncing
+
+Wed — Paused Squat + Arms
+  Bar × 10 · 95 × 5 · 135 × 5 · 175 × 3
+  Paused Squat (2-sec pause): 240 × 3 × 4 @ RPE 7
+  Lying Leg Curl: 115 × 10 × 2 @ RPE 8
+  Leg Extension: 145 × 12 × 1 @ RPE 8
+  Incline DB Curl: 37.5 × 10 × 3 @ RPE 8 · per hand
+  EZ-Bar Curl: 75 × 8 × 3 @ RPE 8
+  Hammer Curl: 40 × 10 × 2 @ RPE 8 · per hand
+  Lateral Raise (Wed): 17.5 × 15 × 3 @ RPE 8 · per hand
+  Cable Woodchop: 45 × 10 × 2 @ RPE 8
+  Incline Walk — 15 min · 3 mph · 5%
+  Cooldown — 5 min — 90/90 hips 60s/side · standing hamstring 45s/side · easy breathing, no bouncing
+
+Thu — Paused Bench + OHP
+  Bar × 15 · 95 × 8 · 115 × 5 · 135 × 3
+  Paused Bench (1–2 sec pause): 175 × 4 × 5 @ RPE 7–7.5
+  Overhead Press: 105 × 6 × 2 @ RPE 7–8
+  Rope Pushdown: 75 × 10 × 3 @ RPE 8
+  Cross-Body Extension: 30 × 18 × 2 @ RPE 8
+  Face Pull: 60 × 15 × 2 @ RPE 8
+  Cable Crunch: 110 × 10 × 3 @ RPE 8
+  Wrist Extension: 15 × 15 × 2 @ RPE 8 · per hand
+  Neck Extension: 12.5 × 12 × 2 @ RPE 8
+  Cable Preacher Curl: 45 × 8–10 × 3 @ RPE 8–9
+  Cooldown — 5 min — Lat hang 45s · thoracic extension over bench 45s · easy breathing, no bouncing
+
+Fri — Comp Deadlift + Back
+  135 × 5 · 225 × 3 · 275 × 2 · 315 × 1 · indicator — film · 345 × 1 · bridge
+  Deadlift — top single: 385 × 1 × 1 @ RPE 8
+  Deadlift — back-offs: 340 × 3 × 4 @ RPE 7.5–8
+  RDL: 265 × 6 × 1 @ RPE 8
+  Seated Leg Curl: 115 × 10 × 2 @ RPE 8
+  Wide-Grip Lat Pulldown: 170 × 8 × 4 @ RPE 8
+  Chest-Supported DB Row: 65 × 8 × 3 @ RPE 8 · per hand
+  Cable Curl: 70 × 12 × 2 @ RPE 8
+  Cable / DB Wrist Curl: 35 × 15 × 2 @ RPE 8
+  Cooldown — 5 min — Hamstring 60s/side · figure-4 glute 45s/side · shake the grip out · easy breathing, no bouncing
+
+Sat — Frame Spec
+  Frame Specialization — Arms (bi + tri) priority — Reduced sets this week.
+  Incline DB Curl: 40 × 10–12 × 2 @ RPE 8–9 · per hand
+  Overhead Cable Extension: 75 × 10–12 × 2 @ RPE 8–9
+  Ab Wheel / Cable Crunch: 70 × 12–15 × 2 @ RPE 8–9
+
+Sun — Optional Arms
+  Optional detail day — off — Sunday detail runs only Weeks 1–2 of a cycle. Rest today.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+WEEK 4  (deload)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Mon — Comp Squat + Legs
+  Bar × 10 · 95 × 5 · 135 × 5 · 185 × 3 · 225 × 1 · indicator — film · 255 × 1 · bridge
+  Squat — light triple: 220 × 3 × 3 @ RPE 5–6
+  Leg Press: 345 × 10 × 2 @ RPE 6–7
+  Standing Calf Raise: 160 × 10 × 2 @ RPE 6–7
+  Hanging Leg Raise: BW × 10 × 2 @ RPE 6–7
+  Low-to-High Cable Fly: 25 × 12 × 2 @ RPE 6–7
+  Machine / DB Shrug: 120 × 10 × 2 @ RPE 6–7
+  Cooldown — 5 min — Couch stretch 2×30s/side · ankle rocks 15/side · dead hang 30s · easy breathing, no bouncing
+
+Tue — Comp Bench + Back
+  Bar × 15 · 95 × 8 · 135 × 5 · 155 × 3 · 165 × 1 · indicator — film · 185 × 1 · bridge
+  Bench — light triple: 155 × 3 × 3 @ RPE 5–6
+  Chest-Supported DB Row: 45 × 8 × 2 @ RPE 6–7 · per hand
+  Incline DB Press: 50 × 8 × 2 @ RPE 6–7 · per hand
+  Lateral Raise (Tue): 15 × 15 × 2 @ RPE 6–7 · per hand
+  Reverse Pec Deck: 70 × 15 × 2 @ RPE 6–7
+  Seated Calf Raise: 90 × 12 × 2 @ RPE 6–7
+  Neck Curl: 5 × 12 × 2 @ RPE 6–7
+  Cooldown — 5 min — Doorway pec stretch 2×30s · cross-body delt 30s/side · dead hang 30s · easy breathing, no bouncing
+
+Wed — Paused Squat + Arms
+  Bar × 10 · 95 × 5 · 135 × 5 · 175 × 3
+  Paused Squat (2-sec pause): 195 × 5 × 2 @ RPE 5–6
+  Lying Leg Curl: 80 × 10 × 2 @ RPE 6–7
+  Leg Extension: 100 × 12 × 2 @ RPE 6–7
+  Incline DB Curl: 27.5 × 10 × 2 @ RPE 6–7 · per hand
+  EZ-Bar Curl: 55 × 8 × 2 @ RPE 6–7
+  Hammer Curl: 27.5 × 10 × 2 @ RPE 6–7 · per hand
+  Lateral Raise (Wed): 12.5 × 15 × 2 @ RPE 6–7 · per hand
+  Cable Woodchop: 30 × 10 × 2 @ RPE 6–7
+  Incline Walk — 15 min · 2.8 mph · 4%
+  Cooldown — 5 min — 90/90 hips 60s/side · standing hamstring 45s/side · easy breathing, no bouncing
+
+Thu — Paused Bench + OHP
+  Bar × 15 · 95 × 8 · 115 × 5 · 135 × 3
+  Paused Bench (1–2 sec pause): 135 × 5 × 3 @ RPE 5–6
+  Overhead Press: 80 × 6 × 2 @ RPE 5–6
+  Rope Pushdown: 55 × 10 × 2 @ RPE 6–7
+  Cross-Body Extension: 20 × 18 × 2 @ RPE 6–7
+  Face Pull: 40 × 15 × 2 @ RPE 6–7
+  Cable Crunch: 75 × 10 × 2 @ RPE 6–7
+  Wrist Extension: 10 × 15 × 2 @ RPE 6–7 · per hand
+  Neck Extension: 10 × 12 × 2 @ RPE 6–7
+  Cooldown — 5 min — Lat hang 45s · thoracic extension over bench 45s · easy breathing, no bouncing
+
+Fri — Comp Deadlift + Back
+  135 × 5 · 225 × 3 · 275 × 2 · 315 × 1 · indicator — film · 345 × 1 · bridge
+  Deadlift — light triple: 275 × 3 × 3 @ RPE 5–6
+  RDL: 185 × 6 × 2 @ RPE 6–7
+  Seated Leg Curl: 80 × 10 × 2 @ RPE 6–7
+  Wide-Grip Lat Pulldown: 120 × 8 × 2 @ RPE 6–7
+  Chest-Supported DB Row: 45 × 8 × 2 @ RPE 6–7 · per hand
+  Cable Curl: 50 × 12 × 2 @ RPE 6–7
+  Cable / DB Wrist Curl: 25 × 15 × 2 @ RPE 6–7
+  Cooldown — 5 min — Hamstring 60s/side · figure-4 glute 45s/side · shake the grip out · easy breathing, no bouncing
+
+Sat — Frame Spec
+  Frame Specialization — Arms (bi + tri) priority — Light week — maintenance only.
+  Machine / Cable Lateral Raise: 12.5 × 12–15 × 2 @ RPE 6–7
+  Reverse-Pec-Deck: 50 × 15 × 2 @ RPE 6–7
+  Cable Triceps: 40 × 12–15 × 2 @ RPE 6–7
+  Ab Wheel / Cable Crunch: 100 × 10–15 × 2 @ RPE 6–7
+
+Sun — Optional Arms
+  Optional detail day — off — Sunday detail runs only Weeks 1–2 of a cycle. Rest today.

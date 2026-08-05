@@ -431,7 +431,12 @@ function accStateLogged(def, wave, ctx) {
     let qualified = null;
     for (const sess of byDay.values()) {
       if (sess.length < 2) continue; // one set is a fluke, not a rung clear
-      if (sess.every((e) => e.r >= topReq && e.w >= w - 0.01)) { qualified = sess; break; }
+      // 2+ sets clearing the top is the documented rule. Requiring EVERY set to
+      // clear made progression nearly impossible on 4-5 set exercises, and
+      // directly contradicted the "final set to RPE 9-10" cue — which drops reps
+      // on the last set by design. Logging honestly must never cost a rung.
+      const clears = sess.filter((e) => e.r >= topReq && e.w >= w - 0.01);
+      if (clears.length >= 2) { qualified = clears; break; }
     }
     if (qualified) {
       const minW = Math.min(...qualified.map((e) => e.w));

@@ -388,5 +388,20 @@ console.log("\n── frame requirements ──");
   ok(ab >= 8, "abs: 8+ direct trunk sets weekly — muscle is covered, leanness is the variable");
 }
 
+
+// ═══ regression: progression must survive a hard final set ═══
+{
+  const W1 = E.WAVE1_MONDAY, M = E.MS_DAY;
+  const sets = (reps) => reps.map((r) => ({ t: W1 + 2 * M, w: 160, r }));
+  const def = { w: 160, steps: [8, 10, 12], inc: 10, db: false, i0: 0, pkey: "pulldown" };
+  const run = (reps) => E.accStateLogged(def, 2, { index: { pulldown: sets(reps) }, offsetWeeks: 0 });
+  eq(run([10, 10, 10, 10, 10]).i, 1, "prog: all sets clear advances");
+  eq(run([10, 10, 10, 10, 9]).i, 1, "prog: hard final set still advances (2+ rule)");
+  eq(run([10, 10, 9, 9, 9]).i, 1, "prog: exactly 2 clearing sets advances");
+  eq(run([10, 9, 9, 9, 9]).i, 0, "prog: only 1 clearing set holds");
+  eq(run([8, 8, 8, 8, 8]).i, 0, "prog: nothing clears holds");
+  ok(run([10, 9, 9, 9, 9]).prog === "held", "prog: held flag set");
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

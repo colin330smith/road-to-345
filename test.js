@@ -376,5 +376,14 @@ console.log("\n── frame requirements ──");
   ok(!iso(6, 1).lastHard, "failure: peak cycle never pushes");
 }
 
+
+// ═══ ab volume is already sufficient; the deficit is the lever ═══
+{
+  let ab = 0;
+  for (let d = 1; d <= 7; d++) for (const b of E.sessionFor(1, 1, d, {}, E.DEFAULT_SPEC))
+    if (b.type === "accessory" && /Leg Raise|Crunch|Ab Wheel|Woodchop/i.test(b.name)) ab += b.sets;
+  ok(ab >= 8, "abs: 8+ direct trunk sets weekly — muscle is covered, leanness is the variable");
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

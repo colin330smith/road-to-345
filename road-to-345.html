@@ -836,7 +836,7 @@ const KEY = "r345.v1";
 const DK_RE = /^\d{4}-\d{2}-\d{2}$/;
 let S;
 try { S = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { S = {}; }
-S.logs = S.logs || {}; S.gates = S.gates || {}; S.bw = S.bw || {}; S.testMax = S.testMax || {};
+S.logs = S.logs || {}; S.gates = S.gates || {}; S.bw = S.bw || {}; S.testMax = S.testMax || {}; S.meas = S.meas || {};
 S.settings = S.settings || { offsetWeeks: 0 };
 S.spec = S.spec || { ...E.DEFAULT_SPEC };
 S.ledger = S.ledger || {};
@@ -1711,7 +1711,31 @@ function renderTrends() {
     return { L, best };
   });
   const wkAvg = weeklyAverages(8);
-  $("#view").innerHTML = `
+  // ── waist & frame: the auditor. Bodyweight up + waist flat = building, not bloating.
+  const mk = Object.keys(S.meas).filter((k) => DK_RE.test(k)).sort();
+  const last = mk.length ? S.meas[mk[mk.length - 1]] : null;
+  const first = mk.length ? S.meas[mk[0]] : null;
+  const ratio = last && last.sh && last.wa ? (last.sh / last.wa) : null;
+  const dW = last && first && mk.length > 1 ? +(last.wa - first.wa).toFixed(1) : null;
+  const bwKeys = Object.keys(S.bw).filter((k) => DK_RE.test(k)).sort();
+  const dBW = bwKeys.length > 1 ? +(S.bw[bwKeys[bwKeys.length - 1]] - S.bw[bwKeys[0]]).toFixed(1) : null;
+  const verdict = (dBW == null || dW == null) ? "Log two months to get a verdict."
+    : dBW > 0 && dW <= 0.25 ? "✅ Bodyweight up, waist flat — this is exactly right."
+    : dBW > 0 && dW > 0.25 ? "⚠️ Waist rising with the scale — surplus is too big. Drop 150 cal."
+    : dBW <= 0 && dW < 0 ? "Leaning out. Fine if that's the phase you're in."
+    : "Scale flat — you're at maintenance, not gaining.";
+  const measCard = `<div class="card single"><div class="eyebrow sig">Waist &amp; frame — the auditor</div>
+    <p class="note">Abs are a body-fat number, not a training one. Waist is the metric that tells you whether the scale climbing is muscle or padding.</p>
+    <div class="metrics" style="margin-top:8px">
+      <label>Waist <input type="number" step="0.25" inputmode="decimal" id="mw" value="${last && last.wa ? last.wa : ""}"> in</label>
+      <label>Shoulders <input type="number" step="0.25" inputmode="decimal" id="ms" value="${last && last.sh ? last.sh : ""}"> in</label>
+      <button class="btn" onclick="logMeas()">Log</button>
+    </div>
+    ${ratio ? `<div class="statline" style="margin-top:8px"><span class="note">Shoulder ÷ waist</span> <b style="font-size:20px;font-variant-numeric:tabular-nums">${ratio.toFixed(2)}</b> <span class="note">· 1.4 athletic · 1.5 strong V · 1.6 elite</span></div>` : ""}
+    <p class="note" style="margin-top:8px">${esc(verdict)}</p>
+    ${mk.length ? `<div class="tablewrap" style="margin-top:8px"><table><tr><th>Date</th><th>Waist</th><th>Shoulders</th><th>Ratio</th></tr>${mk.slice(-6).reverse().map((k) => { const m = S.meas[k]; return `<tr><td>${esc(k)}</td><td>${m.wa || "—"}</td><td>${m.sh || "—"}</td><td>${m.sh && m.wa ? (m.sh / m.wa).toFixed(2) : "—"}</td></tr>`; }).join("")}</table></div>` : `<p class="note">Nothing logged. Measure cold, relaxed, first thing — waist at the navel, shoulders at the widest point. Monthly, same conditions.</p>`}
+    <p class="note" style="margin-top:8px">Visible abs sit at 10–12% for most men. At your 15% goal expect a flat stomach, not a six-pack — run a 6–8 week trim when you want them for a date.</p></div>`;
+  $("#view").innerHTML = measCard + `
     <div class="card"><div class="eyebrow sig">Bodyweight — road to 200</div>
       <div class="chartwrap">${svgChart(bwPts, { band, empty: "Log a morning weigh-in on the Today tab and the road to 200 draws itself." })}</div>
       <div class="legend"><span><span class="k" style="background:#e9e7e1"></span>morning weigh-ins</span><span><span class="k" style="background:rgba(255,178,36,.5)"></span>on-pace band (0.25–0.5 lb/wk)</span></div>
@@ -1762,6 +1786,16 @@ function renderMore() {
     <div class="card"><div class="eyebrow">Companion pieces</div>
       <p class="note">📓 Wave notes + 🍚 nutrition plan → Apple Notes · 📅 sessions 7:00–8:30 → Apple Calendar · this app → logging, projections, demos.</p></div>`;
 }
+window.logMeas = () => {
+  const wa = parseFloat(document.getElementById("mw").value);
+  const sh = parseFloat(document.getElementById("ms").value);
+  if (!Number.isFinite(wa) && !Number.isFinite(sh)) return;
+  const k = keyOf(todayUTC());
+  S.meas[k] = S.meas[k] || {};
+  if (Number.isFinite(wa)) S.meas[k].wa = wa;
+  if (Number.isFinite(sh)) S.meas[k].sh = sh;
+  save(); render();
+};
 window.delDay = (dk) => { if (confirm("Delete this session log?")) { delete S.logs[dk]; save(); render(); } };
 window.exportData = () => {
   const blob = new Blob([JSON.stringify(S, null, 1)], { type: "application/json" });
@@ -1780,7 +1814,7 @@ window.doImport = () => {
     if (typeof d !== "object" || !d.logs || typeof d.logs !== "object") throw 0;
     for (const k of Object.keys(d.logs)) if (!DK_RE.test(k)) delete d.logs[k];
     if (d.bw) for (const k of Object.keys(d.bw)) if (!DK_RE.test(k) || !Number.isFinite(d.bw[k])) delete d.bw[k];
-    S = d; S.logs = S.logs || {}; S.gates = S.gates || {}; S.bw = S.bw || {}; S.testMax = S.testMax || {};
+    S = d; S.logs = S.logs || {}; S.gates = S.gates || {}; S.bw = S.bw || {}; S.testMax = S.testMax || {}; S.meas = S.meas || {};
     S.settings = S.settings || { offsetWeeks: 0 };
     S.spec = S.spec || { ...E.DEFAULT_SPEC }; S.ledger = S.ledger || {};
     save(); closeSheet(); render();

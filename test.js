@@ -363,5 +363,18 @@ console.log("\n── frame requirements ──");
   eq(bi, 16, "sweep: biceps still exactly 16");
 }
 
+
+// ═══ proximity to failure: final-set marker ═══
+{
+  const iso = (w, wk) => E.sessionFor(w, wk, 3, {}, E.DEFAULT_SPEC).find((b) => /Incline DB Curl/.test(b.name || ""));
+  const comp = (w, wk) => E.sessionFor(w, wk, 5, {}, E.DEFAULT_SPEC).find((b) => /RDL/.test(b.name || ""));
+  ok(iso(1, 1).lastHard === true, "failure: isolation final set pushes in Wk1");
+  ok(iso(1, 2).lastHard === true, "failure: isolation final set pushes in Wk2");
+  ok(!iso(1, 3).lastHard, "failure: Wk3 trim does not push");
+  ok(!iso(1, 4).lastHard, "failure: deload never pushes");
+  ok(!comp(1, 1).lastHard, "failure: compounds stay capped at 8");
+  ok(!iso(6, 1).lastHard, "failure: peak cycle never pushes");
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

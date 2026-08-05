@@ -54,6 +54,8 @@
     background:var(--plate2);font-weight:700;font-variant-numeric:tabular-nums;font-size:15px;color:var(--ash)}
   .chip.hit{background:rgba(70,176,115,.14);border-color:#2c5c42;color:var(--go)}
   .chip.add{color:var(--signal);border-style:dashed}
+  .chip.hard{border-color:#6b5518;color:var(--signal)}
+  .chip.hard small{display:block;font-size:9.5px;letter-spacing:.06em;opacity:.85}
   .lset{display:flex;align-items:center;gap:6px;font-variant-numeric:tabular-nums;font-size:14px;padding:3px 0}
   .lset .x{color:var(--ash);margin-left:auto;padding:4px 8px}
 
@@ -449,7 +451,11 @@ function accFor(a, wave, week) {
   }
   const reps = week === 2 ? repHigh : repLow;
   const topSet = repHigh === a.steps[last] && week === 2;
-  return { w, reps, sets, rpe: week === 3 ? "8" : "8–9", top: topSet, prog: st.prog };
+  // Proximity to failure is the highest-leverage variable left in this program.
+  // v7: "safe machine/cable isolations — final set may reach RPE 9-10 in Wks 1-2."
+  // Compounds stay capped at 8; week 3 trims; deload and peak never push.
+  const lastHard = !a.comp && week <= 2 && cyc <= 4;
+  return { w, reps, sets, rpe: week === 3 ? "8" : "8–9", top: topSet, prog: st.prog, lastHard };
 }
 
 // ── weekend weak-point specialization (Sat = frame overload, Sun = optional detail) ──
@@ -712,7 +718,7 @@ function sessionForInner(wave, week, day, gates, spec) {
     // frame bias: lat-width / upper-back priority trims the Friday row to 2 sets
     let sets = p.sets;
     if (day === 5 && a.id === "rowfri" && (spec.framePrimary === "latwidth" || spec.framePrimary === "upperback") && week < 4) sets = Math.min(sets, 2);
-    push({ type: "accessory", name: a.name, w: p.w, reps: p.reps, sets, rpe: p.rpe, db: a.db, top: p.top, moveId: a.id, cap: a.cap, pkey: a.id, prog: p.prog });
+    push({ type: "accessory", name: a.name, w: p.w, reps: p.reps, sets, rpe: p.rpe, db: a.db, top: p.top, moveId: a.id, cap: a.cap, pkey: a.id, prog: p.prog, lastHard: p.lastHard });
   }
   if (day === 4 && week < 4 && !sundayPlanned(wave, week, spec) && cyc <= 4) {
     push(sx("Cable Preacher Curl", 40, [8, 10, 12], 3, "8" + "\u2013" + "9", "curl", "inccurl", false,
@@ -1420,7 +1426,7 @@ function renderToday() {
       <div class="setrow">${Array.from({ length: isSingle ? 1 : b.sets }, (_, si) =>
         si < sets.length
           ? `<button class="chip hit" onclick="editSet('${dk}','${bkey}',${si})">${sets[si].w === 0 ? "BW" : esc(String(sets[si].w))}×${esc(String(sets[si].r))}${sets[si].rpe != null ? "@" + esc(String(sets[si].rpe)) : ""}</button>`
-          : `<button class="chip" onclick="hitSet('${dk}','${bkey}',${b.w},${b.repN ?? b.reps},'${esc(b.pkey || "")}')" aria-label="Log set ${si + 1}">×${esc(String(b.reps))}</button>`).join("")}
+          : `<button class="chip ${b.lastHard && si === b.sets - 1 ? "hard" : ""}" onclick="hitSet('${dk}','${bkey}',${b.w},${b.repN ?? b.reps},'${esc(b.pkey || "")}')" aria-label="Log set ${si + 1}${b.lastHard && si === b.sets - 1 ? " — take this one to RPE 9 to 10" : ""}">×${esc(String(b.reps))}${b.lastHard && si === b.sets - 1 ? "<small>→9–10</small>" : ""}</button>`).join("")}
         ${sets.length >= (isSingle ? 1 : b.sets) ? `<button class="chip add" onclick="hitSet('${dk}','${bkey}',${b.w},${b.repN ?? b.reps},'${esc(b.pkey || "")}')">＋</button>` : ""}
       </div></div>`;
   });
@@ -1794,6 +1800,8 @@ $("#rulesbtn").addEventListener("click", () => openSheet(`<button class="closex"
   <p class="note">Single 1+ RPE too hard · back-offs miss the cap · technique degrading across sets · bar speed clearly down · multiple exercises declining · focus gone. One flat → next related session Yellow. Two → Full Deload.</p>
   <div class="eyebrow sig" style="margin-top:10px">Gate (end of every wave, per lift)</div>
   <p class="note">Wk3 single ≤8 + back-offs inside cap + technique stable + 3 normal weeks → clean bump (+5 bench / +10 squat·dead). At the ceiling → small. Inconsistent → repeat. Two stalls → −5% and rebuild.</p>
+  <div class="eyebrow sig" style="margin-top:10px">The last set is the one that grows you</div>
+  <p class="note">On safe machine/cable/DB isolations in Weeks 1–2, the final set carries a <b style="color:var(--signal)">→9–10</b> marker: take it to 1 rep shy of failure, or failure. Proximity to failure is the strongest remaining lever on hypertrophy, and isolations are where it costs you almost nothing. Compounds still stop at 8. Week 3, deloads and peaks never push.</p>
   <div class="eyebrow sig" style="margin-top:10px">Log-driven accessories</div>
   <p class="note">Accessory weights advance only when your logged sets clear the TOP of the rep range on 2+ sets at (or above) the prescribed weight. Miss it → the app holds the rung. Log heavier and clear it → the app adopts your weight. Unlogged exercises follow the schedule.</p>
   <div class="eyebrow sig" style="margin-top:10px">Priorities</div>

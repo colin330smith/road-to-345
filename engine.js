@@ -276,7 +276,11 @@ function accFor(a, wave, week) {
   }
   const reps = week === 2 ? repHigh : repLow;
   const topSet = repHigh === a.steps[last] && week === 2;
-  return { w, reps, sets, rpe: week === 3 ? "8" : "8–9", top: topSet, prog: st.prog };
+  // Proximity to failure is the highest-leverage variable left in this program.
+  // v7: "safe machine/cable isolations — final set may reach RPE 9-10 in Wks 1-2."
+  // Compounds stay capped at 8; week 3 trims; deload and peak never push.
+  const lastHard = !a.comp && week <= 2 && cyc <= 4;
+  return { w, reps, sets, rpe: week === 3 ? "8" : "8–9", top: topSet, prog: st.prog, lastHard };
 }
 
 // ── weekend weak-point specialization (Sat = frame overload, Sun = optional detail) ──
@@ -539,7 +543,7 @@ function sessionForInner(wave, week, day, gates, spec) {
     // frame bias: lat-width / upper-back priority trims the Friday row to 2 sets
     let sets = p.sets;
     if (day === 5 && a.id === "rowfri" && (spec.framePrimary === "latwidth" || spec.framePrimary === "upperback") && week < 4) sets = Math.min(sets, 2);
-    push({ type: "accessory", name: a.name, w: p.w, reps: p.reps, sets, rpe: p.rpe, db: a.db, top: p.top, moveId: a.id, cap: a.cap, pkey: a.id, prog: p.prog });
+    push({ type: "accessory", name: a.name, w: p.w, reps: p.reps, sets, rpe: p.rpe, db: a.db, top: p.top, moveId: a.id, cap: a.cap, pkey: a.id, prog: p.prog, lastHard: p.lastHard });
   }
   if (day === 4 && week < 4 && !sundayPlanned(wave, week, spec) && cyc <= 4) {
     push(sx("Cable Preacher Curl", 40, [8, 10, 12], 3, "8" + "\u2013" + "9", "curl", "inccurl", false,

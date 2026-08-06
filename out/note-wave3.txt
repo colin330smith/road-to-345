@@ -48,7 +48,7 @@ Wed — Paused Squat + Arms
 Thu — Paused Bench + OHP
   Bar × 15 · 95 × 8 · 115 × 5 · 135 × 3
   Paused Bench (1–2 sec pause): 155 × 6 × 4 @ RPE 6.5–7
-  Overhead Press: 100 × 7 × 3 @ RPE 7–8
+  Overhead Press: 100 × 6 × 3 @ RPE 7–8
   Rope Pushdown: 75 × 10 × 3 @ RPE 8–9  ← last set RPE 9–10
   Face Pull: 60 × 15 × 3 @ RPE 8–9  ← last set RPE 9–10
   Prone Y-Raise: 7.5 × 12 × 2 @ RPE 8–9 · per hand  ← last set RPE 9–10
@@ -129,7 +129,7 @@ Wed — Paused Squat + Arms
 Thu — Paused Bench + OHP
   Bar × 15 · 95 × 8 · 115 × 5 · 135 × 3
   Paused Bench (1–2 sec pause): 165 × 5 × 5 @ RPE 7
-  Overhead Press: 100 × 8 × 3 @ RPE 7–8
+  Overhead Press: 100 × 7 × 3 @ RPE 7–8
   Rope Pushdown: 75 × 12 × 3 @ RPE 8–9  ← last set RPE 9–10
   Face Pull: 60 × 20 × 3 @ RPE 8–9  ← last set RPE 9–10
   Prone Y-Raise: 7.5 × 15 × 2 @ RPE 8–9 · per hand  ← last set RPE 9–10
@@ -213,7 +213,7 @@ Wed — Paused Squat + Arms
 Thu — Paused Bench + OHP
   Bar × 15 · 95 × 8 · 115 × 5 · 135 × 3
   Paused Bench (1–2 sec pause): 175 × 4 × 5 @ RPE 7–7.5
-  Overhead Press: 105 × 6 × 2 @ RPE 7–8
+  Overhead Press: 100 × 7 × 2 @ RPE 7–8
   Rope Pushdown: 75 × 10 × 3 @ RPE 8
   Cross-Body Extension: 30 × 18 × 2 @ RPE 8
   Face Pull: 60 × 15 × 2 @ RPE 8

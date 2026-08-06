@@ -113,8 +113,20 @@ const PCT = {
 // Starts at 180 (≈0.80× his 225 bench CB, the usual flat:incline ratio) and
 // gains in lockstep with the bench gate — one gate decision, two lifts. Reaches
 // 225 when the bench CB reaches 270, i.e. wave 10 on a clean chain.
+// Did the lifter clear a standard for this exercise during a given wave?
+// null = no data (caller falls back to the schedule) · true = advance · false = hold.
+function clearedInWave(pkey, wave, minW, minReps, minSets) {
+  const ctx = HISTCTX;
+  if (!ctx || !ctx.index) return null;
+  const hist = ctx.index[pkey];
+  if (!hist || !hist.length) return null;
+  const from = waveStartUTC(wave, ctx.offsetWeeks || 0), to = from + 28 * MS_DAY;
+  const inWave = hist.filter((e) => e.t >= from && e.t < to);
+  if (!inWave.length) return null;
+  return inWave.filter((e) => e.w >= minW - 0.01 && e.r >= minReps).length >= minSets;
+}
+
 const INCLINE_START = 180, INCLINE_GOAL = 225;
-const inclineCB = (wave, gates) => INCLINE_START + (cbFor(wave, gates).bn - START.bn);
 // [topPct, topReps, rpe, backPct, backReps, backSets]
 const INCLINE_WK = [
   [0.78, 5, "7", 0.70, 8, 3],
@@ -122,6 +134,19 @@ const INCLINE_WK = [
   [0.86, 3, "8", 0.76, 6, 3],
   [null, 0, "5" + "\u2013" + "6", 0.62, 6, 3],
 ];
+// Log-adaptive: each past wave advances +5 only if that wave's week-3 top set was
+// actually cleared. Unlogged waves fall back to tracking the bench gate, so casual
+// use still progresses. Logged-and-missed holds — same contract as the accessories.
+function inclineCB(wave, gates) {
+  let cb = INCLINE_START;
+  for (let w = 1; w < wave; w++) {
+    const target = R5(cb * INCLINE_WK[2][0]);
+    const cleared = clearedInWave("incbb-top", w, target, INCLINE_WK[2][1], 1);
+    if (cleared === null) cb += cbFor(w + 1, gates).bn - cbFor(w, gates).bn;
+    else if (cleared) cb += 5;
+  }
+  return cb;
+}
 function inclineFor(wave, week, gates) {
   const cb = inclineCB(wave, gates), [tp, tr, rpe, bp, br, bs] = INCLINE_WK[week - 1];
   const out = [];
@@ -177,10 +202,12 @@ function mainTables(wave, gates) {
 }
 
 function ohpFor(wave, gates) {
-  if (wave <= 4 && !hasNonCleanGate(gates, wave)) return NOTES[wave].ohp;
-  const cb = cbFor(wave, gates);
-  const w = R5(cb.bn * 0.44);
-  return [[w, 6, 3], [w, 7, 3], [w, 8, 2], [R5(w * 0.78), 6, 2]];
+  // Double progression, log-adaptive: 3x6 -> add reps to 3x8 clean -> +5 lb -> back to 3x6.
+  // Advances a rung when 2+ sets cleared the wave's top rep target at the rung weight;
+  // unlogged waves follow the schedule, logged-and-missed holds.
+  const st = accStateLogged({ w: 95, steps: [6, 7, 8], inc: 5, db: false, i0: 0, pkey: "ohp" }, wave, HISTCTX);
+  const lo = st.steps ? st.steps[st.i] : [6, 7, 8][st.i], hi = [6, 7, 8][Math.min(st.i + 1, 2)];
+  return [[st.w, lo, 3], [st.w, hi, 3], [st.w, hi, 2], [R5(st.w * 0.78), 6, 2]];
 }
 
 // ── accessory double-progression machine ────────────────────────────
@@ -543,24 +570,24 @@ function sessionForInner(wave, week, day, gates, spec) {
     }
     if (week < 4) {
       const cap = cyc === 5 ? RPE_CAP_C5[week] : RPE_CAP[week];
-      push({ type: "single", lift: dayLift, name: LIFT_NAME[dayLift] + " — top single", w: t[dayLift].s[wk], reps: 1, sets: 1, rpe: cap, moveId: dayLift });
+      push({ type: "single", lift: dayLift, name: LIFT_NAME[dayLift] + " — top single", w: t[dayLift].s[wk], reps: 1, sets: 1, rpe: cap, moveId: dayLift, pkey: dayLift + "-single" });
       const [bw, br_, bs] = t[dayLift].b[wk];
-      push({ type: "backoff", lift: dayLift, name: LIFT_NAME[dayLift] + " — back-offs", w: bw, reps: br_, sets: bs, rpe: week === 3 ? "7.5–8" : week === 2 ? "7–7.5" : "6.5–7", moveId: dayLift });
+      push({ type: "backoff", lift: dayLift, name: LIFT_NAME[dayLift] + " — back-offs", w: bw, reps: br_, sets: bs, rpe: week === 3 ? "7.5–8" : week === 2 ? "7–7.5" : "6.5–7", moveId: dayLift, pkey: dayLift + "-back" });
     } else {
-      push({ type: "backoff", lift: dayLift, name: LIFT_NAME[dayLift] + " — light triple", w: t[dayLift].l, reps: 3, sets: 3, rpe: "5–6", light: true, moveId: dayLift });
+      push({ type: "backoff", lift: dayLift, name: LIFT_NAME[dayLift] + " — light triple", w: t[dayLift].l, reps: 3, sets: 3, rpe: "5–6", light: true, moveId: dayLift, pkey: dayLift + "-light" });
     }
   }
   if (day === 3) {
     push({ type: "warmup", name: "Paused squat warm-up", rows: WARM_PS });
     const scheme = week === 4 ? [5, 2] : [[5, 4], [4, 4], [3, 4]][wk];
-    push({ type: "paused", lift: "sq", name: "Paused Squat (2-sec pause)", w: t.ps[wk] ?? t.ps[3], reps: scheme[0], sets: scheme[1], rpe: week === 4 ? "5–6" : ["6", "6.5", "7"][wk], moveId: "ps" });
+    push({ type: "paused", lift: "sq", name: "Paused Squat (2-sec pause)", w: t.ps[wk] ?? t.ps[3], reps: scheme[0], sets: scheme[1], rpe: week === 4 ? "5–6" : ["6", "6.5", "7"][wk], moveId: "ps", pkey: "ps" });
   }
   if (day === 4) {
     push({ type: "warmup", name: "Paused bench warm-up", rows: WARM_PB });
     const scheme = week === 4 ? [5, 3] : [[6, 4], [5, 5], [4, 5]][wk];
-    push({ type: "paused", lift: "bn", name: "Paused Bench (1–2 sec pause)", w: t.pb[wk] ?? t.pb[3], reps: scheme[0], sets: scheme[1], rpe: week === 4 ? "5–6" : ["6.5–7", "7", "7–7.5"][wk], moveId: "pb" });
+    push({ type: "paused", lift: "bn", name: "Paused Bench (1–2 sec pause)", w: t.pb[wk] ?? t.pb[3], reps: scheme[0], sets: scheme[1], rpe: week === 4 ? "5–6" : ["6.5–7", "7", "7–7.5"][wk], moveId: "pb", pkey: "pb" });
     const o = ohpFor(wave, gates)[week - 1];
-    push({ type: "ohp", name: "Overhead Press", w: o[0], reps: o[1], sets: o[2], rpe: week === 4 ? "5–6" : "7–8", note: "Add reps to 3×8 clean → +5 lb → back to 3×6", moveId: "ohp" });
+    push({ type: "ohp", name: "Overhead Press", w: o[0], reps: o[1], sets: o[2], rpe: week === 4 ? "5–6" : "7–8", note: "Add reps to 3×8 clean → +5 lb → back to 3×6", moveId: "ohp", pkey: "ohp" });
   }
   // Thursday sheds its delt/triceps isolation → migrated into Saturday's specialization
   const THU_DROP = new Set(["latthu", "rdf"]); // delt work migrates to Sat; triceps STAYS on Thu
@@ -620,15 +647,15 @@ function peakSession(wave, week, day, cb, gates) {
     push({ type: "warmup", name: LIFT_NAME[dayLift] + " warm-up", rows: warmups(dayLift, wave, gates) });
     const sp = [0.89, 0.91, 0.905][week - 1];
     const cap = ["8", "8–8.5", "8–8.5 · opener practice"][week - 1];
-    push({ type: "single", lift: dayLift, name: LIFT_NAME[dayLift] + " — " + (week === 3 ? "opener" : "top single"), w: R5(cb[dayLift] * sp), reps: 1, sets: 1, rpe: cap, moveId: dayLift });
+    push({ type: "single", lift: dayLift, name: LIFT_NAME[dayLift] + " — " + (week === 3 ? "opener" : "top single"), w: R5(cb[dayLift] * sp), reps: 1, sets: 1, rpe: cap, moveId: dayLift, pkey: dayLift + "-single" });
     const back = week === 1 ? [R5(cb[dayLift] * 0.77), 3, 3, "7"] : week === 2 ? [R5(cb[dayLift] * 0.79), 2, 3, "7–7.5"] : [R5(cb[dayLift] * 0.70), 2, 2, "easy"];
-    push({ type: "backoff", lift: dayLift, name: LIFT_NAME[dayLift] + " — back-offs", w: back[0], reps: back[1], sets: back[2], rpe: back[3], moveId: dayLift });
+    push({ type: "backoff", lift: dayLift, name: LIFT_NAME[dayLift] + " — back-offs", w: back[0], reps: back[1], sets: back[2], rpe: back[3], moveId: dayLift, pkey: dayLift + "-back" });
   }
   if (day === 3 && week <= 2) {
-    push({ type: "paused", lift: "sq", name: "Paused Squat (easy)", w: R5(cb.sq * (week === 1 ? 0.66 : 0.60)), reps: 5, sets: week === 1 ? 3 : 2, rpe: "6", moveId: "ps" });
+    push({ type: "paused", lift: "sq", name: "Paused Squat (easy)", w: R5(cb.sq * (week === 1 ? 0.66 : 0.60)), reps: 5, sets: week === 1 ? 3 : 2, rpe: "6", moveId: "ps", pkey: "ps" });
   }
   if (day === 4 && week <= 2) {
-    push({ type: "paused", lift: "bn", name: "Paused Bench (easy)", w: R5(cb.bn * (week === 1 ? 0.68 : 0.60)), reps: 5, sets: week === 1 ? 3 : 2, rpe: "6", moveId: "pb" });
+    push({ type: "paused", lift: "bn", name: "Paused Bench (easy)", w: R5(cb.bn * (week === 1 ? 0.68 : 0.60)), reps: 5, sets: week === 1 ? 3 : 2, rpe: "6", moveId: "pb", pkey: "pb" });
   }
   if (week === 3) {
     if (day === 3 || day === 4) push({ type: "test", name: "Opener week — 1–2 easy accessories only", note: "No OHP, no arm work, no conditioning fatigue this week." });
@@ -636,7 +663,7 @@ function peakSession(wave, week, day, cb, gates) {
     for (const a of ACC.filter((x) => x.day === day)) {
       const p = accFor(a, wave, week);
       if (!p) continue;
-      push({ type: "accessory", name: a.name, w: p.w, reps: p.reps, sets: p.sets, rpe: "7 (easy)", db: a.db, moveId: a.id, cap: a.cap });
+      push({ type: "accessory", name: a.name, w: p.w, reps: p.reps, sets: p.sets, rpe: "7 (easy)", db: a.db, moveId: a.id, cap: a.cap, pkey: a.id, prog: p.prog });
     }
   }
   return blocks;
@@ -672,11 +699,11 @@ function redSession(wave, day, gates) {
   const reds = t.red || [R5(cbFor(wave, gates).sq * 0.6), R5(cbFor(wave, gates).bn * 0.6), R5(cbFor(wave, gates).dl * 0.6)];
   const map = { sq: reds[0], bn: reds[1], dl: reds[2] };
   const blocks = [];
-  if (dayLift) blocks.push({ type: "backoff", lift: dayLift, name: LIFT_NAME[dayLift] + " — RED day 3×3", w: map[dayLift], reps: 3, sets: 3, rpe: "≤6", moveId: dayLift, note: "Skip the single. 1–2 easy accessories. Out in 30–45 min." });
+  if (dayLift) blocks.push({ type: "backoff", lift: dayLift, name: LIFT_NAME[dayLift] + " — RED day 3×3", w: map[dayLift], reps: 3, sets: 3, rpe: "≤6", moveId: dayLift, pkey: dayLift + "-back", note: "Skip the single. 1–2 easy accessories. Out in 30–45 min." });
   else blocks.push({ type: "test", name: "RED day — main lift 3×3 @ 60% only", note: "Sq " + map.sq + " · Bn " + map.bn + " · DL " + map.dl + " · pain/illness → rest instead" });
   return blocks;
 }
 
-const ENGINE = { inclineCB, inclineFor, INCLINE_START, INCLINE_GOAL, pkeyOf, accStateLogged, R5, R25, START, LIFTS, LIFT_NAME, gateDelta, cbFor, cycleOf, macroOf, CYCLE_NAME, waveStartUTC, whereIs, NOTES, mainTables, ohpFor, ACC, accState, accFor, sessionFor, testAttempts, yellowW, redSession, WAVE1_MONDAY, MS_DAY,
+const ENGINE = { clearedInWave, inclineCB, inclineFor, INCLINE_START, INCLINE_GOAL, pkeyOf, accStateLogged, R5, R25, START, LIFTS, LIFT_NAME, gateDelta, cbFor, cycleOf, macroOf, CYCLE_NAME, waveStartUTC, whereIs, NOTES, mainTables, ohpFor, ACC, accState, accFor, sessionFor, testAttempts, yellowW, redSession, WAVE1_MONDAY, MS_DAY,
   FRAME_OPTS, FRAME_LABEL, DETAIL_OPTS, DETAIL_LABEL, DEFAULT_SPEC, isDefaultSpec, saturdaySession, sundaySession, sundayPlanned };
 if (typeof module !== "undefined") module.exports = ENGINE;

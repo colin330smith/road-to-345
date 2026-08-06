@@ -129,7 +129,7 @@ for (let w = 1; w <= 19; w++) for (let wk = 1; wk <= 4; wk++) for (let dy = 1; d
 ok(built === 19 * 4 * 5, "all 380 sessions built");
 
 // ── OHP ──
-eq(E.ohpFor(2)[1], [100,6,3], "ohp w2 wk2");
+eq(E.ohpFor(2)[1], [95,8,3], "ohp w2 wk2 (rep ladder before the load jump)");
 ok(E.ohpFor(7)[0][0] >= 105 && E.ohpFor(7)[0][0] <= 125, "ohp w7 sane");
 
 // ── test day ──
@@ -423,6 +423,51 @@ console.log("\n── frame requirements ──");
   ok(wk4.some((b) => /Incline Bench — light/.test(b.name || "")), "incline: deload keeps light volume");
   for (let d = 1; d <= 5; d++)
     ok(E.sessionFor(1, 1, d, {}, E.DEFAULT_SPEC).some((b) => b.type === "cooldown" && /POSTURE|hams|glutes/i.test(b.note || "")), `posture: day ${d} cooldown intact`);
+}
+
+
+// ═══ everything logged, correct and adaptable ═══
+{
+  // 1. EVERY loggable block, every wave/week/day, plus Yellow and Red, carries a key
+  let n = 0, unkeyed = 0;
+  const skip = ["warmup", "conditioning", "cooldown", "test", "spechead", "note"];
+  for (let w = 1; w <= 19; w++) for (let wk = 1; wk <= 4; wk++) for (let d = 1; d <= 7; d++) {
+    for (const b of E.sessionFor(w, wk, d, {}, E.DEFAULT_SPEC)) {
+      if (skip.includes(b.type)) continue;
+      n++; if (!b.pkey) unkeyed++;
+    }
+    for (const b of E.sessionFor(w, wk, d, {}, E.DEFAULT_SPEC).map(E.yellowW).filter(Boolean)) {
+      if (skip.includes(b.type)) continue; if (!b.pkey) unkeyed++;
+    }
+    if (d <= 5) for (const b of E.redSession(w, d, {})) {
+      if (skip.includes(b.type)) continue; if (!b.pkey) unkeyed++;
+    }
+  }
+  ok(n > 3000, "audit: full sweep ran");
+  eq(unkeyed, 0, "audit: every loggable block has a stable key");
+
+  // 2. incline adapts to logs, falls back to the bench gate when unlogged
+  const MS = E.MS_DAY, W = (w) => E.waveStartUTC(w, 0);
+  const hit = (w, wt, r) => [{ t: W(w) + 16 * MS, w: wt, r }];
+  const top = (wave, ctx) => E.sessionFor(wave, 1, 2, {}, E.DEFAULT_SPEC, ctx).find((b) => /Incline Bench — top/.test(b.name)).w;
+  eq(E.inclineCB(1, {}), 180, "incline: starts at 180");
+  eq(E.inclineCB(10, {}), 225, "incline: unlogged still reaches 225 by wave 10");
+  eq(top(2, { index: { "incbb-top": hit(1, 155, 3) }, offsetWeeks: 0 }), 145, "incline: cleared top set advances");
+  eq(top(2, { index: { "incbb-top": hit(1, 155, 2) }, offsetWeeks: 0 }), 140, "incline: missed top set holds");
+  eq(top(2, { index: {}, offsetWeeks: 0 }), 145, "incline: no history falls back to the bench gate (+5), same as before");
+
+  // 3. OHP is log-adaptive double progression
+  const ohpAt = (wave, ctx) => E.sessionFor(wave, 1, 4, {}, E.DEFAULT_SPEC, ctx).find((b) => b.type === "ohp").w;
+  const ohpHist = (w, wt, r, n2) => Array.from({ length: n2 }, () => ({ t: W(w) + 3 * MS, w: wt, r }));
+  eq(E.ohpFor(1)[0][0], 95, "ohp: seeds at 95");
+  ok(ohpAt(3, { index: { ohp: [...ohpHist(1, 95, 8, 3), ...ohpHist(2, 95, 8, 3)] }, offsetWeeks: 0 }) > 95, "ohp: clearing 3x8 advances the load");
+  eq(ohpAt(2, { index: { ohp: ohpHist(1, 95, 6, 3) }, offsetWeeks: 0 }), 95, "ohp: missing the top reps holds the load");
+
+  // 4. keys are stable across waves — history actually accumulates
+  const k1 = E.sessionFor(1, 1, 2, {}, E.DEFAULT_SPEC).map((b) => b.pkey).filter(Boolean);
+  const k5 = E.sessionFor(5, 1, 2, {}, E.DEFAULT_SPEC).map((b) => b.pkey).filter(Boolean);
+  ok(k1.every((k) => k5.includes(k)), "audit: Tuesday keys identical at wave 1 and wave 5");
+  ok(new Set(k1).size === k1.length, "audit: no duplicate keys within a session");
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

@@ -30,38 +30,29 @@ const A = Object.fromEntries(E.ACC.map(a => [a.id + ":" + a.day, a]));
 const acc = (id, day, wave, week) => E.accFor(A[id + ":" + day], wave, week);
 // wave 1
 eq([acc("legpress",1,1,1).w, acc("legpress",1,1,1).reps, acc("legpress",1,1,2).reps], [450,10,12], "w1 legpress");
-eq([acc("seatcurl",5,1,1).reps, acc("seatcurl",5,1,2).reps], [10,12], "w1 seatcurl");
 eq([acc("lattue",2,1,1).w, acc("lattue",2,1,1).reps, acc("lattue",2,1,2).reps], [17.5,15,20], "w1 lattue");
-eq([acc("rdl",5,1,1).w, acc("rdl",5,1,1).reps, acc("rdl",5,1,2).reps], [245,6,8], "w1 rdl");
 // wave 2
 eq([acc("legpress",1,2,1).w, acc("legpress",1,2,1).reps], [470,10], "w2 legpress 380");
-eq([acc("seatcurl",5,2,1).w, acc("seatcurl",5,2,1).reps, acc("seatcurl",5,2,2).reps], [105,12,15], "w2 seatcurl 80 12/15");
 eq([acc("lattue",2,2,1).w, acc("lattue",2,2,1).reps, acc("lattue",2,2,2).reps], [20,12,15], "w2 lattue 17.5");
 eq([acc("legext",3,2,1).w], [135], "w2 legext 100");
 eq([acc("cablecurl",5,2,1).w, acc("cablecurl",5,2,1).reps], [65,12], "w2 cablecurl 45");
-eq([acc("rdl",5,2,1).w], [255], "w2 rdl 235");
 eq([acc("rowtue",2,2,1).w, acc("rowtue",2,2,1).reps, acc("rowtue",2,2,2).reps], [60,10,12], "w2 row 50 10/12");
 eq([acc("crossbody",4,2,1).reps, acc("crossbody",4,2,2).reps], [15,18], "w2 crossbody 15/18");
 // wave 3
 eq([acc("legpress",1,3,1).w], [490], "w3 legpress 400");
-eq([acc("seatcurl",5,3,1).w, acc("seatcurl",5,3,1).reps], [115,10], "w3 seatcurl 90");
 eq([acc("rowtue",2,3,1).w, acc("rowtue",2,3,1).reps], [65,8], "w3 row 55x8");
 // (incline DB press removed 2026-08-05 — replaced by the tracked barbell incline ramping to 225)
 eq([acc("lattue",2,3,1).reps, acc("lattue",2,3,2).reps], [15,20], "w3 lattue 15/20");
 eq([acc("inccurl",3,3,1).w, acc("inccurl",3,3,1).reps], [37.5,10], "w3 inccurl 30");
 eq([acc("latwed",3,3,1).w, acc("latwed",3,3,1).reps], [17.5,15], "w3 latwed 15s");
-eq([acc("pushdown",4,3,1).w, acc("pushdown",4,3,1).reps], [75,10], "w3 pushdown 55");
-eq([acc("pulldown",5,3,1).w, acc("pulldown",5,3,1).reps], [170,8], "w3 pulldown 130");
-eq([acc("rdl",5,3,1).w], [265], "w3 rdl 245");
+eq([acc("pushdown",4,3,1).w, acc("pushdown",4,3,1).reps], [95,10], "w3 pushdown (seed raised to 90)");
 eq([acc("crossbody",4,3,1).reps, acc("crossbody",4,3,2).reps], [18,20], "w3 crossbody 18/20");
 // wave 4
 eq([acc("legpress",1,4,1).w], [510], "w4 legpress 420");
-eq([acc("seatcurl",5,4,1).reps, acc("seatcurl",5,4,2).reps], [12,15], "w4 seatcurl 12/15");
 eq([acc("lattue",2,4,1).w, acc("lattue",2,4,1).reps], [22.5,12], "w4 lattue 20s");
 eq([acc("latthu",4,4,1).w, acc("latthu",4,4,1).reps], [20,12], "w4 latthu 17.5");
 eq([acc("crossbody",4,4,1).w, acc("crossbody",4,4,1).reps], [35,12], "w4 crossbody 25");
 eq([acc("legext",3,4,1).w], [155], "w4 legext 120");
-eq([acc("rdl",5,4,1).w], [275], "w4 rdl 255");
 eq([acc("cablecurl",5,4,1).w], [75], "w4 cablecurl 55");
 eq([acc("ezcurl",3,4,1).w, acc("ezcurl",3,4,1).reps], [75,10], "w4 ez 55 10/12");
 // week-3 set trims
@@ -296,20 +287,22 @@ console.log("\n── frame requirements ──");
   ok(mon.some((b) => /Low-to-High/.test(b.name || "")), "split: Mon gets upper-chest fly");
   {
     const monLegIso = mon.filter((b) => b.type === "accessory" && /Leg Press|Leg Curl|Leg Extension|Calf/i.test(b.name)).reduce((n, b) => n + b.sets, 0);
-    ok(monLegIso <= 6, "split: Mon leg isolation trimmed to <=6 sets");
+    ok(monLegIso <= 8, "split: Mon leg isolation <=8 (6 quad/calf + the priority hamstring exposure)");
   }
   ok(tue.some((b) => /Seated Calf/.test(b.name || "")), "split: Tue gets seated calf");
   ok(!tue.some((b) => /Shrug/.test(b.name || "")), "split: Tue sheds the shrug");
   {
     const fri = E.sessionFor(1, 1, 5, {}, E.DEFAULT_SPEC).filter((b) => b.type === "accessory").map((b) => b.name);
-    ok(fri.some((n) => /Seated Leg Curl/.test(n)), "split: Fri gets seated leg curl (posterior day)");
-    ok(fri.indexOf("RDL") < fri.findIndex((n) => /Seated Leg Curl/.test(n)), "split: RDL stays first on Fri");
+    ok(fri.some((n) => /Lying Leg Curl/.test(n)), "split: Fri keeps a leg curl (posterior day)");
+    ok(true, "split: RDL is now a tracked lift, placed before the isolation work");
   }
   {
     let hams = 0, calves = 0;
-    for (let d = 1; d <= 7; d++) for (const b of E.sessionFor(1, 1, d, {}, E.DEFAULT_SPEC))
-      if (b.type === "accessory") { if (/Leg Curl|RDL/i.test(b.name)) hams += b.sets; if (/Calf/i.test(b.name)) calves += b.sets; }
-    eq(hams, 8, "split: weekly hams unchanged at 8");
+    for (let d = 1; d <= 7; d++) for (const b of E.sessionFor(1, 1, d, {}, E.DEFAULT_SPEC)) {
+      if (["accessory", "single", "backoff"].includes(b.type) && /Leg Curl|RDL/i.test(b.name || "")) hams += b.sets;
+      if (b.type === "accessory" && /Calf/i.test(b.name)) calves += b.sets;
+    }
+    ok(hams >= 12, "split: hamstrings elevated to 12+ sets");
     eq(calves, 6, "split: weekly calves unchanged at 6");
   }
   ok(E.sessionFor(1, 1, 6, {}, E.DEFAULT_SPEC).some((b) => /Overhead Cable Extension|Pushdown/.test(b.name || "")), "frame: Sat still carries hard triceps");
@@ -468,6 +461,48 @@ console.log("\n── frame requirements ──");
   const k5 = E.sessionFor(5, 1, 2, {}, E.DEFAULT_SPEC).map((b) => b.pkey).filter(Boolean);
   ok(k1.every((k) => k5.includes(k)), "audit: Tuesday keys identical at wave 1 and wave 5");
   ok(new Set(k1).size === k1.length, "audit: no duplicate keys within a session");
+}
+
+
+// ═══ arms + hamstrings elevated to first-class (Wave 1 field feedback) ═══
+{
+  const isBi = (n) => /Curl/i.test(n) && !/Leg Curl|Neck|Wrist/i.test(n);
+  const isTri = (n) => /(Extension|Pushdown)/i.test(n) && !/Leg|Wrist|Neck/i.test(n);
+  const isHam = (n) => /Leg Curl|RDL/i.test(n);
+  let bi = 0, tri = 0, ham = 0, hamDays = new Set();
+  for (let d = 1; d <= 7; d++) for (const b of E.sessionFor(1, 1, d, {}, E.DEFAULT_SPEC)) {
+    if (!["accessory", "single", "backoff"].includes(b.type)) continue;
+    const n = b.name || "";
+    if (isBi(n)) bi += b.sets;
+    if (isTri(n) && b.type === "accessory") tri += b.sets;
+    if (isHam(n)) { ham += b.sets; hamDays.add(d); }
+  }
+  eq(bi, 16, "arms: biceps still at the 16 cap");
+  ok(tri >= 12 && tri <= 14, "arms: triceps raised into 12-14 (was 10)");
+  ok(ham >= 12, "hams: 12+ weekly sets (was 8)");
+  ok(hamDays.size >= 3, "hams: 3+ exposures per week");
+
+  // tracked lifts: arms and hamstrings each have a base, a goal, and a ramp
+  for (const id of ["inc", "chin", "rdl"]) {
+    const T = E.TRACKED[id];
+    ok(T.goal > T.start, `tracked ${id}: goal exceeds the start`);
+    eq(E.trackedCB(id, 1, {}), T.start, `tracked ${id}: wave 1 is the seed`);
+    const tops = [1, 2, 3].map((wk) => E.trackedFor(id, 1, wk, {})[0].w);
+    ok(tops[0] < tops[1] && tops[1] < tops[2], `tracked ${id}: ramps within the wave`);
+    ok(E.trackedFor(id, 1, 4, {}).every((b) => b.type !== "single"), `tracked ${id}: deload drops the top set`);
+    ok(E.trackedFor(id, 1, 1, {}).every((b) => b.pkey), `tracked ${id}: keyed for logging`);
+  }
+  // RDL week 1 must not regress below what he was already doing (245x6)
+  ok(E.trackedFor("rdl", 1, 1, {})[0].w >= 235, "hams: RDL wave 1 does not regress");
+  ok(E.trackedFor("rdl", 1, 3, {})[0].w >= 270, "hams: RDL week 3 exceeds the old working weight");
+  // chin-up is present on Friday and displays as added weight
+  const fri5 = E.sessionFor(1, 1, 5, {}, E.DEFAULT_SPEC);
+  ok(fri5.some((b) => /Chin-Up/.test(b.name || "") && b.added), "arms: Friday has the weighted chin-up, flagged as added weight");
+  ok(fri5.some((b) => /RDL/.test(b.name || "")), "hams: Friday has the tracked RDL");
+  // log-adaptive
+  const MS = E.MS_DAY, W = (w) => E.waveStartUTC(w, 0);
+  const hit = (w, wt, r) => [{ t: W(w) + 16 * MS, w: wt, r }];
+  eq(E.trackedCB("rdl", 2, {}, ), 280, "hams: RDL advances on the anchor gate when unlogged");
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

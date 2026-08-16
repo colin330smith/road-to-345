@@ -293,6 +293,8 @@ const MOVES = {
     cues:["Elbows by the ears — only forearms move","Full stretch behind the head"],cap:"High on the elbow pain ladder — drop early if cranky."},
   crossbody:{name:"Cross-Body Extension",grp:"Arms & Delts",arch:"ohtri",yt:"cross body cable tricep extension",
     cues:["Upper arm pinned across the body — pure elbow","Match reps on both arms"],cap:"RPE 9 OK when elbows are quiet."},
+  chin:{name:"Weighted Chin-Up",grp:"Main Lifts",arch:"pulldown",yt:"weighted chin up form",
+    cues:["Supinated grip, shoulder width","Dead hang at the bottom, chin OVER the bar","Belt or dumbbell between the feet","THE biceps compound — nothing else loads elbow flexion this heavy"],cap:"Tracked to +90. Top set to the week's RPE cap, back-offs 7–8."},
   incbb:{name:"Incline Bench Press",grp:"Main Lifts",arch:"incpress",yt:"incline barbell bench press form",
     cues:["30–45° — steeper turns it into an overhead press","Touch the UPPER chest, just below the collarbone","Shoulder blades still pinned back and down","Ramping to 225: the upper-chest shelf and a bigger flat bench, same lift"],cap:"Top set to the week's RPE cap. Back-offs 7–8. It supports the comp bench, never competes with it."},
   proneY:{name:"Prone Y-Raise",grp:"Arms & Delts",arch:"proneY",yt:"prone y raise lower trap",
@@ -314,7 +316,7 @@ const MOVES = {
   wrist:{name:"Wrist Extension",grp:"Trunk & Grip",arch:"wrist",yt:"dumbbell wrist extension forearm",
     cues:["Forearm supported, only the wrist moves","Elbow insurance — never skip, never heavy"],cap:"Light. 15–25 reps."},
   rdl:{name:"Romanian Deadlift",grp:"Main Lifts",arch:"hinge",yt:"romanian deadlift form",
-    cues:["Hinge with soft knees, bar drags the thighs","Stretch the hamstrings — never round","Stop at RPE 7. It's assistance."],cap:"RPE 7 HARD CAP."},
+    cues:["Hinge with soft knees, bar drags the thighs","Push the hips BACK, not down — feel the stretch","Tracked to 315: this is a hamstring priority lift now","Still stops at 8 — it feeds the deadlift, never competes"],cap:"Tracked to 315. Top set to the week cap, back-offs 7–8."},
 };
 
 /* ── movement figures: IK rig (spliced from fig.js) ── */
@@ -381,7 +383,7 @@ window.stopTimer = () => { clearInterval(tInt); tEnd = null; timerBtn.classList.
 /* ── TODAY ── */
 function blockRx(b) {
   if (b.type === "warmup") return "";
-  const w = b.w === 0 ? (/Band/.test(b.name) ? "Band" : "BW") : b.w;
+  const w = b.w === 0 ? (/Band/.test(b.name) ? "Band" : "BW") : b.added ? "+" + b.w : b.w;
   return `${w} <small>×</small> ${b.reps} <small>× ${b.sets}${b.db ? " · per hand" : ""}</small>`;
 }
 function renderToday() {
@@ -455,7 +457,7 @@ function renderToday() {
     inner += `<div class="card ${isSingle ? "single" : ""} ${done ? "done" : ""}">
       <div class="cardhead"><div>
         <div class="eyebrow ${isSingle ? "sig" : ""}">${esc(b.name)}${b.top ? " · range top → weight bumps next wave" : ""}</div>
-        <div class="rx">${isSingle ? `<b>${b.w}</b> <small>× 1 · cap RPE ${esc(String(b.rpe))}</small>` : `${blockRx(b)} <small>@ RPE ${esc(String(b.rpe))}</small>`}</div>
+        <div class="rx">${isSingle ? `<b>${b.w === 0 ? "BW" : b.added ? "+" + b.w : b.w}</b> <small>× 1 · cap RPE ${esc(String(b.rpe))}</small>` : `${blockRx(b)} <small>@ RPE ${esc(String(b.rpe))}</small>`}</div>
         ${b.note ? `<div class="capnote warn">${esc(b.note)}</div>` : ""}
         ${b.prog === "held" ? `<div class="capnote warn">⏸ Holding — your logs haven't cleared the top reps at this weight yet</div>` : b.prog === "ahead" ? `<div class="capnote" style="color:var(--go)">▲ Advanced off your logs</div>` : b.type === "accessory" && b.prog == null ? `<div class="capnote">Estimate — no history yet. If this is easy, add weight and log what you actually did.</div>` : ""}
       </div>${b.moveId ? `<button class="ibtn" onclick="moveSheet('${b.moveId}')" aria-label="How to">?</button>` : ""}</div>
@@ -518,11 +520,17 @@ function renderRoad() {
   const bwRows = Object.entries(S.bw).filter(([k]) => DK_RE.test(k)).sort();
   const bwNow = bwRows.length ? bwRows[bwRows.length - 1][1] : 182;
   const bwPct = Math.max(0, Math.min(100, Math.round(((bwNow - 182) / (200 - 182)) * 100)));
-  let h = `<div class="card single"><div class="eyebrow sig">The Goal — 200 @ 15% · 315/405/495 · 225 incline</div><div class="summit">
+  let h = `<div class="card single"><div class="eyebrow sig">The Goal — 315/405/495 · 200 @ 15%</div><div class="summit">
     ${E.LIFTS.map((L) => { const [s0, g] = GOALS[L]; const pct = Math.max(0, Math.min(100, Math.round(((cbNow[L] - s0) / (g - s0)) * 100))); return `<div class="srow"><span>${E.LIFT_NAME[L]}</span><div class="sbar"><i style="width:${pct}%"></i></div><span class="sval">${cbNow[L]} / ${g}</span></div>`; }).join("")}
-    ${(() => { const ic = E.inclineCB(Math.max(1, Math.min(now.wave || 1, 19)), S.gates); const p = Math.max(0, Math.min(100, Math.round(((ic - E.INCLINE_START) / (E.INCLINE_GOAL - E.INCLINE_START)) * 100))); return `<div class="srow"><span>Incline</span><div class="sbar"><i style="width:${p}%"></i></div><span class="sval">${ic} / ${E.INCLINE_GOAL}</span></div>`; })()}
+    ${["inc", "chin", "rdl"].map((id) => {
+        const T = E.TRACKED[id], v = E.trackedCB(id, Math.max(1, Math.min(now.wave || 1, 19)), S.gates);
+        const p = Math.max(0, Math.min(100, Math.round(((v - T.start) / (T.goal - T.start)) * 100)));
+        const lbl = { inc: "Incline", chin: "Chin-up", rdl: "RDL" }[id];
+        const f = (x) => (T.added ? "+" + x : x);
+        return `<div class="srow"><span>${lbl}</span><div class="sbar"><i style="width:${p}%"></i></div><span class="sval">${f(v)} / ${f(T.goal)}</span></div>`;
+      }).join("")}
     <div class="srow" style="border-top:1px solid var(--steel);padding-top:8px"><span>Bodyweight</span><div class="sbar"><i style="width:${bwPct}%"></i></div><span class="sval">${bwNow} / 200</span></div>
-  </div><p class="note">Lifts are cycle bases, not tested maxes. Bodyweight only counts if the waist stays flat while it climbs.</p></div>
+  </div><p class="note">Lifts are cycle bases, not tested maxes. Incline, chin-up and RDL are tracked the same way the big three are — arms and hamstrings are goals, not accessories. Bodyweight only counts if the waist stays flat while it climbs.</p></div>
   <p class="note">19 waves · 4 macros. Projections re-compute from your gate results; untouched gates assume clean.</p>`;
   for (let w = 1; w <= 19; w++) {
     const cb = E.cbFor(w, S.gates);

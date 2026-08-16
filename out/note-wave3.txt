@@ -1,6 +1,11 @@
 💪 WAVE 3 — ACCUMULATE
 
 CYCLE BASES: bench 235 · squat 335 · deadlift 425
+TRACKED: incline 190 → 225 · chin-up +45 → +90 · RDL 285 → 315
+
+ARMS + HAMSTRINGS ARE GOALS NOW, not accessories. The weighted chin-up and
+the RDL are tracked and gated exactly like the big three — they climb every
+wave and they have finish lines. Chase them like you chase 3/4/5.
 
 ⚠️ THIS NOTE IS GENERATED FROM THE APP. The app is the source of truth —
 it adapts loads to what you actually log. Use this only as a reference.
@@ -15,6 +20,7 @@ Mon — Comp Squat + Legs
   Squat — top single: 285 × 1 × 1 @ RPE 7
   Squat — back-offs: 245 × 5 × 4 @ RPE 6.5–7
   Leg Press: 490 × 10 × 3 @ RPE 8–9
+  Seated Leg Curl: 130 × 12 × 2 @ RPE 8–9  ← last set RPE 9–10
   Standing Calf Raise: 230 × 10 × 3 @ RPE 8–9  ← last set RPE 9–10
   Hanging Leg Raise: BW × 10 × 3 @ RPE 8–9  ← last set RPE 9–10
   Low-to-High Cable Fly: 35 × 12 × 3 @ RPE 8–9  ← last set RPE 9–10
@@ -37,7 +43,7 @@ Tue — Comp Bench + Back
 Wed — Paused Squat + Arms
   Bar × 10 · 95 × 5 · 135 × 5 · 175 × 3
   Paused Squat (2-sec pause): 215 × 5 × 4 @ RPE 6
-  Lying Leg Curl: 115 × 10 × 3 @ RPE 8–9  ← last set RPE 9–10
+  Seated Leg Curl: 145 × 10 × 4 @ RPE 8–9  ← last set RPE 9–10
   Leg Extension: 145 × 12 × 2 @ RPE 8–9  ← last set RPE 9–10
   Incline DB Curl: 37.5 × 10 × 3 @ RPE 8–9 · per hand  ← last set RPE 9–10
   Lateral Raise (Wed): 17.5 × 15 × 3 @ RPE 8–9 · per hand  ← last set RPE 9–10
@@ -49,7 +55,7 @@ Thu — Paused Bench + OHP
   Bar × 15 · 95 × 8 · 115 × 5 · 135 × 3
   Paused Bench (1–2 sec pause): 155 × 6 × 4 @ RPE 6.5–7
   Overhead Press: 100 × 6 × 3 @ RPE 7–8
-  Rope Pushdown: 75 × 10 × 3 @ RPE 8–9  ← last set RPE 9–10
+  Rope Pushdown: 95 × 10 × 4 @ RPE 8–9  ← last set RPE 9–10
   Face Pull: 60 × 15 × 3 @ RPE 8–9  ← last set RPE 9–10
   Prone Y-Raise: 7.5 × 12 × 2 @ RPE 8–9 · per hand  ← last set RPE 9–10
   Cable Crunch: 110 × 10 × 3 @ RPE 8–9  ← last set RPE 9–10
@@ -62,9 +68,11 @@ Fri — Comp Deadlift + Back
   135 × 5 · 225 × 3 · 275 × 2 · 315 × 1 · indicator — film · 345 × 1 · bridge
   Deadlift — top single: 360 × 1 × 1 @ RPE 7
   Deadlift — back-offs: 305 × 5 × 3 @ RPE 6.5–7
-  RDL: 265 × 6 × 2 @ RPE 8–9
-  Seated Leg Curl: 115 × 10 × 3 @ RPE 8–9  ← last set RPE 9–10
-  Wide-Grip Lat Pulldown: 170 × 8 × 5 @ RPE 8–9
+  RDL — top set: 250 × 6 × 1 @ RPE 7
+  RDL — back-offs: 230 × 8 × 3 @ RPE 7–8
+  Weighted Chin-Up — top set: +25 × 6 × 1 @ RPE 7
+  Weighted Chin-Up — back-offs: +15 × 8 × 3 @ RPE 7–8
+  Lying Leg Curl: 120 × 10 × 3 @ RPE 8–9  ← last set RPE 9–10
   Chest-Supported DB Row: 65 × 8 × 3 @ RPE 8–9 · per hand
   Cable Curl: 70 × 12 × 2 @ RPE 8–9  ← last set RPE 9–10
   Cable / DB Wrist Curl: 35 × 15 × 2 @ RPE 8–9  ← last set RPE 9–10
@@ -75,7 +83,7 @@ Sat — Frame Spec
   Incline DB Curl: 40 × 10–12 × 3 @ RPE 8–9 · per hand
   Overhead Cable Extension: 75 × 10–12 × 3 @ RPE 8–9
   Unilateral Cable Pulldown: 105 × 10–12 × 3 @ RPE 8
-  Rope / Single-Arm Pushdown: 75 × 12–15 × 2 @ RPE 8–9
+  Rope / Single-Arm Pushdown: 95 × 12–15 × 3 @ RPE 8–9
   Cable Lateral Raise: 25 × 15–20 × 3 @ RPE 8–9
   Ab Wheel / Cable Crunch: 70 × 12–15 × 2 @ RPE 8–9
 
@@ -96,6 +104,7 @@ Mon — Comp Squat + Legs
   Squat — top single: 295 × 1 × 1 @ RPE 7.5
   Squat — back-offs: 255 × 4 × 5 @ RPE 7–7.5
   Leg Press: 490 × 12 × 3 @ RPE 8–9
+  Seated Leg Curl: 130 × 15 × 2 @ RPE 8–9  ← last set RPE 9–10
   Standing Calf Raise: 230 × 12 × 3 @ RPE 8–9  ← last set RPE 9–10
   Hanging Leg Raise: BW × 12 × 3 @ RPE 8–9  ← last set RPE 9–10
   Low-to-High Cable Fly: 35 × 15 × 3 @ RPE 8–9  ← last set RPE 9–10
@@ -118,7 +127,7 @@ Tue — Comp Bench + Back
 Wed — Paused Squat + Arms
   Bar × 10 · 95 × 5 · 135 × 5 · 175 × 3
   Paused Squat (2-sec pause): 225 × 4 × 4 @ RPE 6.5
-  Lying Leg Curl: 115 × 12 × 3 @ RPE 8–9  ← last set RPE 9–10
+  Seated Leg Curl: 145 × 12 × 4 @ RPE 8–9  ← last set RPE 9–10
   Leg Extension: 145 × 15 × 2 @ RPE 8–9  ← last set RPE 9–10
   Incline DB Curl: 37.5 × 12 × 3 @ RPE 8–9 · per hand  ← last set RPE 9–10
   Lateral Raise (Wed): 17.5 × 20 × 3 @ RPE 8–9 · per hand  ← last set RPE 9–10
@@ -130,7 +139,7 @@ Thu — Paused Bench + OHP
   Bar × 15 · 95 × 8 · 115 × 5 · 135 × 3
   Paused Bench (1–2 sec pause): 165 × 5 × 5 @ RPE 7
   Overhead Press: 100 × 7 × 3 @ RPE 7–8
-  Rope Pushdown: 75 × 12 × 3 @ RPE 8–9  ← last set RPE 9–10
+  Rope Pushdown: 95 × 12 × 4 @ RPE 8–9  ← last set RPE 9–10
   Face Pull: 60 × 20 × 3 @ RPE 8–9  ← last set RPE 9–10
   Prone Y-Raise: 7.5 × 15 × 2 @ RPE 8–9 · per hand  ← last set RPE 9–10
   Cable Crunch: 110 × 12 × 3 @ RPE 8–9  ← last set RPE 9–10
@@ -143,9 +152,11 @@ Fri — Comp Deadlift + Back
   135 × 5 · 225 × 3 · 275 × 2 · 315 × 1 · indicator — film · 345 × 1 · bridge
   Deadlift — top single: 375 × 1 × 1 @ RPE 7.5
   Deadlift — back-offs: 320 × 4 × 4 @ RPE 7–7.5
-  RDL: 265 × 8 × 2 @ RPE 8–9
-  Seated Leg Curl: 115 × 12 × 3 @ RPE 8–9  ← last set RPE 9–10
-  Wide-Grip Lat Pulldown: 170 × 10 × 5 @ RPE 8–9
+  RDL — top set: 270 × 5 × 1 @ RPE 7.5
+  RDL — back-offs: 235 × 7 × 3 @ RPE 7–8
+  Weighted Chin-Up — top set: +35 × 5 × 1 @ RPE 7.5
+  Weighted Chin-Up — back-offs: +20 × 7 × 3 @ RPE 7–8
+  Lying Leg Curl: 120 × 12 × 3 @ RPE 8–9  ← last set RPE 9–10
   Chest-Supported DB Row: 65 × 10 × 3 @ RPE 8–9 · per hand
   Cable Curl: 70 × 15 × 2 @ RPE 8–9  ← last set RPE 9–10
   Cable / DB Wrist Curl: 35 × 20 × 2 @ RPE 8–9  ← last set RPE 9–10
@@ -156,7 +167,7 @@ Sat — Frame Spec
   Incline DB Curl: 40 × 10–12 × 3 @ RPE 8–9 · per hand
   Overhead Cable Extension: 75 × 10–12 × 3 @ RPE 8–9
   Unilateral Cable Pulldown: 105 × 10–12 × 3 @ RPE 8
-  Rope / Single-Arm Pushdown: 75 × 12–15 × 2 @ RPE 8–9
+  Rope / Single-Arm Pushdown: 95 × 12–15 × 3 @ RPE 8–9
   Cable Lateral Raise: 25 × 15–20 × 3 @ RPE 8–9
   Ab Wheel / Cable Crunch: 70 × 12–15 × 2 @ RPE 8–9
 
@@ -177,6 +188,7 @@ Mon — Comp Squat + Legs
   Squat — top single: 305 × 1 × 1 @ RPE 8
   Squat — back-offs: 270 × 3 × 5 @ RPE 7.5–8
   Leg Press: 490 × 10 × 2 @ RPE 8
+  Seated Leg Curl: 130 × 12 × 2 @ RPE 8
   Standing Calf Raise: 230 × 10 × 3 @ RPE 8
   Hanging Leg Raise: BW × 10 × 3 @ RPE 8
   Low-to-High Cable Fly: 35 × 12 × 2 @ RPE 8
@@ -200,7 +212,7 @@ Tue — Comp Bench + Back
 Wed — Paused Squat + Arms
   Bar × 10 · 95 × 5 · 135 × 5 · 175 × 3
   Paused Squat (2-sec pause): 240 × 3 × 4 @ RPE 7
-  Lying Leg Curl: 115 × 10 × 2 @ RPE 8
+  Seated Leg Curl: 145 × 10 × 3 @ RPE 8
   Leg Extension: 145 × 12 × 1 @ RPE 8
   Incline DB Curl: 37.5 × 10 × 3 @ RPE 8 · per hand
   EZ-Bar Curl: 75 × 8 × 3 @ RPE 8
@@ -214,7 +226,7 @@ Thu — Paused Bench + OHP
   Bar × 15 · 95 × 8 · 115 × 5 · 135 × 3
   Paused Bench (1–2 sec pause): 175 × 4 × 5 @ RPE 7–7.5
   Overhead Press: 100 × 7 × 2 @ RPE 7–8
-  Rope Pushdown: 75 × 10 × 3 @ RPE 8
+  Rope Pushdown: 95 × 10 × 3 @ RPE 8
   Cross-Body Extension: 30 × 18 × 2 @ RPE 8
   Face Pull: 60 × 15 × 2 @ RPE 8
   Prone Y-Raise: 7.5 × 12 × 2 @ RPE 8 · per hand
@@ -228,9 +240,11 @@ Fri — Comp Deadlift + Back
   135 × 5 · 225 × 3 · 275 × 2 · 315 × 1 · indicator — film · 345 × 1 · bridge
   Deadlift — top single: 385 × 1 × 1 @ RPE 8
   Deadlift — back-offs: 340 × 3 × 4 @ RPE 7.5–8
-  RDL: 265 × 6 × 1 @ RPE 8
-  Seated Leg Curl: 115 × 10 × 2 @ RPE 8
-  Wide-Grip Lat Pulldown: 170 × 8 × 4 @ RPE 8
+  RDL — top set: 285 × 4 × 1 @ RPE 8
+  RDL — back-offs: 245 × 6 × 3 @ RPE 7–8
+  Weighted Chin-Up — top set: +45 × 4 × 1 @ RPE 8
+  Weighted Chin-Up — back-offs: +25 × 6 × 3 @ RPE 7–8
+  Lying Leg Curl: 120 × 10 × 2 @ RPE 8
   Chest-Supported DB Row: 65 × 8 × 3 @ RPE 8 · per hand
   Cable Curl: 70 × 12 × 2 @ RPE 8
   Cable / DB Wrist Curl: 35 × 15 × 2 @ RPE 8
@@ -253,6 +267,7 @@ Mon — Comp Squat + Legs
   Bar × 10 · 95 × 5 · 135 × 5 · 185 × 3 · 225 × 1 · indicator — film · 255 × 1 · bridge
   Squat — light triple: 220 × 3 × 3 @ RPE 5–6
   Leg Press: 345 × 10 × 2 @ RPE 6–7
+  Seated Leg Curl: 90 × 12 × 2 @ RPE 6–7
   Standing Calf Raise: 160 × 10 × 2 @ RPE 6–7
   Hanging Leg Raise: BW × 10 × 2 @ RPE 6–7
   Low-to-High Cable Fly: 25 × 12 × 2 @ RPE 6–7
@@ -274,7 +289,7 @@ Tue — Comp Bench + Back
 Wed — Paused Squat + Arms
   Bar × 10 · 95 × 5 · 135 × 5 · 175 × 3
   Paused Squat (2-sec pause): 195 × 5 × 2 @ RPE 5–6
-  Lying Leg Curl: 80 × 10 × 2 @ RPE 6–7
+  Seated Leg Curl: 100 × 10 × 2 @ RPE 6–7
   Leg Extension: 100 × 12 × 2 @ RPE 6–7
   Incline DB Curl: 27.5 × 10 × 2 @ RPE 6–7 · per hand
   EZ-Bar Curl: 55 × 8 × 2 @ RPE 6–7
@@ -288,7 +303,7 @@ Thu — Paused Bench + OHP
   Bar × 15 · 95 × 8 · 115 × 5 · 135 × 3
   Paused Bench (1–2 sec pause): 135 × 5 × 3 @ RPE 5–6
   Overhead Press: 80 × 6 × 2 @ RPE 5–6
-  Rope Pushdown: 55 × 10 × 2 @ RPE 6–7
+  Rope Pushdown: 65 × 10 × 2 @ RPE 6–7
   Cross-Body Extension: 20 × 18 × 2 @ RPE 6–7
   Face Pull: 40 × 15 × 2 @ RPE 6–7
   Prone Y-Raise: 5 × 12 × 2 @ RPE 6–7 · per hand
@@ -300,9 +315,9 @@ Thu — Paused Bench + OHP
 Fri — Comp Deadlift + Back
   135 × 5 · 225 × 3 · 275 × 2 · 315 × 1 · indicator — film · 345 × 1 · bridge
   Deadlift — light triple: 275 × 3 × 3 @ RPE 5–6
-  RDL: 185 × 6 × 2 @ RPE 6–7
-  Seated Leg Curl: 80 × 10 × 2 @ RPE 6–7
-  Wide-Grip Lat Pulldown: 120 × 8 × 2 @ RPE 6–7
+  RDL — light: 175 × 6 × 2 @ RPE 5–6
+  Weighted Chin-Up — light: BW × 8 × 2 @ RPE 5–6
+  Lying Leg Curl: 85 × 10 × 2 @ RPE 6–7
   Chest-Supported DB Row: 45 × 8 × 2 @ RPE 6–7 · per hand
   Cable Curl: 50 × 12 × 2 @ RPE 6–7
   Cable / DB Wrist Curl: 25 × 15 × 2 @ RPE 6–7

@@ -32,7 +32,7 @@ def sessions(wave):
     }
     const t = E.mainTables(wave, {});
     const tr = {};
-    for (const id of ['inc', 'chin', 'rdl']) tr[id] = { cb: E.trackedCB(id, wave, {}), goal: E.TRACKED[id].goal };
+    for (const id of ['inc', 'chin', 'dip', 'rdl']) tr[id] = { cb: E.trackedCB(id, wave, {}), goal: E.TRACKED[id].goal };
     console.log(JSON.stringify({ blocks: out, cb: t.cb, cyc: t.cyc, cycName: E.CYCLE_NAME[t.cyc],
       tracked: tr, start: E.waveStartUTC(wave, 0) }));
     """ % wave
@@ -63,11 +63,13 @@ def note_body(wave, data):
          f"CYCLE BASES: bench {cb['bn']} · squat {cb['sq']} · deadlift {cb['dl']}",
          f"TRACKED: incline {tr['inc']['cb']} → {tr['inc']['goal']} · "
          f"chin-up +{tr['chin']['cb']} → +{tr['chin']['goal']} · "
+         f"dip +{tr['dip']['cb']} → +{tr['dip']['goal']} · "
          f"RDL {tr['rdl']['cb']} → {tr['rdl']['goal']}",
          "",
-         "ARMS + HAMSTRINGS ARE GOALS NOW, not accessories. The weighted chin-up and",
-         "the RDL are tracked and gated exactly like the big three — they climb every",
-         "wave and they have finish lines. Chase them like you chase 3/4/5.",
+         "ARMS ARE THE CALLING CARD. 13 in → 15 in. Chin-up drives the biceps side,",
+         "dip the triceps side, and TRICEPS ARE TWO-THIRDS OF ARM CIRCUMFERENCE —",
+         "so they carry the larger share, most of it overhead and at length.",
+         "Chin-up, dip, RDL and incline all climb like the big three do.",
          "",
          "⚠️ THIS NOTE IS GENERATED FROM THE APP. The app is the source of truth —",
          "it adapts loads to what you actually log. Use this only as a reference.",

@@ -143,6 +143,12 @@ const TRACKED = {
     back: [[0.35, 8, 3], [0.45, 7, 3], [0.55, 6, 3], [0, 8, 2]],
     note: "Ramping to +90. Supinated, dead hang to chin over the bar. THE biceps compound \u2014 nothing else loads elbow flexion this heavy.",
   },
+  dip: {
+    key: "dip", name: "Weighted Dip", start: 35, goal: 100, step: 5, anchor: "bn", added: true,
+    top:  [[0.60, 6, "7"], [0.80, 5, "7.5"], [1.00, 4, "8"], null],
+    back: [[0.35, 8, 3], [0.45, 7, 3], [0.55, 6, 3], [0, 8, 2]],
+    note: "Ramping to +100. Slight forward lean, sink until the shoulder says stop. THE triceps compound \u2014 the long head loaded at length, which is where it grows.",
+  },
   rdl: {
     key: "rdl", name: "RDL", start: 275, goal: 315, step: 5, anchor: "dl",
     top:  [[0.88, 6, "7"], [0.94, 5, "7.5"], [1.00, 4, "8"], null],
@@ -151,6 +157,9 @@ const TRACKED = {
   },
 };
 const INCLINE_START = TRACKED.inc.start, INCLINE_GOAL = TRACKED.inc.goal;
+// Arms are the stated calling card. 13" at 182 lb is a genuinely lagging part;
+// 15" at 200 lb is +33% cross-sectional area, which is the honest multi-year target.
+const ARM_START = 13, ARM_GOAL = 15;
 
 // Log-adaptive base: a past wave advances only if its week-3 top set was cleared.
 // Unlogged waves track the anchor lift's gate, so casual use still progresses.
@@ -259,21 +268,22 @@ const ACC = [
   { id: "legext",    name: "Leg Extension",          day: 3, sets: 2, w3: 1, steps: [12, 15],         w: 125,   inc: 10,  db: false, comp: false, arch: "legext",    cap: "Final set RPE 9–10 OK Wks 1–2" },
   { id: "inccurl",   name: "Incline DB Curl",        day: 3, sets: 3, w3: 3, steps: [10, 12, 15],     w: 32.5,   inc: 5,   db: true,  comp: false, arch: "curl",      cap: "Priority curl — always first, full stretch" },
   { id: "ezcurl",    name: "EZ-Bar Curl",            day: 3, sets: 3, w3: 3, steps: [8, 10, 12],      w: 70,   inc: 5,   db: false, comp: false, arch: "curl",      cap: "No swinging; elbows pinned" },
-  { id: "hammer",    name: "Hammer Curl",            day: 3, sets: 2, w3: 2, steps: [10, 12, 15],     w: 35,   inc: 5,   db: true,  comp: false, arch: "curl",      cap: "Neutral grip; slow negative" },
+  { id: "hammer",    name: "Hammer Curl",            day: 3, sets: 3, w3: 2, steps: [10, 12, 15],     w: 35,   inc: 5,   db: true,  comp: false, arch: "curl",      cap: "BRACHIALIS \u2014 sits under the biceps and pushes it up. Adds width from the front. Neutral grip, slow negative" },
   { id: "latwed",    name: "Lateral Raise (Wed)",    day: 3, sets: 3, w3: 3, steps: [15, 20, 25],     w: 15, inc: 2.5, db: true,  comp: false, arch: "lateral",   cap: "Higher-rep day: chase the burn, not the load" },
   { id: "woodchop",  name: "Cable Woodchop",         day: 3, sets: 2, w3: 2, steps: [10, 12, 15],     w: 40,   inc: 5,   db: false, comp: false, arch: "woodchop",  cap: "High-to-low, per side. Rotate through the trunk, arms stay long. Light – obliques brace heavy 5 days a week already" },
   { id: "latthu",    name: "Lateral Raise (Thu)",    day: 4, sets: 4, w3: 3, steps: [12, 15, 18, 20], w: 17.5,   inc: 2.5, db: true,  comp: false, arch: "lateral",   cap: "4 sets — the big side-delt day" },
   { id: "rdf",       name: "Rear-Delt Fly",          day: 4, sets: 3, w3: 3, steps: [15, 20, 25],     w: 17.5, inc: 2.5, db: true,  comp: false, arch: "rearfly",   cap: "Think 'throw, don't lift'" },
-  { id: "pushdown",  name: "Rope Pushdown",          day: 4, sets: 4, w3: 3, steps: [10, 12, 15],     w: 90,   inc: 5,   db: false, comp: false, arch: "pushdown",  cap: "May approach RPE 9 if elbows feel normal" },
+  { id: "pushdown",  name: "Rope Pushdown",          day: 4, sets: 3, w3: 3, steps: [10, 12, 15],     w: 90,   inc: 5,   db: false, comp: false, arch: "pushdown",  cap: "May approach RPE 9 if elbows feel normal" },
+  { id: "ohthu",     name: "Overhead Cable Extension", day: 4, sets: 3, w3: 2, steps: [10, 12, 15],     w: 70,   inc: 5,   db: false, comp: false, arch: "ohtri",     cap: "LONG HEAD \u2014 two-thirds of your arm. Overhead beats a pushdown roughly 2:1 for this head (Maeo 2023). Elbows in, full stretch behind the head" },
   { id: "crossbody", name: "Cross-Body Extension",   day: 4, sets: 3, w3: 2, steps: [12, 15, 18, 20], w: 30,   inc: 5,   db: false, comp: false, arch: "ohtri",     cap: "Per arm; lock the upper arm still" },
   { id: "facepull",  name: "Face Pull",              day: 4, sets: 3, w3: 2, steps: [15, 20, 25],     w: 55,   inc: 5,   db: false, comp: false, arch: "rearfly",   cap: "Rear delts + posture. Pull to the forehead, elbows high" },
   { id: "proneY",    name: "Prone Y-Raise",          day: 4, sets: 2, w3: 2, steps: [12, 15, 20],     w: 5,    inc: 2.5, db: true,  comp: false, arch: "proneY",    cap: "LOWER traps \u2014 the muscle that actually holds your shoulders back. Thumbs up, arms at 45\u00b0, tiny weight" },
-  { id: "crunch",    name: "Cable Crunch",           day: 4, sets: 3, w3: 3, steps: [10, 12, 15],     w: 100,   inc: 10,  db: false, comp: false, arch: "crunch",    cap: "Flex the spine, don't pull with arms" },
+  { id: "crunch",    name: "Cable Crunch",           day: 1, sets: 3, w3: 3, steps: [10, 12, 15],     w: 100,   inc: 10,  db: false, comp: false, arch: "crunch",    cap: "Flex the spine, don't pull with arms" },
   { id: "wrist",     name: "Wrist Extension",        day: 4, sets: 2, w3: 2, steps: [15, 20, 25],     w: 12.5,   inc: 2.5, db: true,  comp: false, arch: "wrist",     cap: "Elbow-health insurance — never skip" },
   { id: "neckext",   name: "Neck Extension",         day: 4, sets: 2, w3: 2, steps: [12, 15, 20],     w: 10,   inc: 2.5, db: false, comp: false, arch: "neckext",   cap: "Prone, plate on the back of the head. Slow, no jerking, NEVER through pain" },
   { id: "seatcurl",  name: "Lying Leg Curl",         day: 5, sets: 3, w3: 2, steps: [10, 12, 15],     w: 110,   inc: 10,  db: false, comp: false, arch: "legcurl",   cap: "Final set RPE 9–10 OK Wks 1–2" },
   { id: "rowfri",    name: "Chest-Supported DB Row", day: 5, sets: 3, w3: 3, steps: [8, 10, 12],      w: 60,   inc: 5,   db: true,  comp: true,  arch: "row",       cap: "No unsupported barbell rows" },
-  { id: "cablecurl", name: "Cable Curl",             day: 5, sets: 2, w3: 2, steps: [12, 15],         w: 60,   inc: 5,   db: false, comp: false, arch: "curl",      cap: "Constant tension; strict" },
+  { id: "cablecurl", name: "Reverse Cable Curl",     day: 5, sets: 2, w3: 2, steps: [12, 15],         w: 45,   inc: 5,   db: false, comp: false, arch: "curl",      cap: "Pronated \u2014 brachialis + brachioradialis. The chin-up already hammered the biceps supinated; this is the other half of the arm" },
   { id: "wristcurl", name: "Cable / DB Wrist Curl",  day: 5, sets: 2, w3: 2, steps: [15, 20, 25],     w: 30,   inc: 5,   db: false, comp: false, arch: "wrist",     cap: "Flexors – the meat of the forearm. Grip is pre-fried from deadlifts: perfect placement" },
 ];
 
@@ -615,6 +625,7 @@ function sessionForInner(wave, week, day, gates, spec) {
   // Thursday sheds its delt/triceps isolation → migrated into Saturday's specialization
   const THU_DROP = new Set(["latthu", "rdf"]); // delt work migrates to Sat; triceps STAYS on Thu
   if (day === 2 && cyc !== 6) for (const b of trackedFor("inc", wave, week, gates)) push(b);
+  if (day === 4 && cyc !== 6) for (const b of trackedFor("dip", wave, week, gates)) push(b);
   if (day === 5 && cyc !== 6) {                       // hamstrings + arms, tracked and ramping
     for (const b of trackedFor("rdl", wave, week, gates)) push(b);
     for (const b of trackedFor("chin", wave, week, gates)) push(b);
@@ -630,7 +641,7 @@ function sessionForInner(wave, week, day, gates, spec) {
       continue;
     }
     if (xfer && a.id === "lattue") continue;             // transfer: Tue laterals → Sunday
-    if (xfer && (a.id === "ezcurl" || a.id === "hammer")) continue; // transfer: Wed EZ + hammer → Sunday (incline curl kept)
+    if (xfer && a.id === "ezcurl") continue;             // transfer: Wed EZ → Sunday (incline curl + hammer are permanent)
     if (xfer && a.id === "crossbody") continue;         // transfer: Thu cross-body → Sunday
     const p = accFor(a, wave, week);
     if (!p) continue;
@@ -731,6 +742,6 @@ function redSession(wave, day, gates) {
   return blocks;
 }
 
-const ENGINE = { TRACKED, trackedCB, trackedFor, clearedInWave, inclineCB, inclineFor, INCLINE_START, INCLINE_GOAL, pkeyOf, accStateLogged, R5, R25, START, LIFTS, LIFT_NAME, gateDelta, cbFor, cycleOf, macroOf, CYCLE_NAME, waveStartUTC, whereIs, NOTES, mainTables, ohpFor, ACC, accState, accFor, sessionFor, testAttempts, yellowW, redSession, WAVE1_MONDAY, MS_DAY,
+const ENGINE = { TRACKED, trackedCB, trackedFor, ARM_START, ARM_GOAL, clearedInWave, inclineCB, inclineFor, INCLINE_START, INCLINE_GOAL, pkeyOf, accStateLogged, R5, R25, START, LIFTS, LIFT_NAME, gateDelta, cbFor, cycleOf, macroOf, CYCLE_NAME, waveStartUTC, whereIs, NOTES, mainTables, ohpFor, ACC, accState, accFor, sessionFor, testAttempts, yellowW, redSession, WAVE1_MONDAY, MS_DAY,
   FRAME_OPTS, FRAME_LABEL, DETAIL_OPTS, DETAIL_LABEL, DEFAULT_SPEC, isDefaultSpec, saturdaySession, sundaySession, sundayPlanned };
 if (typeof module !== "undefined") module.exports = ENGINE;

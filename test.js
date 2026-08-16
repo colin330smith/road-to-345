@@ -35,7 +35,7 @@ eq([acc("lattue",2,1,1).w, acc("lattue",2,1,1).reps, acc("lattue",2,1,2).reps], 
 eq([acc("legpress",1,2,1).w, acc("legpress",1,2,1).reps], [470,10], "w2 legpress 380");
 eq([acc("lattue",2,2,1).w, acc("lattue",2,2,1).reps, acc("lattue",2,2,2).reps], [20,12,15], "w2 lattue 17.5");
 eq([acc("legext",3,2,1).w], [135], "w2 legext 100");
-eq([acc("cablecurl",5,2,1).w, acc("cablecurl",5,2,1).reps], [65,12], "w2 cablecurl 45");
+eq([acc("cablecurl",5,2,1).w, acc("cablecurl",5,2,1).reps], [50,12], "w2 reverse curl (seed 60->45, pronated is weaker)");
 eq([acc("rowtue",2,2,1).w, acc("rowtue",2,2,1).reps, acc("rowtue",2,2,2).reps], [60,10,12], "w2 row 50 10/12");
 eq([acc("crossbody",4,2,1).reps, acc("crossbody",4,2,2).reps], [15,18], "w2 crossbody 15/18");
 // wave 3
@@ -53,7 +53,7 @@ eq([acc("lattue",2,4,1).w, acc("lattue",2,4,1).reps], [22.5,12], "w4 lattue 20s"
 eq([acc("latthu",4,4,1).w, acc("latthu",4,4,1).reps], [20,12], "w4 latthu 17.5");
 eq([acc("crossbody",4,4,1).w, acc("crossbody",4,4,1).reps], [35,12], "w4 crossbody 25");
 eq([acc("legext",3,4,1).w], [155], "w4 legext 120");
-eq([acc("cablecurl",5,4,1).w], [75], "w4 cablecurl 55");
+eq([acc("cablecurl",5,4,1).w], [60], "w4 reverse curl (seed 60->45)");
 eq([acc("ezcurl",3,4,1).w, acc("ezcurl",3,4,1).reps], [75,10], "w4 ez 55 10/12");
 // week-3 set trims
 eq(acc("legpress",1,2,3).sets, 2, "wk3 trim legpress");
@@ -181,13 +181,14 @@ const thu = E.sessionFor(1, 1, 4, {}, DEF);
 ok(thu.some((b) => b.type === "paused" && b.lift === "bn"), "Thu keeps paused bench");
 ok(thu.some((b) => b.type === "ohp"), "Thu keeps OHP");
 ok(!thu.some((b) => /Rear-Delt Fly|Cross-Body/.test(b.name)), "Thu dropped rear-delt & cross-body");
-ok(thu.some((b) => /Crunch/.test(b.name)) && thu.some((b) => /Wrist/.test(b.name)), "Thu keeps abs + wrist");
+ok(thu.some((b) => /Wrist/.test(b.name)) && thu.some((b) => /Neck/.test(b.name)), "Thu keeps wrist + neck (abs moved to Mon for the dip)");
+ok(E.sessionFor(1, 1, 1, {}, DEF).some((b) => /Cable Crunch/.test(b.name || "")), "Mon received the ab block");
 
 // Transfers fire Wk1 (Sunday runs): Tue laterals gone, Wed EZ + hammer gone, incline curl kept
 const tue1 = E.sessionFor(1, 1, 2, {}, DEF);
 ok(!tue1.some((b) => /Lateral Raise/.test(b.name)), "Tue laterals transferred out Wk1");
 const wed1 = E.sessionFor(1, 1, 3, {}, DEF);
-ok(!wed1.some((b) => /EZ-Bar Curl/.test(b.name)) && !wed1.some((b) => /Hammer Curl/.test(b.name)), "Wed EZ+hammer transferred out");
+ok(!wed1.some((b) => /EZ-Bar Curl/.test(b.name)) && wed1.some((b) => /Hammer Curl/.test(b.name)), "Wed EZ transferred out; hammer is permanent");
 ok(wed1.some((b) => /Incline DB Curl/.test(b.name)), "Wed incline curl kept");
 // Wk3 (Sunday off): transfers do NOT fire — Tue laterals return
 const tue3 = E.sessionFor(1, 3, 2, {}, DEF);
@@ -276,7 +277,7 @@ console.log("\n── frame requirements ──");
     if (b.type !== "accessory") continue;
     if (isBi(b.name)) bi += b.sets; else if (isTri(b.name)) tri += b.sets;
   }
-  eq(bi, 16, "frame: biceps still at the 16 cap");
+  eq(bi, 19, "frame: biceps at the 19 specialization cap");
   ok(tri >= 8 && tri <= 14, "frame: triceps direct in 8-14 band after shrug trade");
   const tue = E.sessionFor(1, 1, 2, {}, E.DEFAULT_SPEC);
   const mon = E.sessionFor(1, 1, 1, {}, E.DEFAULT_SPEC);
@@ -331,7 +332,7 @@ console.log("\n── frame requirements ──");
   let bi = 0;
   for (let d = 1; d <= 7; d++) for (const b of E.sessionFor(1, 1, d, {}, E.DEFAULT_SPEC))
     if (b.type === "accessory" && /Curl/i.test(b.name) && !/Leg Curl|Neck|Wrist/i.test(b.name)) bi += b.sets;
-  eq(bi, 16, "neck: biceps count uncontaminated by neck or wrist curls");
+  eq(bi, 19, "neck: biceps count uncontaminated by neck or wrist curls");
 }
 
 
@@ -356,7 +357,7 @@ console.log("\n── frame requirements ──");
   let bi = 0;
   for (let d = 1; d <= 7; d++) for (const b of E.sessionFor(1, 1, d, {}, E.DEFAULT_SPEC))
     if (b.type === "accessory" && /Curl/i.test(b.name) && !/Leg Curl|Neck|Wrist/i.test(b.name)) bi += b.sets;
-  eq(bi, 16, "sweep: biceps still exactly 16");
+  eq(bi, 19, "sweep: biceps exactly 19 (16 biceps + 3 brachialis)");
 }
 
 
@@ -477,7 +478,7 @@ console.log("\n── frame requirements ──");
     if (isTri(n) && b.type === "accessory") tri += b.sets;
     if (isHam(n)) { ham += b.sets; hamDays.add(d); }
   }
-  eq(bi, 16, "arms: biceps still at the 16 cap");
+  eq(bi, 19, "arms: biceps at the 19 specialization cap");
   ok(tri >= 12 && tri <= 14, "arms: triceps raised into 12-14 (was 10)");
   ok(ham >= 12, "hams: 12+ weekly sets (was 8)");
   ok(hamDays.size >= 3, "hams: 3+ exposures per week");
@@ -503,6 +504,44 @@ console.log("\n── frame requirements ──");
   const MS = E.MS_DAY, W = (w) => E.waveStartUTC(w, 0);
   const hit = (w, wt, r) => [{ t: W(w) + 16 * MS, w: wt, r }];
   eq(E.trackedCB("rdl", 2, {}, ), 280, "hams: RDL advances on the anchor gate when unlogged");
+}
+
+
+// ═══ arms are the calling card: triceps carry the larger share ═══
+{
+  const isBi = (n) => /Curl/i.test(n) && !/Leg Curl|Neck|Wrist/i.test(n);
+  const isTri = (n) => /(Extension|Pushdown|Dip)/i.test(n) && !/Leg|Wrist|Neck/i.test(n);
+  const isLong = (n) => /Overhead|Cross-Body|Dip/i.test(n);
+  let bi = 0, tri = 0, lng = 0, briach = 0;
+  for (let d = 1; d <= 7; d++) for (const b of E.sessionFor(1, 1, d, {}, E.DEFAULT_SPEC)) {
+    if (!["accessory", "single", "backoff"].includes(b.type)) continue;
+    const n = b.name || "";
+    if (isBi(n)) { bi += b.sets; if (/Hammer|Reverse/i.test(n)) briach += b.sets; }
+    if (isTri(n)) { tri += b.sets; if (isLong(n)) lng += b.sets; }
+  }
+  // triceps are ~2/3 of arm circumference, so they must not be the smaller allocation
+  ok(tri >= bi - 1, `arms: triceps (${tri}) not below biceps (${bi})`);
+  ok(tri >= 18, "arms: triceps at the 18 specialization volume");
+  ok(lng / tri >= 0.5, "arms: at least half of triceps volume is lengthened-position");
+  ok(briach >= 5, "arms: brachialis gets 5+ dedicated sets (hammer + reverse)");
+
+  const dip = E.TRACKED.dip;
+  eq([dip.start, dip.goal, dip.anchor], [35, 100, "bn"], "dip: seeded from his +25x5-10, goal +100, bench-gated");
+  eq(E.trackedFor("dip", 2, 1, {})[0].w, 25, "dip: wave 2 opens at +25, exactly his current top end");
+  ok(E.trackedFor("dip", 2, 3, {})[0].w > 25, "dip: climbs inside the wave");
+  ok(E.sessionFor(1, 1, 4, {}, E.DEFAULT_SPEC).some((b) => /Weighted Dip/.test(b.name || "") && b.added),
+     "dip: lives on Thursday, flagged as added weight");
+  ok(E.sessionFor(1, 1, 4, {}, E.DEFAULT_SPEC).every((b) => !/Weighted Chin-Up/.test(b.name || "")),
+     "dip and chin-up are on separate days");
+
+  // no day may blow past the 7:00-8:30 window
+  for (let d = 1; d <= 7; d++) {
+    let sets = 0;
+    for (const b of E.sessionFor(1, 1, d, {}, E.DEFAULT_SPEC))
+      if (["accessory", "single", "backoff", "main", "ohp", "paused"].includes(b.type)) sets += b.sets;
+    ok(sets <= 27, `day ${d}: ${sets} working sets stays inside the session budget`);
+  }
+  eq([E.ARM_START, E.ARM_GOAL], [13, 15], "arms: 13 -> 15 in, the honest target from his real baseline");
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

@@ -293,6 +293,8 @@ const MOVES = {
     cues:["Elbows by the ears — only forearms move","Full stretch behind the head"],cap:"High on the elbow pain ladder — drop early if cranky."},
   crossbody:{name:"Cross-Body Extension",grp:"Arms & Delts",arch:"ohtri",yt:"cross body cable tricep extension",
     cues:["Upper arm pinned across the body — pure elbow","Match reps on both arms"],cap:"RPE 9 OK when elbows are quiet."},
+  dip:{name:"Weighted Dip",grp:"Main Lifts",arch:"pushdown",yt:"weighted dip form triceps",
+    cues:["Slight forward lean, elbows tracking back","Sink until the shoulder says stop — depth is where the long head loads","Belt or dumbbell between the feet","THE triceps compound. Triceps are two-thirds of your arm"],cap:"Tracked to +100. Top set to the week's RPE cap, back-offs 7–8. Stop the set if the front of the shoulder pinches."},
   chin:{name:"Weighted Chin-Up",grp:"Main Lifts",arch:"pulldown",yt:"weighted chin up form",
     cues:["Supinated grip, shoulder width","Dead hang at the bottom, chin OVER the bar","Belt or dumbbell between the feet","THE biceps compound — nothing else loads elbow flexion this heavy"],cap:"Tracked to +90. Top set to the week's RPE cap, back-offs 7–8."},
   incbb:{name:"Incline Bench Press",grp:"Main Lifts",arch:"incpress",yt:"incline barbell bench press form",
@@ -520,17 +522,21 @@ function renderRoad() {
   const bwRows = Object.entries(S.bw).filter(([k]) => DK_RE.test(k)).sort();
   const bwNow = bwRows.length ? bwRows[bwRows.length - 1][1] : 182;
   const bwPct = Math.max(0, Math.min(100, Math.round(((bwNow - 182) / (200 - 182)) * 100)));
-  let h = `<div class="card single"><div class="eyebrow sig">The Goal — 315/405/495 · 200 @ 15%</div><div class="summit">
+  let h = `<div class="card single"><div class="eyebrow sig">The Goal — 315/405/495 · 15" arms · 200 @ 15%</div><div class="summit">
     ${E.LIFTS.map((L) => { const [s0, g] = GOALS[L]; const pct = Math.max(0, Math.min(100, Math.round(((cbNow[L] - s0) / (g - s0)) * 100))); return `<div class="srow"><span>${E.LIFT_NAME[L]}</span><div class="sbar"><i style="width:${pct}%"></i></div><span class="sval">${cbNow[L]} / ${g}</span></div>`; }).join("")}
-    ${["inc", "chin", "rdl"].map((id) => {
+    ${["inc", "chin", "dip", "rdl"].map((id) => {
         const T = E.TRACKED[id], v = E.trackedCB(id, Math.max(1, Math.min(now.wave || 1, 19)), S.gates);
         const p = Math.max(0, Math.min(100, Math.round(((v - T.start) / (T.goal - T.start)) * 100)));
-        const lbl = { inc: "Incline", chin: "Chin-up", rdl: "RDL" }[id];
+        const lbl = { inc: "Incline", chin: "Chin-up", dip: "Dip", rdl: "RDL" }[id];
         const f = (x) => (T.added ? "+" + x : x);
         return `<div class="srow"><span>${lbl}</span><div class="sbar"><i style="width:${p}%"></i></div><span class="sval">${f(v)} / ${f(T.goal)}</span></div>`;
       }).join("")}
     <div class="srow" style="border-top:1px solid var(--steel);padding-top:8px"><span>Bodyweight</span><div class="sbar"><i style="width:${bwPct}%"></i></div><span class="sval">${bwNow} / 200</span></div>
-  </div><p class="note">Lifts are cycle bases, not tested maxes. Incline, chin-up and RDL are tracked the same way the big three are — arms and hamstrings are goals, not accessories. Bodyweight only counts if the waist stays flat while it climbs.</p></div>
+    ${(() => { const mk = Object.keys(S.meas || {}).filter((k) => S.meas[k] && Number.isFinite(S.meas[k].ar)).sort();
+        const now = mk.length ? S.meas[mk[mk.length - 1]].ar : E.ARM_START;
+        const p = Math.max(0, Math.min(100, Math.round(((now - E.ARM_START) / (E.ARM_GOAL - E.ARM_START)) * 100)));
+        return `<div class="srow"><span>Arms</span><div class="sbar"><i style="width:${p}%"></i></div><span class="sval">${now}" / ${E.ARM_GOAL}"</span></div>`; })()}
+  </div><p class="note">Lifts are cycle bases, not tested maxes. Incline, chin-up, dip and RDL are tracked the same way the big three are — arms and hamstrings are goals, not accessories. Chin-up drives the biceps side, dip the triceps side; triceps are two-thirds of arm circumference, so they carry the larger share. Bodyweight only counts if the waist stays flat while it climbs.</p></div>
   <p class="note">19 waves · 4 macros. Projections re-compute from your gate results; untouched gates assume clean.</p>`;
   for (let w = 1; w <= 19; w++) {
     const cb = E.cbFor(w, S.gates);
@@ -774,11 +780,12 @@ function renderTrends() {
     <div class="metrics" style="margin-top:8px">
       <label>Waist <input type="number" step="0.25" inputmode="decimal" id="mw" value="${last && last.wa ? last.wa : ""}"> in</label>
       <label>Shoulders <input type="number" step="0.25" inputmode="decimal" id="ms" value="${last && last.sh ? last.sh : ""}"> in</label>
+      <label>Arm <input type="number" step="0.25" inputmode="decimal" id="ma" value="${last && last.ar ? last.ar : ""}"> in</label>
       <button class="btn" onclick="logMeas()">Log</button>
     </div>
     ${ratio ? `<div class="statline" style="margin-top:8px"><span class="note">Shoulder ÷ waist</span> <b style="font-size:20px;font-variant-numeric:tabular-nums">${ratio.toFixed(2)}</b> <span class="note">· 1.4 athletic · 1.5 strong V · 1.6 elite</span></div>` : ""}
     <p class="note" style="margin-top:8px">${esc(verdict)}</p>
-    ${mk.length ? `<div class="tablewrap" style="margin-top:8px"><table><tr><th>Date</th><th>Waist</th><th>Shoulders</th><th>Ratio</th></tr>${mk.slice(-6).reverse().map((k) => { const m = S.meas[k]; return `<tr><td>${esc(k)}</td><td>${m.wa || "—"}</td><td>${m.sh || "—"}</td><td>${m.sh && m.wa ? (m.sh / m.wa).toFixed(2) : "—"}</td></tr>`; }).join("")}</table></div>` : `<p class="note">Nothing logged. Measure cold, relaxed, first thing — waist at the navel, shoulders at the widest point. Monthly, same conditions.</p>`}
+    ${mk.length ? `<div class="tablewrap" style="margin-top:8px"><table><tr><th>Date</th><th>Waist</th><th>Shoulders</th><th>Arm</th><th>Ratio</th></tr>${mk.slice(-6).reverse().map((k) => { const m = S.meas[k]; return `<tr><td>${esc(k)}</td><td>${m.wa || "—"}</td><td>${m.sh || "—"}</td><td>${m.ar || "—"}</td><td>${m.sh && m.wa ? (m.sh / m.wa).toFixed(2) : "—"}</td></tr>`; }).join("")}</table></div>` : `<p class="note">Nothing logged. Measure cold, first thing — waist at the navel, shoulders at the widest point, arm at the peak. Flexed or cold, pick one and never switch: consistency matters more than which. Monthly.</p>`}
     <p class="note" style="margin-top:8px">Visible abs sit at 10–12% for most men. At your 15% goal expect a flat stomach, not a six-pack — run a 6–8 week trim when you want them for a date.</p></div>`;
   $("#view").innerHTML = measCard + `
     <div class="card"><div class="eyebrow sig">Bodyweight — road to 200</div>
@@ -834,11 +841,13 @@ function renderMore() {
 window.logMeas = () => {
   const wa = parseFloat(document.getElementById("mw").value);
   const sh = parseFloat(document.getElementById("ms").value);
-  if (!Number.isFinite(wa) && !Number.isFinite(sh)) return;
+  const ar = parseFloat(document.getElementById("ma").value);
+  if (!Number.isFinite(wa) && !Number.isFinite(sh) && !Number.isFinite(ar)) return;
   const k = keyOf(todayUTC());
   S.meas[k] = S.meas[k] || {};
   if (Number.isFinite(wa)) S.meas[k].wa = wa;
   if (Number.isFinite(sh)) S.meas[k].sh = sh;
+  if (Number.isFinite(ar)) S.meas[k].ar = ar;
   save(); render();
 };
 window.delDay = (dk) => { if (confirm("Delete this session log?")) { delete S.logs[dk]; save(); render(); } };

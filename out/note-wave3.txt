@@ -1,11 +1,12 @@
 💪 WAVE 3 — ACCUMULATE
 
 CYCLE BASES: bench 235 · squat 335 · deadlift 425
-TRACKED: incline 190 → 225 · chin-up +45 → +90 · RDL 285 → 315
+TRACKED: incline 190 → 225 · chin-up +45 → +90 · dip +45 → +100 · RDL 285 → 315
 
-ARMS + HAMSTRINGS ARE GOALS NOW, not accessories. The weighted chin-up and
-the RDL are tracked and gated exactly like the big three — they climb every
-wave and they have finish lines. Chase them like you chase 3/4/5.
+ARMS ARE THE CALLING CARD. 13 in → 15 in. Chin-up drives the biceps side,
+dip the triceps side, and TRICEPS ARE TWO-THIRDS OF ARM CIRCUMFERENCE —
+so they carry the larger share, most of it overhead and at length.
+Chin-up, dip, RDL and incline all climb like the big three do.
 
 ⚠️ THIS NOTE IS GENERATED FROM THE APP. The app is the source of truth —
 it adapts loads to what you actually log. Use this only as a reference.
@@ -25,6 +26,7 @@ Mon — Comp Squat + Legs
   Hanging Leg Raise: BW × 10 × 3 @ RPE 8–9  ← last set RPE 9–10
   Low-to-High Cable Fly: 35 × 12 × 3 @ RPE 8–9  ← last set RPE 9–10
   Machine / DB Shrug: 170 × 10 × 3 @ RPE 8–9  ← last set RPE 9–10
+  Cable Crunch: 110 × 10 × 3 @ RPE 8–9  ← last set RPE 9–10
   Cooldown — 5 min — POSTURE: couch stretch 2×30s/side (hip flexors = the anterior tilt fix) · ankle rocks 15/side · dead hang 30s · easy breathing, no bouncing
 
 Tue — Comp Bench + Back
@@ -46,6 +48,7 @@ Wed — Paused Squat + Arms
   Seated Leg Curl: 145 × 10 × 4 @ RPE 8–9  ← last set RPE 9–10
   Leg Extension: 145 × 12 × 2 @ RPE 8–9  ← last set RPE 9–10
   Incline DB Curl: 37.5 × 10 × 3 @ RPE 8–9 · per hand  ← last set RPE 9–10
+  Hammer Curl: 40 × 10 × 3 @ RPE 8–9 · per hand  ← last set RPE 9–10
   Lateral Raise (Wed): 17.5 × 15 × 3 @ RPE 8–9 · per hand  ← last set RPE 9–10
   Cable Woodchop: 45 × 10 × 2 @ RPE 8–9  ← last set RPE 9–10
   Incline Walk — 20 min · 3 mph · 6%
@@ -55,10 +58,12 @@ Thu — Paused Bench + OHP
   Bar × 15 · 95 × 8 · 115 × 5 · 135 × 3
   Paused Bench (1–2 sec pause): 155 × 6 × 4 @ RPE 6.5–7
   Overhead Press: 100 × 6 × 3 @ RPE 7–8
-  Rope Pushdown: 95 × 10 × 4 @ RPE 8–9  ← last set RPE 9–10
+  Weighted Dip — top set: +25 × 6 × 1 @ RPE 7
+  Weighted Dip — back-offs: +15 × 8 × 3 @ RPE 7–8
+  Rope Pushdown: 95 × 10 × 3 @ RPE 8–9  ← last set RPE 9–10
+  Overhead Cable Extension: 75 × 10 × 3 @ RPE 8–9  ← last set RPE 9–10
   Face Pull: 60 × 15 × 3 @ RPE 8–9  ← last set RPE 9–10
   Prone Y-Raise: 7.5 × 12 × 2 @ RPE 8–9 · per hand  ← last set RPE 9–10
-  Cable Crunch: 110 × 10 × 3 @ RPE 8–9  ← last set RPE 9–10
   Wrist Extension: 15 × 15 × 2 @ RPE 8–9 · per hand  ← last set RPE 9–10
   Neck Extension: 12.5 × 12 × 2 @ RPE 8–9  ← last set RPE 9–10
   Delt & triceps isolation → Saturday — Your side-delt, rear-delt and pushdown work lives in Saturday's frame day now — keeps weekly volume under cap.
@@ -74,7 +79,7 @@ Fri — Comp Deadlift + Back
   Weighted Chin-Up — back-offs: +15 × 8 × 3 @ RPE 7–8
   Lying Leg Curl: 120 × 10 × 3 @ RPE 8–9  ← last set RPE 9–10
   Chest-Supported DB Row: 65 × 8 × 3 @ RPE 8–9 · per hand
-  Cable Curl: 70 × 12 × 2 @ RPE 8–9  ← last set RPE 9–10
+  Reverse Cable Curl: 55 × 12 × 2 @ RPE 8–9  ← last set RPE 9–10
   Cable / DB Wrist Curl: 35 × 15 × 2 @ RPE 8–9  ← last set RPE 9–10
   Cooldown — 5 min — Hamstring 60s/side · figure-4 glute 45s/side · shake the grip out · easy breathing, no bouncing
 
@@ -109,6 +114,7 @@ Mon — Comp Squat + Legs
   Hanging Leg Raise: BW × 12 × 3 @ RPE 8–9  ← last set RPE 9–10
   Low-to-High Cable Fly: 35 × 15 × 3 @ RPE 8–9  ← last set RPE 9–10
   Machine / DB Shrug: 170 × 12 × 3 @ RPE 8–9  ← last set RPE 9–10
+  Cable Crunch: 110 × 12 × 3 @ RPE 8–9  ← last set RPE 9–10
   Cooldown — 5 min — POSTURE: couch stretch 2×30s/side (hip flexors = the anterior tilt fix) · ankle rocks 15/side · dead hang 30s · easy breathing, no bouncing
 
 Tue — Comp Bench + Back
@@ -130,6 +136,7 @@ Wed — Paused Squat + Arms
   Seated Leg Curl: 145 × 12 × 4 @ RPE 8–9  ← last set RPE 9–10
   Leg Extension: 145 × 15 × 2 @ RPE 8–9  ← last set RPE 9–10
   Incline DB Curl: 37.5 × 12 × 3 @ RPE 8–9 · per hand  ← last set RPE 9–10
+  Hammer Curl: 40 × 12 × 3 @ RPE 8–9 · per hand  ← last set RPE 9–10
   Lateral Raise (Wed): 17.5 × 20 × 3 @ RPE 8–9 · per hand  ← last set RPE 9–10
   Cable Woodchop: 45 × 12 × 2 @ RPE 8–9  ← last set RPE 9–10
   Incline Walk — 20 min · 3 mph · 7%
@@ -139,10 +146,12 @@ Thu — Paused Bench + OHP
   Bar × 15 · 95 × 8 · 115 × 5 · 135 × 3
   Paused Bench (1–2 sec pause): 165 × 5 × 5 @ RPE 7
   Overhead Press: 100 × 7 × 3 @ RPE 7–8
-  Rope Pushdown: 95 × 12 × 4 @ RPE 8–9  ← last set RPE 9–10
+  Weighted Dip — top set: +35 × 5 × 1 @ RPE 7.5
+  Weighted Dip — back-offs: +20 × 7 × 3 @ RPE 7–8
+  Rope Pushdown: 95 × 12 × 3 @ RPE 8–9  ← last set RPE 9–10
+  Overhead Cable Extension: 75 × 12 × 3 @ RPE 8–9  ← last set RPE 9–10
   Face Pull: 60 × 20 × 3 @ RPE 8–9  ← last set RPE 9–10
   Prone Y-Raise: 7.5 × 15 × 2 @ RPE 8–9 · per hand  ← last set RPE 9–10
-  Cable Crunch: 110 × 12 × 3 @ RPE 8–9  ← last set RPE 9–10
   Wrist Extension: 15 × 20 × 2 @ RPE 8–9 · per hand  ← last set RPE 9–10
   Neck Extension: 12.5 × 15 × 2 @ RPE 8–9  ← last set RPE 9–10
   Delt & triceps isolation → Saturday — Your side-delt, rear-delt and pushdown work lives in Saturday's frame day now — keeps weekly volume under cap.
@@ -158,7 +167,7 @@ Fri — Comp Deadlift + Back
   Weighted Chin-Up — back-offs: +20 × 7 × 3 @ RPE 7–8
   Lying Leg Curl: 120 × 12 × 3 @ RPE 8–9  ← last set RPE 9–10
   Chest-Supported DB Row: 65 × 10 × 3 @ RPE 8–9 · per hand
-  Cable Curl: 70 × 15 × 2 @ RPE 8–9  ← last set RPE 9–10
+  Reverse Cable Curl: 55 × 15 × 2 @ RPE 8–9  ← last set RPE 9–10
   Cable / DB Wrist Curl: 35 × 20 × 2 @ RPE 8–9  ← last set RPE 9–10
   Cooldown — 5 min — Hamstring 60s/side · figure-4 glute 45s/side · shake the grip out · easy breathing, no bouncing
 
@@ -193,6 +202,7 @@ Mon — Comp Squat + Legs
   Hanging Leg Raise: BW × 10 × 3 @ RPE 8
   Low-to-High Cable Fly: 35 × 12 × 2 @ RPE 8
   Machine / DB Shrug: 170 × 10 × 2 @ RPE 8
+  Cable Crunch: 110 × 10 × 3 @ RPE 8
   Cooldown — 5 min — POSTURE: couch stretch 2×30s/side (hip flexors = the anterior tilt fix) · ankle rocks 15/side · dead hang 30s · easy breathing, no bouncing
 
 Tue — Comp Bench + Back
@@ -226,11 +236,13 @@ Thu — Paused Bench + OHP
   Bar × 15 · 95 × 8 · 115 × 5 · 135 × 3
   Paused Bench (1–2 sec pause): 175 × 4 × 5 @ RPE 7–7.5
   Overhead Press: 100 × 7 × 2 @ RPE 7–8
+  Weighted Dip — top set: +45 × 4 × 1 @ RPE 8
+  Weighted Dip — back-offs: +25 × 6 × 3 @ RPE 7–8
   Rope Pushdown: 95 × 10 × 3 @ RPE 8
+  Overhead Cable Extension: 75 × 10 × 2 @ RPE 8
   Cross-Body Extension: 30 × 18 × 2 @ RPE 8
   Face Pull: 60 × 15 × 2 @ RPE 8
   Prone Y-Raise: 7.5 × 12 × 2 @ RPE 8 · per hand
-  Cable Crunch: 110 × 10 × 3 @ RPE 8
   Wrist Extension: 15 × 15 × 2 @ RPE 8 · per hand
   Neck Extension: 12.5 × 12 × 2 @ RPE 8
   Cable Preacher Curl: 45 × 8–10 × 3 @ RPE 8–9
@@ -246,7 +258,7 @@ Fri — Comp Deadlift + Back
   Weighted Chin-Up — back-offs: +25 × 6 × 3 @ RPE 7–8
   Lying Leg Curl: 120 × 10 × 2 @ RPE 8
   Chest-Supported DB Row: 65 × 8 × 3 @ RPE 8 · per hand
-  Cable Curl: 70 × 12 × 2 @ RPE 8
+  Reverse Cable Curl: 55 × 12 × 2 @ RPE 8
   Cable / DB Wrist Curl: 35 × 15 × 2 @ RPE 8
   Cooldown — 5 min — Hamstring 60s/side · figure-4 glute 45s/side · shake the grip out · easy breathing, no bouncing
 
@@ -272,6 +284,7 @@ Mon — Comp Squat + Legs
   Hanging Leg Raise: BW × 10 × 2 @ RPE 6–7
   Low-to-High Cable Fly: 25 × 12 × 2 @ RPE 6–7
   Machine / DB Shrug: 120 × 10 × 2 @ RPE 6–7
+  Cable Crunch: 75 × 10 × 2 @ RPE 6–7
   Cooldown — 5 min — POSTURE: couch stretch 2×30s/side (hip flexors = the anterior tilt fix) · ankle rocks 15/side · dead hang 30s · easy breathing, no bouncing
 
 Tue — Comp Bench + Back
@@ -303,11 +316,12 @@ Thu — Paused Bench + OHP
   Bar × 15 · 95 × 8 · 115 × 5 · 135 × 3
   Paused Bench (1–2 sec pause): 135 × 5 × 3 @ RPE 5–6
   Overhead Press: 80 × 6 × 2 @ RPE 5–6
+  Weighted Dip — light: BW × 8 × 2 @ RPE 5–6
   Rope Pushdown: 65 × 10 × 2 @ RPE 6–7
+  Overhead Cable Extension: 55 × 10 × 2 @ RPE 6–7
   Cross-Body Extension: 20 × 18 × 2 @ RPE 6–7
   Face Pull: 40 × 15 × 2 @ RPE 6–7
   Prone Y-Raise: 5 × 12 × 2 @ RPE 6–7 · per hand
-  Cable Crunch: 75 × 10 × 2 @ RPE 6–7
   Wrist Extension: 10 × 15 × 2 @ RPE 6–7 · per hand
   Neck Extension: 10 × 12 × 2 @ RPE 6–7
   Cooldown — 5 min — POSTURE: thoracic extension over bench 45s · lat hang 45s · chin tucks ×10 (the tech-neck fix) · easy breathing, no bouncing
@@ -319,7 +333,7 @@ Fri — Comp Deadlift + Back
   Weighted Chin-Up — light: BW × 8 × 2 @ RPE 5–6
   Lying Leg Curl: 85 × 10 × 2 @ RPE 6–7
   Chest-Supported DB Row: 45 × 8 × 2 @ RPE 6–7 · per hand
-  Cable Curl: 50 × 12 × 2 @ RPE 6–7
+  Reverse Cable Curl: 40 × 12 × 2 @ RPE 6–7
   Cable / DB Wrist Curl: 25 × 15 × 2 @ RPE 6–7
   Cooldown — 5 min — Hamstring 60s/side · figure-4 glute 45s/side · shake the grip out · easy breathing, no bouncing
 

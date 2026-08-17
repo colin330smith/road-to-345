@@ -254,15 +254,15 @@ function ohpFor(wave, gates) {
 const ACC = [
   { id: "legpress",  name: "Leg Press",              day: 1, sets: 3, w3: 2, steps: [10, 12],         w: 450,  inc: 20,  db: false, comp: true,  arch: "legpress",  cap: "Final set: technical failure OK Wks 1–2 only, safeties set" },
   { id: "hamMon",    name: "Seated Leg Curl",        day: 1, sets: 2, w3: 2, steps: [12, 15, 20],     w: 120,  inc: 10,  db: false, comp: false, arch: "legcurl",   cap: "Third weekly hamstring exposure \u2014 tree-trunk work" },
-  { id: "calf",      name: "Standing Calf Raise",    day: 1, sets: 3, w3: 3, steps: [10, 12, 15],     w: 220,  inc: 10,  db: false, comp: false, arch: "calf",      cap: "Pause the stretch; no bouncing" },
-  { id: "hlr",       name: "Hanging Leg Raise",      day: 1, sets: 3, w3: 3, steps: [10, 12, 15],     w: 0,    inc: 0,   db: false, comp: false, arch: "hlr",       cap: "Progress by stricter form, then add a light DB" },
+  { id: "calf",      name: "Standing Calf Raise",    day: 1, sets: 4, w3: 3, steps: [10, 12, 15],     w: 220,  inc: 10,  db: false, comp: false, arch: "calf",      cap: "Pause the stretch; no bouncing" },
+  { id: "hlr",       name: "Hanging Leg Raise",      day: 1, sets: 3, w3: 3, steps: [10, 12, 15],     w: 0,    inc: 0,   db: false, comp: false, arch: "hlr",       cap: "Once you own the top of the rep range, hold a dumbbell between the feet \u2014 bodyweight alone stops progressing. Progress by stricter form, then add a light DB" },
   { id: "lowhigh",   name: "Low-to-High Cable Fly",  day: 1, sets: 3, w3: 2, steps: [12, 15, 20],     w: 30,   inc: 5,   db: false, comp: false, arch: "rearfly",   cap: "Upper-chest shelf — sweep up and in, squeeze the top" },
   { id: "shrug",     name: "Machine / DB Shrug",     day: 1, sets: 3, w3: 2, steps: [10, 12, 15],     w: 160,  inc: 10,  db: false, comp: false, arch: "shrug",     cap: "Hold the top 1s, no rolling. 3 quality sets + your deadlifts = developed, not overdeveloped" },
   { id: "rowtue",    name: "Chest-Supported DB Row", day: 2, sets: 4, w3: 3, steps: [8, 10, 12],      w: 60,   inc: 5,   db: true,  comp: true,  arch: "row",       cap: "Strict, chest stays on pad" },
   { id: "lattue",    name: "Leaning DB Lateral Raise", day: 2, sets: 3, w3: 3, steps: [12, 15, 20], i0: 1, w: 17.5, inc: 2.5, db: true,  comp: false, arch: "lateral",   cap: "LEAN AWAY from a rack, holding it one-handed. A flat DB raise has ZERO tension at the bottom where the delt is stretched \u2014 leaning shifts the whole resistance curve into the stretch. Final set RPE 9\u201310 OK Wks 1\u20132" },
   { id: "revpec",    name: "Reverse Pec Deck",       day: 2, sets: 3, w3: 2, steps: [15, 20, 25],     w: 90,   inc: 10,  db: false, comp: false, arch: "rearfly",   cap: "Light + strict beats heavy + sloppy" },
   { id: "pullapart", name: "Band Pull-Apart",        day: 2, sets: 2, w3: 2, steps: [20, 25, 30],     w: 0,    inc: 0,   db: false, comp: false, arch: "rearfly",   cap: "PRIMER \u2014 do these BEFORE pressing. 60 seconds, opens the chest, sets the shoulders back" },
-  { id: "seatcalf",  name: "Seated Calf Raise",      day: 5, sets: 3, w3: 2, steps: [12, 15, 20],     w: 120,   inc: 10,  db: false, comp: false, arch: "calf",      cap: "Soleus — bent knee. Pause the stretch" },
+  { id: "seatcalf",  name: "Seated Calf Raise",      day: 5, sets: 5, w3: 3, steps: [12, 15, 20],     w: 120,   inc: 10,  db: false, comp: false, arch: "calf",      cap: "Soleus — bent knee. Pause the stretch" },
   { id: "neckcurl",  name: "Neck Curl",              day: 2, sets: 2, w3: 2, steps: [12, 15, 20],     w: 5,    inc: 2.5, db: false, comp: false, arch: "neckflex",  cap: "Lying face-up, plate on forehead with a towel. SLOW. Start 2.5–5 lb – the neck grows on embarrassingly little" },
   { id: "seatcurl3", name: "Seated Leg Curl",        day: 3, sets: 4, w3: 3, steps: [10, 12, 15],     w: 135,   inc: 10,  db: false, comp: false, arch: "legcurl",   cap: "HAMSTRING PRIORITY. Seated beats lying \u2014 hip flexed puts the hamstring at length (Maeo 2021: +14% vs +9%)" },
   { id: "legext",    name: "Leg Extension",          day: 3, sets: 2, w3: 1, steps: [12, 15],         w: 125,   inc: 10,  db: false, comp: false, arch: "legext",    cap: "Final set RPE 9–10 OK Wks 1–2" },
@@ -421,6 +421,7 @@ const FRAME_MODULE = {
   ],
   arms: (v) => [
     sx("Incline DB Curl", 35, [10, 12, 15], 3, "8–9", "curl", "inccurl", true, "Arms hang behind you \u2014 full stretch. The priority curl.", 5, v),
+    sx("Cable Preacher Curl", 50, [10, 12, 15], 3, "8–9", "curl", "inccurl", false, "Short end of the curve \u2014 the incline curl already owns the stretch. Elbows planted, no leaning back, no swinging out of the bottom", 5, v),
     sx("Overhead Cable Extension", 70, [10, 12, 15], 3, "8–9", "ohtri", "ohrope", false, "Long head \u2014 the biggest triceps head, and only overhead work hits it", 5, v),
   ],
   traps: (v) => [
@@ -476,6 +477,7 @@ const DETAIL_TEMPLATE = {
     sx("Cable / Machine Preacher Curl", 40, [8, 10, 12], 3, "8–9", "curl", "inccurl", false, "ANCHOR — first, fresh. Week 2: final set may go RPE 9–10", 5, v),
     sx("Bayesian Cable Curl", 25, [12, 15, 20], 3, "8–9", "curl", "cablecurl", false, "Superset with cross-body — arm behind the body, full stretch", 5, v),
     sx("Single-Arm Cross-Body Extension", 20, [12, 15, 20], 2, "8", "ohtri", "crossbody", false, "Superset partner — the one triceps pattern Saturday didn't use", 5, v),
+    sx("Overhead Cable Extension", 60, [12, 15, 20], 3, "8–9", "ohtri", "ohrope", false, "Long head at length \u2014 keeps the optional day from being all curls. Elbows in, full stretch behind the head", 5, v),
     sx("Hammer Curl", 25, [10, 12, 15], 2, "8–9", "curl", "hammer", true, "Superset with laterals — brachialis", 5, v),
     sx("Cable Lateral Raise", 20, [15, 20, 25], 3, "8–9", "lateral", "latwed", false, "Finisher — chase the burn", 5, v),
   ],
@@ -642,7 +644,6 @@ function sessionForInner(wave, week, day, gates, spec) {
         cap: "RPE 8 HARD CAP \u2014 lockout + triceps strength. Never a second bench day." });
       continue;
     }
-    if (xfer && a.id === "ezcurl") continue;             // transfer: Wed EZ → Sunday (incline curl + hammer are permanent)
     if (xfer && a.id === "crossbody") continue;         // transfer: Thu cross-body → Sunday
     const p = accFor(a, wave, week);
     if (!p) continue;

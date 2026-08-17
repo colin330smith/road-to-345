@@ -159,7 +159,7 @@ ok(satEx.some((b) => /Crunch/.test(b.name)), "Sat abs present");
 ok(satEx.some((b) => /Pushdown/.test(b.name)), "Sat triceps-spec adds pushdown");
 // Saturday set cap ~15 excl abs
 const satUpper = satEx.filter((b) => !/Crunch/.test(b.name)).reduce((n, b) => n + b.sets, 0);
-ok(satUpper <= 20, `Sat upper set cap ${satUpper} <= 20 (carries the heaviest side-delt + rear-delt exposure now)`);
+ok(satUpper <= 24, `Sat upper set cap ${satUpper} <= 24 (arms day: two curls, two triceps, side + rear delt)`);
 
 // Sunday default runs Wk1-2 of cycles 1-4
 ok(E.sundayPlanned(1, 1, DEF) === true, "Sun planned Wk1");
@@ -169,10 +169,10 @@ ok(E.sundayPlanned(1, 1, { ...DEF, sundayOn: false }) === false, "Sun off when t
 const sun = E.sessionFor(1, 1, 7, {}, DEF);
 ok(sun[0].type === "spechead", "Sun header");
 const sunEx = sun.filter((b) => b.type === "accessory");
-ok(sunEx.length >= 5 && sunEx.reduce((n, b) => n + b.sets, 0) <= 14, "Sun ≤14 sets");
+ok(sunEx.length >= 5 && sunEx.reduce((n, b) => n + b.sets, 0) <= 17, "Sun ≤17 sets (still the shortest day)");
 ok(/Preacher/.test(sunEx[0].name), "Sun opens with the anchor curl (not the light cross-body)");
 ok(sunEx.some((b) => /Bayesian/.test(b.name)), "Sun arms-primary includes Bayesian curl");
-ok(sunEx.reduce((n, b) => n + b.sets, 0) === 13, "Sun arms-primary = 13 sets (12 + frame lateral bump, cap 14)");
+ok(sunEx.reduce((n, b) => n + b.sets, 0) === 16, "Sun arms-primary = 16 sets (balanced with overhead triceps, cap 17)");
 ok(/Biceps-led/.test(sun[0].name), "Sun header billed honestly (biceps-led)");
 // Sunday off Wk3
 const sun3 = E.sessionFor(1, 3, 7, {}, DEF);
@@ -190,7 +190,7 @@ ok(E.sessionFor(1, 1, 1, {}, DEF).some((b) => /Cable Crunch/.test(b.name || ""))
 const tue1 = E.sessionFor(1, 1, 2, {}, DEF);
 ok(tue1.some((b) => isSideDelt(b.name)), "Tue laterals are guaranteed, never transferred to the optional day");
 const wed1 = E.sessionFor(1, 1, 3, {}, DEF);
-ok(!wed1.some((b) => /EZ-Bar Curl/.test(b.name)) && wed1.some((b) => /Hammer Curl/.test(b.name)), "Wed EZ transferred out; hammer is permanent");
+ok(wed1.some((b) => /EZ-Bar Curl/.test(b.name)) && wed1.some((b) => /Hammer Curl/.test(b.name)), "Wed arm work is permanent - nothing leaks to the optional Sunday");
 ok(wed1.some((b) => /Incline DB Curl/.test(b.name)), "Wed incline curl kept");
 // Wk3 (Sunday off): transfers do NOT fire — Tue laterals return
 const tue3 = E.sessionFor(1, 3, 2, {}, DEF);
@@ -279,8 +279,8 @@ console.log("\n── frame requirements ──");
     if (b.type !== "accessory") continue;
     if (isBi(b.name)) bi += b.sets; else if (isTri(b.name)) tri += b.sets;
   }
-  eq(bi, 19, "frame: biceps at the 19 specialization cap");
-  ok(tri >= 8 && tri <= 14, "frame: triceps direct in 8-14 band after shrug trade");
+  eq(bi, 25, "frame: biceps at the 25 specialization ceiling (incl. brachialis, Sunday bonus)");
+  ok(tri >= 15 && tri <= 24, "frame: triceps isolation in the 15-24 band (excludes the tracked dip)");
   const tue = E.sessionFor(1, 1, 2, {}, E.DEFAULT_SPEC);
   const mon = E.sessionFor(1, 1, 1, {}, E.DEFAULT_SPEC);
   ok(mon.some((b) => /Shrug/.test(b.name || "") && b.sets === 3), "frame: Mon carries the shrug (full-body split)");
@@ -290,7 +290,7 @@ console.log("\n── frame requirements ──");
   ok(mon.some((b) => /Low-to-High/.test(b.name || "")), "split: Mon gets upper-chest fly");
   {
     const monLegIso = mon.filter((b) => b.type === "accessory" && /Leg Press|Leg Curl|Leg Extension|Calf/i.test(b.name)).reduce((n, b) => n + b.sets, 0);
-    ok(monLegIso <= 8, "split: Mon leg isolation <=8 (6 quad/calf + the priority hamstring exposure)");
+    ok(monLegIso <= 9, "split: Mon leg isolation <=9 (quad + calf + the priority hamstring exposure)");
   }
   ok(E.sessionFor(1, 1, 5, {}, E.DEFAULT_SPEC).some((b) => /Seated Calf/.test(b.name || "")), "split: seated calf moved to Fri (Tue was at the session ceiling)");
   ok(!tue.some((b) => /Shrug/.test(b.name || "")), "split: Tue sheds the shrug");
@@ -306,7 +306,7 @@ console.log("\n── frame requirements ──");
       if (b.type === "accessory" && /Calf/i.test(b.name)) calves += b.sets;
     }
     ok(hams >= 12, "split: hamstrings elevated to 12+ sets");
-    eq(calves, 6, "split: weekly calves unchanged at 6");
+    ok(calves >= 9, "split: calves raised to 9 - compounds give them almost nothing");
   }
   ok(E.sessionFor(1, 1, 6, {}, E.DEFAULT_SPEC).some((b) => /Overhead Cable Extension|Pushdown/.test(b.name || "")), "frame: Sat still carries hard triceps");
 }
@@ -334,7 +334,7 @@ console.log("\n── frame requirements ──");
   let bi = 0;
   for (let d = 1; d <= 7; d++) for (const b of E.sessionFor(1, 1, d, {}, E.DEFAULT_SPEC))
     if (b.type === "accessory" && /Curl/i.test(b.name) && !/Leg Curl|Neck|Wrist/i.test(b.name)) bi += b.sets;
-  eq(bi, 19, "neck: biceps count uncontaminated by neck or wrist curls");
+  eq(bi, 25, "neck: biceps count uncontaminated by neck or wrist curls");
 }
 
 
@@ -359,7 +359,7 @@ console.log("\n── frame requirements ──");
   let bi = 0;
   for (let d = 1; d <= 7; d++) for (const b of E.sessionFor(1, 1, d, {}, E.DEFAULT_SPEC))
     if (b.type === "accessory" && /Curl/i.test(b.name) && !/Leg Curl|Neck|Wrist/i.test(b.name)) bi += b.sets;
-  eq(bi, 19, "sweep: biceps exactly 19 (16 biceps + 3 brachialis)");
+  eq(bi, 25, "sweep: biceps exactly 25 with the optional day running");
 }
 
 
@@ -480,8 +480,8 @@ console.log("\n── frame requirements ──");
     if (isTri(n) && b.type === "accessory") tri += b.sets;
     if (isHam(n)) { ham += b.sets; hamDays.add(d); }
   }
-  eq(bi, 19, "arms: biceps at the 19 specialization cap");
-  ok(tri >= 12 && tri <= 14, "arms: triceps raised into 12-14 (was 10)");
+  eq(bi, 25, "arms: biceps at the 25 specialization ceiling (incl. brachialis, Sunday bonus)");
+  
   ok(ham >= 12, "hams: 12+ weekly sets (was 8)");
   ok(hamDays.size >= 3, "hams: 3+ exposures per week");
 
@@ -521,8 +521,24 @@ console.log("\n── frame requirements ──");
     if (isBi(n)) { bi += b.sets; if (/Hammer|Reverse/i.test(n)) briach += b.sets; }
     if (isTri(n)) { tri += b.sets; if (isLong(n)) lng += b.sets; }
   }
-  // triceps are ~2/3 of arm circumference, so they must not be the smaller allocation
-  ok(tri >= bi - 1, `arms: triceps (${tri}) not below biceps (${bi})`);
+  // triceps are ~2/3 of arm circumference, so they must not be the smaller allocation.
+  // Measure the GUARANTEED week (Mon-Sat) and count isolation only: the chin-up and dip
+  // are compounds that happen to load the arm, and including one without the other lies.
+  // brachialis is a separate muscle from the biceps - hammer and reverse curls barely
+  // load the long head - so it is counted on its own, not folded into "flexion".
+  const isBrach = (n) => /Hammer|Reverse/i.test(n || "");
+  let pureBi = 0, ex = 0;
+  for (let d = 1; d <= 6; d++) for (const b of E.sessionFor(1, 1, d, {}, E.DEFAULT_SPEC)) {
+    if (b.type !== "accessory") continue;
+    const n = b.name || "";
+    if (isBi(n) && !isBrach(n)) pureBi += b.sets;
+    if (isTri(n)) ex += b.sets;
+  }
+  ok(ex >= pureBi, `arms: guaranteed triceps (${ex}) at least matches biceps (${pureBi})`);
+  // and the compounds that flank them stay paired - chin-up on Fri, dip on Thu
+  const chin = E.sessionFor(1, 1, 5, {}, E.DEFAULT_SPEC).filter((b) => /Chin-Up/.test(b.name || "")).reduce((n, b) => n + b.sets, 0);
+  const dips = E.sessionFor(1, 1, 4, {}, E.DEFAULT_SPEC).filter((b) => /Weighted Dip/.test(b.name || "")).reduce((n, b) => n + b.sets, 0);
+  eq(chin, dips, "arms: the two arm compounds carry equal set counts");
   ok(tri >= 18, "arms: triceps at the 18 specialization volume");
   ok(lng / tri >= 0.5, "arms: at least half of triceps volume is lengthened-position");
   ok(briach >= 5, "arms: brachialis gets 5+ dedicated sets (hammer + reverse)");
@@ -584,6 +600,59 @@ console.log("\n── frame requirements ──");
   for (let d = 1; d <= 7; d++) for (const b of E.sessionFor(1, 1, d, {}, E.DEFAULT_SPEC)) if (isSideDelt(b.name)) names.push(b.name);
   ok(names.some((n) => /Cross-Body Cable Y-Raise/.test(n)), "delts: the cross-body Y-raise (deepest lateral-delt stretch) is in the plan");
   ok(names.some((n) => /Leaning/.test(n)), "delts: the leaning DB variant is in the plan, not the flat one with no bottom tension");
+}
+
+
+// ═══ structural guards: the two bug classes that produced every gap so far ═══
+{
+  // (1) VOLUME LEAK — priority work must not depend on the optional Sunday.
+  //     This caused the side-delt gap AND the biceps gap.
+  const GROUPS = {
+    "side delts": (n) => /Lateral Raise|Cross-Body Cable Y-Raise/i.test(n) && !/Pulldown|Prone/i.test(n),
+    biceps:       (n) => /Curl/i.test(n) && !/Leg Curl|Neck|Wrist|Hammer|Reverse/i.test(n),
+    triceps:      (n) => /(Extension|Pushdown|Dip)/i.test(n) && !/Leg|Wrist|Neck/i.test(n),
+    hamstrings:   (n) => /Leg Curl|RDL/i.test(n),
+    calves:       (n) => /Calf/i.test(n),
+  };
+  for (const [g, pred] of Object.entries(GROUPS)) {
+    let all = 0, gtd = 0;
+    for (let d = 1; d <= 7; d++) for (const b of E.sessionFor(1, 1, d, {}, E.DEFAULT_SPEC)) {
+      if (!["accessory", "single", "backoff"].includes(b.type) || !pred(b.name)) continue;
+      all += b.sets; if (d <= 6) gtd += b.sets;
+    }
+    ok(gtd >= all * 0.65, `leak: ${g} keeps ${gtd}/${all} sets off the optional day`);
+  }
+
+  // (2) REDUCED-WEEK DELETION — week 3 may trim priority work, never zero it.
+  //     This is what hid the side-delt gap for three waves.
+  for (const [g, pred] of Object.entries(GROUPS)) {
+    let full = 0, red = 0;
+    for (let d = 1; d <= 7; d++) {
+      for (const b of E.sessionFor(1, 1, d, {}, E.DEFAULT_SPEC))
+        if (["accessory", "single", "backoff"].includes(b.type) && pred(b.name)) full += b.sets;
+      for (const b of E.sessionFor(1, 3, d, {}, E.DEFAULT_SPEC))
+        if (["accessory", "single", "backoff"].includes(b.type) && pred(b.name)) red += b.sets;
+    }
+    ok(red >= full * 0.5, `reduced week: ${g} trimmed to ${red}/${full}, not deleted`);
+  }
+
+  // (3) every logged block must carry a progression key or the log-driven engine
+  //     silently ignores it and the lift never advances
+  const noKey = new Set();
+  for (const w of [1, 5, 9, 13, 17]) for (let wk = 1; wk <= 4; wk++) for (let d = 1; d <= 7; d++)
+    for (const b of E.sessionFor(w, wk, d, {}, E.DEFAULT_SPEC))
+      if (["accessory", "single", "backoff"].includes(b.type) && !b.pkey) noKey.add(b.name);
+  eq(noKey.size, 0, `progression: every logged block has a pkey (${[...noKey].join(", ")})`);
+
+  // (4) the four tracked lifts must survive every cycle, including the peak
+  for (const w of [1, 5, 9, 13, 16, 17, 19]) {
+    const found = new Set();
+    for (let wk = 1; wk <= 4; wk++) for (let d = 1; d <= 7; d++)
+      for (const b of E.sessionFor(w, wk, d, {}, E.DEFAULT_SPEC))
+        for (const t of ["Incline Bench", "Weighted Chin-Up", "Weighted Dip", "RDL"])
+          if ((b.name || "").startsWith(t)) found.add(t);
+    eq(found.size, 4, `wave ${w}: all four tracked lifts present`);
+  }
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

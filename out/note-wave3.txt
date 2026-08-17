@@ -22,7 +22,7 @@ Mon — Comp Squat + Legs
   Squat — back-offs: 245 × 5 × 4 @ RPE 6.5–7
   Leg Press: 490 × 10 × 3 @ RPE 8–9
   Seated Leg Curl: 130 × 12 × 2 @ RPE 8–9  ← last set RPE 9–10
-  Standing Calf Raise: 230 × 10 × 3 @ RPE 8–9  ← last set RPE 9–10
+  Standing Calf Raise: 230 × 10 × 4 @ RPE 8–9  ← last set RPE 9–10
   Hanging Leg Raise: BW × 10 × 3 @ RPE 8–9  ← last set RPE 9–10
   Low-to-High Cable Fly: 35 × 12 × 3 @ RPE 8–9  ← last set RPE 9–10
   Machine / DB Shrug: 170 × 10 × 3 @ RPE 8–9  ← last set RPE 9–10
@@ -48,6 +48,7 @@ Wed — Paused Squat + Arms
   Seated Leg Curl: 145 × 10 × 4 @ RPE 8–9  ← last set RPE 9–10
   Leg Extension: 145 × 12 × 2 @ RPE 8–9  ← last set RPE 9–10
   Incline DB Curl: 37.5 × 10 × 3 @ RPE 8–9 · per hand  ← last set RPE 9–10
+  EZ-Bar Curl: 75 × 8 × 3 @ RPE 8–9  ← last set RPE 9–10
   Hammer Curl: 40 × 10 × 3 @ RPE 8–9 · per hand  ← last set RPE 9–10
   Cable Lateral Raise: 17.5 × 15 × 4 @ RPE 8–9  ← last set RPE 9–10
   Cable Woodchop: 45 × 10 × 2 @ RPE 8–9  ← last set RPE 9–10
@@ -77,7 +78,7 @@ Fri — Comp Deadlift + Back
   RDL — back-offs: 230 × 8 × 3 @ RPE 7–8
   Weighted Chin-Up — top set: +25 × 6 × 1 @ RPE 7
   Weighted Chin-Up — back-offs: +15 × 8 × 3 @ RPE 7–8
-  Seated Calf Raise: 130 × 12 × 3 @ RPE 8–9  ← last set RPE 9–10
+  Seated Calf Raise: 130 × 12 × 5 @ RPE 8–9  ← last set RPE 9–10
   Lying Leg Curl: 120 × 10 × 3 @ RPE 8–9  ← last set RPE 9–10
   Chest-Supported DB Row: 65 × 8 × 3 @ RPE 8–9 · per hand
   Reverse Cable Curl: 55 × 12 × 2 @ RPE 8–9  ← last set RPE 9–10
@@ -87,6 +88,7 @@ Fri — Comp Deadlift + Back
 Sat — Frame Spec
   Frame Specialization — Arms (bi + tri) priority — Overload day. Hit your weak point fresh — quality reps, not a set count.
   Incline DB Curl: 40 × 10–12 × 3 @ RPE 8–9 · per hand
+  Cable Preacher Curl: 55 × 10–12 × 3 @ RPE 8–9
   Overhead Cable Extension: 75 × 10–12 × 3 @ RPE 8–9
   Unilateral Cable Pulldown: 105 × 10–12 × 3 @ RPE 8
   Rope / Single-Arm Pushdown: 95 × 12–15 × 3 @ RPE 8–9
@@ -99,6 +101,7 @@ Sun — Optional Arms
   Cable / Machine Preacher Curl: 45 × 8–10 × 3 @ RPE 8–9
   Bayesian Cable Curl: 30 × 12–15 × 3 @ RPE 8–9
   Single-Arm Cross-Body Extension: 25 × 12–15 × 2 @ RPE 8
+  Overhead Cable Extension: 65 × 12–15 × 3 @ RPE 8–9
   Hammer Curl: 30 × 10–12 × 2 @ RPE 8–9 · per hand
   Cable Lateral Raise: 25 × 15–20 × 3 @ RPE 8–9
 
@@ -112,7 +115,7 @@ Mon — Comp Squat + Legs
   Squat — back-offs: 255 × 4 × 5 @ RPE 7–7.5
   Leg Press: 490 × 12 × 3 @ RPE 8–9
   Seated Leg Curl: 130 × 15 × 2 @ RPE 8–9  ← last set RPE 9–10
-  Standing Calf Raise: 230 × 12 × 3 @ RPE 8–9  ← last set RPE 9–10
+  Standing Calf Raise: 230 × 12 × 4 @ RPE 8–9  ← last set RPE 9–10
   Hanging Leg Raise: BW × 12 × 3 @ RPE 8–9  ← last set RPE 9–10
   Low-to-High Cable Fly: 35 × 15 × 3 @ RPE 8–9  ← last set RPE 9–10
   Machine / DB Shrug: 170 × 12 × 3 @ RPE 8–9  ← last set RPE 9–10
@@ -138,6 +141,7 @@ Wed — Paused Squat + Arms
   Seated Leg Curl: 145 × 12 × 4 @ RPE 8–9  ← last set RPE 9–10
   Leg Extension: 145 × 15 × 2 @ RPE 8–9  ← last set RPE 9–10
   Incline DB Curl: 37.5 × 12 × 3 @ RPE 8–9 · per hand  ← last set RPE 9–10
+  EZ-Bar Curl: 75 × 10 × 3 @ RPE 8–9  ← last set RPE 9–10
   Hammer Curl: 40 × 12 × 3 @ RPE 8–9 · per hand  ← last set RPE 9–10
   Cable Lateral Raise: 17.5 × 20 × 4 @ RPE 8–9  ← last set RPE 9–10
   Cable Woodchop: 45 × 12 × 2 @ RPE 8–9  ← last set RPE 9–10
@@ -167,7 +171,7 @@ Fri — Comp Deadlift + Back
   RDL — back-offs: 235 × 7 × 3 @ RPE 7–8
   Weighted Chin-Up — top set: +35 × 5 × 1 @ RPE 7.5
   Weighted Chin-Up — back-offs: +20 × 7 × 3 @ RPE 7–8
-  Seated Calf Raise: 130 × 15 × 3 @ RPE 8–9  ← last set RPE 9–10
+  Seated Calf Raise: 130 × 15 × 5 @ RPE 8–9  ← last set RPE 9–10
   Lying Leg Curl: 120 × 12 × 3 @ RPE 8–9  ← last set RPE 9–10
   Chest-Supported DB Row: 65 × 10 × 3 @ RPE 8–9 · per hand
   Reverse Cable Curl: 55 × 15 × 2 @ RPE 8–9  ← last set RPE 9–10
@@ -177,6 +181,7 @@ Fri — Comp Deadlift + Back
 Sat — Frame Spec
   Frame Specialization — Arms (bi + tri) priority — Overload day. Hit your weak point fresh — quality reps, not a set count.
   Incline DB Curl: 40 × 10–12 × 3 @ RPE 8–9 · per hand
+  Cable Preacher Curl: 55 × 10–12 × 3 @ RPE 8–9
   Overhead Cable Extension: 75 × 10–12 × 3 @ RPE 8–9
   Unilateral Cable Pulldown: 105 × 10–12 × 3 @ RPE 8
   Rope / Single-Arm Pushdown: 95 × 12–15 × 3 @ RPE 8–9
@@ -189,6 +194,7 @@ Sun — Optional Arms
   Cable / Machine Preacher Curl: 45 × 8–10 × 3 @ RPE 8–9
   Bayesian Cable Curl: 30 × 12–15 × 3 @ RPE 8–9
   Single-Arm Cross-Body Extension: 25 × 12–15 × 2 @ RPE 8
+  Overhead Cable Extension: 65 × 12–15 × 3 @ RPE 8–9
   Hammer Curl: 30 × 10–12 × 2 @ RPE 8–9 · per hand
   Cable Lateral Raise: 25 × 15–20 × 3 @ RPE 8–9
 
@@ -259,7 +265,7 @@ Fri — Comp Deadlift + Back
   RDL — back-offs: 245 × 6 × 3 @ RPE 7–8
   Weighted Chin-Up — top set: +45 × 4 × 1 @ RPE 8
   Weighted Chin-Up — back-offs: +25 × 6 × 3 @ RPE 7–8
-  Seated Calf Raise: 130 × 12 × 2 @ RPE 8
+  Seated Calf Raise: 130 × 12 × 3 @ RPE 8
   Lying Leg Curl: 120 × 10 × 2 @ RPE 8
   Chest-Supported DB Row: 65 × 8 × 3 @ RPE 8 · per hand
   Reverse Cable Curl: 55 × 12 × 2 @ RPE 8
@@ -269,6 +275,7 @@ Fri — Comp Deadlift + Back
 Sat — Frame Spec
   Frame Specialization — Arms (bi + tri) priority — Reduced sets this week.
   Incline DB Curl: 40 × 10–12 × 2 @ RPE 8–9 · per hand
+  Cable Preacher Curl: 55 × 10–12 × 2 @ RPE 8–9
   Overhead Cable Extension: 75 × 10–12 × 2 @ RPE 8–9
   Cross-Body Cable Y-Raise: 25 × 15–20 × 3 @ RPE 8–9
   Reverse-Pec-Deck / Cable Rear-Delt Fly: 100 × 15–20 × 2 @ RPE 8–9

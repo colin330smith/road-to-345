@@ -259,17 +259,17 @@ const ACC = [
   { id: "lowhigh",   name: "Low-to-High Cable Fly",  day: 1, sets: 3, w3: 2, steps: [12, 15, 20],     w: 30,   inc: 5,   db: false, comp: false, arch: "rearfly",   cap: "Upper-chest shelf — sweep up and in, squeeze the top" },
   { id: "shrug",     name: "Machine / DB Shrug",     day: 1, sets: 3, w3: 2, steps: [10, 12, 15],     w: 160,  inc: 10,  db: false, comp: false, arch: "shrug",     cap: "Hold the top 1s, no rolling. 3 quality sets + your deadlifts = developed, not overdeveloped" },
   { id: "rowtue",    name: "Chest-Supported DB Row", day: 2, sets: 4, w3: 3, steps: [8, 10, 12],      w: 60,   inc: 5,   db: true,  comp: true,  arch: "row",       cap: "Strict, chest stays on pad" },
-  { id: "lattue",    name: "Lateral Raise (Tue)",    day: 2, sets: 3, w3: 3, steps: [12, 15, 20], i0: 1, w: 17.5, inc: 2.5, db: true,  comp: false, arch: "lateral",   cap: "Final set RPE 9–10 OK Wks 1–2" },
-  { id: "revpec",    name: "Reverse Pec Deck",       day: 2, sets: 2, w3: 2, steps: [15, 20, 25],     w: 90,   inc: 10,  db: false, comp: false, arch: "rearfly",   cap: "Light + strict beats heavy + sloppy" },
+  { id: "lattue",    name: "Leaning DB Lateral Raise", day: 2, sets: 3, w3: 3, steps: [12, 15, 20], i0: 1, w: 17.5, inc: 2.5, db: true,  comp: false, arch: "lateral",   cap: "LEAN AWAY from a rack, holding it one-handed. A flat DB raise has ZERO tension at the bottom where the delt is stretched \u2014 leaning shifts the whole resistance curve into the stretch. Final set RPE 9\u201310 OK Wks 1\u20132" },
+  { id: "revpec",    name: "Reverse Pec Deck",       day: 2, sets: 3, w3: 2, steps: [15, 20, 25],     w: 90,   inc: 10,  db: false, comp: false, arch: "rearfly",   cap: "Light + strict beats heavy + sloppy" },
   { id: "pullapart", name: "Band Pull-Apart",        day: 2, sets: 2, w3: 2, steps: [20, 25, 30],     w: 0,    inc: 0,   db: false, comp: false, arch: "rearfly",   cap: "PRIMER \u2014 do these BEFORE pressing. 60 seconds, opens the chest, sets the shoulders back" },
-  { id: "seatcalf",  name: "Seated Calf Raise",      day: 2, sets: 3, w3: 2, steps: [12, 15, 20],     w: 120,   inc: 10,  db: false, comp: false, arch: "calf",      cap: "Soleus — bent knee. Pause the stretch" },
+  { id: "seatcalf",  name: "Seated Calf Raise",      day: 5, sets: 3, w3: 2, steps: [12, 15, 20],     w: 120,   inc: 10,  db: false, comp: false, arch: "calf",      cap: "Soleus — bent knee. Pause the stretch" },
   { id: "neckcurl",  name: "Neck Curl",              day: 2, sets: 2, w3: 2, steps: [12, 15, 20],     w: 5,    inc: 2.5, db: false, comp: false, arch: "neckflex",  cap: "Lying face-up, plate on forehead with a towel. SLOW. Start 2.5–5 lb – the neck grows on embarrassingly little" },
   { id: "seatcurl3", name: "Seated Leg Curl",        day: 3, sets: 4, w3: 3, steps: [10, 12, 15],     w: 135,   inc: 10,  db: false, comp: false, arch: "legcurl",   cap: "HAMSTRING PRIORITY. Seated beats lying \u2014 hip flexed puts the hamstring at length (Maeo 2021: +14% vs +9%)" },
   { id: "legext",    name: "Leg Extension",          day: 3, sets: 2, w3: 1, steps: [12, 15],         w: 125,   inc: 10,  db: false, comp: false, arch: "legext",    cap: "Final set RPE 9–10 OK Wks 1–2" },
   { id: "inccurl",   name: "Incline DB Curl",        day: 3, sets: 3, w3: 3, steps: [10, 12, 15],     w: 32.5,   inc: 5,   db: true,  comp: false, arch: "curl",      cap: "Priority curl — always first, full stretch" },
   { id: "ezcurl",    name: "EZ-Bar Curl",            day: 3, sets: 3, w3: 3, steps: [8, 10, 12],      w: 70,   inc: 5,   db: false, comp: false, arch: "curl",      cap: "No swinging; elbows pinned" },
   { id: "hammer",    name: "Hammer Curl",            day: 3, sets: 3, w3: 2, steps: [10, 12, 15],     w: 35,   inc: 5,   db: true,  comp: false, arch: "curl",      cap: "BRACHIALIS \u2014 sits under the biceps and pushes it up. Adds width from the front. Neutral grip, slow negative" },
-  { id: "latwed",    name: "Lateral Raise (Wed)",    day: 3, sets: 3, w3: 3, steps: [15, 20, 25],     w: 15, inc: 2.5, db: true,  comp: false, arch: "lateral",   cap: "Higher-rep day: chase the burn, not the load" },
+  { id: "latwed",    name: "Cable Lateral Raise",     day: 3, sets: 4, w3: 3, steps: [15, 20, 25],     w: 15, inc: 2.5, db: false, comp: false, arch: "lateral",   cap: "Set the cable at HAND HEIGHT, not the floor. Tension peaks where the cable and your arm make 90\u00b0 \u2014 a high cable puts that in the stretched part of the rep instead of the top" },
   { id: "woodchop",  name: "Cable Woodchop",         day: 3, sets: 2, w3: 2, steps: [10, 12, 15],     w: 40,   inc: 5,   db: false, comp: false, arch: "woodchop",  cap: "High-to-low, per side. Rotate through the trunk, arms stay long. Light – obliques brace heavy 5 days a week already" },
   { id: "latthu",    name: "Lateral Raise (Thu)",    day: 4, sets: 4, w3: 3, steps: [12, 15, 18, 20], w: 17.5,   inc: 2.5, db: true,  comp: false, arch: "lateral",   cap: "4 sets — the big side-delt day" },
   { id: "rdf",       name: "Rear-Delt Fly",          day: 4, sets: 3, w3: 3, steps: [15, 20, 25],     w: 17.5, inc: 2.5, db: true,  comp: false, arch: "rearfly",   cap: "Think 'throw, don't lift'" },
@@ -438,9 +438,11 @@ const SECONDARY_SLOT = {
   none: () => null,
 };
 // balance slot: whichever delt area the primary frame is NOT hitting
-function balanceSlot(framePrimary, v) {
-  if (framePrimary === "upperback" || framePrimary === "traps" || framePrimary === "arms") return sx("Cable Lateral Raise", 20, [15, 20, 25], 3, "8–9", "lateral", "latwed", false, "Balance: side delt \u2014 shoulder width is half the taper", 5, v);
-  return sx("Reverse-Pec-Deck / Cable Rear-Delt Fly", 90, [15, 20, 25], 2, "8–9", "rearfly", "revpec", false, "Balance: rear delt", 10, v);
+function balanceSlot(framePrimary, v, reduced) {
+  if (framePrimary === "upperback" || framePrimary === "traps" || framePrimary === "arms")
+    return [sx("Cross-Body Cable Y-Raise", 20, [15, 20, 25], reduced ? 3 : 5, "8\u20139", "lateral", "latwed", false, "THE side-delt builder. Start with the arm across your body \u2014 that cross-body position is the deepest stretch the lateral delt can get. Light, slow, no swinging", 5, v),
+            sx("Reverse-Pec-Deck / Cable Rear-Delt Fly", 90, [15, 20, 25], reduced ? 2 : 3, "8\u20139", "rearfly", "revpec", false, "Rear delt \u2014 this is what rounds the shoulder from behind and keeps the cap from looking flat in profile", 10, v)];
+  return reduced ? [] : [sx("Reverse-Pec-Deck / Cable Rear-Delt Fly", 90, [15, 20, 25], 2, "8\u20139", "rearfly", "revpec", false, "Balance: rear delt", 10, v)];
 }
 
 // Sunday detail templates (optional day)
@@ -529,7 +531,7 @@ function saturdaySession(wave, week, spec) {
     if (spec.framePrimary === "arms") blocks.push(sx("Rope Pushdown", 50, [12, 15, 20], reduced ? 2 : 3, "8–9", "pushdown", "pushdown", false, "Lateral + medial head \u2014 overhead work is already in the module", 5, wave));
     else blocks.push(sx("Overhead Cable Extension", 50, [10, 12, 15], reduced ? 2 : 3, "8–9", "ohtri", "ohrope", false, "Triceps slot", 5, wave));
   }
-  if (!reduced) blocks.push(balanceSlot(spec.framePrimary, wave));
+  for (const b of balanceSlot(spec.framePrimary, wave, reduced)) blocks.push(b);
   blocks.push(sx("Ab Wheel / Cable Crunch", 70, [8, 10, 12, 15], 2, "8–9", "crunch", "crunch", false, "", 10, wave));
   return blocks;
 }
@@ -640,7 +642,6 @@ function sessionForInner(wave, week, day, gates, spec) {
         cap: "RPE 8 HARD CAP \u2014 lockout + triceps strength. Never a second bench day." });
       continue;
     }
-    if (xfer && a.id === "lattue") continue;             // transfer: Tue laterals → Sunday
     if (xfer && a.id === "ezcurl") continue;             // transfer: Wed EZ → Sunday (incline curl + hammer are permanent)
     if (xfer && a.id === "crossbody") continue;         // transfer: Thu cross-body → Sunday
     const p = accFor(a, wave, week);

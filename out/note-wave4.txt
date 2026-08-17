@@ -37,8 +37,8 @@ Tue — Comp Bench + Back
   Incline Bench — top set: 150 × 5 × 1 @ RPE 7
   Incline Bench — back-offs: 135 × 8 × 3 @ RPE 7–8
   Chest-Supported DB Row: 65 × 10 × 4 @ RPE 8–9 · per hand
-  Reverse Pec Deck: 100 × 20 × 2 @ RPE 8–9  ← last set RPE 9–10
-  Seated Calf Raise: 130 × 15 × 3 @ RPE 8–9  ← last set RPE 9–10
+  Leaning DB Lateral Raise: 22.5 × 12 × 3 @ RPE 8–9 · per hand  ← last set RPE 9–10
+  Reverse Pec Deck: 100 × 20 × 3 @ RPE 8–9  ← last set RPE 9–10
   Neck Curl: 7.5 × 15 × 2 @ RPE 8–9  ← last set RPE 9–10
   Cooldown — 5 min — POSTURE: doorway pec stretch 2×30s (tight pecs pull you forward) · cross-body delt 30s/side · wall slides ×10 · easy breathing, no bouncing
 
@@ -49,7 +49,7 @@ Wed — Paused Squat + Arms
   Leg Extension: 155 × 12 × 2 @ RPE 8–9  ← last set RPE 9–10
   Incline DB Curl: 37.5 × 12 × 3 @ RPE 8–9 · per hand  ← last set RPE 9–10
   Hammer Curl: 40 × 12 × 3 @ RPE 8–9 · per hand  ← last set RPE 9–10
-  Lateral Raise (Wed): 17.5 × 20 × 3 @ RPE 8–9 · per hand  ← last set RPE 9–10
+  Cable Lateral Raise: 17.5 × 20 × 4 @ RPE 8–9  ← last set RPE 9–10
   Cable Woodchop: 45 × 12 × 2 @ RPE 8–9  ← last set RPE 9–10
   Incline Walk — 20 min · 3 mph · 6%
   Cooldown — 5 min — 90/90 hips 60s/side · standing hamstring 45s/side · easy breathing, no bouncing
@@ -77,6 +77,7 @@ Fri — Comp Deadlift + Back
   RDL — back-offs: 230 × 8 × 3 @ RPE 7–8
   Weighted Chin-Up — top set: +30 × 6 × 1 @ RPE 7
   Weighted Chin-Up — back-offs: +20 × 8 × 3 @ RPE 7–8
+  Seated Calf Raise: 130 × 15 × 3 @ RPE 8–9  ← last set RPE 9–10
   Lying Leg Curl: 120 × 12 × 3 @ RPE 8–9  ← last set RPE 9–10
   Chest-Supported DB Row: 65 × 10 × 3 @ RPE 8–9 · per hand
   Reverse Cable Curl: 60 × 12 × 2 @ RPE 8–9  ← last set RPE 9–10
@@ -89,7 +90,8 @@ Sat — Frame Spec
   Overhead Cable Extension: 75 × 12–15 × 3 @ RPE 8–9
   Unilateral Cable Pulldown: 105 × 12–15 × 3 @ RPE 8
   Rope / Single-Arm Pushdown: 95 × 15–20 × 3 @ RPE 8–9
-  Cable Lateral Raise: 25 × 20–25 × 3 @ RPE 8–9
+  Cross-Body Cable Y-Raise: 25 × 20–25 × 5 @ RPE 8–9
+  Reverse-Pec-Deck / Cable Rear-Delt Fly: 100 × 20–25 × 3 @ RPE 8–9
   Ab Wheel / Cable Crunch: 80 × 8–10 × 2 @ RPE 8–9
 
 Sun — Optional Arms
@@ -125,8 +127,8 @@ Tue — Comp Bench + Back
   Incline Bench — top set: 160 × 4 × 1 @ RPE 7.5
   Incline Bench — back-offs: 140 × 7 × 3 @ RPE 7–8
   Chest-Supported DB Row: 65 × 12 × 4 @ RPE 8–9 · per hand
-  Reverse Pec Deck: 100 × 25 × 2 @ RPE 8–9  ← last set RPE 9–10
-  Seated Calf Raise: 130 × 20 × 3 @ RPE 8–9  ← last set RPE 9–10
+  Leaning DB Lateral Raise: 22.5 × 15 × 3 @ RPE 8–9 · per hand  ← last set RPE 9–10
+  Reverse Pec Deck: 100 × 25 × 3 @ RPE 8–9  ← last set RPE 9–10
   Neck Curl: 7.5 × 20 × 2 @ RPE 8–9  ← last set RPE 9–10
   Cooldown — 5 min — POSTURE: doorway pec stretch 2×30s (tight pecs pull you forward) · cross-body delt 30s/side · wall slides ×10 · easy breathing, no bouncing
 
@@ -137,7 +139,7 @@ Wed — Paused Squat + Arms
   Leg Extension: 155 × 15 × 2 @ RPE 8–9  ← last set RPE 9–10
   Incline DB Curl: 37.5 × 15 × 3 @ RPE 8–9 · per hand  ← last set RPE 9–10
   Hammer Curl: 40 × 15 × 3 @ RPE 8–9 · per hand  ← last set RPE 9–10
-  Lateral Raise (Wed): 17.5 × 25 × 3 @ RPE 8–9 · per hand  ← last set RPE 9–10
+  Cable Lateral Raise: 17.5 × 25 × 4 @ RPE 8–9  ← last set RPE 9–10
   Cable Woodchop: 45 × 15 × 2 @ RPE 8–9  ← last set RPE 9–10
   Incline Walk — 20 min · 3 mph · 7%
   Cooldown — 5 min — 90/90 hips 60s/side · standing hamstring 45s/side · easy breathing, no bouncing
@@ -165,6 +167,7 @@ Fri — Comp Deadlift + Back
   RDL — back-offs: 240 × 7 × 3 @ RPE 7–8
   Weighted Chin-Up — top set: +40 × 5 × 1 @ RPE 7.5
   Weighted Chin-Up — back-offs: +25 × 7 × 3 @ RPE 7–8
+  Seated Calf Raise: 130 × 20 × 3 @ RPE 8–9  ← last set RPE 9–10
   Lying Leg Curl: 120 × 15 × 3 @ RPE 8–9  ← last set RPE 9–10
   Chest-Supported DB Row: 65 × 12 × 3 @ RPE 8–9 · per hand
   Reverse Cable Curl: 60 × 15 × 2 @ RPE 8–9  ← last set RPE 9–10
@@ -177,7 +180,8 @@ Sat — Frame Spec
   Overhead Cable Extension: 75 × 12–15 × 3 @ RPE 8–9
   Unilateral Cable Pulldown: 105 × 12–15 × 3 @ RPE 8
   Rope / Single-Arm Pushdown: 95 × 15–20 × 3 @ RPE 8–9
-  Cable Lateral Raise: 25 × 20–25 × 3 @ RPE 8–9
+  Cross-Body Cable Y-Raise: 25 × 20–25 × 5 @ RPE 8–9
+  Reverse-Pec-Deck / Cable Rear-Delt Fly: 100 × 20–25 × 3 @ RPE 8–9
   Ab Wheel / Cable Crunch: 80 × 8–10 × 2 @ RPE 8–9
 
 Sun — Optional Arms
@@ -213,9 +217,8 @@ Tue — Comp Bench + Back
   Incline Bench — top set: 170 × 3 × 1 @ RPE 8
   Incline Bench — back-offs: 150 × 6 × 3 @ RPE 7–8
   Chest-Supported DB Row: 65 × 10 × 3 @ RPE 8 · per hand
-  Lateral Raise (Tue): 22.5 × 12 × 3 @ RPE 8 · per hand
+  Leaning DB Lateral Raise: 22.5 × 12 × 3 @ RPE 8 · per hand
   Reverse Pec Deck: 100 × 20 × 2 @ RPE 8
-  Seated Calf Raise: 130 × 15 × 2 @ RPE 8
   Neck Curl: 7.5 × 15 × 2 @ RPE 8
   Cooldown — 5 min — POSTURE: doorway pec stretch 2×30s (tight pecs pull you forward) · cross-body delt 30s/side · wall slides ×10 · easy breathing, no bouncing
 
@@ -227,7 +230,7 @@ Wed — Paused Squat + Arms
   Incline DB Curl: 37.5 × 12 × 3 @ RPE 8 · per hand
   EZ-Bar Curl: 75 × 10 × 3 @ RPE 8
   Hammer Curl: 40 × 12 × 2 @ RPE 8 · per hand
-  Lateral Raise (Wed): 17.5 × 20 × 3 @ RPE 8 · per hand
+  Cable Lateral Raise: 17.5 × 20 × 3 @ RPE 8
   Cable Woodchop: 45 × 12 × 2 @ RPE 8
   Incline Walk — 15 min · 3 mph · 5%
   Cooldown — 5 min — 90/90 hips 60s/side · standing hamstring 45s/side · easy breathing, no bouncing
@@ -256,6 +259,7 @@ Fri — Comp Deadlift + Back
   RDL — back-offs: 250 × 6 × 3 @ RPE 7–8
   Weighted Chin-Up — top set: +50 × 4 × 1 @ RPE 8
   Weighted Chin-Up — back-offs: +30 × 6 × 3 @ RPE 7–8
+  Seated Calf Raise: 130 × 15 × 2 @ RPE 8
   Lying Leg Curl: 120 × 12 × 2 @ RPE 8
   Chest-Supported DB Row: 65 × 10 × 3 @ RPE 8 · per hand
   Reverse Cable Curl: 60 × 12 × 2 @ RPE 8
@@ -266,6 +270,8 @@ Sat — Frame Spec
   Frame Specialization — Arms (bi + tri) priority — Reduced sets this week.
   Incline DB Curl: 40 × 12–15 × 2 @ RPE 8–9 · per hand
   Overhead Cable Extension: 75 × 12–15 × 2 @ RPE 8–9
+  Cross-Body Cable Y-Raise: 25 × 20–25 × 3 @ RPE 8–9
+  Reverse-Pec-Deck / Cable Rear-Delt Fly: 100 × 20–25 × 2 @ RPE 8–9
   Ab Wheel / Cable Crunch: 80 × 8–10 × 2 @ RPE 8–9
 
 Sun — Optional Arms
@@ -293,9 +299,8 @@ Tue — Comp Bench + Back
   Bench — light triple: 155 × 3 × 3 @ RPE 5–6
   Incline Bench — light: 120 × 6 × 3 @ RPE 5–6
   Chest-Supported DB Row: 45 × 10 × 2 @ RPE 6–7 · per hand
-  Lateral Raise (Tue): 15 × 12 × 2 @ RPE 6–7 · per hand
+  Leaning DB Lateral Raise: 15 × 12 × 2 @ RPE 6–7 · per hand
   Reverse Pec Deck: 70 × 20 × 2 @ RPE 6–7
-  Seated Calf Raise: 90 × 15 × 2 @ RPE 6–7
   Neck Curl: 5 × 15 × 2 @ RPE 6–7
   Cooldown — 5 min — POSTURE: doorway pec stretch 2×30s (tight pecs pull you forward) · cross-body delt 30s/side · wall slides ×10 · easy breathing, no bouncing
 
@@ -307,7 +312,7 @@ Wed — Paused Squat + Arms
   Incline DB Curl: 27.5 × 12 × 2 @ RPE 6–7 · per hand
   EZ-Bar Curl: 55 × 10 × 2 @ RPE 6–7
   Hammer Curl: 27.5 × 12 × 2 @ RPE 6–7 · per hand
-  Lateral Raise (Wed): 12.5 × 20 × 2 @ RPE 6–7 · per hand
+  Cable Lateral Raise: 10 × 20 × 2 @ RPE 6–7
   Cable Woodchop: 30 × 12 × 2 @ RPE 6–7
   Incline Walk — 15 min · 2.8 mph · 4%
   Cooldown — 5 min — 90/90 hips 60s/side · standing hamstring 45s/side · easy breathing, no bouncing
@@ -331,6 +336,7 @@ Fri — Comp Deadlift + Back
   Deadlift — light triple: 285 × 3 × 3 @ RPE 5–6
   RDL — light: 180 × 6 × 2 @ RPE 5–6
   Weighted Chin-Up — light: BW × 8 × 2 @ RPE 5–6
+  Seated Calf Raise: 90 × 15 × 2 @ RPE 6–7
   Lying Leg Curl: 85 × 12 × 2 @ RPE 6–7
   Chest-Supported DB Row: 45 × 10 × 2 @ RPE 6–7 · per hand
   Reverse Cable Curl: 40 × 12 × 2 @ RPE 6–7

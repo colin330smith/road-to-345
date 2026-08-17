@@ -1,5 +1,7 @@
 const E = require("./engine.js");
 let pass = 0, fail = 0;
+const isSideDelt = (n) => /Lateral Raise|Cross-Body Cable Y-Raise/i.test(n || "") && !/Pulldown|Prone/i.test(n || "");
+
 const eq = (got, want, label) => {
   if (JSON.stringify(got) === JSON.stringify(want)) { pass++; }
   else { fail++; console.log("FAIL", label, "got", JSON.stringify(got), "want", JSON.stringify(want)); }
@@ -150,14 +152,14 @@ const satEx = sat.filter((b) => b.type === "accessory");
 ok(satEx.length >= 4, "Sat has frame exercises");
 ok(satEx[0].sets === 3 && /Curl/.test(satEx[0].name), "Sat primary frame 3 sets incline curl (arms default)");
 ok(E.sessionFor(1,1,6,{},E.DEFAULT_SPEC).some((b)=>/Pulldown/.test(b.name||"")), "Sat keeps lat work even on arms priority");
-ok(E.sessionFor(1,1,6,{},E.DEFAULT_SPEC).some((b)=>/Lateral/.test(b.name||"")), "Sat keeps side-delt balance on arms priority");
+ok(E.sessionFor(1,1,6,{},E.DEFAULT_SPEC).some((b)=>isSideDelt(b.name)), "Sat keeps side-delt balance on arms priority");
 ok(satEx.some((b) => /Overhead Cable/.test(b.name)), "Sat triceps slot present");
 ok(satEx.some((b) => /Crunch/.test(b.name)), "Sat abs present");
 // default (triceps detail) → secondary frame slot omitted, extra pushdown present
 ok(satEx.some((b) => /Pushdown/.test(b.name)), "Sat triceps-spec adds pushdown");
 // Saturday set cap ~15 excl abs
 const satUpper = satEx.filter((b) => !/Crunch/.test(b.name)).reduce((n, b) => n + b.sets, 0);
-ok(satUpper <= 15, `Sat upper set cap ${satUpper} <= 15`);
+ok(satUpper <= 20, `Sat upper set cap ${satUpper} <= 20 (carries the heaviest side-delt + rear-delt exposure now)`);
 
 // Sunday default runs Wk1-2 of cycles 1-4
 ok(E.sundayPlanned(1, 1, DEF) === true, "Sun planned Wk1");
@@ -184,9 +186,9 @@ ok(!thu.some((b) => /Rear-Delt Fly|Cross-Body/.test(b.name)), "Thu dropped rear-
 ok(thu.some((b) => /Wrist/.test(b.name)) && thu.some((b) => /Neck/.test(b.name)), "Thu keeps wrist + neck (abs moved to Mon for the dip)");
 ok(E.sessionFor(1, 1, 1, {}, DEF).some((b) => /Cable Crunch/.test(b.name || "")), "Mon received the ab block");
 
-// Transfers fire Wk1 (Sunday runs): Tue laterals gone, Wed EZ + hammer gone, incline curl kept
+// Transfers fire Wk1 (Sunday runs): Wed EZ goes; laterals and hammer are now permanent
 const tue1 = E.sessionFor(1, 1, 2, {}, DEF);
-ok(!tue1.some((b) => /Lateral Raise/.test(b.name)), "Tue laterals transferred out Wk1");
+ok(tue1.some((b) => isSideDelt(b.name)), "Tue laterals are guaranteed, never transferred to the optional day");
 const wed1 = E.sessionFor(1, 1, 3, {}, DEF);
 ok(!wed1.some((b) => /EZ-Bar Curl/.test(b.name)) && wed1.some((b) => /Hammer Curl/.test(b.name)), "Wed EZ transferred out; hammer is permanent");
 ok(wed1.some((b) => /Incline DB Curl/.test(b.name)), "Wed incline curl kept");
@@ -290,7 +292,7 @@ console.log("\n── frame requirements ──");
     const monLegIso = mon.filter((b) => b.type === "accessory" && /Leg Press|Leg Curl|Leg Extension|Calf/i.test(b.name)).reduce((n, b) => n + b.sets, 0);
     ok(monLegIso <= 8, "split: Mon leg isolation <=8 (6 quad/calf + the priority hamstring exposure)");
   }
-  ok(tue.some((b) => /Seated Calf/.test(b.name || "")), "split: Tue gets seated calf");
+  ok(E.sessionFor(1, 1, 5, {}, E.DEFAULT_SPEC).some((b) => /Seated Calf/.test(b.name || "")), "split: seated calf moved to Fri (Tue was at the session ceiling)");
   ok(!tue.some((b) => /Shrug/.test(b.name || "")), "split: Tue sheds the shrug");
   {
     const fri = E.sessionFor(1, 1, 5, {}, E.DEFAULT_SPEC).filter((b) => b.type === "accessory").map((b) => b.name);
@@ -542,6 +544,46 @@ console.log("\n── frame requirements ──");
     ok(sets <= 27, `day ${d}: ${sets} working sets stays inside the session budget`);
   }
   eq([E.ARM_START, E.ARM_GOAL], [13, 15], "arms: 13 -> 15 in, the honest target from his real baseline");
+}
+
+
+// ═══ 3D delts: side and rear are the heads that lag; front is already saturated ═══
+{
+  const isRear = (n) => /Rear-Delt|Reverse Pec|Reverse-Pec|Face Pull/i.test(n || "");
+  const isFrontRaise = (n) => /Front Raise/i.test(n || "");
+  const count = (wk, pred) => {
+    let n = 0;
+    for (let d = 1; d <= 7; d++) for (const b of E.sessionFor(1, wk, d, {}, E.DEFAULT_SPEC))
+      if (["accessory", "single", "backoff"].includes(b.type) && pred(b.name)) n += b.sets;
+    return n;
+  };
+  // the regex that has now miscounted twice
+  ok(!isSideDelt("Unilateral Cable Pulldown"), "side-delt matcher rejects Unilateral Cable Pulldown");
+  ok(!isSideDelt("Prone Y-Raise"), "side-delt matcher rejects Prone Y-Raise (lower traps)");
+  ok(isSideDelt("Cross-Body Cable Y-Raise") && isSideDelt("Cable Lateral Raise"), "side-delt matcher accepts the real ones");
+
+  ok(count(1, isSideDelt) >= 15, "delts: 15+ side-delt sets in a full week");
+  ok(count(3, isSideDelt) >= 9, "delts: reduced week trims side delts, never deletes them");
+  ok(count(1, isRear) >= 8, "delts: 8+ rear-delt sets — the head that rounds the cap in profile");
+  eq(count(1, isFrontRaise), 0, "delts: zero direct front-delt work — pressing already saturates it");
+
+  // side-delt volume must not depend on the optional Sunday
+  let guaranteed = 0;
+  for (let d = 1; d <= 6; d++) for (const b of E.sessionFor(1, 1, d, {}, E.DEFAULT_SPEC))
+    if (["accessory", "single", "backoff"].includes(b.type) && isSideDelt(b.name)) guaranteed += b.sets;
+  ok(guaranteed >= 12, `delts: ${guaranteed} side-delt sets land Mon-Sat, independent of the optional day`);
+
+  // 3+ exposures — delts recover fast and respond to frequency
+  const days = new Set();
+  for (let d = 1; d <= 6; d++) for (const b of E.sessionFor(1, 1, d, {}, E.DEFAULT_SPEC))
+    if (isSideDelt(b.name)) days.add(d);
+  ok(days.size >= 3, "delts: 3+ guaranteed side-delt exposures per week");
+
+  // resistance-curve cues are the other half of the fix
+  const names = [];
+  for (let d = 1; d <= 7; d++) for (const b of E.sessionFor(1, 1, d, {}, E.DEFAULT_SPEC)) if (isSideDelt(b.name)) names.push(b.name);
+  ok(names.some((n) => /Cross-Body Cable Y-Raise/.test(n)), "delts: the cross-body Y-raise (deepest lateral-delt stretch) is in the plan");
+  ok(names.some((n) => /Leaning/.test(n)), "delts: the leaning DB variant is in the plan, not the flat one with no bottom tension");
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

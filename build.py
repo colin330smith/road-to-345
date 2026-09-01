@@ -50,11 +50,28 @@ PWA_HEAD = """<!doctype html>
 
 PWA_TAIL = """
 <script>
-if ("serviceWorker" in navigator) addEventListener("load", () => navigator.serviceWorker.register("./sw.js"));
+window.BUILD = "%s";
+if ("serviceWorker" in navigator) addEventListener("load", async () => {
+  try {
+    const reg = await navigator.serviceWorker.register("./sw.js");
+    const check = () => reg.update().catch(() => {});
+    // iOS resumes a home-screen PWA without a real navigation, so no update
+    // check would ever run — check every time the app comes to the foreground.
+    document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") check(); });
+    // when a new worker takes over, reload once so the page it serves is the new one
+    let had = !!navigator.serviceWorker.controller;
+    navigator.serviceWorker.addEventListener("controllerchange", () => { if (had) location.reload(); had = true; });
+  } catch (e) {}
+});
 </script>
 </body>
 </html>
 """
+
+
+def sw_version():
+    m = re.search(r'const C = "(r345-v\d+)";', read(SW))
+    return m.group(1) if m else "r345"
 
 
 def read(p):
@@ -76,10 +93,11 @@ def build():
 
     frag = shell.replace('<meta charset="utf-8">\n', "", 1)
     frag = frag.replace("<title>Road to 3/4/5</title>\n", "", 1)
-    write(OUT_PWA, PWA_HEAD + frag + PWA_TAIL)
+    tail = PWA_TAIL % sw_version()
+    write(OUT_PWA, PWA_HEAD + frag + tail)
 
     print(f"built  road-to-345.html  {len(shell):,} bytes")
-    print(f"built  index.html        {len(PWA_HEAD + frag + PWA_TAIL):,} bytes")
+    print(f"built  index.html        {len(PWA_HEAD + frag + tail):,} bytes  ({sw_version()})")
     return shell
 
 
@@ -107,8 +125,8 @@ def check(html):
 
 
 if __name__ == "__main__":
+    if "--bump" in sys.argv:
+        bump_sw()  # before build, so the page carries the same stamp as the worker
     html = build()
     if "--check" in sys.argv:
         check(html)
-    if "--bump" in sys.argv:
-        bump_sw()

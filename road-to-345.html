@@ -1907,6 +1907,12 @@ function weeklyAverages(n) {
 }
 
 /* ── MORE ── */
+async function forceUpdate() {
+  // logs live in localStorage and are untouched; this only drops the worker + caches
+  try { if ("serviceWorker" in navigator) for (const r of await navigator.serviceWorker.getRegistrations()) await r.unregister(); } catch (e) {}
+  try { if (window.caches) for (const k of await caches.keys()) await caches.delete(k); } catch (e) {}
+  location.replace(location.pathname + "?u=" + Date.now());
+}
 function renderMore() {
   const logged = Object.keys(S.logs).filter((k) => DK_RE.test(k) && S.logs[k].sets && Object.keys(S.logs[k].sets).length).sort().reverse();
   $("#view").innerHTML = `
@@ -1921,6 +1927,8 @@ function renderMore() {
       <button class="btn ghost" onclick="importSheet()">Import</button></div></div>
     <div class="card"><div class="eyebrow sig">Settings</div>
       <label class="note">Schedule shift (weeks) — for mini-cuts or life: <input type="number" value="${S.settings.offsetWeeks || 0}" onchange="S.settings.offsetWeeks=+this.value||0;save();render()"></label>
+      <p class="note">Build <b style="color:var(--chalk)">${esc(window.BUILD || "local")}</b>. If the app looks stale after an update, force it.</p>
+      <div class="rowbtns"><button class="btn ghost" onclick="forceUpdate()">Force update</button></div>
       <div class="rowbtns"><button class="btn danger" onclick="if(confirm('Erase ALL logs, gates and settings?')){localStorage.removeItem(KEY);location.reload()}">Erase everything</button></div></div>
     <div class="card"><div class="eyebrow">Companion pieces</div>
       <p class="note">📓 Wave notes + 🍚 nutrition plan → Apple Notes · 📅 sessions 7:00–8:30 → Apple Calendar · this app → logging, projections, demos.</p></div>`;

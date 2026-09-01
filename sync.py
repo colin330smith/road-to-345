@@ -17,7 +17,7 @@ from pathlib import Path
 ROOT = Path(__file__).parent
 OUT = ROOT / "out"
 DAY = ["", "Mon — Comp Squat + Legs", "Tue — Comp Bench + Back", "Wed — Paused Squat + Arms",
-       "Thu — Paused Bench + OHP", "Fri — Comp Deadlift + Back", "Sat — Frame Spec", "Sun — Optional Arms"]
+       "Thu — Paused Bench + OHP", "Fri — Comp Deadlift + Back", "Sat — Frame Spec", "Sun — Rest"]
 
 
 def sessions(wave):
@@ -28,7 +28,7 @@ def sessions(wave):
     for (let wk = 1; wk <= 4; wk++) for (let d = 1; d <= 7; d++) {
       out[wk + '-' + d] = E.sessionFor(wave, wk, d, {}, E.DEFAULT_SPEC)
         .map(b => ({ type: b.type, name: b.name, w: b.w, reps: b.reps, sets: b.sets,
-                     rpe: b.rpe, db: b.db, note: b.note, rows: b.rows, lastHard: b.lastHard, added: b.added }));
+                     rpe: b.rpe, db: b.db, note: b.note, rows: b.rows, lastHard: b.lastHard, added: b.added, cap: b.cap }));
     }
     const t = E.mainTables(wave, {});
     const tr = {};
@@ -47,7 +47,7 @@ def line(b):
         return f"  {b['name']}" + (f" — {b['note']}" if b.get("note") else "")
     w = "BW" if b.get("w") == 0 else f"+{b['w']}" if b.get("added") else b.get("w")
     tail = " · per hand" if b.get("db") else ""
-    hard = "  ← last set RPE 9–10" if b.get("lastHard") else ""
+    hard = "  ← last set RPE 9–10" if b.get("lastHard") else "  (filler — superset into rests)" if str(b.get("cap") or "").startswith("FILLER") else ""
     return f"  {b['name']}: {w} × {b['reps']} × {b['sets']} @ RPE {b['rpe']}{tail}{hard}"
 
 
@@ -70,6 +70,10 @@ def note_body(wave, data):
          "dip the triceps side, and TRICEPS ARE TWO-THIRDS OF ARM CIRCUMFERENCE —",
          "so they carry the larger share, most of it overhead and at length.",
          "Chin-up, dip, RDL and incline all climb like the big three do.",
+         "",
+         "v32 — FEWER SETS, REAL RESTS. ~18–22 working sets a day, Sunday is REST.",
+         "One failure set per muscle per day (marked ←); everything else stops at RPE 8.",
+         "Compounds get 3 min rest, isolation 90 s. Filler sets ride inside main-lift rests.",
          "",
          "⚠️ THIS NOTE IS GENERATED FROM THE APP. The app is the source of truth —",
          "it adapts loads to what you actually log. Use this only as a reference.",

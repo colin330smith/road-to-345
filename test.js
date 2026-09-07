@@ -723,10 +723,10 @@ console.log("\n── frame requirements ──");
   ok(N.HILLSTONE.some((x) => x.id === "ahi" && x.trim && x.kcal <= 600), "nutri: ahi ponzu is the trim anchor");
   eq(N.targets("gain").kcal, 3050, "nutri: gain 3,050"); eq(N.targets("trim").kcal, 2500, "nutri: trim 2,500");
   eq(N.targets("nope").kcal, 3050, "nutri: unknown mode falls back to gain");
-  const sum = (mode) => N.HOME.filter((x) => x.mode === mode).reduce((s, x) => s + x.kcal, 0);
+  const sum = (mode) => N.HOME.filter((x) => x.mode === mode && !x.grp).reduce((s, x) => s + x.kcal, 0); // base meals only — plates replace the shift meal
   ok(sum("gain") + 950 >= 3000 && sum("gain") + 950 <= 3200, `nutri: gaining day with the rotisserie lands ~3,050 (${sum("gain") + 950})`);
   ok(sum("trim") + 550 >= 2150 && sum("trim") + 700 <= 2550, `nutri: trim day with a trim anchor lands 2,200-2,500 (${sum("trim") + 550}-${sum("trim") + 700})`);
-  ok(N.HOME.filter((x) => x.mode === "gain").reduce((s, x) => s + x.p, 0) + 70 >= 190, "nutri: gaining day clears 190P before the shift meal is even generous");
+  ok(N.HOME.filter((x) => x.mode === "gain" && !x.grp).reduce((s, x) => s + x.p, 0) + 70 >= 190, "nutri: gaining day clears 190P before the shift meal is even generous");
   eq(N.dayTotals([{ kcal: 800, p: 50 }, { kcal: 950, p: 70 }]), { kcal: 1750, p: 120 }, "nutri: dayTotals sums");
   eq(N.dayTotals([]), { kcal: 0, p: 0 }, "nutri: empty day is zero");
   const food = { "2026-09-10": [{ kcal: 3000, p: 190 }], "2026-09-11": [{ kcal: 3100, p: 200 }], "2026-09-12": [] , "2026-09-13": [{ kcal: 2900, p: 180 }] };
@@ -744,6 +744,22 @@ console.log("\n── frame requirements ──");
   eq(N.decision(bwLight, {}).mode, "gain", "decision: waist unlogged does not block a keep-gaining call");
   eq(N.decision(bwLight, waistFlat).avg, 187.8, "decision: 3-day average is what it uses");
   eq(N.trimEnd("2026-09-17"), "2026-10-15", "nutri: 4-week trim from Sep 17 ends Oct 15");
+  // home plates: what he actually cooks
+  const plates = N.HOME.filter((x) => x.grp === "plate");
+  ok(plates.some((x) => /Salmon/.test(x.name) && x.mode === "gain") && plates.some((x) => /Salmon/.test(x.name) && x.mode === "trim"), "plates: salmon in both modes");
+  ok(plates.some((x) => /NY Strip/.test(x.name) && x.mode === "gain") && plates.some((x) => /NY Strip/.test(x.name) && x.mode === "trim"), "plates: NY strip in both modes");
+  ok(plates.some((x) => /Ribeye/.test(x.name) && x.mode === "gain") && !plates.some((x) => /Ribeye/.test(x.name) && x.mode === "trim"), "plates: ribeye is gaining-only");
+  ok(plates.filter((x) => x.mode === "trim").every((x) => x.kcal <= 750 && x.p >= 40), "plates: every trim plate is <=750 kcal and >=40P");
+  ok(plates.every((x) => x.p >= 40), "plates: every plate is a protein anchor");
+  const homeBase = (mode) => N.HOME.filter((x) => x.mode === mode && !x.grp).reduce((s, x) => s + x.kcal, 0);
+  for (const x of plates.filter((x) => x.mode === "gain")) ok(homeBase("gain") + x.kcal >= 2950 && homeBase("gain") + x.kcal <= 3350, `plates: off-shift gaining night with ${x.name.split(" —")[0]} lands 2,950-3,350 (${homeBase("gain") + x.kcal})`);
+  for (const x of plates.filter((x) => x.mode === "trim")) ok(homeBase("trim") + x.kcal >= 2150 && homeBase("trim") + x.kcal <= 2500, `plates: off-shift trim night with ${x.name.split(" —")[0]} lands 2,150-2,500 (${homeBase("trim") + x.kcal})`);
+  const adds = N.HOME.filter((x) => x.grp === "addon");
+  ok(adds.every((x) => x.addon && x.mode === "any"), "addons: bare cuts are mode-agnostic add-ons");
+  ok(adds.some((x) => /butter/i.test(x.name)), "addons: cooking fat is loggable");
+  // a composed plate should roughly equal the pre-built one
+  const comp = N.byId("strip10").kcal + N.byId("rice1").kcal * 1.5 + 50;
+  ok(Math.abs(comp - N.byId("stripG").kcal) <= 100, `plates: composed strip plate (${comp}) matches the pre-built (${N.byId("stripG").kcal})`);
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

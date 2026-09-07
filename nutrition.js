@@ -62,6 +62,19 @@ const HOME = [
   { id: "m3",    mode: "gain", when: "4:30 pre-shift",  name: "Greek yogurt + whey + banana",               kcal: 400,  p: 40 },
   { id: "m3T",   mode: "trim", when: "4:30 pre-shift",  name: "Greek yogurt + whey + berries",              kcal: 350,  p: 40 },
   { id: "shake", mode: "any",  when: "emergency",       name: "Emergency shake",                            kcal: 1000, p: 80, note: "Missed a meal or working a double" },
+  // Off-shift dinner plates — what he actually cooks. Raw weights; rice is cooked volume.
+  // Salmon ~208 kcal / 20P per 100 g raw; NY strip ~200 / 22P; ribeye ~290 / 21P.
+  { id: "salmonG", grp: "plate", mode: "gain", when: "off-shift dinner", name: "Salmon plate — 8 oz fillet + 1½ cup rice + veg",   kcal: 850,  p: 50, note: "Counts as the day's omega-3" },
+  { id: "salmonT", grp: "plate", mode: "trim", when: "off-shift dinner", name: "Salmon plate — 6 oz fillet + 1 cup rice + veg",    kcal: 600,  p: 40, note: "Counts as the day's omega-3" },
+  { id: "stripG",  grp: "plate", mode: "gain", when: "off-shift dinner", name: "NY Strip plate — 10 oz + 1½ cup rice + veg",  kcal: 900,  p: 65 },
+  { id: "stripT",  grp: "plate", mode: "trim", when: "off-shift dinner", name: "NY Strip plate — 8 oz + 1 cup rice + veg",         kcal: 700,  p: 55, note: "The trim steak — leanest of the three" },
+  { id: "ribeyeG", grp: "plate", mode: "gain", when: "off-shift dinner", name: "Ribeye plate — 10 oz + 1½ cup rice + veg",     kcal: 1150, p: 65, note: "Fattiest cut. Gaining nights only; the strip is the trim steak" },
+  // Bare cuts + cooking fat, so a plate can be composed however it was actually cooked
+  { id: "salmon8", grp: "addon", mode: "any", name: "Salmon fillet, 8 oz (alone)",   kcal: 470, p: 45, addon: true },
+  { id: "strip10", grp: "addon", mode: "any", name: "NY Strip, 10 oz (alone)",       kcal: 570, p: 62, addon: true },
+  { id: "ribeye10", grp: "addon", mode: "any", name: "Ribeye, 10 oz (alone)",        kcal: 800, p: 60, addon: true },
+  { id: "rice1",   grp: "addon", mode: "any", name: "Jasmine rice, 1 cup cooked",    kcal: 200, p: 4,  addon: true },
+  { id: "fat1",    grp: "addon", mode: "any", name: "Cooking butter / oil, 1 tbsp",  kcal: 100, p: 0,  addon: true, note: "Pan-searing a steak usually means one of these" },
 ];
 const ALL = () => [...HILLSTONE, ...SIDES, ...HOME];
 const byId = (id) => ALL().find((x) => x.id === id) || null;

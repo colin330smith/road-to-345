@@ -754,6 +754,19 @@ console.log("\n── frame requirements ──");
   const homeBase = (mode) => N.HOME.filter((x) => x.mode === mode && !x.grp).reduce((s, x) => s + x.kcal, 0);
   for (const x of plates.filter((x) => x.mode === "gain")) ok(homeBase("gain") + x.kcal >= 2950 && homeBase("gain") + x.kcal <= 3350, `plates: off-shift gaining night with ${x.name.split(" —")[0]} lands 2,950-3,350 (${homeBase("gain") + x.kcal})`);
   for (const x of plates.filter((x) => x.mode === "trim")) ok(homeBase("trim") + x.kcal >= 2150 && homeBase("trim") + x.kcal <= 2500, `plates: off-shift trim night with ${x.name.split(" —")[0]} lands 2,150-2,500 (${homeBase("trim") + x.kcal})`);
+  // breakfast alternatives: every one is a post-lift recovery meal
+  const bf = N.HOME.filter((x) => x.grp === "bfast");
+  ok(bf.length >= 10, `bfast: ${bf.length} options`);
+  ok(bf.every((x) => x.p >= 40), "bfast: every breakfast clears 40P post-lift");
+  ok(bf.filter((x) => x.mode === "gain").every((x) => x.kcal >= 600 && x.kcal <= 900), "bfast: gain breakfasts sit 600-900");
+  ok(bf.filter((x) => x.mode === "trim").every((x) => x.kcal >= 450 && x.kcal <= 600), "bfast: trim breakfasts sit 450-600");
+  for (const r of ["Steak & eggs", "Breakfast burrito", "Omelet", "Eggs + Greek yogurt", "Oat protein pancakes"])
+    ok(bf.some((x) => x.name.startsWith(r) && x.mode === "gain") && bf.some((x) => x.name.startsWith(r) && x.mode === "trim"), `bfast: ${r} exists in both modes`);
+  ok(bf.some((x) => /Steak & eggs/.test(x.name) && /THE PICK/.test(x.note || "")), "bfast: steak & eggs is named the pick");
+  // swapping any breakfast for meal 1 keeps the day in band
+  const m1 = (mode) => N.HOME.find((x) => x.id === (mode === "gain" ? "m1" : "m1T")).kcal;
+  for (const x of bf.filter((x) => x.mode === "gain")) { const d = homeBase("gain") - m1("gain") + x.kcal + 950; ok(d >= 2900 && d <= 3350, `bfast: gaining day with ${x.name.split(" —")[0]} lands 2,900-3,350 (${d})`); }
+  for (const x of bf.filter((x) => x.mode === "trim")) { const d = homeBase("trim") - m1("trim") + x.kcal + 550; ok(d >= 2050 && d <= 2500, `bfast: trim day with ${x.name.split(" —")[0]} lands 2,050-2,500 (${d})`); }
   const adds = N.HOME.filter((x) => x.grp === "addon");
   ok(adds.every((x) => x.addon && x.mode === "any"), "addons: bare cuts are mode-agnostic add-ons");
   ok(adds.some((x) => /butter/i.test(x.name)), "addons: cooking fat is loggable");

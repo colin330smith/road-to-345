@@ -529,12 +529,14 @@ window.foodSheet = (dk) => {
   const homeOK = (x) => x.mode === mode || x.mode === "any";
   const home = NUTRI.HOME.filter((x) => homeOK(x) && !x.grp);
   const plates = NUTRI.HOME.filter((x) => homeOK(x) && x.grp === "plate");
+  const bfast = NUTRI.HOME.filter((x) => homeOK(x) && x.grp === "bfast");
   const homeAdd = NUTRI.HOME.filter((x) => homeOK(x) && x.grp === "addon");
   const hillA = NUTRI.HILLSTONE.filter((x) => x.tier === "A" && x[mode]);
   const hillB = NUTRI.HILLSTONE.filter((x) => x.tier === "B" && (mode === "gain"));
   const sides = NUTRI.SIDES.filter((x) => x[mode]);
   openSheet(`<button class="closex" onclick="closeSheet()">×</button><h2>Log food — ${T.label} day</h2>
     <div class="eyebrow" style="margin-top:6px">Home meals</div>${home.map(row).join("")}
+    <div class="eyebrow" style="margin-top:10px">Home — breakfast alternatives (swap for meal 1)</div>${bfast.map(row).join("")}
     <div class="eyebrow" style="margin-top:10px">Home — off-shift dinner plates</div>${plates.map(row).join("")}
     <div class="eyebrow" style="margin-top:10px">Home — build your own</div>${homeAdd.map(row).join("")}
     <div class="eyebrow" style="margin-top:10px">Hillstone — Tier A (${mode})</div>${hillA.map(row).join("")}

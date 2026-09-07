@@ -1520,12 +1520,26 @@ const HOME = [
   { id: "stripG",  grp: "plate", mode: "gain", when: "off-shift dinner", name: "NY Strip plate — 10 oz + 1½ cup rice + veg",  kcal: 900,  p: 65 },
   { id: "stripT",  grp: "plate", mode: "trim", when: "off-shift dinner", name: "NY Strip plate — 8 oz + 1 cup rice + veg",         kcal: 700,  p: 55, note: "The trim steak — leanest of the three" },
   { id: "ribeyeG", grp: "plate", mode: "gain", when: "off-shift dinner", name: "Ribeye plate — 10 oz + 1½ cup rice + veg",     kcal: 1150, p: 65, note: "Fattiest cut. Gaining nights only; the strip is the trim steak" },
+  // Breakfast alternatives — swap for meal 1 after the 7 AM lift. Every one clears 40P.
+  // Eggs ~70 kcal / 6P each; whites ~17 / 3.5P; 0% Greek yogurt 1 cup ~130 / 23P; whey scoop ~120 / 25P.
+  { id: "bfSteakG",   grp: "bfast", mode: "gain", when: "8:45 post-lift", name: "Steak & eggs — 5 oz NY strip + 3 eggs + 2 sourdough",         kcal: 700, p: 55, note: "THE PICK. Last night's strip, sliced thin, 60 s in the pan" },
+  { id: "bfSteakT",   grp: "bfast", mode: "trim", when: "8:45 post-lift", name: "Steak & eggs — 4 oz NY strip + 3 eggs + 1 sourdough",         kcal: 550, p: 45, note: "THE PICK. Highest satiety on the list" },
+  { id: "bfBurritoG", grp: "bfast", mode: "gain", when: "8:45 post-lift", name: "Breakfast burrito — 3 eggs + 3 oz chicken + beans + cheese, 2 tortillas", kcal: 900, p: 60, note: "Fastest high-protein option, 6 minutes" },
+  { id: "bfBurritoT", grp: "bfast", mode: "trim", when: "8:45 post-lift", name: "Breakfast burrito — 3 eggs + 3 oz chicken + beans, 1 tortilla, no cheese", kcal: 600, p: 50 },
+  { id: "bfOmeletG",  grp: "bfast", mode: "gain", when: "8:45 post-lift", name: "Omelet — 3 whole + 4 whites, spinach, 1 oz cheese, 2 toast",   kcal: 600, p: 42 },
+  { id: "bfOmeletT",  grp: "bfast", mode: "trim", when: "8:45 post-lift", name: "Omelet — 2 whole + 5 whites, spinach + salsa, 1 toast, whey on the side", kcal: 450, p: 57 },
+  { id: "bfBowlG",    grp: "bfast", mode: "gain", when: "8:45 post-lift", name: "Eggs + Greek yogurt bowl — 3 eggs, 1 cup 0% yogurt, berries, granola", kcal: 600, p: 45, note: "No-thought option" },
+  { id: "bfBowlT",    grp: "bfast", mode: "trim", when: "8:45 post-lift", name: "Eggs + Greek yogurt bowl — 3 eggs, 1 cup 0% yogurt, berries",   kcal: 450, p: 42 },
+  { id: "bfCakesG",   grp: "bfast", mode: "gain", when: "8:45 post-lift", name: "Oat protein pancakes — 1 cup oats, 2 eggs, 1 scoop whey, banana", kcal: 700, p: 50, note: "Weekend. Blend, cook as three" },
+  { id: "bfCakesT",   grp: "bfast", mode: "trim", when: "8:45 post-lift", name: "Oat protein pancakes — ½ cup oats, 2 eggs, 1 scoop whey",  kcal: 450, p: 45 },
   // Bare cuts + cooking fat, so a plate can be composed however it was actually cooked
   { id: "salmon8", grp: "addon", mode: "any", name: "Salmon fillet, 8 oz (alone)",   kcal: 470, p: 45, addon: true },
   { id: "strip10", grp: "addon", mode: "any", name: "NY Strip, 10 oz (alone)",       kcal: 570, p: 62, addon: true },
   { id: "ribeye10", grp: "addon", mode: "any", name: "Ribeye, 10 oz (alone)",        kcal: 800, p: 60, addon: true },
   { id: "rice1",   grp: "addon", mode: "any", name: "Jasmine rice, 1 cup cooked",    kcal: 200, p: 4,  addon: true },
   { id: "fat1",    grp: "addon", mode: "any", name: "Cooking butter / oil, 1 tbsp",  kcal: 100, p: 0,  addon: true, note: "Pan-searing a steak usually means one of these" },
+  { id: "egg1",    grp: "addon", mode: "any", name: "Whole egg, 1",                   kcal: 70,  p: 6,  addon: true },
+  { id: "toast1",  grp: "addon", mode: "any", name: "Sourdough, 1 slice",             kcal: 90,  p: 3,  addon: true },
 ];
 const ALL = () => [...HILLSTONE, ...SIDES, ...HOME];
 const byId = (id) => ALL().find((x) => x.id === id) || null;
@@ -1739,12 +1753,14 @@ window.foodSheet = (dk) => {
   const homeOK = (x) => x.mode === mode || x.mode === "any";
   const home = NUTRI.HOME.filter((x) => homeOK(x) && !x.grp);
   const plates = NUTRI.HOME.filter((x) => homeOK(x) && x.grp === "plate");
+  const bfast = NUTRI.HOME.filter((x) => homeOK(x) && x.grp === "bfast");
   const homeAdd = NUTRI.HOME.filter((x) => homeOK(x) && x.grp === "addon");
   const hillA = NUTRI.HILLSTONE.filter((x) => x.tier === "A" && x[mode]);
   const hillB = NUTRI.HILLSTONE.filter((x) => x.tier === "B" && (mode === "gain"));
   const sides = NUTRI.SIDES.filter((x) => x[mode]);
   openSheet(`<button class="closex" onclick="closeSheet()">×</button><h2>Log food — ${T.label} day</h2>
     <div class="eyebrow" style="margin-top:6px">Home meals</div>${home.map(row).join("")}
+    <div class="eyebrow" style="margin-top:10px">Home — breakfast alternatives (swap for meal 1)</div>${bfast.map(row).join("")}
     <div class="eyebrow" style="margin-top:10px">Home — off-shift dinner plates</div>${plates.map(row).join("")}
     <div class="eyebrow" style="margin-top:10px">Home — build your own</div>${homeAdd.map(row).join("")}
     <div class="eyebrow" style="margin-top:10px">Hillstone — Tier A (${mode})</div>${hillA.map(row).join("")}

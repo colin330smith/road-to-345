@@ -294,7 +294,7 @@ console.log("\n── frame requirements ──");
     const monLegIso = mon.filter((b) => b.type === "accessory" && /Leg Press|Leg Curl|Leg Extension|Calf/i.test(b.name)).reduce((n, b) => n + b.sets, 0);
     ok(monLegIso <= 9, "split: Mon leg isolation <=9 (quad + calf + the priority hamstring exposure)");
   }
-  ok(E.sessionFor(1, 1, 5, {}, E.DEFAULT_SPEC).some((b) => /Seated Calf/.test(b.name || "")), "split: seated calf moved to Fri (Tue was at the session ceiling)");
+  ok(E.sessionFor(1, 1, 5, {}, E.DEFAULT_SPEC).some((b) => /Leg Press Calf/.test(b.name || "")), "split: Fri calf is straight-knee (gastroc), not seated");
   ok(!tue.some((b) => /Shrug/.test(b.name || "")), "split: Tue sheds the shrug");
   {
     const fri = E.sessionFor(1, 1, 5, {}, E.DEFAULT_SPEC).filter((b) => b.type === "accessory").map((b) => b.name);
@@ -665,6 +665,48 @@ console.log("\n── frame requirements ──");
           if ((b.name || "").startsWith(t)) found.add(t);
     eq(found.size, 4, `wave ${w}: all four tracked lifts present`);
   }
+}
+
+
+// ═══ v34 exercise audit ═══
+{
+  const S = (w, wk, d) => E.sessionFor(w, wk, d, {}, E.DEFAULT_SPEC);
+  ok(/UPRIGHT/.test(E.TRACKED.dip.note) && !/Slight forward lean/.test(E.TRACKED.dip.note), "audit: dip cue is upright + tucked (triceps), not the chest lean");
+  for (const [d, re] of [[3, /Squat/], [4, /Bench/]]) for (const wk of [1, 2, 3]) {
+    const ps = S(3, wk, d).filter((b) => b.type === "paused" && re.test(b.name));
+    const paused = ps.find((b) => !b.hyp), hyp = ps.find((b) => b.hyp);
+    ok(paused && hyp, `audit: wk${wk} d${d} has both a paused block and a hypertrophy block`);
+    ok(hyp.reps >= 6 && hyp.reps <= 8 && /7\.5/.test(hyp.rpe), `audit: wk${wk} d${d} hypertrophy block is 6-8 reps near RPE 8`);
+    eq(hyp.w, paused.w, `audit: wk${wk} d${d} hypertrophy block uses the same bar`);
+    ok(hyp.pkey !== paused.pkey, `audit: wk${wk} d${d} hypertrophy block logs under its own key`);
+  }
+  ok(!S(3, 4, 3).some((b) => b.hyp) && !S(3, 4, 4).some((b) => b.hyp), "audit: deload week has no hypertrophy back-offs");
+  const tot = (wk, d, re) => S(3, wk, d).filter((b) => b.type === "paused" && re.test(b.name)).reduce((n, b) => n + b.sets, 0);
+  eq(tot(1, 3, /Squat/), 4, "audit: Wed paused-pattern total stays 4 sets"); eq(tot(1, 4, /Bench/), 4, "audit: Thu paused-pattern total stays 4 sets");
+  let lpCount = 0, lpWrong = 0;
+  for (let d = 1; d <= 7; d++) for (const b of S(3, 1, d)) { if (b.lp) { lpCount++; if (!b.lastHard) lpWrong++; } }
+  ok(lpCount >= 6, `audit: ${lpCount} anchors carry lengthened partials`);
+  eq(lpWrong, 0, "audit: lengthened partials never appear on a non-failure set");
+  ok(!S(3, 4, 3).some((b) => b.lp) && !S(3, 3, 3).some((b) => b.lp), "audit: no lengthened partials in the trim week or deload");
+  const calfNames = [];
+  for (let d = 1; d <= 7; d++) for (const b of S(3, 1, d)) if (/Calf/.test(b.name || "")) calfNames.push(b.name);
+  ok(calfNames.length === 2 && !calfNames.some((n) => /Seated/.test(n)), "audit: no bent-knee calf raise remains");
+  const names = (d) => S(3, 1, d).filter((b) => b.type === "accessory").map((b) => b.name);
+  ok(names(1).indexOf("Seated Leg Curl") < names(1).indexOf("Leg Press"), "audit: Mon hamstring anchor precedes leg press");
+  ok(names(3).indexOf("Cable Preacher Curl") < names(3).indexOf("Leg Extension"), "audit: Wed anchor curl precedes the leg extension");
+  ok(names(6).findIndex((n) => /Y-Raise/.test(n)) <= 2, "audit: Sat side-delt builder is in the first three");
+}
+
+
+// ═══ every emitted moveId must have a movement-library entry (four were missing, incl. both hamstring anchors) ═══
+{
+  const html = require("fs").readFileSync(require("path").join(__dirname, "app-shell.html"), "utf8");
+  const lib = new Set([...html.matchAll(/^\s{2}([A-Za-z0-9]+):\{name:"/gm)].map((m) => m[1]));
+  const need = new Set();
+  for (const w of [1, 7, 13, 19]) for (let wk = 1; wk <= 4; wk++) for (let d = 1; d <= 7; d++)
+    for (const b of E.sessionFor(w, wk, d, {}, E.DEFAULT_SPEC)) if (b.moveId) need.add(b.moveId);
+  const missing = [...need].filter((k) => !lib.has(k));
+  eq(missing.length, 0, `library: every emitted moveId has a demo (${missing.join(", ") || "all covered"})`);
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

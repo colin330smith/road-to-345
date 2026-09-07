@@ -268,8 +268,8 @@ const MOVES = {
     cues:["Pulleys at the bottom, sweep up and in","Hands finish at collarbone height","Squeeze a beat at the top","Builds the upper-chest shelf flat pressing misses"],cap:"RPE 8–9."},
   facepull:{name:"Face Pull",grp:"Arms & Delts",arch:"rearfly",yt:"face pull rope technique",
     cues:["Rope to the forehead, elbows high","External rotation at the end — show your biceps","Rear delts AND posture — posture changes your silhouette"],cap:"RPE 8–9. Light and strict."},
-  seatcalf:{name:"Seated Calf Raise",grp:"Legs",arch:"calf",yt:"seated calf raise soleus",
-    cues:["Bent knee targets the soleus (straight-leg hits gastroc)","Full stretch at the bottom, pause there","Slow — no bouncing off the tendon"],cap:"RPE 8–9."},
+  lpcalf:{name:"Leg Press Calf Raise",grp:"Legs",arch:"calf",yt:"leg press calf raise straight leg",
+    cues:["Knees LOCKED — bent-knee calf work trains the soleus only","The gastrocnemius is the calf you can see; it needs a straight knee","Two-second pause in the stretch, no bouncing","Final set: after the last full rep, 3–5 partials in the bottom half"],cap:"Tracked like every accessory. Lengthened partials on the failure set only."},
   lattue:{name:"Lateral Raise",grp:"Arms & Delts",arch:"lateral",yt:"dumbbell lateral raise form",
     cues:["Lead with the elbow","Stop shy of a shrug — traps stay quiet","If it needs momentum, it's too heavy"],cap:"Final set RPE 9–10 OK in Weeks 1–2."},
   latwed:{name:"Lateral Raise (high-rep)",grp:"Arms & Delts",arch:"lateral",yt:"lateral raise high reps",
@@ -280,6 +280,16 @@ const MOVES = {
     cues:["Arms long, sweep OUT not back","Zero momentum, 1-sec squeeze"],cap:"Light and strict beats heavy and sloppy."},
   revpec:{name:"Reverse Pec Deck",grp:"Arms & Delts",arch:"rearfly",yt:"reverse pec deck",
     cues:["Arms long, sweep out","Squeeze a second at the back"],cap:"15–25 rep range — pump work."},
+  preacher:{name:"Cable Preacher Curl",grp:"Arms & Delts",arch:"curl",yt:"cable preacher curl form",
+    cues:["THE anchor curl — first and fresh on Wednesday","Elbows planted, full stretch at the bottom, no leaning back","Beat the incline curl head-to-head for biceps growth (Sato 2021)","Final set: after the last full rep, 3–5 partials in the bottom half"],cap:"Anchor: the one biceps set that goes to failure that day. 8–12 reps."},
+  seatcurl3:{name:"Seated Leg Curl",grp:"Legs",arch:"legcurl",yt:"seated leg curl form",
+    cues:["HAMSTRING PRIORITY — seated beats lying (Maeo 2021: +14% vs +9%)","Hips flexed puts the hamstring at length; lean forward slightly","Full stretch at the top, squeeze at the bottom, 2-second eccentric","Final set: after the last full rep, 3–5 partials in the stretched half"],cap:"Anchor on Mon and Wed. One progression, one rung — log both under the same key."},
+  hamMon:{name:"Seated Leg Curl",grp:"Legs",arch:"legcurl",yt:"seated leg curl form",
+    cues:["Same movement as Wednesday, same rung","Lean forward slightly to lengthen the hamstring","2-second eccentric, no slamming the stack","Final set: after the last full rep, 3–5 partials in the stretched half"],cap:"Monday exposure. Hamstrings before the leg press — the priority muscle gets the fresh sets."},
+  ohthu:{name:"Overhead Cable Extension",grp:"Arms & Delts",arch:"ohtri",yt:"overhead cable tricep extension long head",
+    cues:["LONG HEAD — two-thirds of your arm; only overhead work loads it at length","Elbows in and pointed up, hands behind the head at the bottom","Overhead beats a pushdown roughly 2:1 for this head (Maeo 2023)","Final set: after the last full rep, 3–5 partials in the stretched half"],cap:"Thursday anchor. The pushdown after it stops at RPE 8."},
+  proneY:{name:"Prone Y-Raise",grp:"Posture",arch:"rearfly",yt:"prone y raise lower traps",
+    cues:["Face down on an incline bench, thumbs up, arms at 45°","LOWER traps — the muscle that actually holds your shoulders back","Tiny weight; if you need to swing, it is too heavy","Filler: superset into a main-lift rest, costs no clock"],cap:"Posture insurance. Never the limiter of a session."},
   inccurl:{name:"Incline DB Curl",grp:"Arms & Delts",arch:"curl",yt:"incline dumbbell curl",
     cues:["45° bench, arms hang behind — full stretch","Curl without shoulders creeping forward","THE priority curl — always first"],cap:"Final set RPE 9–10 OK in Weeks 1–2."},
   ezcurl:{name:"EZ-Bar Curl",grp:"Arms & Delts",arch:"curl",yt:"ez bar curl form",
@@ -295,7 +305,7 @@ const MOVES = {
   crossbody:{name:"Cross-Body Extension",grp:"Arms & Delts",arch:"ohtri",yt:"cross body cable tricep extension",
     cues:["Upper arm pinned across the body — pure elbow","Match reps on both arms"],cap:"RPE 9 OK when elbows are quiet."},
   dip:{name:"Weighted Dip",grp:"Main Lifts",arch:"pushdown",yt:"weighted dip form triceps",
-    cues:["Slight forward lean, elbows tracking back","Sink until the shoulder says stop — depth is where the long head loads","Belt or dumbbell between the feet","THE triceps compound. Triceps are two-thirds of your arm"],cap:"Tracked to +100. Top set to the week's RPE cap, back-offs 7–8. Stop the set if the front of the shoulder pinches."},
+    cues:["Torso UPRIGHT, elbows tucked in — lean forward and it becomes a chest exercise","Sink until the shoulder says stop — depth is where the long head loads","Belt or dumbbell between the feet","THE triceps compound. Triceps are two-thirds of your arm"],cap:"Tracked to +100. Top set to the week's RPE cap, back-offs 7–8. Stop the set if the front of the shoulder pinches."},
   xbody:{name:"Cross-Body Cable Y-Raise",grp:"Shoulders",arch:"lateral",yt:"cross body cable y raise side delt",
     cues:["Cable low, stand side-on, reach ACROSS your body to start","That cross-body start is the deepest stretch the side delt can get","Raise out and slightly up, like the top half of a Y","Light. This is the width muscle, not a strength lift"],cap:"THE side-delt builder. Slow, no swing, 15–25 reps."},
   leanlat:{name:"Leaning DB Lateral Raise",grp:"Shoulders",arch:"lateral",yt:"leaning dumbbell lateral raise",
@@ -473,7 +483,7 @@ function renderToday() {
       <div class="setrow">${Array.from({ length: isSingle ? 1 : b.sets }, (_, si) =>
         si < sets.length
           ? `<button class="chip hit" onclick="editSet('${dk}','${bkey}',${si})">${sets[si].w === 0 ? "BW" : esc(String(sets[si].w))}×${esc(String(sets[si].r))}${sets[si].rpe != null ? "@" + esc(String(sets[si].rpe)) : ""}</button>`
-          : `<button class="chip ${b.lastHard && si === b.sets - 1 ? "hard" : ""}" onclick="hitSet('${dk}','${bkey}',${b.w},${b.repN ?? b.reps},'${esc(b.pkey || "")}')" aria-label="Log set ${si + 1}${b.lastHard && si === b.sets - 1 ? " — take this one to RPE 9 to 10" : ""}">×${esc(String(b.reps))}${b.lastHard && si === b.sets - 1 ? "<small>→9–10</small>" : ""}</button>`).join("")}
+          : `<button class="chip ${b.lastHard && si === b.sets - 1 ? "hard" : ""}" onclick="hitSet('${dk}','${bkey}',${b.w},${b.repN ?? b.reps},'${esc(b.pkey || "")}')" aria-label="Log set ${si + 1}${b.lastHard && si === b.sets - 1 ? ` — take this one to RPE 9 to 10${b.lp ? ", then 3 to 5 lengthened partials" : ""}` : ""}">×${esc(String(b.reps))}${b.lastHard && si === b.sets - 1 ? `<small>→9–10${b.lp ? " +LP" : ""}</small>` : ""}</button>`).join("")}
         ${sets.length >= (isSingle ? 1 : b.sets) ? `<button class="chip add" onclick="hitSet('${dk}','${bkey}',${b.w},${b.repN ?? b.reps},'${esc(b.pkey || "")}')">＋</button>` : ""}
       </div></div>`;
   });

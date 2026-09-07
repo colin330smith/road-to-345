@@ -709,5 +709,42 @@ console.log("\n── frame requirements ──");
   eq(missing.length, 0, `library: every emitted moveId has a demo (${missing.join(", ") || "all covered"})`);
 }
 
+
+// ═══ nutrition module ═══
+{
+  const N = require("./nutrition.js");
+  const ids = [...N.HILLSTONE, ...N.SIDES, ...N.HOME].map((x) => x.id);
+  eq(new Set(ids).size, ids.length, "nutri: every id unique");
+  ok([...N.HILLSTONE, ...N.SIDES, ...N.HOME].every((x) => x.kcal > 0 && x.p >= 0 && x.name), "nutri: every item has name, kcal, protein");
+  ok(N.HILLSTONE.every((x) => "ABCD".includes(x.tier)), "nutri: every Hillstone item is tiered");
+  ok(N.HILLSTONE.filter((x) => x.tier === "A" && x.trim && !x.addon).every((x) => x.kcal <= 750 && x.p >= 40), "nutri: every trim-eligible Tier A pick is <=750 kcal and >=40P");
+  ok(N.HILLSTONE.filter((x) => x.tier === "D").every((x) => !x.gain && !x.trim), "nutri: Tier D is never offered in either mode");
+  ok(N.HILLSTONE.some((x) => x.id === "rotis" && x.gain && x.p >= 60), "nutri: rotisserie chicken is the gaining anchor");
+  ok(N.HILLSTONE.some((x) => x.id === "ahi" && x.trim && x.kcal <= 600), "nutri: ahi ponzu is the trim anchor");
+  eq(N.targets("gain").kcal, 3050, "nutri: gain 3,050"); eq(N.targets("trim").kcal, 2500, "nutri: trim 2,500");
+  eq(N.targets("nope").kcal, 3050, "nutri: unknown mode falls back to gain");
+  const sum = (mode) => N.HOME.filter((x) => x.mode === mode).reduce((s, x) => s + x.kcal, 0);
+  ok(sum("gain") + 950 >= 3000 && sum("gain") + 950 <= 3200, `nutri: gaining day with the rotisserie lands ~3,050 (${sum("gain") + 950})`);
+  ok(sum("trim") + 550 >= 2150 && sum("trim") + 700 <= 2550, `nutri: trim day with a trim anchor lands 2,200-2,500 (${sum("trim") + 550}-${sum("trim") + 700})`);
+  ok(N.HOME.filter((x) => x.mode === "gain").reduce((s, x) => s + x.p, 0) + 70 >= 190, "nutri: gaining day clears 190P before the shift meal is even generous");
+  eq(N.dayTotals([{ kcal: 800, p: 50 }, { kcal: 950, p: 70 }]), { kcal: 1750, p: 120 }, "nutri: dayTotals sums");
+  eq(N.dayTotals([]), { kcal: 0, p: 0 }, "nutri: empty day is zero");
+  const food = { "2026-09-10": [{ kcal: 3000, p: 190 }], "2026-09-11": [{ kcal: 3100, p: 200 }], "2026-09-12": [] , "2026-09-13": [{ kcal: 2900, p: 180 }] };
+  eq(N.weekStats(food, "2026-09-13", 7), { logged: 3, avgKcal: 3000, avgP: 190 }, "nutri: weekStats ignores empty days and averages the rest");
+  eq(N.weekStats({}, "2026-09-13", 7).logged, 0, "nutri: nothing logged");
+  // the decision rule
+  const bwLight = { "2026-09-15": 187.8, "2026-09-16": 187.6, "2026-09-17": 187.9 };
+  const bwHeavy = { "2026-09-15": 190.2, "2026-09-16": 189.8, "2026-09-17": 190.0 };
+  const waistFlat = { "2026-08-16": { wa: 33 }, "2026-09-07": { wa: 33.25 } };
+  const waistUp = { "2026-08-16": { wa: 33 }, "2026-09-07": { wa: 34.25 } };
+  eq(N.decision(bwLight, waistFlat).mode, "gain", "decision: light + flat waist = keep gaining");
+  eq(N.decision(bwHeavy, waistFlat).mode, "trim", "decision: heavy alone = trim");
+  eq(N.decision(bwLight, waistUp).mode, "trim", "decision: waist +1 alone = trim");
+  eq(N.decision({}, waistFlat).mode, null, "decision: no scale data = no call");
+  eq(N.decision(bwLight, {}).mode, "gain", "decision: waist unlogged does not block a keep-gaining call");
+  eq(N.decision(bwLight, waistFlat).avg, 187.8, "decision: 3-day average is what it uses");
+  eq(N.trimEnd("2026-09-17"), "2026-10-15", "nutri: 4-week trim from Sep 17 ends Oct 15");
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

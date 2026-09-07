@@ -951,7 +951,7 @@ const KEY = "r345.v1";
 const DK_RE = /^\d{4}-\d{2}-\d{2}$/;
 let S;
 try { S = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { S = {}; }
-S.logs = S.logs || {}; S.gates = S.gates || {}; S.bw = S.bw || {}; S.testMax = S.testMax || {}; S.meas = S.meas || {};
+S.logs = S.logs || {}; S.gates = S.gates || {}; S.bw = S.bw || {}; S.testMax = S.testMax || {}; S.meas = S.meas || {}; S.food = S.food || {}; S.nutri = S.nutri || { mode: "gain", since: null };
 S.settings = S.settings || { offsetWeeks: 0 };
 S.spec = S.spec || { ...E.DEFAULT_SPEC };
 if (!S.v32) { S.spec.sundayOn = false; S.v32 = 1; } // v32: Sunday is rest by default (stored specs predate it)
@@ -1435,6 +1435,109 @@ function phase(u) {
 }
 if (typeof module !== "undefined") module.exports = { ARCHS, paintScene, phase, equipTrack };
 
+// nutrition.js — the fuel side of the road. Pure data + functions, no DOM.
+// Spliced into app-shell at /*==NUTRI==*/ and unit-tested from test.js.
+const MODES = {
+  gain: { label: "GAIN", kcal: 3050, p: 190, f: 80, c: 415, rate: "+0.25 lb/wk", why: "The default. Slow is what makes it lean." },
+  trim: { label: "TRIM", kcal: 2500, p: 200, f: 70, c: 260, rate: "−1 lb/wk", why: "Only at ~18%. Four weeks, stop at 15%, resume gaining." },
+};
+const TRIM_WEEKS = 4;
+
+// Hillstone Winter Park. ESTIMATES built from the menu's own descriptions and normal
+// restaurant portions — Hillstone publishes no nutrition data. Choose by these; the
+// weekly scale average is the truth.
+const HILLSTONE = [
+  { id: "rotis",    tier: "A", name: "Rotisserie Chicken + wild rice salad",         kcal: 950,  p: 70, gain: true,             note: "THE gaining shift meal" },
+  { id: "filetL",   tier: "A", name: "Center-Cut Filet + green veg (lunch)",         kcal: 600,  p: 55, gain: true, trim: true },
+  { id: "filetD",   tier: "A", name: "Center-Cut Filet + colcannon + green veg",     kcal: 850,  p: 55, gain: true },
+  { id: "salmon",   tier: "A", name: "Pan Roasted Salmon + lentils + green veg",     kcal: 700,  p: 45, gain: true, trim: true, note: "Counts as the day's omega-3" },
+  { id: "ahi",      tier: "A", name: "Ahi Tuna w/ Shiitake Ponzu + slaw",            kcal: 550,  p: 50, gain: true, trim: true, note: "THE trim shift meal" },
+  { id: "ahisal",   tier: "A", name: "Seared Ahi Tuna Salad (lunch)",                kcal: 600,  p: 45, gain: true, trim: true },
+  { id: "gcs",      tier: "A", name: "Grilled Chicken Salad, peanut sauce on side",  kcal: 600,  p: 55, gain: true, trim: true, note: "With the sauce ~750" },
+  { id: "kale",     tier: "A", name: "Emerald Kale & Chicken Salad",                 kcal: 700,  p: 50, gain: true, trim: true },
+  { id: "louie",    tier: "A", name: "Shrimp Louie (lunch)",                         kcal: 550,  p: 40, trim: true },
+  { id: "shrimp",   tier: "A", name: "Chilled Jumbo Shrimp (add-on)",                kcal: 250,  p: 40, gain: true, trim: true, addon: true, note: "When a meal is short on protein" },
+  { id: "dip",      tier: "B", name: "French Dip + wild rice salad",                 kcal: 1050, p: 60, gain: true, note: "Fries version ~1,300. Once a week" },
+  { id: "ribeye",   tier: "B", name: "Hawaiian Ribeye, fries → green veg",      kcal: 1050, p: 70, gain: true, note: "Fries version ~1,400. Once a week" },
+  { id: "burger",   tier: "B", name: "Cheeseburger + wild rice",                     kcal: 1050, p: 50, gain: true },
+  { id: "noodle",   tier: "B", name: "Pan-Asian Noodle Salad w/ chicken",            kcal: 900,  p: 45, gain: true, note: "BBQ pork ~1,000" },
+  { id: "crab",     tier: "B", name: "Jumbo Lump Crab Cakes + slaw",                 kcal: 700,  p: 40, gain: true },
+  { id: "trout",    tier: "B", name: "Ruby Red Trout",                               kcal: 850,  p: 50, gain: true },
+  { id: "tartare",  tier: "B", name: "Ahi Tuna Tartare",                             kcal: 500,  p: 35, gain: true, trim: true, note: "Starter-sized — pair with shrimp" },
+  { id: "ribs",     tier: "C", name: "Knife & Fork Ribs + fries + slaw",             kcal: 1500, p: 60, note: "Once a week, gaining days only" },
+  { id: "dings",    tier: "C", name: "Ding's Crispy Chicken Sandwich",               kcal: 1100, p: 45 },
+  { id: "fishsand", tier: "C", name: "Gulf Coast Fish Sandwich",                     kcal: 900,  p: 40 },
+  { id: "snapper",  tier: "C", name: "Pan-Fried Snapper + slaw",                     kcal: 800,  p: 45 },
+  { id: "spindip",  tier: "D", name: "Spinach & Artichoke Dip",                      kcal: 1200, p: 20 },
+  { id: "queso",    tier: "D", name: "Jalapeño Queso",                          kcal: 800,  p: 15 },
+  { id: "veggie",   tier: "D", name: "House-Made Veggie Burger",                     kcal: 900,  p: 25, note: "All the calories, none of the protein" },
+  { id: "proud",    tier: "D", name: "The Proud Vegetarian",                         kcal: 500,  p: 12 },
+  { id: "pie",      tier: "D", name: "Key Lime Pie",                                 kcal: 600,  p: 6 },
+];
+const SIDES = [
+  { id: "greenveg",  name: "Seasonal green vegetable",  kcal: 100, p: 3, gain: true, trim: true, note: "Default trim side" },
+  { id: "peppers",   name: "Roasted peppers",           kcal: 120, p: 2, gain: true, trim: true },
+  { id: "cabbage",   name: "Braised red cabbage",       kcal: 150, p: 2, gain: true, trim: true },
+  { id: "deviled",   name: "Deviled eggs",              kcal: 200, p: 10, gain: true, trim: true, addon: true },
+  { id: "kalesalad", name: "Kale salad",                kcal: 250, p: 5, gain: true },
+  { id: "slaw",      name: "Coleslaw",                  kcal: 250, p: 2, gain: true },
+  { id: "focaccia",  name: "Rosemary focaccia",         kcal: 250, p: 6, gain: true },
+  { id: "wildrice",  name: "Wild rice salad",           kcal: 300, p: 6, gain: true, note: "Default gaining side" },
+  { id: "corn",      name: "Creamed corn",              kcal: 350, p: 5 },
+  { id: "colcannon", name: "Potatoes colcannon",        kcal: 350, p: 5, gain: true },
+  { id: "sprouts",   name: "Brussels sprouts w/ aioli", kcal: 350, p: 6 },
+  { id: "fries",     name: "French fries (beef tallow)", kcal: 500, p: 6, note: "Once a week, squat or deadlift day, never on a trim day" },
+];
+// The home meals, portioned to the day. Shift meal comes from Hillstone.
+const HOME = [
+  { id: "pre",   mode: "gain", when: "6:10 pre-lift",   name: "Whey + banana",                              kcal: 220,  p: 25 },
+  { id: "preT",  mode: "trim", when: "6:10 pre-lift",   name: "Whey in water",                              kcal: 120,  p: 25 },
+  { id: "m1",    mode: "gain", when: "8:45 meal 1",     name: "4 eggs + 1 cup oats in milk + berries + honey", kcal: 800, p: 50 },
+  { id: "m1T",   mode: "trim", when: "8:45 meal 1",     name: "4 eggs + ½ cup oats + berries",          kcal: 600,  p: 50 },
+  { id: "m2",    mode: "gain", when: "12:30 meal 2",    name: "1½ cup rice + 7 oz chicken thigh + veg", kcal: 750,  p: 50 },
+  { id: "m2T",   mode: "trim", when: "12:30 meal 2",    name: "1 cup rice + 7 oz chicken thigh + veg",      kcal: 600,  p: 50 },
+  { id: "m3",    mode: "gain", when: "4:30 pre-shift",  name: "Greek yogurt + whey + banana",               kcal: 400,  p: 40 },
+  { id: "m3T",   mode: "trim", when: "4:30 pre-shift",  name: "Greek yogurt + whey + berries",              kcal: 350,  p: 40 },
+  { id: "shake", mode: "any",  when: "emergency",       name: "Emergency shake",                            kcal: 1000, p: 80, note: "Missed a meal or working a double" },
+];
+const ALL = () => [...HILLSTONE, ...SIDES, ...HOME];
+const byId = (id) => ALL().find((x) => x.id === id) || null;
+const targets = (mode) => MODES[mode] || MODES.gain;
+function dayTotals(entries) {
+  let kcal = 0, p = 0;
+  for (const e of entries || []) { kcal += +e.kcal || 0; p += +e.p || 0; }
+  return { kcal, p };
+}
+const dkMs = (dk) => Date.UTC(+dk.slice(0, 4), +dk.slice(5, 7) - 1, +dk.slice(8, 10));
+const msDk = (ms) => new Date(ms).toISOString().slice(0, 10);
+// Last n days ending at dk. Only days with entries count as logged.
+function weekStats(food, dk, n) {
+  n = n || 7; const days = [];
+  for (let i = 0; i < n; i++) { const ent = (food || {})[msDk(dkMs(dk) - i * 86400000)]; if (ent && ent.length) days.push(dayTotals(ent)); }
+  if (!days.length) return { logged: 0, avgKcal: null, avgP: null };
+  return { logged: days.length,
+    avgKcal: Math.round(days.reduce((s, d) => s + d.kcal, 0) / days.length),
+    avgP: Math.round(days.reduce((s, d) => s + d.p, 0) / days.length) };
+}
+// The day-10 rule, generalised: a 3-day scale average against a threshold, and the
+// waist against its baseline. Returns a suggestion; the user confirms it, like a gate.
+function decision(bw, meas, opts) {
+  const o = Object.assign({ keep: 188, waistUp: 1 }, opts || {});
+  const bk = Object.keys(bw || {}).filter((k) => /^\d{4}-\d{2}-\d{2}$/.test(k) && Number.isFinite(+bw[k])).sort();
+  const last3 = bk.slice(-3).map((k) => +bw[k]);
+  const avg = last3.length ? +(last3.reduce((a, b) => a + b, 0) / last3.length).toFixed(1) : null;
+  const mk = Object.keys(meas || {}).filter((k) => meas[k] && Number.isFinite(meas[k].wa)).sort();
+  const dW = mk.length > 1 ? +(meas[mk[mk.length - 1]].wa - meas[mk[0]].wa).toFixed(2) : null;
+  if (avg == null) return { mode: null, avg, dW, days: bk.length, reason: "Log the scale for 3+ days first." };
+  const heavy = avg > o.keep, wide = dW != null && dW >= o.waistUp;
+  const wTxt = dW == null ? "waist not logged twice yet" : `waist ${dW >= 0 ? "+" : ""}${dW}"`;
+  if (!heavy && !wide) return { mode: "gain", avg, dW, days: bk.length, reason: `3-day avg ${avg} ≤ ${o.keep} · ${wTxt}. Mostly water. Keep gaining.` };
+  return { mode: "trim", avg, dW, days: bk.length, reason: `3-day avg ${avg}${heavy ? ` > ${o.keep}` : ""} · ${wTxt}. Real tissue. Four-week trim.` };
+}
+const trimEnd = (sinceDk, weeks) => msDk(dkMs(sinceDk) + (weeks || TRIM_WEEKS) * 7 * 86400000);
+const NUTRI = { MODES, TRIM_WEEKS, HILLSTONE, SIDES, HOME, byId, targets, dayTotals, weekStats, decision, trimEnd };
+if (typeof module !== "undefined") module.exports = NUTRI;
+
 let animId = null;
 const REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
 function drawFrame(cv, arch, k, opts) { paintScene(cv, arch, k, opts); }
@@ -1586,11 +1689,47 @@ function renderToday() {
   if (loc.day === 7 && loc.week === 4 && loc.wave < 19) inner += `<div class="card single"><div class="eyebrow sig">⚠ Gate day — end of Wave ${loc.wave}</div><p class="note">Review the wave, then set each lift's gate for Wave ${loc.wave + 1}.</p><div class="rowbtns"><button class="btn" onclick="gateSheet(${loc.wave + 1})">Set the Wave ${loc.wave + 1} gate</button></div></div>`;
   if ((loc.day === 6 || loc.day === 7) && loc.week === 4) inner += `<div class="card"><div class="eyebrow sig">Weak-point ledger</div><p class="note">End of a training block — log this cycle's anchor lift + note whether the target or another muscle failed first. Photos + measurements every 4 weeks drive the 8-week decision.</p><div class="rowbtns"><button class="btn ghost" onclick="ledgerSheet()">Open ledger</button></div></div>`;
 
+  { const T = NUTRI.targets(S.nutri.mode), ent = S.food[dk] || [], tot = NUTRI.dayTotals(ent);
+    const pk = Math.min(100, Math.round(tot.kcal / T.kcal * 100)), pp = Math.min(100, Math.round(tot.p / T.p * 100));
+    const over = tot.kcal > T.kcal + 150;
+    inner += `<div class="card"><div class="eyebrow sig">Fuel — ${T.label} · ${T.kcal} kcal · ${T.p}P</div>
+      <div class="srow"><span>kcal</span><div class="sbar"><i style="width:${pk}%${over ? ";background:var(--amber,#d9a441)" : ""}"></i></div><span class="sval">${tot.kcal} / ${T.kcal}</span></div>
+      <div class="srow"><span>protein</span><div class="sbar"><i style="width:${pp}%"></i></div><span class="sval">${tot.p} / ${T.p}</span></div>
+      ${ent.map((e, i) => `<div class="statline"><span class="note">${esc(e.name)}</span><span style="white-space:nowrap">${e.kcal} · ${e.p}P <button class="chip" style="padding:2px 8px" onclick="delFood('${dk}',${i})" aria-label="remove">×</button></span></div>`).join("")}
+      <div class="rowbtns"><button class="btn" onclick="foodSheet('${dk}')">＋ Log food</button></div></div>`; }
   inner += `<div class="card"><div class="eyebrow">Session note</div>
     <textarea rows="2" style="width:100%" placeholder="pain, technique, PRs…" onchange="setLog('${dk}','note',this.value)">${esc(log.note || "")}</textarea></div>`;
   $("#view").innerHTML = inner;
 }
 window.shiftDay = (n) => { viewDate += n * E.MS_DAY; render(); };
+window.addFood = (dk, id) => { const x = NUTRI.byId(id); if (!x) return; (S.food[dk] = S.food[dk] || []).push({ id, name: x.name, kcal: x.kcal, p: x.p }); save(); closeSheet(); render(); };
+window.addFoodManual = (dk) => { const n = $("#fn").value.trim() || "Food", k = +$("#fk").value, p = +$("#fp").value || 0; if (!Number.isFinite(k) || k <= 0) return; (S.food[dk] = S.food[dk] || []).push({ id: "manual", name: n, kcal: Math.round(k), p: Math.round(p) }); save(); closeSheet(); render(); };
+window.delFood = (dk, i) => { if (!S.food[dk]) return; S.food[dk].splice(i, 1); if (!S.food[dk].length) delete S.food[dk]; save(); render(); };
+window.setNutriMode = (m) => { if (!NUTRI.MODES[m]) return; S.nutri.mode = m; S.nutri.since = keyOf(todayUTC()); save(); render(); };
+window.foodSheet = (dk) => {
+  const mode = S.nutri.mode, T = NUTRI.targets(mode);
+  const row = (x) => `<button class="btn ghost" style="justify-content:space-between;width:100%;margin:3px 0" onclick="addFood('${dk}','${x.id}')"><span>${esc(x.name)}${x.when ? ` <small class="note">· ${esc(x.when)}</small>` : ""}</span><b style="white-space:nowrap">${x.kcal} · ${x.p}P</b></button>`;
+  const home = NUTRI.HOME.filter((x) => x.mode === mode || x.mode === "any");
+  const hillA = NUTRI.HILLSTONE.filter((x) => x.tier === "A" && x[mode]);
+  const hillB = NUTRI.HILLSTONE.filter((x) => x.tier === "B" && (mode === "gain"));
+  const sides = NUTRI.SIDES.filter((x) => x[mode]);
+  openSheet(`<button class="closex" onclick="closeSheet()">×</button><h2>Log food — ${T.label} day</h2>
+    <div class="eyebrow" style="margin-top:6px">Home meals</div>${home.map(row).join("")}
+    <div class="eyebrow" style="margin-top:10px">Hillstone — Tier A (${mode})</div>${hillA.map(row).join("")}
+    ${hillB.length ? `<div class="eyebrow" style="margin-top:10px">Hillstone — Tier B (fries swapped)</div>${hillB.map(row).join("")}` : ""}
+    <div class="eyebrow" style="margin-top:10px">Sides &amp; add-ons</div>${sides.map(row).join("")}
+    <div class="eyebrow" style="margin-top:10px">Anything else</div>
+    <div class="metrics"><label>What <input id="fn" type="text" placeholder="grazing = 300"></label><label>kcal <input id="fk" type="number" inputmode="numeric"></label><label>P <input id="fp" type="number" inputmode="numeric"></label></div>
+    <div class="rowbtns"><button class="btn" onclick="addFoodManual('${dk}')">Add</button></div>
+    <p class="note" style="margin-top:8px">Hillstone numbers are estimates from the menu — Hillstone publishes none. Good enough to choose by. The weekly scale average is the truth.</p>`);
+};
+window.playbookSheet = () => {
+  const tier = (t, title) => `<div class="eyebrow" style="margin-top:10px">${title}</div>` + NUTRI.HILLSTONE.filter((x) => x.tier === t).map((x) => `<div class="statline"><span>${esc(x.name)}${x.note ? `<br><small class="note">${esc(x.note)}</small>` : ""}</span><b style="white-space:nowrap">~${x.kcal} · ${x.p}P</b></div>`).join("");
+  openSheet(`<button class="closex" onclick="closeSheet()">×</button><h2>Hillstone playbook</h2>
+    <p class="note">1 Protein anchor first. 2 Side = wild rice gaining, green veg trimming; fries once a week on a squat or deadlift day, never on a trim day. 3 Sauces on the side (~150–250 each). 4 Short on protein → shrimp or deviled eggs. 5 Twenty minutes of grazing = log 300. 6 Whatever the staff meal allows, the tiers still pick. 7 Alcohol: cap 2, never before squat or deadlift, zero in Week 3 and zero on a trim.</p>
+    ${tier("A", "Tier A — order without thinking")}${tier("B", "Tier B — fine with one swap")}${tier("C", "Tier C — once a week, gaining only")}${tier("D", "Tier D — not on this plan")}
+    <div class="eyebrow" style="margin-top:10px">Sides</div>${NUTRI.SIDES.map((x) => `<div class="statline"><span>${esc(x.name)}${x.note ? `<br><small class="note">${esc(x.note)}</small>` : ""}</span><b>~${x.kcal}</b></div>`).join("")}`);
+};
 window.setBW = (dk, v) => { if (v === "") delete S.bw[dk]; else S.bw[dk] = +v; save(); };
 window.setLog = (dk, k, v) => {
   S.logs[dk] = S.logs[dk] || {};
@@ -1887,6 +2026,22 @@ function renderTrends() {
     : dBW > 0 && dW > 0.25 ? "⚠️ Waist rising with the scale — surplus is too big. Drop 150 cal."
     : dBW <= 0 && dW < 0 ? "Leaning out. Fine if that's the phase you're in."
     : "Scale flat — you're at maintenance, not gaining.";
+  const nutriCard = (() => {
+    const T = NUTRI.targets(S.nutri.mode), st = NUTRI.weekStats(S.food, keyOf(todayUTC() - 86400000), 7);
+    const dec = NUTRI.decision(S.bw, S.meas);
+    const end = S.nutri.mode === "trim" && S.nutri.since ? NUTRI.trimEnd(S.nutri.since) : null;
+    const overdue = end && keyOf(todayUTC()) >= end;
+    const modeBtn = (m) => `<button class="btn ${S.nutri.mode === m ? "" : "ghost"}" onclick="setNutriMode('${m}')">${NUTRI.MODES[m].label} · ${NUTRI.MODES[m].kcal}</button>`;
+    return `<div class="card single"><div class="eyebrow sig">Fuel — the other half of the road</div>
+      <div class="rowbtns">${modeBtn("gain")}${modeBtn("trim")}</div>
+      <p class="note">${esc(T.rate)} · ${T.p}P / ${T.f}F / ~${T.c}C. ${esc(T.why)}${end ? ` Trim ends <b style="color:var(--chalk)">${end}</b>.` : ""}${overdue ? " <b style=\"color:var(--amber,#d9a441)\">Trim window is over — switch back to GAIN.</b>" : ""}</p>
+      <div class="statline" style="margin-top:8px;display:flex;justify-content:space-between;gap:10px;align-items:baseline"><span class="note">Last 7 full days</span><b style="font-variant-numeric:tabular-nums">${st.logged ? `${st.avgKcal} kcal · ${st.avgP}P avg · ${st.logged}/7 logged` : "nothing logged"}</b></div>
+      ${st.logged ? `<p class="note">${st.avgKcal > T.kcal + 150 ? "⚠️ Averaging over target — that's the overshoot." : st.avgKcal < T.kcal - 200 ? "⚠️ Under target — you will not grow on this." : "✅ On target."}${st.avgP < T.p - 15 ? " Protein is short — add the shrimp or a scoop." : ""}</p>` : ""}
+      <div class="statline" style="margin-top:8px;display:flex;justify-content:space-between;gap:10px;align-items:baseline"><span class="note">Decision rule</span><b>${dec.mode ? (dec.mode === "trim" ? "→ TRIM" : "→ KEEP GAINING") : "—"}</b></div>
+      <p class="note">${esc(dec.reason)}</p>
+      ${dec.mode && dec.mode !== S.nutri.mode ? `<div class="rowbtns"><button class="btn" onclick="setNutriMode('${dec.mode}')">${dec.mode === "trim" ? "Start the 4-week trim" : "Back to gaining"}</button></div>` : ""}
+      <div class="rowbtns"><button class="btn ghost" onclick="playbookSheet()">🍽 Hillstone playbook</button></div></div>`;
+  })();
   const measCard = `<div class="card single"><div class="eyebrow sig">Waist &amp; frame — the auditor</div>
     <p class="note">Abs are a body-fat number, not a training one. Waist is the metric that tells you whether the scale climbing is muscle or padding.</p>
     <div class="metrics" style="margin-top:8px">
@@ -1899,7 +2054,7 @@ function renderTrends() {
     <p class="note" style="margin-top:8px">${esc(verdict)}</p>
     ${mk.length ? `<div class="tablewrap" style="margin-top:8px"><table><tr><th>Date</th><th>Waist</th><th>Shoulders</th><th>Arm</th><th>Ratio</th></tr>${mk.slice(-6).reverse().map((k) => { const m = S.meas[k]; return `<tr><td>${esc(k)}</td><td>${m.wa || "—"}</td><td>${m.sh || "—"}</td><td>${m.ar || "—"}</td><td>${m.sh && m.wa ? (m.sh / m.wa).toFixed(2) : "—"}</td></tr>`; }).join("")}</table></div>` : `<p class="note">Nothing logged. Measure cold, first thing — waist at the navel, shoulders at the widest point, arm at the peak. Flexed or cold, pick one and never switch: consistency matters more than which. Monthly.</p>`}
     <p class="note" style="margin-top:8px">Visible abs sit at 10–12% for most men. At your 15% goal expect a flat stomach, not a six-pack — run a 6–8 week trim when you want them for a date.</p></div>`;
-  $("#view").innerHTML = measCard + `
+  $("#view").innerHTML = measCard + nutriCard + `
     <div class="card"><div class="eyebrow sig">Bodyweight — road to 200</div>
       <div class="chartwrap">${svgChart(bwPts, { band, empty: "Log a morning weigh-in on the Today tab and the road to 200 draws itself." })}</div>
       <div class="legend"><span><span class="k" style="background:#e9e7e1"></span>morning weigh-ins</span><span><span class="k" style="background:rgba(255,178,36,.5)"></span>on-pace band (0.25–0.5 lb/wk)</span></div>
@@ -1945,7 +2100,7 @@ function renderMore() {
       ${logged.length ? logged.slice(0, 40).map((dk) => { const loc = E.whereIs(Date.parse(dk), S.settings.offsetWeeks || 0); return `<div class="lset"><span>${esc(dk)} · W${loc.wave}·wk${loc.week}·d${loc.day}${S.logs[dk].r ? " · " + esc(S.logs[dk].r) : ""}</span><button class="x" onclick="delDay('${esc(dk)}')">✕</button></div>`; }).join("") : `<p class="note">No sessions logged yet. They'll pile up here.</p>`}</div>
     <div class="card"><div class="eyebrow sig">Weekend specialization</div>
       <p class="note">Sat = frame overload · Sun = optional detail. Focus: <b style="color:var(--chalk)">${esc(E.FRAME_LABEL[S.spec.framePrimary])}</b> + <b style="color:var(--chalk)">${esc(E.DETAIL_LABEL[S.spec.detail])}</b>.</p>
-      <div class="rowbtns"><button class="btn" onclick="specSheet()">⚙ Configure</button><button class="btn ghost" onclick="ledgerSheet()">📒 Ledger</button></div></div>
+      <div class="rowbtns"><button class="btn" onclick="specSheet()">⚙ Configure</button><button class="btn ghost" onclick="ledgerSheet()">📒 Ledger</button><button class="btn ghost" onclick="playbookSheet()">🍽 Playbook</button></div></div>
     <div class="card"><div class="eyebrow sig">Data</div>
       <p class="note">Logs live in THIS browser only. Export after every test day and keep the file safe.</p>
       <div class="rowbtns"><button class="btn" onclick="exportData()">Export backup</button>
@@ -1988,7 +2143,7 @@ window.doImport = () => {
     if (typeof d !== "object" || !d.logs || typeof d.logs !== "object") throw 0;
     for (const k of Object.keys(d.logs)) if (!DK_RE.test(k)) delete d.logs[k];
     if (d.bw) for (const k of Object.keys(d.bw)) if (!DK_RE.test(k) || !Number.isFinite(d.bw[k])) delete d.bw[k];
-    S = d; S.logs = S.logs || {}; S.gates = S.gates || {}; S.bw = S.bw || {}; S.testMax = S.testMax || {}; S.meas = S.meas || {};
+    S = d; S.logs = S.logs || {}; S.gates = S.gates || {}; S.bw = S.bw || {}; S.testMax = S.testMax || {}; S.meas = S.meas || {}; S.food = S.food || {}; S.nutri = S.nutri || { mode: "gain", since: null };
     S.settings = S.settings || { offsetWeeks: 0 };
     S.spec = S.spec || { ...E.DEFAULT_SPEC }; S.ledger = S.ledger || {};
     save(); closeSheet(); render();

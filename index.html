@@ -54,6 +54,20 @@
   .card.single{background:linear-gradient(160deg,#232019 0%,var(--plate) 55%);border-color:#4a3d1d}
   .eyebrow{font-family:var(--disp);text-transform:uppercase;letter-spacing:.11em;font-size:11.5px;color:var(--ash);margin-bottom:2px}
   .eyebrow.sig{color:var(--signal)}
+  .frow{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;min-height:48px;
+    padding:9px 6px;border:0;border-bottom:1px solid var(--steel);background:none;color:var(--chalk);text-align:left;font:inherit}
+  .frow:last-of-type{border-bottom:0}
+  .frow .fn{flex:1;min-width:0;font-weight:600;font-size:15px;line-height:1.25}
+  .frow .fn small{display:block;font-weight:400;font-size:12px;color:var(--ash);margin-top:2px}
+  .frow .fv{white-space:nowrap;font-variant-numeric:tabular-nums;font-size:14px;color:var(--chalk)}
+  .frow .fv b{color:var(--signal)}
+  .frow.tap:active{background:var(--plate2)}
+  .frow.tap .fv::after{content:"＋";color:var(--signal);margin-left:8px;font-weight:700}
+  .fmanual{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:end;margin-top:6px}
+  .fmanual label{display:flex;flex-direction:column;gap:3px;font-size:11.5px;color:var(--ash);text-transform:uppercase;letter-spacing:.08em}
+  .fmanual label:first-child{grid-column:1 / -1}
+  .fmanual input{width:100%;min-width:0}
+  .fmanual .btn{min-height:44px}
   .rx{font-size:22px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
   .rx small{font-size:14px;font-weight:600;color:var(--ash);letter-spacing:0}
   .capnote{font-size:12.5px;color:var(--ash);margin-top:2px}
@@ -1723,7 +1737,7 @@ window.delFood = (dk, i) => { if (!S.food[dk]) return; S.food[dk].splice(i, 1); 
 window.setNutriMode = (m) => { if (!NUTRI.MODES[m]) return; S.nutri.mode = m; S.nutri.since = keyOf(todayUTC()); save(); render(); };
 window.foodSheet = (dk) => {
   const mode = S.nutri.mode, T = NUTRI.targets(mode);
-  const row = (x) => `<button class="btn ghost" style="justify-content:space-between;width:100%;margin:3px 0" onclick="addFood('${dk}','${x.id}')"><span>${esc(x.name)}${x.when ? ` <small class="note">· ${esc(x.when)}</small>` : ""}</span><b style="white-space:nowrap">${x.kcal} · ${x.p}P</b></button>`;
+  const row = (x) => `<button class="frow tap" onclick="addFood('${dk}','${x.id}')"><span class="fn">${esc(x.name)}${x.when ? `<small>${esc(x.when)}</small>` : x.note ? `<small>${esc(x.note)}</small>` : ""}</span><span class="fv">${x.kcal} · <b>${x.p}P</b></span></button>`;
   const home = NUTRI.HOME.filter((x) => x.mode === mode || x.mode === "any");
   const hillA = NUTRI.HILLSTONE.filter((x) => x.tier === "A" && x[mode]);
   const hillB = NUTRI.HILLSTONE.filter((x) => x.tier === "B" && (mode === "gain"));
@@ -1734,16 +1748,15 @@ window.foodSheet = (dk) => {
     ${hillB.length ? `<div class="eyebrow" style="margin-top:10px">Hillstone — Tier B (fries swapped)</div>${hillB.map(row).join("")}` : ""}
     <div class="eyebrow" style="margin-top:10px">Sides &amp; add-ons</div>${sides.map(row).join("")}
     <div class="eyebrow" style="margin-top:10px">Anything else</div>
-    <div class="metrics"><label>What <input id="fn" type="text" placeholder="grazing = 300"></label><label>kcal <input id="fk" type="number" inputmode="numeric"></label><label>P <input id="fp" type="number" inputmode="numeric"></label></div>
-    <div class="rowbtns"><button class="btn" onclick="addFoodManual('${dk}')">Add</button></div>
+    <div class="fmanual"><label>What<input id="fn" type="text" placeholder="grazing = 300"></label><label>kcal<input id="fk" type="number" inputmode="numeric" placeholder="300"></label><label>P<input id="fp" type="number" inputmode="numeric" placeholder="0"></label><button class="btn" onclick="addFoodManual('${dk}')">Add</button></div>
     <p class="note" style="margin-top:8px">Hillstone numbers are estimates from the menu — Hillstone publishes none. Good enough to choose by. The weekly scale average is the truth.</p>`);
 };
 window.playbookSheet = () => {
-  const tier = (t, title) => `<div class="eyebrow" style="margin-top:10px">${title}</div>` + NUTRI.HILLSTONE.filter((x) => x.tier === t).map((x) => `<div class="statline"><span>${esc(x.name)}${x.note ? `<br><small class="note">${esc(x.note)}</small>` : ""}</span><b style="white-space:nowrap">~${x.kcal} · ${x.p}P</b></div>`).join("");
+  const tier = (t, title) => `<div class="eyebrow" style="margin-top:10px">${title}</div>` + NUTRI.HILLSTONE.filter((x) => x.tier === t).map((x) => `<div class="frow"><span class="fn">${esc(x.name)}${x.note ? `<small>${esc(x.note)}</small>` : ""}</span><span class="fv">~${x.kcal} · <b>${x.p}P</b></span></div>`).join("");
   openSheet(`<button class="closex" onclick="closeSheet()">×</button><h2>Hillstone playbook</h2>
     <p class="note">1 Protein anchor first. 2 Side = wild rice gaining, green veg trimming; fries once a week on a squat or deadlift day, never on a trim day. 3 Sauces on the side (~150–250 each). 4 Short on protein → shrimp or deviled eggs. 5 Twenty minutes of grazing = log 300. 6 Whatever the staff meal allows, the tiers still pick. 7 Alcohol: cap 2, never before squat or deadlift, zero in Week 3 and zero on a trim.</p>
     ${tier("A", "Tier A — order without thinking")}${tier("B", "Tier B — fine with one swap")}${tier("C", "Tier C — once a week, gaining only")}${tier("D", "Tier D — not on this plan")}
-    <div class="eyebrow" style="margin-top:10px">Sides</div>${NUTRI.SIDES.map((x) => `<div class="statline"><span>${esc(x.name)}${x.note ? `<br><small class="note">${esc(x.note)}</small>` : ""}</span><b>~${x.kcal}</b></div>`).join("")}`);
+    <div class="eyebrow" style="margin-top:10px">Sides</div>${NUTRI.SIDES.map((x) => `<div class="frow"><span class="fn">${esc(x.name)}${x.note ? `<small>${esc(x.note)}</small>` : ""}</span><span class="fv">~${x.kcal}</span></div>`).join("")}`);
 };
 window.setBW = (dk, v) => { if (v === "") delete S.bw[dk]; else S.bw[dk] = +v; save(); };
 window.setLog = (dk, k, v) => {
@@ -2219,7 +2232,7 @@ render();
 </script>
 
 <script>
-window.BUILD = "r345-v38";
+window.BUILD = "r345-v40";
 if ("serviceWorker" in navigator) addEventListener("load", async () => {
   try {
     const reg = await navigator.serviceWorker.register("./sw.js");

@@ -841,13 +841,16 @@ console.log("\n── frame requirements ──");
   eq(L.length, P.pump.sets.length, "loads: one per set");
   eq(L.find((x) => x.k === "A1").w, 17.5, "loads: laterals = 75% of 22.5, rounded to 2.5");
   eq(L.find((x) => x.k === "C2").w, 70, "loads: pushdown = 75% of 95, rounded to 5");
-  eq(L.find((x) => x.k === "B1").w, 50, "loads: machine press = half of OHP");
+  eq(L.find((x) => x.k === "B1").w, 32.5, "loads: mid fly = 90% of the low-high fly, rounded to 2.5");
   ok(L.find((x) => x.k === "C1").disp.startsWith("32.5s"), "loads: DB movements display per hand");
   ok(L.every((x) => x.k === "G" || x.derived), "loads: every weighted set resolved from a rung");
   const F = N.primerLoads(() => null);
   ok(F.every((x) => Number.isFinite(x.w)) && F.find((x) => x.k === "A1").w === 15, "loads: fallbacks cover a missing match");
   const g = L[L.length - 1];
-  ok(g.k === "G" && /Ab wheel/.test(g.name) && g.disp === "BW", "loads: ab wheel is the last row, bodyweight");
+  ok(g.k === "G" && /vacuum/i.test(g.name) && g.disp === "BW", "loads: the vacuum is the finisher, bodyweight — the ab wheel failed the pressure test");
+  ok(!P.pump.sets.some((s) => /press/i.test(s[1])), "pump: no pressing — nothing that unloads at lockout");
+  ok(/30–60 min/.test(P.pump.title) && /No lockouts/.test(P.pump.rule), "pump: timing window and occlusion cue");
+  ok(P.pump.boosters.length >= 3 && /BFR/.test(P.pump.boosters.join(" ")), "pump: boosters listed");
   eq([N.roundLoad(17.4), N.roundLoad(71.25), N.roundLoad(49)], [17.5, 70, 50], "loads: rounding rule");
 }
 

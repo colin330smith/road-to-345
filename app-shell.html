@@ -583,6 +583,7 @@ window.primerSheet = () => {
         return NUTRI.primerLoads(findW).map((x) => `<div class="frow"><span class="fn">${esc(x.k)} \u00b7 ${esc(x.name)}<small>${esc(x.why)}</small></span><span class="fv"><b>${esc(x.disp)}</b>${x.sr ? ` \u00b7 ${esc(x.sr)}` : ""}</span></div>`).join("")
           + `<p class="note" style="margin-top:6px">Weights are ~75\u201385% of this week\u2019s working loads and move with them. Pump reps, not PRs.</p>`; })()}
     <p class="note" style="margin-top:8px">${esc(P.pump.finish)}</p><p class="note">${esc(P.pump.after)}</p>
+    <div class="eyebrow" style="margin-top:12px">Optional boosters</div>${li(P.pump.boosters)}
     <div class="eyebrow" style="margin-top:12px">The shirt</div><p class="note">${esc(P.day.shirt)}</p>
     <div class="eyebrow" style="margin-top:12px">The day after</div><p class="note">${esc(P.next)}</p>`);
 };

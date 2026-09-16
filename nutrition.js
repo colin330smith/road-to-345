@@ -100,6 +100,43 @@ const PHASES = [
     gate: "Starts only once 200 @ 15% is real on the tape \u2014 waist and weekly average, not a good morning.",
     note: "\u22121 lb/wk, protein 200+, heavy lifting held with back-offs cut ~20%. Diet break at week 5. Stop at 10%: that is a floor, not a target. Then three weeks back up to maintenance." },
 ];
+// Date-night primer. Not a training block: a 36-hour fullness + posture protocol.
+// A big session the night before flattens you; the pump is a 45-minute thing timed
+// before the door, and everything else is water, carbs, sodium and sleep.
+const PRIMER = {
+  name: "Date-night primer",
+  why: "What reads through a shirt: shoulders, upper chest, traps, arms, lats, posture. Abs do not. What you have built is 90% of it; this is the other 10% — fullness and posture.",
+  eve: { title: "The night before — 25 min, light, optional",
+    rule: "No failure, no eccentric emphasis, nothing new. Soreness is the enemy.",
+    items: ["Band pull-apart 3×20", "Cable lateral raise 3×20, light, 45 s rest", "Rope pushdown 2×15 + cable curl 2×15", "Wrist curl 2×20",
+            "Rice dinner: 2 cups + protein, 1 L water with it, no alcohol", "SLEEP 8 HOURS — the single biggest lever you have"] },
+  day: { title: "Date day",
+    morning: "Weigh in first. Run today’s session as written but stop everything at RPE 8 — the app has removed the failure set and the partials for today. Worked, not wrecked.",
+    fuel: ["Carbs 350–400 g, front-loaded: rice, potatoes, oats, bananas", "Sodium normal, slightly up — never cut salt, it flattens you", "Water 3–4 L, steady, no water-cutting",
+           "Avoid: fatty meals, beans, cruciferous veg, dairy if it bloats you, carbonation, alcohol before", "2–3 h before the pump: 1½ cups rice + lean protein"],
+    shirt: "Fitted through the shoulders and chest, sleeves ending mid-bicep, heavier fabric that holds shape instead of clinging to the waist. Dark or mid tones." },
+  pump: { title: "The pump — 45 min, finish 60–90 min before",
+    rule: "12–20 reps, 45–60 s rests, cables and machines, 2–3 reps short of failure. Supersets.",
+    sets: [["A1", "Cable lateral raise", "3×15–20", "width — the #1 through-a-shirt muscle"],
+           ["A2", "Low-to-high cable fly", "3×15", "upper chest, fills the shirt"],
+           ["B1", "Machine shoulder press, light", "2×12–15", "the cap"],
+           ["B2", "Face pull", "3×20", "posture + round rear delt"],
+           ["C1", "Incline DB curl", "3×12–15", "sleeves"],
+           ["C2", "Rope pushdown", "3×15–20", "sleeves — superset with C1"],
+           ["D1", "Straight-arm cable pulldown", "2×15", "lats, the taper"],
+           ["D2", "DB shrug, light, 1 s hold", "2×15", "traps / neckline"],
+           ["E",  "Hammer curl 2×15 + wrist curl 2×20", "", "only if sleeves are rolled"],
+           ["F",  "Lateral raise drop set ×1, three drops", "", "to a burn, not to failure"]],
+    finish: "Posture reset, last 3 min: chin tucks ×10 · wall slides ×10 · doorway pec stretch 30 s/side. Stand tall.",
+    after: "Banana or rice cakes + 500 ml water with a pinch of salt — extends the pump 1–2 h." },
+  next: "Back to the plan. If the day’s weigh-in said TRIM, start it the day after — the date was the one-day exception. Log the day anyway.",
+};
+// "eve" the day before, "day" on the date, otherwise null
+function primerStage(dateDk, todayDk) {
+  if (!dateDk || !/^\d{4}-\d{2}-\d{2}$/.test(dateDk)) return null;
+  const days = Math.round((dkMs(dateDk) - dkMs(todayDk)) / 86400000);
+  return days === 1 ? "eve" : days === 0 ? "day" : null;
+}
 const ALL = () => [...HILLSTONE, ...SIDES, ...HOME];
 const byId = (id) => ALL().find((x) => x.id === id) || null;
 const targets = (mode) => MODES[mode] || MODES.gain;
@@ -135,5 +172,5 @@ function decision(bw, meas, opts) {
   return { mode: "trim", avg, dW, days: bk.length, reason: `3-day avg ${avg}${heavy ? ` > ${o.keep}` : ""} · ${wTxt}. Real tissue. Four-week trim.` };
 }
 const trimEnd = (sinceDk, weeks) => msDk(dkMs(sinceDk) + (weeks || TRIM_WEEKS) * 7 * 86400000);
-const NUTRI = { MODES, TRIM_WEEKS, PHASES, HILLSTONE, SIDES, HOME, byId, targets, dayTotals, weekStats, decision, trimEnd };
+const NUTRI = { MODES, TRIM_WEEKS, PHASES, PRIMER, primerStage, HILLSTONE, SIDES, HOME, byId, targets, dayTotals, weekStats, decision, trimEnd };
 if (typeof module !== "undefined") module.exports = NUTRI;

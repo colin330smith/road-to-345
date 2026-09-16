@@ -208,7 +208,7 @@ const KEY = "r345.v1";
 const DK_RE = /^\d{4}-\d{2}-\d{2}$/;
 let S;
 try { S = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { S = {}; }
-S.logs = S.logs || {}; S.gates = S.gates || {}; S.bw = S.bw || {}; S.testMax = S.testMax || {}; S.meas = S.meas || {}; S.food = S.food || {}; S.nutri = S.nutri || { mode: "gain", since: null };
+S.logs = S.logs || {}; S.gates = S.gates || {}; S.bw = S.bw || {}; S.testMax = S.testMax || {}; S.meas = S.meas || {}; S.food = S.food || {}; S.nutri = S.nutri || { mode: "gain", since: null }; S.primer = S.primer || {};
 S.settings = S.settings || { offsetWeeks: 0 };
 S.spec = S.spec || { ...E.DEFAULT_SPEC };
 if (!S.v32) { S.spec.sundayOn = false; S.v32 = 1; } // v32: Sunday is rest by default (stored specs predate it)
@@ -462,6 +462,14 @@ function renderToday() {
   else if (ready === "Y") blocks = blocks.map(E.yellowW).filter(Boolean);
 
   let planned = 0, doneN = 0;
+  { const stage = NUTRI.primerStage(S.primer.date, dk);
+    if (stage === "day") blocks = blocks.map((b) => (b.lastHard || b.lp) ? { ...b, lastHard: false, lp: false } : b);
+    if (stage) { const P = NUTRI.PRIMER;
+      inner += `<div class="card single"><div class="eyebrow sig">\ud83d\udc98 ${esc(P.name)} \u2014 ${stage === "eve" ? "tonight" : "today"}</div>
+        ${stage === "eve"
+          ? `<p class="note"><b style="color:var(--chalk)">${esc(P.eve.title)}.</b> ${esc(P.eve.rule)}</p><ul class="note" style="margin:6px 0 0 18px;padding:0">${P.eve.items.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>`
+          : `<p class="note"><b style="color:var(--chalk)">Morning.</b> ${esc(P.day.morning)}</p><p class="note"><b style="color:var(--chalk)">Fuel.</b> ${P.day.fuel.map(esc).join(" \u00b7 ")}</p><p class="note"><b style="color:var(--chalk)">${esc(P.pump.title)}.</b> Open the primer for the session.</p>`}
+        <div class="rowbtns"><button class="btn ghost" onclick="primerSheet()">Open the primer</button></div></div>`; } }
   blocks.forEach((b, i) => {
     if (!["single", "backoff", "paused", "ohp", "accessory"].includes(b.type)) return;
     const n = b.type === "single" ? 1 : b.sets;
@@ -558,6 +566,22 @@ window.playbookSheet = () => {
     <p class="note">1 Protein anchor first. 2 Side = wild rice gaining, green veg trimming; fries once a week on a squat or deadlift day, never on a trim day. 3 Sauces on the side (~150–250 each). 4 Short on protein → shrimp or deviled eggs. 5 Twenty minutes of grazing = log 300. 6 Whatever the staff meal allows, the tiers still pick. 7 Alcohol: cap 2, never before squat or deadlift, zero in Week 3 and zero on a trim.</p>
     ${tier("A", "Tier A — order without thinking")}${tier("B", "Tier B — fine with one swap")}${tier("C", "Tier C — once a week, gaining only")}${tier("D", "Tier D — not on this plan")}
     <div class="eyebrow" style="margin-top:10px">Sides</div>${NUTRI.SIDES.map((x) => `<div class="frow"><span class="fn">${esc(x.name)}${x.note ? `<small>${esc(x.note)}</small>` : ""}</span><span class="fv">~${x.kcal}</span></div>`).join("")}`);
+};
+window.setPrimerDate = (v) => { if (!v) delete S.primer.date; else S.primer.date = v; save(); render(); };
+window.primerSheet = () => {
+  const P = NUTRI.PRIMER, stage = NUTRI.primerStage(S.primer.date, keyOf(todayUTC()));
+  const li = (arr) => `<ul class="note" style="margin:4px 0 0 18px;padding:0">${arr.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>`;
+  openSheet(`<button class="closex" onclick="closeSheet()">×</button><h2>💘 ${esc(P.name)}</h2>
+    <p class="note">${esc(P.why)}</p>
+    <div class="metrics"><label>Date night on <input type="date" value="${esc(S.primer.date || "")}" onchange="setPrimerDate(this.value)"></label>${stage ? `<b style="color:var(--signal)">${stage === "eve" ? "That’s tomorrow — tonight’s steps are on TODAY" : "That’s today — today’s session is capped at RPE 8"}</b>` : S.primer.date ? `<span class="note">Set. The night-before and day-of steps will appear on TODAY.</span>` : ""}</div>
+    <div class="eyebrow" style="margin-top:12px">${esc(P.eve.title)}</div><p class="note">${esc(P.eve.rule)}</p>${li(P.eve.items)}
+    <div class="eyebrow" style="margin-top:12px">${esc(P.day.title)} — morning</div><p class="note">${esc(P.day.morning)}</p>
+    <div class="eyebrow" style="margin-top:12px">${esc(P.day.title)} — fuel</div>${li(P.day.fuel)}
+    <div class="eyebrow" style="margin-top:12px">${esc(P.pump.title)}</div><p class="note">${esc(P.pump.rule)}</p>
+    ${P.pump.sets.map(([k, nm, sr, why]) => `<div class="frow"><span class="fn">${esc(k)} · ${esc(nm)}<small>${esc(why)}</small></span><span class="fv">${esc(sr)}</span></div>`).join("")}
+    <p class="note" style="margin-top:8px">${esc(P.pump.finish)}</p><p class="note">${esc(P.pump.after)}</p>
+    <div class="eyebrow" style="margin-top:12px">The shirt</div><p class="note">${esc(P.day.shirt)}</p>
+    <div class="eyebrow" style="margin-top:12px">The day after</div><p class="note">${esc(P.next)}</p>`);
 };
 window.setBW = (dk, v) => { if (v === "") delete S.bw[dk]; else S.bw[dk] = +v; save(); };
 window.setLog = (dk, k, v) => {
@@ -932,7 +956,7 @@ function renderMore() {
       ${logged.length ? logged.slice(0, 40).map((dk) => { const loc = E.whereIs(Date.parse(dk), S.settings.offsetWeeks || 0); return `<div class="lset"><span>${esc(dk)} · W${loc.wave}·wk${loc.week}·d${loc.day}${S.logs[dk].r ? " · " + esc(S.logs[dk].r) : ""}</span><button class="x" onclick="delDay('${esc(dk)}')">✕</button></div>`; }).join("") : `<p class="note">No sessions logged yet. They'll pile up here.</p>`}</div>
     <div class="card"><div class="eyebrow sig">Weekend specialization</div>
       <p class="note">Sat = frame overload · Sun = optional detail. Focus: <b style="color:var(--chalk)">${esc(E.FRAME_LABEL[S.spec.framePrimary])}</b> + <b style="color:var(--chalk)">${esc(E.DETAIL_LABEL[S.spec.detail])}</b>.</p>
-      <div class="rowbtns"><button class="btn" onclick="specSheet()">⚙ Configure</button><button class="btn ghost" onclick="ledgerSheet()">📒 Ledger</button><button class="btn ghost" onclick="playbookSheet()">🍽 Playbook</button></div></div>
+      <div class="rowbtns"><button class="btn" onclick="specSheet()">⚙ Configure</button><button class="btn ghost" onclick="ledgerSheet()">📒 Ledger</button><button class="btn ghost" onclick="playbookSheet()">🍽 Playbook</button><button class="btn ghost" onclick="primerSheet()">💘 Date primer</button></div></div>
     <div class="card"><div class="eyebrow sig">Data</div>
       <p class="note">Logs live in THIS browser only. Export after every test day and keep the file safe.</p>
       <div class="rowbtns"><button class="btn" onclick="exportData()">Export backup</button>
@@ -975,7 +999,7 @@ window.doImport = () => {
     if (typeof d !== "object" || !d.logs || typeof d.logs !== "object") throw 0;
     for (const k of Object.keys(d.logs)) if (!DK_RE.test(k)) delete d.logs[k];
     if (d.bw) for (const k of Object.keys(d.bw)) if (!DK_RE.test(k) || !Number.isFinite(d.bw[k])) delete d.bw[k];
-    S = d; S.logs = S.logs || {}; S.gates = S.gates || {}; S.bw = S.bw || {}; S.testMax = S.testMax || {}; S.meas = S.meas || {}; S.food = S.food || {}; S.nutri = S.nutri || { mode: "gain", since: null };
+    S = d; S.logs = S.logs || {}; S.gates = S.gates || {}; S.bw = S.bw || {}; S.testMax = S.testMax || {}; S.meas = S.meas || {}; S.food = S.food || {}; S.nutri = S.nutri || { mode: "gain", since: null }; S.primer = S.primer || {};
     S.settings = S.settings || { offsetWeeks: 0 };
     S.spec = S.spec || { ...E.DEFAULT_SPEC }; S.ledger = S.ledger || {};
     save(); closeSheet(); render();

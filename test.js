@@ -820,5 +820,23 @@ console.log("\n── frame requirements ──");
   ok(ck.short && ck.short.length <= 12, "phases: goal-card short form fits the value slot");
 }
 
+
+// ═══ date-night primer ═══
+{
+  const N = require("./nutrition.js");
+  eq(N.primerStage("2026-09-17", "2026-09-16"), "eve", "primer: day before = eve");
+  eq(N.primerStage("2026-09-17", "2026-09-17"), "day", "primer: the day = day");
+  eq(N.primerStage("2026-09-17", "2026-09-18"), null, "primer: day after = nothing");
+  eq(N.primerStage("2026-09-17", "2026-09-10"), null, "primer: a week out = nothing");
+  eq(N.primerStage(undefined, "2026-09-16"), null, "primer: unset = nothing");
+  eq(N.primerStage("garbage", "2026-09-16"), null, "primer: bad date = nothing");
+  const P = N.PRIMER;
+  ok(P.pump.sets.length >= 8 && /lateral/i.test(P.pump.sets[0][1]), "primer: pump leads with side delts");
+  ok(/no failure/i.test(P.eve.rule) && /RPE 8/.test(P.day.morning), "primer: no failure the night before, RPE 8 cap on the day");
+  ok(/never cut salt/i.test(P.day.fuel.join(" ")) && /3–4 L/.test(P.day.fuel.join(" ")), "primer: sodium and water rules present");
+  ok(/TRIM/.test(P.next), "primer: next-day rule hands back to the trim decision");
+  ok(/90%/.test(P.why), "primer: honest expectation is stated");
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

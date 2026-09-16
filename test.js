@@ -817,6 +817,7 @@ console.log("\n── frame requirements ──");
   eq([ck.weeks, ck.floorBF, ck.mode], [10, 10, "trim"], "phases: ten weeks, 10% floor, runs on trim mode");
   ok(ck.kcal <= N.MODES.trim.kcal && ck.kcal >= 2200, "phases: CK cut calories sit at or under trim mode, never a crash");
   ok(/200 @ 15%/.test(ck.gate), "phases: gated on Phase 1 being real");
+  ok(ck.short && ck.short.length <= 12, "phases: goal-card short form fits the value slot");
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

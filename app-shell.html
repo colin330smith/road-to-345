@@ -578,7 +578,10 @@ window.primerSheet = () => {
     <div class="eyebrow" style="margin-top:12px">${esc(P.day.title)} — morning</div><p class="note">${esc(P.day.morning)}</p>
     <div class="eyebrow" style="margin-top:12px">${esc(P.day.title)} — fuel</div>${li(P.day.fuel)}
     <div class="eyebrow" style="margin-top:12px">${esc(P.pump.title)}</div><p class="note">${esc(P.pump.rule)}</p>
-    ${P.pump.sets.map(([k, nm, sr, why]) => `<div class="frow"><span class="fn">${esc(k)} · ${esc(nm)}<small>${esc(why)}</small></span><span class="fv">${esc(sr)}</span></div>`).join("")}
+    ${(() => { const loc = E.whereIs(todayUTC(), S.settings.offsetWeeks || 0); const wk = Math.min(Math.max(loc.week || 1, 1), 3), wv = Math.max(loc.wave || 1, 1);
+        const findW = (nm) => { const re = new RegExp(nm, "i"); for (let d = 1; d <= 7; d++) for (const b of E.sessionFor(wv, wk, d, S.gates, S.spec)) if (re.test(b.name || "") && Number.isFinite(b.w) && b.w > 0) return b.w; return null; };
+        return NUTRI.primerLoads(findW).map((x) => `<div class="frow"><span class="fn">${esc(x.k)} \u00b7 ${esc(x.name)}<small>${esc(x.why)}</small></span><span class="fv"><b>${esc(x.disp)}</b>${x.sr ? ` \u00b7 ${esc(x.sr)}` : ""}</span></div>`).join("")
+          + `<p class="note" style="margin-top:6px">Weights are ~75\u201385% of this week\u2019s working loads and move with them. Pump reps, not PRs.</p>`; })()}
     <p class="note" style="margin-top:8px">${esc(P.pump.finish)}</p><p class="note">${esc(P.pump.after)}</p>
     <div class="eyebrow" style="margin-top:12px">The shirt</div><p class="note">${esc(P.day.shirt)}</p>
     <div class="eyebrow" style="margin-top:12px">The day after</div><p class="note">${esc(P.next)}</p>`);

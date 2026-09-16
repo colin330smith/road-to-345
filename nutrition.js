@@ -117,20 +117,34 @@ const PRIMER = {
     shirt: "Fitted through the shoulders and chest, sleeves ending mid-bicep, heavier fabric that holds shape instead of clinging to the waist. Dark or mid tones." },
   pump: { title: "The pump — 45 min, finish 60–90 min before",
     rule: "12–20 reps, 45–60 s rests, cables and machines, 2–3 reps short of failure. Supersets.",
-    sets: [["A1", "Cable lateral raise", "3×15–20", "width — the #1 through-a-shirt muscle"],
-           ["A2", "Low-to-high cable fly", "3×15", "upper chest, fills the shirt"],
-           ["B1", "Machine shoulder press, light", "2×12–15", "the cap"],
-           ["B2", "Face pull", "3×20", "posture + round rear delt"],
-           ["C1", "Incline DB curl", "3×12–15", "sleeves"],
-           ["C2", "Rope pushdown", "3×15–20", "sleeves — superset with C1"],
-           ["D1", "Straight-arm cable pulldown", "2×15", "lats, the taper"],
-           ["D2", "DB shrug, light, 1 s hold", "2×15", "traps / neckline"],
-           ["E",  "Hammer curl 2×15 + wrist curl 2×20", "", "only if sleeves are rolled"],
-           ["F",  "Lateral raise drop set ×1, three drops", "", "to a burn, not to failure"]],
+    // load = { from: <block name regex>, pct } resolved against the CURRENT week's sessions,
+    // so the pump weights climb as the rungs do. fallback covers a missing match.
+    sets: [["A1", "Cable lateral raise",              "3×15–20", "width — the #1 through-a-shirt muscle",     { from: "Cable Lateral Raise",       pct: 0.75, fallback: 15 }],
+           ["A2", "Low-to-high cable fly",            "3×15",         "upper chest, fills the shirt",               { from: "Low-to-High Cable Fly",     pct: 0.85, fallback: 30 }],
+           ["B1", "Machine shoulder press, light",    "2×12–15", "the cap",                                    { from: "Overhead Press",            pct: 0.50, fallback: 50, note: "or 25-lb DBs" }],
+           ["B2", "Face pull",                        "3×20",         "posture + round rear delt",                  { from: "Face Pull",                 pct: 0.85, fallback: 50 }],
+           ["C1", "Incline DB curl",                  "3×12–15", "sleeves",                                    { from: "Incline DB Curl",           pct: 0.80, fallback: 30, per: "hand" }],
+           ["C2", "Rope pushdown",                    "3×15–20", "sleeves — superset with C1",            { from: "Rope Pushdown",             pct: 0.75, fallback: 70 }],
+           ["D1", "Straight-arm cable pulldown",      "2×15",         "lats, the taper",                            { from: "Unilateral Cable Pulldown", pct: 0.50, fallback: 55 }],
+           ["D2", "DB shrug, light, 1 s hold",        "2×15",         "traps / neckline",                           { from: "Shrug",                     pct: 0.60, fallback: 100, note: "machine, or 55-lb DBs" }],
+           ["E",  "Hammer curl 2×15 + wrist curl 2×20", "",       "only if sleeves are rolled",                 { from: "Hammer Curl",               pct: 0.75, fallback: 30, per: "hand", note: "wrist curl at 30" }],
+           ["F",  "Lateral raise drop set",           "×1, three drops", "to a burn, not to failure",               { from: "Cable Lateral Raise",       pct: 0.75, fallback: 15, note: "then 12.5 → 10 → 7.5" }],
+           ["G",  "Ab wheel, from the knees",         "3×10–12", "finisher — brace, slow on the way out, stop before the low back sags", 0]],
     finish: "Posture reset, last 3 min: chin tucks ×10 · wall slides ×10 · doorway pec stretch 30 s/side. Stand tall.",
     after: "Banana or rice cakes + 500 ml water with a pinch of salt — extends the pump 1–2 h." },
   next: "Back to the plan. If the day’s weigh-in said TRIM, start it the day after — the date was the one-day exception. Log the day anyway.",
 };
+// Resolve the pump's loads against a lookup of the current week's working weights.
+const roundLoad = (w) => (w >= 50 ? Math.round(w / 5) * 5 : Math.round(w / 2.5) * 2.5);
+function primerLoads(findW) {
+  return PRIMER.pump.sets.map(([k, name, sr, why, load]) => {
+    if (typeof load === "number") return { k, name, sr, why, w: load, disp: load === 0 ? "BW" : String(load) };
+    const base = findW ? findW(load.from) : null;
+    const w = Number.isFinite(base) && base > 0 ? roundLoad(base * load.pct) : load.fallback;
+    const disp = (load.per === "hand" ? `${w}s` : String(w)) + (load.note ? ` · ${load.note}` : "");
+    return { k, name, sr, why, w, disp, derived: Number.isFinite(base) && base > 0 };
+  });
+}
 // "eve" the day before, "day" on the date, otherwise null
 function primerStage(dateDk, todayDk) {
   if (!dateDk || !/^\d{4}-\d{2}-\d{2}$/.test(dateDk)) return null;
@@ -172,5 +186,5 @@ function decision(bw, meas, opts) {
   return { mode: "trim", avg, dW, days: bk.length, reason: `3-day avg ${avg}${heavy ? ` > ${o.keep}` : ""} · ${wTxt}. Real tissue. Four-week trim.` };
 }
 const trimEnd = (sinceDk, weeks) => msDk(dkMs(sinceDk) + (weeks || TRIM_WEEKS) * 7 * 86400000);
-const NUTRI = { MODES, TRIM_WEEKS, PHASES, PRIMER, primerStage, HILLSTONE, SIDES, HOME, byId, targets, dayTotals, weekStats, decision, trimEnd };
+const NUTRI = { MODES, TRIM_WEEKS, PHASES, PRIMER, primerStage, primerLoads, roundLoad, HILLSTONE, SIDES, HOME, byId, targets, dayTotals, weekStats, decision, trimEnd };
 if (typeof module !== "undefined") module.exports = NUTRI;

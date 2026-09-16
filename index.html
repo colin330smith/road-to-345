@@ -1565,6 +1565,16 @@ const HOME = [
   { id: "egg1",    grp: "addon", mode: "any", name: "Whole egg, 1",                   kcal: 70,  p: 6,  addon: true },
   { id: "toast1",  grp: "addon", mode: "any", name: "Sourdough, 1 slice",             kcal: 90,  p: 3,  addon: true },
 ];
+// The road in phases. Phase 1 is the build. Phase 2 is the reveal: the SAME 170 lb of
+// lean mass at ~11% — the 1992 Calvin Klein Wahlberg, carrying ~25 lb more muscle than
+// the ad. It is not a multi-year goal; it is a ten-week trim once Phase 1 is real.
+const PHASES = [
+  { id: "build", name: "Pain & Gain build", target: "200 lb @ 15% \u00b7 170 lb lean \u00b7 315/405/495 \u00b7 15\" arms", by: "~Wave 45 (2030)", mode: "gain",
+    note: "Small surplus for years. Trim only when body fat hits 18%." },
+  { id: "ck", name: "The CK cut", target: "~190 lb @ 11% \u00b7 same 170 lb lean", by: "10 weeks after Wave 45", mode: "trim", kcal: 2300, weeks: 10, floorBF: 10,
+    gate: "Starts only once 200 @ 15% is real on the tape \u2014 waist and weekly average, not a good morning.",
+    note: "\u22121 lb/wk, protein 200+, heavy lifting held with back-offs cut ~20%. Diet break at week 5. Stop at 10%: that is a floor, not a target. Then three weeks back up to maintenance." },
+];
 const ALL = () => [...HILLSTONE, ...SIDES, ...HOME];
 const byId = (id) => ALL().find((x) => x.id === id) || null;
 const targets = (mode) => MODES[mode] || MODES.gain;
@@ -1600,7 +1610,7 @@ function decision(bw, meas, opts) {
   return { mode: "trim", avg, dW, days: bk.length, reason: `3-day avg ${avg}${heavy ? ` > ${o.keep}` : ""} · ${wTxt}. Real tissue. Four-week trim.` };
 }
 const trimEnd = (sinceDk, weeks) => msDk(dkMs(sinceDk) + (weeks || TRIM_WEEKS) * 7 * 86400000);
-const NUTRI = { MODES, TRIM_WEEKS, HILLSTONE, SIDES, HOME, byId, targets, dayTotals, weekStats, decision, trimEnd };
+const NUTRI = { MODES, TRIM_WEEKS, PHASES, HILLSTONE, SIDES, HOME, byId, targets, dayTotals, weekStats, decision, trimEnd };
 if (typeof module !== "undefined") module.exports = NUTRI;
 
 let animId = null;
@@ -1858,7 +1868,9 @@ function renderRoad() {
         const now = mk.length ? S.meas[mk[mk.length - 1]].ar : E.ARM_START;
         const p = Math.max(0, Math.min(100, Math.round(((now - E.ARM_START) / (E.ARM_GOAL - E.ARM_START)) * 100)));
         return `<div class="srow"><span>Arms</span><div class="sbar"><i style="width:${p}%"></i></div><span class="sval">${now}" / ${E.ARM_GOAL}"</span></div>`; })()}
-  </div><p class="note">Lifts are cycle bases, not tested maxes. Incline, chin-up, dip and RDL are tracked the same way the big three are — arms and hamstrings are goals, not accessories. Chin-up drives the biceps side, dip the triceps side; triceps are two-thirds of arm circumference, so they carry the larger share. Bodyweight only counts if the waist stays flat while it climbs.</p></div>
+  </div><p class="note">Lifts are cycle bases, not tested maxes. Incline, chin-up, dip and RDL are tracked the same way the big three are — arms and hamstrings are goals, not accessories. Chin-up drives the biceps side, dip the triceps side; triceps are two-thirds of arm circumference, so they carry the larger share. Bodyweight only counts if the waist stays flat while it climbs.</p>
+    ${(() => { const p2 = NUTRI.PHASES[1]; return `<div class="srow" style="border-top:1px solid var(--steel);padding-top:8px;margin-top:4px"><span>Phase 2</span><span class="sval" style="text-align:right">${esc(p2.target)}</span></div>
+    <p class="note" style="margin-top:2px"><b style="color:var(--chalk)">${esc(p2.name)}</b> \u2014 ${esc(p2.by)}. ${esc(p2.gate)} Same lean mass, ${p2.weeks} weeks, floor ${p2.floorBF}%. The Calvin Klein Wahlberg with 25 more pounds of muscle than the ad.</p>`; })()}</div>
   <p class="note">19 waves · 4 macros. Projections re-compute from your gate results; untouched gates assume clean.</p>`;
   for (let w = 1; w <= 19; w++) {
     const cb = E.cbFor(w, S.gates);
@@ -2106,6 +2118,7 @@ function renderTrends() {
     return `<div class="card single"><div class="eyebrow sig">Fuel — the other half of the road</div>
       <div class="rowbtns">${modeBtn("gain")}${modeBtn("trim")}</div>
       <p class="note">${esc(T.rate)} · ${T.p}P / ${T.f}F / ~${T.c}C. ${esc(T.why)}${end ? ` Trim ends <b style="color:var(--chalk)">${end}</b>.` : ""}${overdue ? " <b style=\"color:var(--amber,#d9a441)\">Trim window is over — switch back to GAIN.</b>" : ""}</p>
+      <p class="note">Phase 1 now: ${esc(NUTRI.PHASES[0].name)} \u2192 ${esc(NUTRI.PHASES[0].target)} by ${esc(NUTRI.PHASES[0].by)}. Phase 2: ${esc(NUTRI.PHASES[1].name)}, ${esc(NUTRI.PHASES[1].by)} \u2014 ${esc(NUTRI.PHASES[1].target)}.</p>
       <div class="statline" style="margin-top:8px;display:flex;justify-content:space-between;gap:10px;align-items:baseline"><span class="note">Last 7 full days</span><b style="font-variant-numeric:tabular-nums">${st.logged ? `${st.avgKcal} kcal · ${st.avgP}P avg · ${st.logged}/7 logged` : "nothing logged"}</b></div>
       ${st.logged ? `<p class="note">${st.avgKcal > T.kcal + 150 ? "⚠️ Averaging over target — that's the overshoot." : st.avgKcal < T.kcal - 200 ? "⚠️ Under target — you will not grow on this." : "✅ On target."}${st.avgP < T.p - 15 ? " Protein is short — add the shrimp or a scoop." : ""}</p>` : ""}
       <div class="statline" style="margin-top:8px;display:flex;justify-content:space-between;gap:10px;align-items:baseline"><span class="note">Decision rule</span><b>${dec.mode ? (dec.mode === "trim" ? "→ TRIM" : "→ KEEP GAINING") : "—"}</b></div>
@@ -2275,7 +2288,7 @@ render();
 </script>
 
 <script>
-window.BUILD = "r345-v44";
+window.BUILD = "r345-v45";
 if ("serviceWorker" in navigator) addEventListener("load", async () => {
   try {
     const reg = await navigator.serviceWorker.register("./sw.js");

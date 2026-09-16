@@ -616,7 +616,9 @@ function renderRoad() {
         const now = mk.length ? S.meas[mk[mk.length - 1]].ar : E.ARM_START;
         const p = Math.max(0, Math.min(100, Math.round(((now - E.ARM_START) / (E.ARM_GOAL - E.ARM_START)) * 100)));
         return `<div class="srow"><span>Arms</span><div class="sbar"><i style="width:${p}%"></i></div><span class="sval">${now}" / ${E.ARM_GOAL}"</span></div>`; })()}
-  </div><p class="note">Lifts are cycle bases, not tested maxes. Incline, chin-up, dip and RDL are tracked the same way the big three are — arms and hamstrings are goals, not accessories. Chin-up drives the biceps side, dip the triceps side; triceps are two-thirds of arm circumference, so they carry the larger share. Bodyweight only counts if the waist stays flat while it climbs.</p></div>
+  </div><p class="note">Lifts are cycle bases, not tested maxes. Incline, chin-up, dip and RDL are tracked the same way the big three are — arms and hamstrings are goals, not accessories. Chin-up drives the biceps side, dip the triceps side; triceps are two-thirds of arm circumference, so they carry the larger share. Bodyweight only counts if the waist stays flat while it climbs.</p>
+    ${(() => { const p2 = NUTRI.PHASES[1]; return `<div class="srow" style="border-top:1px solid var(--steel);padding-top:8px;margin-top:4px"><span>Phase 2</span><span class="sval" style="text-align:right">${esc(p2.target)}</span></div>
+    <p class="note" style="margin-top:2px"><b style="color:var(--chalk)">${esc(p2.name)}</b> \u2014 ${esc(p2.by)}. ${esc(p2.gate)} Same lean mass, ${p2.weeks} weeks, floor ${p2.floorBF}%. The Calvin Klein Wahlberg with 25 more pounds of muscle than the ad.</p>`; })()}</div>
   <p class="note">19 waves · 4 macros. Projections re-compute from your gate results; untouched gates assume clean.</p>`;
   for (let w = 1; w <= 19; w++) {
     const cb = E.cbFor(w, S.gates);
@@ -864,6 +866,7 @@ function renderTrends() {
     return `<div class="card single"><div class="eyebrow sig">Fuel — the other half of the road</div>
       <div class="rowbtns">${modeBtn("gain")}${modeBtn("trim")}</div>
       <p class="note">${esc(T.rate)} · ${T.p}P / ${T.f}F / ~${T.c}C. ${esc(T.why)}${end ? ` Trim ends <b style="color:var(--chalk)">${end}</b>.` : ""}${overdue ? " <b style=\"color:var(--amber,#d9a441)\">Trim window is over — switch back to GAIN.</b>" : ""}</p>
+      <p class="note">Phase 1 now: ${esc(NUTRI.PHASES[0].name)} \u2192 ${esc(NUTRI.PHASES[0].target)} by ${esc(NUTRI.PHASES[0].by)}. Phase 2: ${esc(NUTRI.PHASES[1].name)}, ${esc(NUTRI.PHASES[1].by)} \u2014 ${esc(NUTRI.PHASES[1].target)}.</p>
       <div class="statline" style="margin-top:8px;display:flex;justify-content:space-between;gap:10px;align-items:baseline"><span class="note">Last 7 full days</span><b style="font-variant-numeric:tabular-nums">${st.logged ? `${st.avgKcal} kcal · ${st.avgP}P avg · ${st.logged}/7 logged` : "nothing logged"}</b></div>
       ${st.logged ? `<p class="note">${st.avgKcal > T.kcal + 150 ? "⚠️ Averaging over target — that's the overshoot." : st.avgKcal < T.kcal - 200 ? "⚠️ Under target — you will not grow on this." : "✅ On target."}${st.avgP < T.p - 15 ? " Protein is short — add the shrimp or a scoop." : ""}</p>` : ""}
       <div class="statline" style="margin-top:8px;display:flex;justify-content:space-between;gap:10px;align-items:baseline"><span class="note">Decision rule</span><b>${dec.mode ? (dec.mode === "trim" ? "→ TRIM" : "→ KEEP GAINING") : "—"}</b></div>

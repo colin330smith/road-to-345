@@ -90,6 +90,16 @@ const HOME = [
   { id: "egg1",    grp: "addon", mode: "any", name: "Whole egg, 1",                   kcal: 70,  p: 6,  addon: true },
   { id: "toast1",  grp: "addon", mode: "any", name: "Sourdough, 1 slice",             kcal: 90,  p: 3,  addon: true },
 ];
+// The road in phases. Phase 1 is the build. Phase 2 is the reveal: the SAME 170 lb of
+// lean mass at ~11% — the 1992 Calvin Klein Wahlberg, carrying ~25 lb more muscle than
+// the ad. It is not a multi-year goal; it is a ten-week trim once Phase 1 is real.
+const PHASES = [
+  { id: "build", name: "Pain & Gain build", target: "200 lb @ 15% \u00b7 170 lb lean \u00b7 315/405/495 \u00b7 15\" arms", by: "~Wave 45 (2030)", mode: "gain",
+    note: "Small surplus for years. Trim only when body fat hits 18%." },
+  { id: "ck", name: "The CK cut", target: "~190 lb @ 11% \u00b7 same 170 lb lean", by: "10 weeks after Wave 45", mode: "trim", kcal: 2300, weeks: 10, floorBF: 10,
+    gate: "Starts only once 200 @ 15% is real on the tape \u2014 waist and weekly average, not a good morning.",
+    note: "\u22121 lb/wk, protein 200+, heavy lifting held with back-offs cut ~20%. Diet break at week 5. Stop at 10%: that is a floor, not a target. Then three weeks back up to maintenance." },
+];
 const ALL = () => [...HILLSTONE, ...SIDES, ...HOME];
 const byId = (id) => ALL().find((x) => x.id === id) || null;
 const targets = (mode) => MODES[mode] || MODES.gain;
@@ -125,5 +135,5 @@ function decision(bw, meas, opts) {
   return { mode: "trim", avg, dW, days: bk.length, reason: `3-day avg ${avg}${heavy ? ` > ${o.keep}` : ""} · ${wTxt}. Real tissue. Four-week trim.` };
 }
 const trimEnd = (sinceDk, weeks) => msDk(dkMs(sinceDk) + (weeks || TRIM_WEEKS) * 7 * 86400000);
-const NUTRI = { MODES, TRIM_WEEKS, HILLSTONE, SIDES, HOME, byId, targets, dayTotals, weekStats, decision, trimEnd };
+const NUTRI = { MODES, TRIM_WEEKS, PHASES, HILLSTONE, SIDES, HOME, byId, targets, dayTotals, weekStats, decision, trimEnd };
 if (typeof module !== "undefined") module.exports = NUTRI;

@@ -805,5 +805,19 @@ console.log("\n── frame requirements ──");
   ok(hard <= 13, `budget: ${hard} failure sets/wk`);
 }
 
+
+// ═══ phases: the build, then the CK cut ═══
+{
+  const N = require("./nutrition.js");
+  eq(N.PHASES.length, 2, "phases: two phases");
+  eq(N.PHASES.map((p) => p.id), ["build", "ck"], "phases: build first, CK cut second");
+  const ck = N.PHASES[1];
+  ok(/190/.test(ck.target) && /11%/.test(ck.target) && /170 lb lean/.test(ck.target), "phases: CK cut is ~190 @ 11% on the same 170 lean");
+  ok(/Wave 45/.test(ck.by) && /Wave 45/.test(N.PHASES[0].by), "phases: both anchored to Wave 45");
+  eq([ck.weeks, ck.floorBF, ck.mode], [10, 10, "trim"], "phases: ten weeks, 10% floor, runs on trim mode");
+  ok(ck.kcal <= N.MODES.trim.kcal && ck.kcal >= 2200, "phases: CK cut calories sit at or under trim mode, never a crash");
+  ok(/200 @ 15%/.test(ck.gate), "phases: gated on Phase 1 being real");
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

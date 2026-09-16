@@ -30,8 +30,8 @@ Mon — Comp Squat + Legs
   Leg Press: 510 × 10 × 3 @ RPE 8–9
   Standing Calf Raise: 230 × 12 × 3 @ RPE 8–9  ← last set RPE 9–10, then 3–5 lengthened partials
   Hanging Leg Raise: BW × 12 × 3 @ RPE 8–9  ← last set RPE 9–10
-  Low-to-High Cable Fly: 35 × 15 × 3 @ RPE 8–9  ← last set RPE 9–10
-  Machine / DB Shrug: 170 × 12 × 2 @ RPE 8–9
+  Low-to-High Cable Fly: 35 × 15 × 4 @ RPE 8–9  ← last set RPE 9–10
+  Machine / DB Shrug: 170 × 12 × 1 @ RPE 8–9
   Cooldown — 5 min — POSTURE: couch stretch 2×30s/side (hip flexors = the anterior tilt fix) · ankle rocks 15/side · dead hang 30s · easy breathing, no bouncing
 
 Tue — Comp Bench + Back
@@ -56,7 +56,7 @@ Wed — Paused Squat + Arms
   Hammer Curl: 40 × 12 × 3 @ RPE 8–9 · per hand
   Leg Extension: 155 × 12 × 2 @ RPE 8–9  ← last set RPE 9–10, then 3–5 lengthened partials
   Cable Lateral Raise: 22.5 × 12 × 3 @ RPE 8–9  ← last set RPE 9–10, then 3–5 lengthened partials
-  Cable Woodchop: 45 × 12 × 2 @ RPE 8–9
+  Stomach Vacuum (seconds): BW × 45 × 2 @ RPE 8–9  (filler — superset into rests)
   Incline Walk — 20 min · 3 mph · 6%
   Cooldown — 5 min — 90/90 hips 60s/side · standing hamstring 45s/side · easy breathing, no bouncing
 
@@ -69,9 +69,9 @@ Thu — Paused Bench + OHP
   Weighted Dip — back-offs: +20 × 8 × 3 @ RPE 7–8
   Rope Pushdown: 95 × 12 × 2 @ RPE 8–9
   Overhead Cable Extension: 75 × 12 × 3 @ RPE 8–9  ← last set RPE 9–10, then 3–5 lengthened partials
-  Face Pull: 60 × 20 × 3 @ RPE 8–9
+  Face Pull: 60 × 20 × 2 @ RPE 8–9
   Prone Y-Raise: 7.5 × 15 × 2 @ RPE 8–9 · per hand  (filler — superset into rests)
-  Wrist Extension: 15 × 20 × 2 @ RPE 8–9 · per hand  (filler — superset into rests)
+  Wrist Extension: 15 × 20 × 3 @ RPE 8–9 · per hand  (filler — superset into rests)
   Neck Extension: 12.5 × 15 × 2 @ RPE 8–9  (filler — superset into rests)
   Cooldown — 5 min — POSTURE: thoracic extension over bench 45s · lat hang 45s · chin tucks ×10 (the tech-neck fix) · easy breathing, no bouncing
 
@@ -85,16 +85,18 @@ Fri — Comp Deadlift + Back
   Weighted Chin-Up — back-offs: +20 × 8 × 3 @ RPE 7–8
   Leg Press Calf Raise: 270 × 12 × 3 @ RPE 8–9  ← last set RPE 9–10, then 3–5 lengthened partials
   Chest-Supported Machine / Cable Row: 130 × 10 × 3 @ RPE 8–9
-  Reverse Cable Curl: 60 × 12 × 2 @ RPE 8–9
-  Cable / DB Wrist Curl: 35 × 20 × 2 @ RPE 8–9  (filler — superset into rests)
+  Reverse Cable Curl: 60 × 12 × 3 @ RPE 8–9  ← last set RPE 9–10, then 3–5 lengthened partials
+  Cable / DB Wrist Curl: 35 × 20 × 3 @ RPE 8–9  (filler — superset into rests)
   Cooldown — 5 min — Hamstring 60s/side · figure-4 glute 45s/side · shake the grip out · easy breathing, no bouncing
 
 Sat — Frame Spec
   Frame Specialization — Arms (bi + tri) priority — Overload day. Hit your weak point fresh — quality reps, not a set count.
   Incline DB Curl: 40 × 12–15 × 3 @ RPE 8–9 · per hand
-  Bayesian Cable Curl: 30 × 12–15 × 3 @ RPE 8–9
+  Bayesian Cable Curl: 30 × 12–15 × 2 @ RPE 8–9
   Cross-Body Cable Y-Raise: 25 × 12–15 × 3 @ RPE 8–9
   Overhead Cable Extension: 75 × 12–15 × 3 @ RPE 8–9
+  Incline DB Press (30°): 65 × 10–12 × 3 @ RPE 8 · per hand
+  Heavy Farmer Hold (seconds): 90 × 40–50 × 2 @ RPE 8–9 · per hand
   Unilateral Cable Pulldown: 105 × 12–15 × 3 @ RPE 8
   Rope / Single-Arm Pushdown: 95 × 12–15 × 3 @ RPE 8–9
   Ab Wheel / Cable Crunch: 80 × 8–10 × 2 @ RPE 8–9
@@ -114,8 +116,8 @@ Mon — Comp Squat + Legs
   Leg Press: 510 × 12 × 3 @ RPE 8–9
   Standing Calf Raise: 230 × 15 × 3 @ RPE 8–9  ← last set RPE 9–10, then 3–5 lengthened partials
   Hanging Leg Raise: BW × 15 × 3 @ RPE 8–9  ← last set RPE 9–10
-  Low-to-High Cable Fly: 35 × 20 × 3 @ RPE 8–9  ← last set RPE 9–10
-  Machine / DB Shrug: 170 × 15 × 2 @ RPE 8–9
+  Low-to-High Cable Fly: 35 × 20 × 4 @ RPE 8–9  ← last set RPE 9–10
+  Machine / DB Shrug: 170 × 15 × 1 @ RPE 8–9
   Cooldown — 5 min — POSTURE: couch stretch 2×30s/side (hip flexors = the anterior tilt fix) · ankle rocks 15/side · dead hang 30s · easy breathing, no bouncing
 
 Tue — Comp Bench + Back
@@ -140,7 +142,7 @@ Wed — Paused Squat + Arms
   Hammer Curl: 40 × 15 × 3 @ RPE 8–9 · per hand
   Leg Extension: 155 × 15 × 2 @ RPE 8–9  ← last set RPE 9–10, then 3–5 lengthened partials
   Cable Lateral Raise: 22.5 × 15 × 3 @ RPE 8–9  ← last set RPE 9–10, then 3–5 lengthened partials
-  Cable Woodchop: 45 × 15 × 2 @ RPE 8–9
+  Stomach Vacuum (seconds): BW × 60 × 2 @ RPE 8–9  (filler — superset into rests)
   Incline Walk — 20 min · 3 mph · 7%
   Cooldown — 5 min — 90/90 hips 60s/side · standing hamstring 45s/side · easy breathing, no bouncing
 
@@ -153,9 +155,9 @@ Thu — Paused Bench + OHP
   Weighted Dip — back-offs: +25 × 7 × 3 @ RPE 7–8
   Rope Pushdown: 95 × 15 × 2 @ RPE 8–9
   Overhead Cable Extension: 75 × 15 × 3 @ RPE 8–9  ← last set RPE 9–10, then 3–5 lengthened partials
-  Face Pull: 60 × 25 × 3 @ RPE 8–9
+  Face Pull: 60 × 25 × 2 @ RPE 8–9
   Prone Y-Raise: 7.5 × 20 × 2 @ RPE 8–9 · per hand  (filler — superset into rests)
-  Wrist Extension: 15 × 25 × 2 @ RPE 8–9 · per hand  (filler — superset into rests)
+  Wrist Extension: 15 × 25 × 3 @ RPE 8–9 · per hand  (filler — superset into rests)
   Neck Extension: 12.5 × 20 × 2 @ RPE 8–9  (filler — superset into rests)
   Cooldown — 5 min — POSTURE: thoracic extension over bench 45s · lat hang 45s · chin tucks ×10 (the tech-neck fix) · easy breathing, no bouncing
 
@@ -169,16 +171,18 @@ Fri — Comp Deadlift + Back
   Weighted Chin-Up — back-offs: +25 × 7 × 3 @ RPE 7–8
   Leg Press Calf Raise: 270 × 15 × 3 @ RPE 8–9  ← last set RPE 9–10, then 3–5 lengthened partials
   Chest-Supported Machine / Cable Row: 130 × 12 × 3 @ RPE 8–9
-  Reverse Cable Curl: 60 × 15 × 2 @ RPE 8–9
-  Cable / DB Wrist Curl: 35 × 25 × 2 @ RPE 8–9  (filler — superset into rests)
+  Reverse Cable Curl: 60 × 15 × 3 @ RPE 8–9  ← last set RPE 9–10, then 3–5 lengthened partials
+  Cable / DB Wrist Curl: 35 × 25 × 3 @ RPE 8–9  (filler — superset into rests)
   Cooldown — 5 min — Hamstring 60s/side · figure-4 glute 45s/side · shake the grip out · easy breathing, no bouncing
 
 Sat — Frame Spec
   Frame Specialization — Arms (bi + tri) priority — Overload day. Hit your weak point fresh — quality reps, not a set count.
   Incline DB Curl: 40 × 12–15 × 3 @ RPE 8–9 · per hand
-  Bayesian Cable Curl: 30 × 12–15 × 3 @ RPE 8–9
+  Bayesian Cable Curl: 30 × 12–15 × 2 @ RPE 8–9
   Cross-Body Cable Y-Raise: 25 × 12–15 × 3 @ RPE 8–9
   Overhead Cable Extension: 75 × 12–15 × 3 @ RPE 8–9
+  Incline DB Press (30°): 65 × 10–12 × 3 @ RPE 8 · per hand
+  Heavy Farmer Hold (seconds): 90 × 40–50 × 2 @ RPE 8–9 · per hand
   Unilateral Cable Pulldown: 105 × 12–15 × 3 @ RPE 8
   Rope / Single-Arm Pushdown: 95 × 12–15 × 3 @ RPE 8–9
   Ab Wheel / Cable Crunch: 80 × 8–10 × 2 @ RPE 8–9
@@ -198,8 +202,8 @@ Mon — Comp Squat + Legs
   Leg Press: 510 × 10 × 2 @ RPE 8
   Standing Calf Raise: 230 × 12 × 2 @ RPE 8
   Hanging Leg Raise: BW × 12 × 3 @ RPE 8
-  Low-to-High Cable Fly: 35 × 15 × 2 @ RPE 8
-  Machine / DB Shrug: 170 × 12 × 2 @ RPE 8
+  Low-to-High Cable Fly: 35 × 15 × 3 @ RPE 8
+  Machine / DB Shrug: 170 × 12 × 1 @ RPE 8
   Cooldown — 5 min — POSTURE: couch stretch 2×30s/side (hip flexors = the anterior tilt fix) · ankle rocks 15/side · dead hang 30s · easy breathing, no bouncing
 
 Tue — Comp Bench + Back
@@ -224,7 +228,7 @@ Wed — Paused Squat + Arms
   Hammer Curl: 40 × 12 × 2 @ RPE 8 · per hand
   Leg Extension: 155 × 12 × 1 @ RPE 8
   Cable Lateral Raise: 22.5 × 12 × 2 @ RPE 8
-  Cable Woodchop: 45 × 12 × 2 @ RPE 8
+  Stomach Vacuum (seconds): BW × 45 × 2 @ RPE 8  (filler — superset into rests)
   Incline Walk — 15 min · 3 mph · 5%
   Cooldown — 5 min — 90/90 hips 60s/side · standing hamstring 45s/side · easy breathing, no bouncing
 
@@ -263,6 +267,8 @@ Sat — Frame Spec
   Bayesian Cable Curl: 30 × 12–15 × 2 @ RPE 8–9
   Cross-Body Cable Y-Raise: 25 × 12–15 × 2 @ RPE 8–9
   Overhead Cable Extension: 75 × 12–15 × 2 @ RPE 8–9
+  Incline DB Press (30°): 65 × 10–12 × 2 @ RPE 8 · per hand
+  Heavy Farmer Hold (seconds): 90 × 40–50 × 2 @ RPE 8–9 · per hand
   Ab Wheel / Cable Crunch: 80 × 8–10 × 2 @ RPE 8–9
 
 Sun — Rest
@@ -302,7 +308,7 @@ Wed — Paused Squat + Arms
   Hammer Curl: 27.5 × 12 × 2 @ RPE 6–7 · per hand
   Leg Extension: 110 × 12 × 2 @ RPE 6–7
   Cable Lateral Raise: 15 × 12 × 2 @ RPE 6–7
-  Cable Woodchop: 30 × 12 × 2 @ RPE 6–7
+  Stomach Vacuum (seconds): BW × 45 × 2 @ RPE 6–7  (filler — superset into rests)
   Incline Walk — 15 min · 2.8 mph · 4%
   Cooldown — 5 min — 90/90 hips 60s/side · standing hamstring 45s/side · easy breathing, no bouncing
 

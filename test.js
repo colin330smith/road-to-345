@@ -273,19 +273,19 @@ console.log("\n── frame requirements ──");
   const isTri = (n) => /(Extension|Pushdown)/i.test(n) && !/Leg|Wrist|Neck/i.test(n);
   const isBi = (n) => /Curl/i.test(n) && !/Leg Curl|Neck|Wrist/i.test(n);
   const cnt = (re) => { let t = 0; for (let d = 1; d <= 7; d++) for (const b of E.sessionFor(1, 1, d, {}, E.DEFAULT_SPEC)) if (b.type === "accessory" && re.test(b.name)) t += b.sets; return t; };
-  ok(cnt(/Shrug/) >= 2, "frame: 2+ direct trap sets weekly (v32: 2 — deadlifts carry the rest)");
+  ok(cnt(/Shrug/) >= 1, "frame: 1+ direct trap set weekly (traps declared dialed; deadlifts, RDLs and chins carry the rest)");
   { let sd = 0; for (let d = 1; d <= 7; d++) for (const b of E.sessionFor(1, 1, d, {}, E.DEFAULT_SPEC)) if (b.type === "accessory" && isSideDelt(b.name)) sd += b.sets; ok(sd >= 9, "frame: 9+ side-delt sets weekly"); }
-  ok(cnt(/Low-to-High/) + E.sessionFor(1, 1, 2, {}, E.DEFAULT_SPEC).filter((b) => /Incline Bench/.test(b.name || "")).reduce((n, b) => n + b.sets, 0) >= 6, "frame: 6+ upper-chest sets weekly (barbell incline + fly)");
+  ok(cnt(/Low-to-High/) + E.sessionFor(1, 1, 2, {}, E.DEFAULT_SPEC).filter((b) => /Incline Bench/.test(b.name || "")).reduce((n, b) => n + b.sets, 0) >= 8, "frame: 8+ upper-chest sets on Mon+Tue alone (barbell incline + fly)");
   let bi = 0, tri = 0;
   for (let d = 1; d <= 7; d++) for (const b of E.sessionFor(1, 1, d, {}, E.DEFAULT_SPEC)) {
     if (b.type !== "accessory") continue;
     if (isBi(b.name)) bi += b.sets; else if (isTri(b.name)) tri += b.sets;
   }
-  eq(bi, 14, "v32: 14 curl sets (Sunday is rest)");
+  eq(bi, 14, "v32: 14 curl sets (reverse curl +1 as forearm anchor, Bayesian -1 to hold the Saturday budget)");
   ok(tri >= 10 && tri <= 24, "v32: triceps isolation 10-24 band (excludes the tracked dip; 11 = 2 overhead + 2 pushdown exposures)");
   const tue = E.sessionFor(1, 1, 2, {}, E.DEFAULT_SPEC);
   const mon = E.sessionFor(1, 1, 1, {}, E.DEFAULT_SPEC);
-  ok(mon.some((b) => /Shrug/.test(b.name || "") && b.sets === 2), "frame: Mon carries the shrug (full-body split; v32: 2 sets)");
+  ok(mon.some((b) => /Shrug/.test(b.name || "") && b.sets >= 1), "frame: Mon carries the shrug (1 maintenance set)");
   ok(!tue.some((b) => /Overhead Rope/.test(b.name || "")), "frame: Tue overhead rope traded out");
 
   // ═══ full-body redistribution ═══
@@ -344,8 +344,8 @@ console.log("\n── frame requirements ──");
 {
   const wed = E.sessionFor(1, 1, 3, {}, E.DEFAULT_SPEC);
   const fri = E.sessionFor(1, 1, 5, {}, E.DEFAULT_SPEC);
-  ok(wed.some((b) => /Woodchop/.test(b.name || "") && b.sets === 2), "sweep: Wed has oblique woodchops x2");
-  ok(fri.some((b) => /Wrist Curl/.test(b.name || "") && b.sets === 2), "sweep: Fri has wrist curls x2 (flexion)");
+  ok(!wed.some((b) => /Woodchop/.test(b.name || "")) && wed.some((b) => /Stomach Vacuum/.test(b.name || "")), "waist: woodchop gone (obliques never loaded), vacuum filler present");
+  ok(fri.some((b) => /Wrist Curl/.test(b.name || "") && b.sets === 3), "forearms: Fri wrist curls x3 (flexion), no longer filler");
   for (let d = 1; d <= 5; d++)
     ok(E.sessionFor(1, 1, d, {}, E.DEFAULT_SPEC).some((b) => b.type === "cooldown"), `sweep: day ${d} ends with mobility cooldown`);
   // Yellow keeps the cooldown even though it drops conditioning
@@ -356,12 +356,12 @@ console.log("\n── frame requirements ──");
   let fa = 0;
   for (let d = 1; d <= 5; d++) for (const b of E.sessionFor(1, 1, d, {}, E.DEFAULT_SPEC))
     if (b.type === "accessory" && /Wrist/i.test(b.name)) fa += b.sets;
-  ok(fa >= 4, "sweep: 4+ dedicated forearm sets on weekdays");
+  ok(fa >= 6, "forearms: 6+ dedicated wrist sets on weekdays");
   // biceps count still uncontaminated
   let bi = 0;
   for (let d = 1; d <= 7; d++) for (const b of E.sessionFor(1, 1, d, {}, E.DEFAULT_SPEC))
     if (b.type === "accessory" && /Curl/i.test(b.name) && !/Leg Curl|Neck|Wrist/i.test(b.name)) bi += b.sets;
-  eq(bi, 14, "sweep: biceps exactly 14 (v32, Sunday is rest)");
+  eq(bi, 14, "sweep: biceps exactly 14 (reverse +1, Bayesian -1)");
 }
 
 
@@ -388,8 +388,8 @@ console.log("\n── frame requirements ──");
 {
   let ab = 0;
   for (let d = 1; d <= 7; d++) for (const b of E.sessionFor(1, 1, d, {}, E.DEFAULT_SPEC))
-    if (b.type === "accessory" && /Leg Raise|Crunch|Ab Wheel|Woodchop/i.test(b.name)) ab += b.sets;
-  ok(ab >= 7, "abs: 7+ direct trunk sets weekly — muscle is covered, leanness is the variable");
+    if (b.type === "accessory" && /Leg Raise|Crunch|Ab Wheel/i.test(b.name)) ab += b.sets;
+  ok(ab >= 5, "abs: 5+ direct rectus sets weekly — obliques deliberately unloaded (waist), leanness is the variable");
 }
 
 
@@ -488,7 +488,7 @@ console.log("\n── frame requirements ──");
     if (isTri(n) && b.type === "accessory") tri += b.sets;
     if (isHam(n)) { ham += b.sets; hamDays.add(d); }
   }
-  eq(bi, 14, "v32: 14 curl sets/wk (preacher, hammer, incline, Bayesian, reverse) + 4 chin-up sets");
+  eq(bi, 14, "v32: 14 curl sets/wk (preacher, hammer, incline, Bayesian x2, reverse x3) + 4 chin-up sets");
   
   ok(ham >= 10, "hams: 10+ weekly sets");
   ok(hamDays.size >= 3, "hams: 3+ exposures per week");
@@ -569,7 +569,7 @@ console.log("\n── frame requirements ──");
     let hard = 0;
     for (const b of E.sessionFor(1, 1, d, {}, E.DEFAULT_SPEC))
       if (["accessory", "single", "backoff", "main", "ohp", "paused"].includes(b.type) && !/^FILLER/.test(b.cap || "") && !/Pull-Apart/.test(b.name || "")) hard += b.sets;
-    ok(hard <= 22, `v32 day ${d}: ${hard} non-filler sets - room for 3-min rests on compounds`);
+    ok(hard <= (d === 6 ? 24 : 22), `v32 day ${d}: ${hard} non-filler sets - room for 3-min rests on compounds (Sat has no compound, cap 24)`);
   }
   eq([E.ARM_START, E.ARM_GOAL], [13, 15], "arms: 13 -> 15 in, the honest target from his real baseline");
 }
@@ -592,7 +592,7 @@ console.log("\n── frame requirements ──");
 
   ok(count(1, isSideDelt) >= 9, "v32: 9 side-delt sets at 10-15 reps over 3 exposures");
   ok(count(3, isSideDelt) >= 6, "delts: reduced week trims side delts, never deletes them");
-  ok(count(1, isRear) >= 5, "v32: 5 direct rear-delt sets — rows, chins, pull-aparts and face pulls carry the rest");
+  ok(count(1, isRear) >= 4, "v32: 4 direct rear-delt sets (shoulders declared dialed; face pull 3->2 funded a third wrist set)");
   eq(count(1, isFrontRaise), 0, "delts: zero direct front-delt work — pressing already saturates it");
 
   // side-delt volume must not depend on the optional Sunday
@@ -773,6 +773,36 @@ console.log("\n── frame requirements ──");
   // a composed plate should roughly equal the pre-built one
   const comp = N.byId("strip10").kcal + N.byId("rice1").kcal * 1.5 + 50;
   ok(Math.abs(comp - N.byId("stripG").kcal) <= 100, `plates: composed strip plate (${comp}) matches the pre-built (${N.byId("stripG").kcal})`);
+}
+
+
+// ═══ Wave 3 feedback: upper chest, waist, forearms ═══
+{
+  const S = (d, wk) => E.sessionFor(3, wk || 1, d, {}, E.DEFAULT_SPEC);
+  const cnt = (re, ex) => { let n = 0; for (let d = 1; d <= 7; d++) for (const b of S(d)) if (["accessory", "single", "backoff"].includes(b.type) && re.test(b.name || "") && !(ex && ex.test(b.name || ""))) n += b.sets; return n; };
+  // the regex that lied: "Incline DB Curl" is not chest
+  const upper = cnt(/Incline (Bench|DB Press)|Low-to-High/, /Curl/);
+  ok(upper >= 10, `upper chest: ${upper} sets/wk across two press angles + fly (was 7)`);
+  ok(S(6).some((b) => /Incline DB Press/.test(b.name || "")), "upper chest: Saturday carries the second press angle");
+  ok(/30/.test(E.TRACKED.inc.note) && /NOT 45|not 45/i.test(E.TRACKED.inc.note), "upper chest: the incline note fixes the angle at 30");
+  // waist: nothing loads the obliques; the vacuum is a zero-clock filler
+  eq(cnt(/Woodchop|Side Bend|Oblique/i), 0, "waist: zero loaded oblique sets");
+  const vac = S(3).find((b) => /Stomach Vacuum/.test(b.name || ""));
+  ok(vac && /FILLER/.test(vac.cap || "") && vac.w === 0, "waist: vacuum is a bodyweight filler");
+  // forearms: real sets, three exposures, an anchor, and free volume from the pulls
+  const fa = cnt(/Wrist/);
+  ok(fa >= 6, `forearms: ${fa} direct wrist sets (was 4, and they were filler)`);
+  ok(S(4).find((b) => /Wrist Extension/.test(b.name || "")).sets >= 3 && S(5).find((b) => /Wrist Curl/.test(b.name || "")).sets >= 3, "forearms: wrist work is 3 sets each, supersetted into main-lift rests");
+  const rc = S(5).find((b) => /Reverse Cable Curl/.test(b.name || ""));
+  ok(rc && rc.sets === 3 && rc.lastHard && rc.lp, "forearms: reverse curl is a 3-set anchor with lengthened partials");
+  ok(S(6).some((b) => /Farmer Hold/.test(b.name || "")), "forearms: Saturday grip work exists");
+  const days = new Set(); for (let d = 1; d <= 7; d++) for (const b of S(d)) if (/Wrist|Reverse Cable Curl|Hammer Curl|Farmer/.test(b.name || "")) days.add(d);
+  ok(days.size >= 4, `forearms: ${days.size} exposures per week`);
+  ok(/NO STRAPS/.test(E.TRACKED.chin.note) && /NO STRAPS/.test(E.TRACKED.rdl.note), "forearms: straps rule is on the chin-up and RDL");
+  // budgets hold
+  for (let d = 1; d <= 7; d++) { let n = 0; for (const b of S(d)) if (["accessory", "single", "backoff", "main", "ohp", "paused"].includes(b.type)) n += b.sets; ok(n <= 27, `budget: day ${d} = ${n} sets`); }
+  let hard = 0; for (let d = 1; d <= 7; d++) for (const b of S(d)) if (b.lastHard) hard++;
+  ok(hard <= 13, `budget: ${hard} failure sets/wk`);
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

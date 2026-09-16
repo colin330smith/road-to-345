@@ -1739,7 +1739,7 @@ function renderToday() {
   { const stage = NUTRI.primerStage(S.primer.date, dk);
     if (stage === "day") blocks = blocks.map((b) => (b.lastHard || b.lp) ? { ...b, lastHard: false, lp: false } : b);
     if (stage) { const P = NUTRI.PRIMER;
-      inner += `<div class="card single"><div class="eyebrow sig">\ud83d\udc98 ${esc(P.name)} \u2014 ${stage === "eve" ? "tonight" : "today"}</div>
+      inner += `<div class="card single"><div class="eyebrow sig">\ud83d\udd25 ${esc(P.name)} \u2014 ${stage === "eve" ? "tonight" : "today"}</div>
         ${stage === "eve"
           ? `<p class="note"><b style="color:var(--chalk)">${esc(P.eve.title)}.</b> ${esc(P.eve.rule)}</p><ul class="note" style="margin:6px 0 0 18px;padding:0">${P.eve.items.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>`
           : `<p class="note"><b style="color:var(--chalk)">Morning.</b> ${esc(P.day.morning)}</p><p class="note"><b style="color:var(--chalk)">Fuel.</b> ${P.day.fuel.map(esc).join(" \u00b7 ")}</p><p class="note"><b style="color:var(--chalk)">${esc(P.pump.title)}.</b> Open the primer for the session.</p>`}
@@ -1845,9 +1845,9 @@ window.setPrimerDate = (v) => { if (!v) delete S.primer.date; else S.primer.date
 window.primerSheet = () => {
   const P = NUTRI.PRIMER, stage = NUTRI.primerStage(S.primer.date, keyOf(todayUTC()));
   const li = (arr) => `<ul class="note" style="margin:4px 0 0 18px;padding:0">${arr.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>`;
-  openSheet(`<button class="closex" onclick="closeSheet()">×</button><h2>💘 ${esc(P.name)}</h2>
+  openSheet(`<button class="closex" onclick="closeSheet()">×</button><h2>🔥 ${esc(P.name)}</h2>
     <p class="note">${esc(P.why)}</p>
-    <div class="metrics"><label>Date night on <input type="date" value="${esc(S.primer.date || "")}" onchange="setPrimerDate(this.value)"></label>${stage ? `<b style="color:var(--signal)">${stage === "eve" ? "That’s tomorrow — tonight’s steps are on TODAY" : "That’s today — today’s session is capped at RPE 8"}</b>` : S.primer.date ? `<span class="note">Set. The night-before and day-of steps will appear on TODAY.</span>` : ""}</div>
+    <div class="metrics"><label>The day <input type="date" value="${esc(S.primer.date || "")}" onchange="setPrimerDate(this.value)"></label>${stage ? `<b style="color:var(--signal)">${stage === "eve" ? "That’s tomorrow — tonight’s steps are on TODAY" : "That’s today — today’s session is capped at RPE 8"}</b>` : S.primer.date ? `<span class="note">Set. The night-before and day-of steps will appear on TODAY.</span>` : ""}</div>
     <div class="eyebrow" style="margin-top:12px">${esc(P.eve.title)}</div><p class="note">${esc(P.eve.rule)}</p>${li(P.eve.items)}
     <div class="eyebrow" style="margin-top:12px">${esc(P.day.title)} — morning</div><p class="note">${esc(P.day.morning)}</p>
     <div class="eyebrow" style="margin-top:12px">${esc(P.day.title)} — fuel</div>${li(P.day.fuel)}
@@ -2230,7 +2230,7 @@ function renderMore() {
       ${logged.length ? logged.slice(0, 40).map((dk) => { const loc = E.whereIs(Date.parse(dk), S.settings.offsetWeeks || 0); return `<div class="lset"><span>${esc(dk)} · W${loc.wave}·wk${loc.week}·d${loc.day}${S.logs[dk].r ? " · " + esc(S.logs[dk].r) : ""}</span><button class="x" onclick="delDay('${esc(dk)}')">✕</button></div>`; }).join("") : `<p class="note">No sessions logged yet. They'll pile up here.</p>`}</div>
     <div class="card"><div class="eyebrow sig">Weekend specialization</div>
       <p class="note">Sat = frame overload · Sun = optional detail. Focus: <b style="color:var(--chalk)">${esc(E.FRAME_LABEL[S.spec.framePrimary])}</b> + <b style="color:var(--chalk)">${esc(E.DETAIL_LABEL[S.spec.detail])}</b>.</p>
-      <div class="rowbtns"><button class="btn" onclick="specSheet()">⚙ Configure</button><button class="btn ghost" onclick="ledgerSheet()">📒 Ledger</button><button class="btn ghost" onclick="playbookSheet()">🍽 Playbook</button><button class="btn ghost" onclick="primerSheet()">💘 Date primer</button></div></div>
+      <div class="rowbtns"><button class="btn" onclick="specSheet()">⚙ Configure</button><button class="btn ghost" onclick="ledgerSheet()">📒 Ledger</button><button class="btn ghost" onclick="playbookSheet()">🍽 Playbook</button><button class="btn ghost" onclick="primerSheet()">🔥 Ultimate Pump</button></div></div>
     <div class="card"><div class="eyebrow sig">Data</div>
       <p class="note">Logs live in THIS browser only. Export after every test day and keep the file safe.</p>
       <div class="rowbtns"><button class="btn" onclick="exportData()">Export backup</button>

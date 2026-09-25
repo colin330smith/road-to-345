@@ -994,5 +994,38 @@ console.log("\n── frame requirements ──");
   eq(E.withAutoGates({}, ctx({ "bn-single": [{ t: E.sessionDayUTC(2, 3, 2, 0), w: 100, r: 1, rpe: 10 }] }))[3], undefined, "Rule D never overrides the calibration pin");
 }
 
+// ═══ reviewer: a full 19-wave year of one-tap logging ═══
+{
+  // log every prescribed set at the prescribed weight, rate the last set of every block
+  function simulate(rate) {
+    const ix = {}, ctx = { index: ix, offsetWeeks: 0 };
+    let bad = 0, sessions = 0;
+    for (let wv = 1; wv <= 19; wv++) {
+      const gates = E.withAutoGates({}, ctx, wv);
+      for (let wk = 1; wk <= 4; wk++) for (let d = 1; d <= 7; d++) {
+        const t = E.sessionDayUTC(wv, wk, d, 0);
+        const blocks = E.sessionFor(wv, wk, d, gates, E.DEFAULT_SPEC, ctx);
+        sessions++;
+        for (const b of blocks) {
+          if (!["single", "backoff", "paused", "ohp", "accessory"].includes(b.type) || !b.pkey) continue;
+          if (!Number.isFinite(b.w) || b.w < 0) bad++;
+          const n = b.type === "single" ? 1 : b.sets;
+          for (let k = 0; k < n; k++) (ix[b.pkey] = ix[b.pkey] || []).push({ t, w: b.w, r: +String(b.repN ?? b.reps).split(/\D/)[0] || 1, rate: k === n - 1 ? rate(wv, b) : undefined });
+        }
+      }
+    }
+    return { gates: E.withAutoGates({}, ctx), bad, sessions };
+  }
+  const onT = simulate(() => "O");
+  eq(onT.bad, 0, "year sim: every prescribed load is a finite number");
+  eq(onT.sessions, 19 * 28, "year sim: every day of 19 waves builds");
+  const cbOn = E.cbFor(19, onT.gates);
+  ok(cbOn.bn > E.cbFor(19).bn && cbOn.sq > E.cbFor(19).sq, `year sim: on-target singles every wave beat the small-step projection (${cbOn.bn}/${cbOn.sq}/${cbOn.dl})`);
+  const hard = simulate((wv, b) => (b.type === "single" ? "H" : "O"));
+  const cbHard = E.cbFor(19, hard.gates);
+  ok(cbHard.bn < E.cbFor(19).bn, `year sim: hard singles every wave hold the base (${cbHard.bn}/${cbHard.sq}/${cbHard.dl})`);
+  ok(cbHard.bn >= 255 * 0.95 - 5, "year sim: repeats hold, they never spiral down");
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

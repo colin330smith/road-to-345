@@ -147,7 +147,10 @@ ok(E.ohpFor(7)[0][0] >= 105 && E.ohpFor(7)[0][0] <= 125, "ohp w7 sane");
 
 // ── test day ──
 const att = E.testAttempts({ sq: 365, bn: 250, dl: 455 });
-ok(att.sq.a1 < att.sq.a2 && att.sq.a2 === E.R5(365 * 1.04), "attempts ordered");
+ok(att.sq.a1 < att.sq.a2 && att.sq.a2 < att.sq.a3 && att.sq.a3 === E.R5(365 * 1.04), "attempts ordered, 3rd = target");
+eq([att.sq.a1, att.sq.a2, att.sq.a3], [E.R5(380 * 0.91), E.R5(380 * 0.955), 380], "attempts: .91 / .955 / target");
+eq(E.postTestBase(300), 290, "post-test base = 96% of the made max");
+eq(E.postTestBase(E.R5(250 * 1.04)), 250, "a test that hits the projected max returns the same base");
 
 // ── yellow/red ──
 const yb = E.yellowW({ type: "backoff", w: 245, reps: 4, sets: 5 });
@@ -878,6 +881,38 @@ console.log("\n── frame requirements ──");
   ok(/30–60 min/.test(P.pump.title) && /No lockouts/.test(P.pump.rule), "pump: timing window and occlusion cue");
   ok(P.pump.boosters.length >= 3 && /BFR/.test(P.pump.boosters.join(" ")), "pump: boosters listed");
   eq([N.roundLoad(17.4), N.roundLoad(71.25), N.roundLoad(49)], [17.5, 70, 50], "loads: rounding rule");
+}
+
+// ═══ evidence rules (EVIDENCE.md) ═══
+{
+  const fs = require("fs");
+  const src = fs.readFileSync(__dirname + "/engine.js", "utf8") + fs.readFileSync(__dirname + "/app-shell.html", "utf8");
+  ok(!/two-thirds/i.test(src), "evidence: triceps are ~55% of upper-arm muscle, never 'two-thirds'");
+  ok(!/Sato 2021/.test(src), "evidence: no 'preacher beat incline' claim; the regions differ (Kassiano 2025)");
+  ok(!/ZERO tension|zero tension/.test(src), "evidence: DB and cable laterals grew side delts equally (Larsen 2025)");
+  ok(!/long head loaded at length/.test(E.TRACKED.dip.note) && /SHORTENS the long head/.test(E.TRACKED.dip.note), "evidence: the dip shortens the long head");
+  ok(/1\.5x/.test(E.ACC.find((a) => a.id === "ohthu").cap) && /1\.4x/.test(E.ACC.find((a) => a.id === "ohthu").cap), "evidence: Maeo 2023 numbers are long head 1.5x, whole triceps 1.4x");
+  const week = (wv, wk) => { const out = []; for (let d = 1; d <= 7; d++) for (const b of E.sessionFor(wv, wk, d, {}, E.DEFAULT_SPEC)) out.push(b); return out; };
+  const sd = week(4, 1).filter((b) => b.type === "accessory" && isSideDelt(b.name)).reduce((n, b) => n + b.sets, 0);
+  eq(sd, 11, "evidence: 11 side-delt sets a week (lattue 4 + latwed 4 + Saturday 3)");
+  ok(sd <= 16, "side delts stay inside the 16 cap");
+  const rp = E.ACC.find((a) => a.id === "revpec");
+  ok(rp.sets === 3 && /NEUTRAL GRIP/.test(rp.cap), "evidence: reverse pec deck 3 sets, neutral grip");
+  eq(E.ACC.find((a) => a.id === "facepull").steps, [12, 15, 20], "face pull steps 12/15/20");
+  for (const id of ["hammer", "pushdown", "legpress"]) {
+    for (const wk of [1, 2]) {
+      const b = week(4, wk).find((x) => x.pkey === id);
+      ok(b && b.rpe === "8" && !b.lastHard, `evidence: ${id} capped at RPE 8, never a failure set (wk${wk})`);
+    }
+  }
+  ok(/Never to failure/.test(E.ACC.find((a) => a.id === "legpress").cap), "evidence: leg press never to failure");
+  // since: exercises added in Wave 3 start their rung at Wave 3
+  const lp = E.ACC.find((a) => a.id === "lpcalf");
+  eq(E.accState(lp, 3), { w: lp.w, i: 0 }, "since: lpcalf starts Wave 3 on its seed rung");
+  const sat3 = E.sessionFor(3, 1, 6, {}, E.DEFAULT_SPEC);
+  const incdb = sat3.find((b) => /Incline DB Press/.test(b.name || "")), farmer = sat3.find((b) => /Farmer/.test(b.name || ""));
+  ok(incdb.w === 60 && incdb.repN === 8, "since: incline DB starts Wave 3 on its seed rung");
+  ok(farmer.w === 80 && farmer.repN === 30, "since: farmer hold starts Wave 3 on its seed rung");
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

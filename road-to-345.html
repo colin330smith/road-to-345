@@ -370,7 +370,7 @@ const TRACKED = {
     key: "dip", name: "Weighted Dip", start: 35, goal: 100, step: 5, anchor: "bn", added: true,
     top:  [[0.60, 6, "7"], [0.80, 5, "7.5"], [1.00, 4, "8"], null],
     back: [[0.35, 8, 3], [0.45, 7, 3], [0.55, 6, 3], [0, 8, 2]],
-    note: "Ramping to +100. TORSO UPRIGHT, elbows tucked \u2014 lean forward and it turns into a chest exercise. Sink until the shoulder says stop. THE triceps compound: the long head loaded at length, which is where it grows.",
+    note: "Ramping to +100. TORSO UPRIGHT, elbows tucked \u2014 lean forward and it turns into a chest exercise. Sink until the shoulder says stop. THE triceps compound for load. A dip SHORTENS the long head (the shoulder is extended), so it is not the stretch work: the overhead extension is.",
   },
   rdl: {
     key: "rdl", name: "RDL", start: 275, goal: 315, step: 5, anchor: "dl",
@@ -483,28 +483,28 @@ function ohpFor(wave, gates) {
 // second lands on the last step, next wave adds `inc` and resets i.
 const ACC = [
   { id: "hamMon",    name: "Seated Leg Curl",        day: 1, sets: 3, w3: 2, steps: [10, 12, 15],     w: 135,  inc: 10,  db: false, comp: false, anchor: true, lp: true, arch: "legcurl",   cap: "Same rung as Wednesday — one exercise, one progression. Third weekly hamstring exposure" },
-  { id: "legpress",  name: "Leg Press",              day: 1, sets: 3, w3: 2, steps: [10, 12],         w: 450,  inc: 20,  db: false, comp: true,  arch: "legpress",  cap: "Final set: technical failure OK Wks 1–2 only, safeties set" },
+  { id: "legpress",  name: "Leg Press",              day: 1, sets: 3, w3: 2, steps: [10, 12],         w: 450,  inc: 20,  db: false, comp: true,  arch: "legpress",  cap: "Stop 1–2 reps short on every set. Never to failure: a hard compound to failure costs recovery for no extra growth. Safeties set" , rpe8: true },
   { id: "calf",      name: "Standing Calf Raise",    day: 1, sets: 3, w3: 2, steps: [10, 12, 15],     w: 220,  inc: 10,  db: false, comp: false, anchor: true, lp: true, arch: "calf",      cap: "Pause the stretch; no bouncing" },
   { id: "hlr",       name: "Hanging Leg Raise",      day: 1, sets: 3, w3: 3, steps: [10, 12, 15],     w: 0,    inc: 0,   db: false, comp: false, anchor: true, arch: "hlr",       cap: "Once you own the top of the rep range, hold a dumbbell between the feet — bodyweight alone stops progressing" },
   { id: "lowhigh",   name: "Low-to-High Cable Fly",  day: 1, sets: 4, w3: 3, steps: [12, 15, 20],     w: 30,   inc: 5,   db: false, comp: false, anchor: true, arch: "rearfly",   cap: "Upper-chest shelf — sweep up and in, squeeze the top" },
   { id: "shrug",     name: "Machine / DB Shrug",     day: 1, sets: 1, w3: 1, steps: [10, 12, 15],     w: 160,  inc: 10,  db: false, comp: false, arch: "shrug",     cap: "Hold the top 1s, no rolling. 1 quality set + your deadlifts = developed, not overdeveloped" },
   { id: "rowtue",    name: "Chest-Supported DB Row", day: 2, sets: 4, w3: 3, steps: [8, 10, 12],      w: 60,   inc: 5,   db: true,  comp: true,  arch: "row",       cap: "Strict, chest stays on pad" },
-  { id: "lattue",    name: "Leaning DB Lateral Raise", day: 2, sets: 3, w3: 3, steps: [10, 12, 15],   w: 20,   inc: 2.5, db: true,  comp: false, anchor: true, lp: true, arch: "lateral",   cap: "LEAN AWAY from a rack, holding it one-handed — a flat DB raise has ZERO tension at the stretched bottom. 10–15 reps, heavier: high-rep laterals are all fatigue, no extra growth" },
-  { id: "revpec",    name: "Reverse Pec Deck",       day: 2, sets: 2, w3: 2, steps: [12, 15],         w: 100,  inc: 10,  db: false, comp: false, arch: "rearfly",   cap: "Light + strict beats heavy + sloppy. Rear delts already get every row, chin and face pull — 2 sets is the dose" },
+  { id: "lattue",    name: "Leaning DB Lateral Raise", day: 2, sets: 4, w3: 3, steps: [10, 12, 15],   w: 20,   inc: 2.5, db: true,  comp: false, anchor: true, lp: true, arch: "lateral",   cap: "LEAN AWAY from a rack, holding it one-handed. Dumbbell and cable laterals grew the side delt equally head to head (Larsen 2025): the lean is for feel, not magic. 10–15 reps, strict" },
+  { id: "revpec",    name: "Reverse Pec Deck",       day: 2, sets: 3, w3: 2, steps: [12, 15],         w: 100,  inc: 10,  db: false, comp: false, arch: "rearfly",   cap: "NEUTRAL GRIP (palms facing), arms long, sweep out. Light + strict beats heavy + sloppy. Rows and chins hit the rear delt too, but a dedicated fly is what isolates it" },
   { id: "pullapart", name: "Band Pull-Apart",        day: 2, sets: 2, w3: 2, steps: [20, 25, 30],     w: 0,    inc: 0,   db: false, comp: false, arch: "rearfly",   cap: "PRIMER \u2014 do these BEFORE pressing. 60 seconds, opens the chest, sets the shoulders back" },
-  { id: "lpcalf",    name: "Leg Press Calf Raise",   day: 5, sets: 3, w3: 2, steps: [10, 12, 15],     w: 250,  inc: 20,  db: false, comp: false, anchor: true, lp: true, arch: "calf",      cap: "STRAIGHT KNEE \u2014 bent-knee calf work grows the soleus only; the gastrocnemius is the calf you can see. Two-second pause in the stretch, no bouncing. Final set: after the last full rep, 3\u20135 partials in the bottom half" },
+  { id: "lpcalf",    name: "Leg Press Calf Raise",   day: 5, sets: 3, w3: 2, steps: [10, 12, 15],     w: 250,  inc: 20,  db: false, comp: false, anchor: true, lp: true, since: 3, arch: "calf",      cap: "STRAIGHT KNEE \u2014 bent-knee calf work grows the soleus only; the gastrocnemius is the calf you can see. Two-second pause in the stretch, no bouncing. Final set: after the last full rep, 3\u20135 partials in the bottom half" },
   { id: "neckcurl",  name: "Neck Curl",              day: 2, sets: 2, w3: 2, steps: [12, 15, 20],     w: 5,    inc: 2.5, db: false, comp: false, arch: "neckflex",  cap: "FILLER — superset into main-lift rests, costs no clock. Lying face-up, plate on forehead with a towel. SLOW" },
   { id: "seatcurl3", name: "Seated Leg Curl",        day: 3, sets: 4, w3: 3, steps: [10, 12, 15],     w: 135,  inc: 10,  db: false, comp: false, anchor: true, lp: true, arch: "legcurl",   cap: "HAMSTRING PRIORITY. Seated beats lying — hip flexed puts the hamstring at length (Maeo 2021: +14% vs +9%)" },
-  { id: "preacher",  name: "Cable Preacher Curl",    day: 3, sets: 3, w3: 3, steps: [8, 10, 12],      w: 50,   inc: 5,   db: false, comp: false, anchor: true, lp: true, arch: "curl",      cap: "THE ANCHOR CURL — first, fresh. Head-to-head (Sato 2021) the preacher beat the incline curl for biceps growth. Elbows planted, full stretch at the bottom, no leaning back" },
-  { id: "hammer",    name: "Hammer Curl",            day: 3, sets: 3, w3: 2, steps: [10, 12, 15],     w: 35,   inc: 5,   db: true,  comp: false, arch: "curl",      cap: "BRACHIALIS — sits under the biceps and pushes it up. Neutral grip, slow negative. Stop at RPE 8: the preacher took the failure set" },
+  { id: "preacher",  name: "Cable Preacher Curl",    day: 3, sets: 3, w3: 3, steps: [8, 10, 12],      w: 50,   inc: 5,   db: false, comp: false, anchor: true, lp: true, arch: "curl",      cap: "THE ANCHOR CURL — first, fresh. Preacher and incline curls grow different regions of the biceps (Kassiano 2025), which is why Saturday has the incline. Elbows planted, full stretch at the bottom, no leaning back" },
+  { id: "hammer",    name: "Hammer Curl",            day: 3, sets: 3, w3: 2, steps: [10, 12, 15],     w: 35,   inc: 5,   db: true,  comp: false, arch: "curl",      cap: "BRACHIALIS — sits under the biceps and pushes it up. Neutral grip, slow negative. Stop at RPE 8: the preacher took the failure set", rpe8: true },
   { id: "legext",    name: "Leg Extension",          day: 3, sets: 2, w3: 1, steps: [12, 15],         w: 125,  inc: 10,  db: false, comp: false, anchor: true, lp: true, arch: "legext",    cap: "Lean back — the rectus femoris only grows when the hip is open" },
-  { id: "latwed",    name: "Cable Lateral Raise",    day: 3, sets: 3, w3: 2, steps: [10, 12, 15],     w: 20,   inc: 2.5, db: false, comp: false, anchor: true, lp: true, arch: "lateral",   cap: "Cable at HAND HEIGHT, not the floor — tension peaks where cable and arm make 90°. 10–15 reps, heavier than before" },
+  { id: "latwed",    name: "Cable Lateral Raise",    day: 3, sets: 4, w3: 3, steps: [10, 12, 15],     w: 20,   inc: 2.5, db: false, comp: false, anchor: true, lp: true, arch: "lateral",   cap: "Cable at HAND HEIGHT, not the floor — tension peaks where cable and arm make 90°. 10–15 reps, heavier than before" },
   { id: "vacuum",    name: "Stomach Vacuum (seconds)", day: 3, sets: 2, w3: 2, steps: [30, 45, 60],     w: 0,    inc: 0,   db: false, comp: false, arch: "hlr",       cap: "FILLER \u2014 superset into rests, costs no clock. WAIST: exhale fully, pull the navel to the spine, hold. Trains the transverse abdominis to sit tighter at the same body fat. Never load the obliques \u2014 a thicker oblique is a wider waist" },
   { id: "latthu",    name: "Lateral Raise (Thu)",    day: 4, sets: 4, w3: 3, steps: [12, 15, 18, 20], w: 17.5,   inc: 2.5, db: true,  comp: false, arch: "lateral",   cap: "4 sets — the big side-delt day" },
   { id: "rdf",       name: "Rear-Delt Fly",          day: 4, sets: 3, w3: 3, steps: [15, 20, 25],     w: 17.5, inc: 2.5, db: true,  comp: false, arch: "rearfly",   cap: "Think 'throw, don't lift'" },
-  { id: "pushdown",  name: "Rope Pushdown",          day: 4, sets: 2, w3: 2, steps: [10, 12, 15],     w: 90,   inc: 5,   db: false, comp: false, arch: "pushdown",  cap: "Second triceps movement — the overhead extension took the failure set. Stop at RPE 8" },
-  { id: "ohthu",     name: "Overhead Cable Extension", day: 4, sets: 3, w3: 2, steps: [10, 12, 15],   w: 70,   inc: 5,   db: false, comp: false, anchor: true, lp: true, arch: "ohtri",     cap: "LONG HEAD — two-thirds of your arm. Overhead beats a pushdown roughly 2:1 for this head (Maeo 2023). Elbows in, full stretch behind the head" },
-  { id: "facepull",  name: "Face Pull",              day: 4, sets: 2, w3: 2, steps: [15, 20, 25],     w: 55,   inc: 5,   db: false, comp: false, arch: "rearfly",   cap: "Rear delts + posture. Pull to the forehead, elbows high" },
+  { id: "pushdown",  name: "Rope Pushdown",          day: 4, sets: 2, w3: 2, steps: [10, 12, 15],     w: 90,   inc: 5,   db: false, comp: false, arch: "pushdown",  cap: "Second triceps movement — the overhead extension took the failure set. Stop at RPE 8", rpe8: true },
+  { id: "ohthu",     name: "Overhead Cable Extension", day: 4, sets: 3, w3: 2, steps: [10, 12, 15],   w: 70,   inc: 5,   db: false, comp: false, anchor: true, lp: true, arch: "ohtri",     cap: "LONG HEAD at length. Triceps are ~55% of upper-arm muscle and the long head is the biggest head. Overhead grew it ~1.5x and the whole triceps ~1.4x more than pushdowns (Maeo 2023). Elbows in, full stretch behind the head" },
+  { id: "facepull",  name: "Face Pull",              day: 4, sets: 2, w3: 2, steps: [12, 15, 20],     w: 55,   inc: 5,   db: false, comp: false, arch: "rearfly",   cap: "Rear delts + posture. Pull to the forehead, elbows high" },
   { id: "proneY",    name: "Prone Y-Raise",          day: 4, sets: 2, w3: 2, steps: [12, 15, 20],     w: 5,    inc: 2.5, db: true,  comp: false, arch: "proneY",    cap: "FILLER — superset into main-lift rests, costs no clock. LOWER traps — the muscle that holds your shoulders back. Thumbs up, arms at 45°, tiny weight" },
   { id: "wrist",     name: "Wrist Extension",        day: 4, sets: 3, w3: 2, steps: [15, 20, 25],     w: 12.5, inc: 2.5, db: true,  comp: false, arch: "wrist",     cap: "FILLER — superset into main-lift rests, costs no clock. Elbow-health insurance — never skip" },
   { id: "neckext",   name: "Neck Extension",         day: 4, sets: 2, w3: 2, steps: [12, 15, 20],     w: 10,   inc: 2.5, db: false, comp: false, arch: "neckext",   cap: "FILLER — superset into main-lift rests, costs no clock. Prone, plate on the back of the head. Slow, no jerking, NEVER through pain" },
@@ -514,10 +514,12 @@ const ACC = [
 ];
 
 // state of an accessory at a given wave (1-indexed): {w, i} where reps = (steps[i], steps[i+1])
+// `since`: the wave an exercise entered the plan. Waves before it never ran it, so
+// they must not advance its rung (lpcalf, incdb and farmer arrived in Wave 3).
 function accState(a, wave) {
   let w = a.w, i = a.i0 || 0;
   const last = a.steps.length - 1;
-  for (let k = 1; k < wave; k++) {
+  for (let k = Math.max(1, a.since || 1); k < wave; k++) {
     if (i + 1 >= last) { // hit the top this wave → bump next wave
       if (a.inc > 0) w = a.db ? R25(w + a.inc) : w + a.inc;
       i = 0;
@@ -540,7 +542,7 @@ function accStateLogged(def, wave, ctx) {
   if (!hist || !hist.length) { const st = accState(def, wave); return { ...st, prog: null }; }
   let w = def.w, i = def.i0 || 0;
   const last = def.steps.length - 1;
-  for (let k = 1; k < wave; k++) {
+  for (let k = Math.max(1, def.since || 1); k < wave; k++) {
     const atTop = i + 1 >= last;
     const topReq = def.steps[Math.min(i + 1, last)];
     const from = waveStartUTC(k, ctx.offsetWeeks || 0), to = from + 28 * MS_DAY;
@@ -578,7 +580,7 @@ function accStateLogged(def, wave, ctx) {
 
 // prescription for accessory a at wave/week (week 1–4), with cycle trims
 function accFor(a, wave, week) {
-  const st = accStateLogged({ w: a.w, steps: a.steps, inc: a.inc, db: a.db, i0: a.i0, pkey: a.id }, wave, HISTCTX);
+  const st = accStateLogged({ w: a.w, steps: a.steps, inc: a.inc, db: a.db, i0: a.i0, pkey: a.id, since: a.since }, wave, HISTCTX);
   const { w, i } = st;
   const cyc = cycleOf(wave);
   const last = a.steps.length - 1;
@@ -602,7 +604,7 @@ function accFor(a, wave, week) {
   // v32: ONE failure set per muscle per day. Only the anchor movement for a muscle
   // earns it; everything after stops at RPE 8. ~35 failure sets/wk was the fatigue leak.
   const lastHard = !!a.anchor && !a.comp && week <= 2 && cyc <= 4;
-  return { w, reps, sets, rpe: week === 3 ? "8" : "8–9", top: topSet, prog: st.prog, lastHard };
+  return { w, reps, sets, rpe: week === 3 || a.rpe8 ? "8" : "8–9", top: topSet, prog: st.prog, lastHard };
 }
 
 // ── weekend weak-point specialization (Sat = frame overload, Sun = optional detail) ──
@@ -618,8 +620,8 @@ const DEFAULT_SPEC = { framePrimary: "arms", frameSecondary: "latwidth", detail:
 // ex helper — spec exercises run the SAME double-progression machine as weekday
 // accessories: `steps` are rep waypoints, weight climbs by `inc` once the top of the
 // range is cleared. `wv` (wave) is threaded in, so Wave 19 is not Wave 1.
-function sx(name, seed, steps, sets, rpe, arch, moveId, db, cap, inc, wv) {
-  const st = accStateLogged({ w: seed, steps, inc: inc == null ? 5 : inc, db: !!db, i0: 0, pkey: pkeyOf(name) }, wv || 1, HISTCTX);
+function sx(name, seed, steps, sets, rpe, arch, moveId, db, cap, inc, wv, since) {
+  const st = accStateLogged({ w: seed, steps, inc: inc == null ? 5 : inc, db: !!db, i0: 0, pkey: pkeyOf(name), since }, wv || 1, HISTCTX);
   const last = steps.length - 1;
   const lo = steps[st.i], hi = steps[Math.min(st.i + 1, last)];
   return {
@@ -745,8 +747,8 @@ function saturdaySession(wave, week, spec) {
   const frame = FRAME_MODULE[spec.framePrimary](wave);
   frame.forEach((ex) => blocks.push({ ...ex, sets: reduced ? 2 : ex.sets, primary: true }));
   // declared weak points (Wave 3 feedback): a second upper-chest press angle and real grip work
-  blocks.push(sx("Incline DB Press (30\u00b0)", 60, [8, 10, 12], reduced ? 2 : 3, "8", "incpress", "incdb", true, "UPPER CHEST \u2014 dumbbells go deeper than the bar, so the clavicular pec is loaded at length. 30\u00b0 bench, elbows ~45\u00b0, stop the descent when the stretch peaks", 5, wave));
-  blocks.push(sx("Heavy Farmer Hold (seconds)", 80, [30, 40, 50], 2, "8\u20139", "shrug", "farmer", true, "FOREARMS \u2014 grip is the forearm's compound. Heaviest dumbbells you can hold for the time, shoulders back, no straps ever", 10, wave));
+  blocks.push(sx("Incline DB Press (30\u00b0)", 60, [8, 10, 12], reduced ? 2 : 3, "8", "incpress", "incdb", true, "UPPER CHEST \u2014 dumbbells go deeper than the bar, so the clavicular pec is loaded at length. 30\u00b0 bench, elbows ~45\u00b0, stop the descent when the stretch peaks", 5, wave, 3));
+  blocks.push(sx("Heavy Farmer Hold (seconds)", 80, [30, 40, 50], 2, "8\u20139", "shrug", "farmer", true, "FOREARMS \u2014 grip is the forearm's compound. Heaviest dumbbells you can hold for the time, shoulders back, no straps ever", 10, wave, 3));
   const triSpec = spec.detail === "triceps";
   if (!reduced) {
     // the "omit secondary on triceps weeks" rule assumes a TORSO primary; when arms IS
@@ -950,6 +952,9 @@ function peakSession(wave, week, day, cb, gates) {
   return blocks;
 }
 
+// Attempts off the target max: opener ~91% (a weight made on the worst day),
+// second ~95.5%, third = the target. Default target = base x 1.04 (a base is ~96%
+// of a true max, the inverse of postTestBase). Judgment call; see EVIDENCE.md.
 function testAttempts(cb, entered = {}) {
   const out = {};
   for (const L of LIFTS) {
@@ -957,12 +962,16 @@ function testAttempts(cb, entered = {}) {
     out[L] = {
       max: tm,
       a1: R5(tm * 0.91),
-      a2: tm,
-      a3note: L === "bn" ? "+2.5–5 only if 2nd was clean and ≤RPE 9" : "+5–10 only if 2nd was clean and ≤RPE 9",
+      a2: R5(tm * 0.955),
+      a3: tm,
+      a3note: "only if the 2nd moved well: take the target, or adjust ±" + (L === "bn" ? "2.5–5" : "5–10"),
     };
   }
   return out;
 }
+// the next wave's base after a test: 96% of the best made lift, so the next
+// build starts from submaximal work instead of from a peaked max
+const postTestBase = (max) => R5(max * 0.96);
 
 // yellow transform: applied by UI — single cap RPE 7, back-off −5% (or −1 set), 2 sets/accessory, skip cardio
 function yellowW(block) {
@@ -985,7 +994,7 @@ function redSession(wave, day, gates) {
   return blocks;
 }
 
-const ENGINE = { CALIBRATION, PROJ_DEFAULT, cbChain, etaWave, explicitCB, TRACKED, trackedCB, trackedFor, ARM_START, ARM_GOAL, clearedInWave, inclineCB, inclineFor, INCLINE_START, INCLINE_GOAL, pkeyOf, accStateLogged, R5, R25, START, LIFTS, LIFT_NAME, gateDelta, cbFor, cycleOf, macroOf, CYCLE_NAME, waveStartUTC, whereIs, NOTES, mainTables, ohpFor, ACC, accState, accFor, sessionFor, testAttempts, yellowW, redSession, WAVE1_MONDAY, MS_DAY,
+const ENGINE = { postTestBase, CALIBRATION, PROJ_DEFAULT, cbChain, etaWave, explicitCB, TRACKED, trackedCB, trackedFor, ARM_START, ARM_GOAL, clearedInWave, inclineCB, inclineFor, INCLINE_START, INCLINE_GOAL, pkeyOf, accStateLogged, R5, R25, START, LIFTS, LIFT_NAME, gateDelta, cbFor, cycleOf, macroOf, CYCLE_NAME, waveStartUTC, whereIs, NOTES, mainTables, ohpFor, ACC, accState, accFor, sessionFor, testAttempts, yellowW, redSession, WAVE1_MONDAY, MS_DAY,
   FRAME_OPTS, FRAME_LABEL, DETAIL_OPTS, DETAIL_LABEL, DEFAULT_SPEC, isDefaultSpec, saturdaySession, sundaySession, sundayPlanned };
 if (typeof module !== "undefined") module.exports = ENGINE;
 
@@ -1058,7 +1067,7 @@ const MOVES = {
     cap:"RPE 7–8. Never to failure. Only 2 sets in Week 3."},
   legpress:{name:"Leg Press",grp:"Legs",arch:"legpress",yt:"leg press form",
     cues:["Set the safety stops BEFORE loading","Full controlled range, knees track toes","Lower slow, drive without slamming the sled"],
-    cap:"Final set → controlled technical failure, Weeks 1–2 only."},
+    cap:"Stop 1–2 reps short on every set. Never to failure."},
   seatcurl:{name:"Seated Leg Curl",grp:"Legs",arch:"legcurl",yt:"seated leg curl",
     cues:["Back stays pinned to the pad","3-sec negative earns the next weight jump"],cap:"Final set RPE 9–10 OK in Weeks 1–2."},
   lyingcurl:{name:"Lying Leg Curl",grp:"Legs",arch:"legcurl",yt:"lying leg curl form",
@@ -1094,15 +1103,15 @@ const MOVES = {
   rdf:{name:"Rear-Delt Fly",grp:"Arms & Delts",arch:"rearfly",yt:"rear delt fly dumbbell",
     cues:["Arms long, sweep OUT not back","Zero momentum, 1-sec squeeze"],cap:"Light and strict beats heavy and sloppy."},
   revpec:{name:"Reverse Pec Deck",grp:"Arms & Delts",arch:"rearfly",yt:"reverse pec deck",
-    cues:["Arms long, sweep out","Squeeze a second at the back"],cap:"15–25 rep range — pump work."},
+    cues:["Neutral grip (palms facing each other), arms long","Sweep OUT, not back; squeeze a second at the back","Light and strict: the rear delt is small"],cap:"12–15 reps, 3 sets. Final reps hard, never sloppy."},
   preacher:{name:"Cable Preacher Curl",grp:"Arms & Delts",arch:"curl",yt:"cable preacher curl form",
-    cues:["THE anchor curl — first and fresh on Wednesday","Elbows planted, full stretch at the bottom, no leaning back","Beat the incline curl head-to-head for biceps growth (Sato 2021)","Final set: after the last full rep, 3–5 partials in the bottom half"],cap:"Anchor: the one biceps set that goes to failure that day. 8–12 reps."},
+    cues:["THE anchor curl — first and fresh on Wednesday","Elbows planted, full stretch at the bottom, no leaning back","Preacher and incline curls grow different regions of the biceps (Kassiano 2025): both belong in the week","Final set: after the last full rep, 3–5 partials in the bottom half"],cap:"Anchor: the one biceps set that goes to failure that day. 8–12 reps."},
   seatcurl3:{name:"Seated Leg Curl",grp:"Legs",arch:"legcurl",yt:"seated leg curl form",
     cues:["HAMSTRING PRIORITY — seated beats lying (Maeo 2021: +14% vs +9%)","Hips flexed puts the hamstring at length; lean forward slightly","Full stretch at the top, squeeze at the bottom, 2-second eccentric","Final set: after the last full rep, 3–5 partials in the stretched half"],cap:"Anchor on Mon and Wed. One progression, one rung — log both under the same key."},
   hamMon:{name:"Seated Leg Curl",grp:"Legs",arch:"legcurl",yt:"seated leg curl form",
     cues:["Same movement as Wednesday, same rung","Lean forward slightly to lengthen the hamstring","2-second eccentric, no slamming the stack","Final set: after the last full rep, 3–5 partials in the stretched half"],cap:"Monday exposure. Hamstrings before the leg press — the priority muscle gets the fresh sets."},
   ohthu:{name:"Overhead Cable Extension",grp:"Arms & Delts",arch:"ohtri",yt:"overhead cable tricep extension long head",
-    cues:["LONG HEAD — two-thirds of your arm; only overhead work loads it at length","Elbows in and pointed up, hands behind the head at the bottom","Overhead beats a pushdown roughly 2:1 for this head (Maeo 2023)","Final set: after the last full rep, 3–5 partials in the stretched half"],cap:"Thursday anchor. The pushdown after it stops at RPE 8."},
+    cues:["LONG HEAD — the biggest triceps head; overhead work loads it at length","Elbows in and pointed up, hands behind the head at the bottom","Overhead grew the long head ~1.5x and the whole triceps ~1.4x more than pushdowns (Maeo 2023)","Final set: after the last full rep, 3–5 partials in the stretched half"],cap:"Thursday anchor. The pushdown after it stops at RPE 8."},
   proneY:{name:"Prone Y-Raise",grp:"Posture",arch:"rearfly",yt:"prone y raise lower traps",
     cues:["Face down on an incline bench, thumbs up, arms at 45°","LOWER traps — the muscle that actually holds your shoulders back","Tiny weight; if you need to swing, it is too heavy","Filler: superset into a main-lift rest, costs no clock"],cap:"Posture insurance. Never the limiter of a session."},
   incdb:{name:"Incline DB Press (30°)",grp:"Main Lifts",arch:"incpress",yt:"incline dumbbell press 30 degrees upper chest",
@@ -1116,21 +1125,21 @@ const MOVES = {
   ezcurl:{name:"EZ-Bar Curl",grp:"Arms & Delts",arch:"curl",yt:"ez bar curl form",
     cues:["Elbows pinned to your sides","Full extension every rep — halves don't count"],cap:"RPE 8–9; first to drop if elbows flare (pain ladder)."},
   hammer:{name:"Hammer Curl",grp:"Arms & Delts",arch:"curl",yt:"hammer curl",
-    cues:["Neutral grip, slow negative","The elbow-friendly curl"],cap:"RPE 8–9."},
+    cues:["Neutral grip, slow negative","The elbow-friendly curl"],cap:"Stop at RPE 8: the preacher took the failure set."},
   cablecurl:{name:"Cable Curl",grp:"Arms & Delts",arch:"curl",yt:"cable curl form",
     cues:["Constant tension — no resting at the bottom","Strict; step back from the stack"],cap:"RPE 8–9."},
   pushdown:{name:"Rope Pushdown",grp:"Arms & Delts",arch:"pushdown",yt:"rope pushdown form",
-    cues:["Elbows locked to sides","Spread the rope at the bottom"],cap:"May approach RPE 9 only when elbows feel normal."},
+    cues:["Elbows locked to sides","Spread the rope at the bottom"],cap:"Stop at RPE 8: the overhead extension took the failure set."},
   ohrope:{name:"Overhead Rope Extension",grp:"Arms & Delts",arch:"ohtri",yt:"overhead rope tricep extension",
     cues:["Elbows by the ears — only forearms move","Full stretch behind the head"],cap:"High on the elbow pain ladder — drop early if cranky."},
   crossbody:{name:"Cross-Body Extension",grp:"Arms & Delts",arch:"ohtri",yt:"cross body cable tricep extension",
     cues:["Upper arm pinned across the body — pure elbow","Match reps on both arms"],cap:"RPE 9 OK when elbows are quiet."},
   dip:{name:"Weighted Dip",grp:"Main Lifts",arch:"pushdown",yt:"weighted dip form triceps",
-    cues:["Torso UPRIGHT, elbows tucked in — lean forward and it becomes a chest exercise","Sink until the shoulder says stop — depth is where the long head loads","Belt or dumbbell between the feet","THE triceps compound. Triceps are two-thirds of your arm"],cap:"Tracked to +100. Top set to the week's RPE cap, back-offs 7–8. Stop the set if the front of the shoulder pinches."},
+    cues:["Torso UPRIGHT, elbows tucked in — lean forward and it becomes a chest exercise","Sink until the shoulder says stop. The dip shortens the long head; the overhead extension is the stretch work","Belt or dumbbell between the feet","THE triceps compound for load. Triceps are ~55% of upper-arm muscle"],cap:"Tracked to +100. Top set to the week's RPE cap, back-offs 7–8. Stop the set if the front of the shoulder pinches."},
   xbody:{name:"Cross-Body Cable Y-Raise",grp:"Shoulders",arch:"lateral",yt:"cross body cable y raise side delt",
     cues:["Cable low, stand side-on, reach ACROSS your body to start","That cross-body start is the deepest stretch the side delt can get","Raise out and slightly up, like the top half of a Y","Light. This is the width muscle, not a strength lift"],cap:"THE side-delt builder. Slow, no swing, 15–25 reps."},
   leanlat:{name:"Leaning DB Lateral Raise",grp:"Shoulders",arch:"lateral",yt:"leaning dumbbell lateral raise",
-    cues:["Hold a rack one-handed and lean AWAY from it","A flat DB raise has zero tension at the bottom where the delt is stretched","Leaning shifts the whole resistance curve into that stretch","Elbow leads, pinky slightly high, no shrugging"],cap:"Per arm. Final set may reach RPE 9–10 in Weeks 1–2."},
+    cues:["Hold a rack one-handed and lean AWAY from it","Leaning shifts the resistance curve toward the stretched bottom","Dumbbell and cable laterals grew the side delt equally (Larsen 2025): pick the one you can do strictly","Elbow leads, pinky slightly high, no shrugging"],cap:"Per arm. Final set may reach RPE 9–10 in Weeks 1–2."},
   cablelat:{name:"Cable Lateral Raise",grp:"Shoulders",arch:"lateral",yt:"cable lateral raise hand height",
     cues:["Set the pulley at HAND HEIGHT, not the floor","Tension peaks where the cable and your arm make 90°","A high pulley puts that peak in the stretched half of the rep","Strict — the load is small on purpose"],cap:"Higher-rep day: chase the burn, not the load."},
   chin:{name:"Weighted Chin-Up",grp:"Main Lifts",arch:"pulldown",yt:"weighted chin up form",
@@ -1827,7 +1836,7 @@ function renderToday() {
     if (b.type === "note") { inner += `<div class="card" style="padding:9px 12px"><p class="note">${esc(b.name)} — ${esc(b.note || "")}</p></div>`; return; }
     if (b.type === "test") {
       inner += `<div class="card single"><div class="eyebrow sig">${esc(b.name)}</div><p class="note">${esc(b.note || "")}</p>`;
-      if (b.attempts) inner += `<div class="tablewrap"><table><tr><th></th><th>Opener</th><th>2nd</th><th>3rd</th></tr>${E.LIFTS.map((L) => `<tr><td>${E.LIFT_NAME[L]}</td><td>${b.attempts[L].a1}</td><td>${b.attempts[L].a2}</td><td class="note">${esc(b.attempts[L].a3note)}</td></tr>`).join("")}</table></div>`;
+      if (b.attempts) inner += `<div class="tablewrap"><table><tr><th></th><th>Opener</th><th>2nd</th><th>3rd</th></tr>${E.LIFTS.map((L) => `<tr><td>${E.LIFT_NAME[L]}</td><td>${b.attempts[L].a1}</td><td>${b.attempts[L].a2}</td><td>${b.attempts[L].a3} <small class="note">${esc(b.attempts[L].a3note)}</small></td></tr>`).join("")}</table></div>`;
       inner += `</div>`; return;
     }
     const isSingle = b.type === "single";
@@ -1974,7 +1983,7 @@ function renderRoad() {
         const now = mk.length ? S.meas[mk[mk.length - 1]].ar : E.ARM_START;
         const p = Math.max(0, Math.min(100, Math.round(((now - E.ARM_START) / (E.ARM_GOAL - E.ARM_START)) * 100)));
         return `<div class="srow"><span>Arms</span><div class="sbar"><i style="width:${p}%"></i></div><span class="sval">${now}" / ${E.ARM_GOAL}"</span></div>`; })()}
-  </div><p class="note">Lifts are cycle bases, not tested maxes. Incline, chin-up, dip and RDL are tracked the same way the big three are — arms and hamstrings are goals, not accessories. Chin-up drives the biceps side, dip the triceps side; triceps are two-thirds of arm circumference, so they carry the larger share. Bodyweight only counts if the waist stays flat while it climbs.</p>
+  </div><p class="note">Lifts are cycle bases, not tested maxes. Incline, chin-up, dip and RDL are tracked the same way the big three are — arms and hamstrings are goals, not accessories. Chin-up drives the biceps side, dip the triceps side; triceps are ~55% of upper-arm muscle, so they carry the larger share. Bodyweight only counts if the waist stays flat while it climbs.</p>
     ${(() => { const p2 = NUTRI.PHASES[1]; return `<div class="srow" style="border-top:1px solid var(--steel);padding-top:8px;margin-top:4px"><span>Phase 2</span><span></span><span class="sval">${esc(p2.short)}</span></div>
     <p class="note" style="margin-top:2px"><b style="color:var(--chalk)">${esc(p2.name)}</b> \u2014 ${esc(p2.by)}. ${esc(p2.gate)} Same lean mass, ${p2.weeks} weeks, floor ${p2.floorBF}%. The Calvin Klein Wahlberg with 25 more pounds of muscle than the ad.</p>`; })()}</div>
   <p class="note">19 waves · 4 macros. Wave 3 runs from your measured bases. Projections re-compute from your gate results; a future gate you have not set assumes the small step (+2.5 bench, +5 squat and deadlift), the honest pace past the novice years.</p>`;
@@ -2027,9 +2036,9 @@ window.waveSheet = (w) => {
     const att = E.testAttempts(cb, tm);
     h += `<p class="capnote warn">Peak wave: Wk1 single@8 + 3×3 · Wk2 single@8–8.5 + 3×2 · Wk3 opener practice · Wk4 taper + TEST Friday.</p>
       <div class="eyebrow" style="margin-top:10px">Test-day attempts</div>
-      <div class="tablewrap"><table><tr><th>Lift</th><th>Max (edit)</th><th>Opener</th><th>2nd</th></tr>
-      ${E.LIFTS.map((L) => `<tr><td>${E.LIFT_NAME[L]}</td><td><input type="number" step="5" value="${tm[L] || att[L].max}" onchange="setTM(${w},'${L}',this.value)"></td><td>${att[L].a1}</td><td>${att[L].a2}</td></tr>`).join("")}</table></div>
-      <p class="note">3rd: bench +2.5–5 · squat/dead +5–10, only if the 2nd was clean and ≤RPE 9. Entering a max here sets the next wave's CB from it.</p>`;
+      <div class="tablewrap"><table><tr><th>Lift</th><th>Target / made (edit)</th><th>Opener</th><th>2nd</th><th>3rd</th></tr>
+      ${E.LIFTS.map((L) => `<tr><td>${E.LIFT_NAME[L]}</td><td><input type="number" step="5" value="${tm[L] || att[L].max}" onchange="setTM(${w},'${L}',this.value)"></td><td>${att[L].a1}</td><td>${att[L].a2}</td><td>${att[L].a3}</td></tr>`).join("")}</table></div>
+      <p class="note">Opener ~91%, 2nd ~95.5%, 3rd = target. After the test, enter your best MADE lift: the next wave's base becomes 96% of it.</p>`;
   }
   if (w < 19) h += gateEditor(w + 1);
   openSheet(h);
@@ -2047,7 +2056,7 @@ window.setTM = (w, L, v) => {
   if (!Number.isFinite(+v) || +v <= 0) return;
   S.testMax[w] = S.testMax[w] || {}; S.testMax[w][L] = +v;
   S.gates[w + 1] = S.gates[w + 1] || {}; S.gates[w + 1].cb = S.gates[w + 1].cb || {};
-  S.gates[w + 1].cb[L] = E.R5(+v); save(); waveSheet(w);
+  S.gates[w + 1].cb[L] = E.postTestBase(+v); save(); waveSheet(w);
 };
 window.gateSheet = (w) => waveSheet(w - 1);
 

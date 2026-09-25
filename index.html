@@ -510,9 +510,9 @@ const ACC = [
   { id: "lpcalf",    name: "Leg Press Calf Raise",   day: 5, sets: 3, w3: 2, steps: [10, 12, 15],     w: 250,  inc: 20,  db: false, comp: false, anchor: true, lp: true, since: 3, arch: "calf",      cap: "STRAIGHT KNEE \u2014 bent-knee calf work grows the soleus only; the gastrocnemius is the calf you can see. Two-second pause in the stretch, no bouncing. Final set: after the last full rep, 3\u20135 partials in the bottom half" },
   { id: "neckcurl",  name: "Neck Curl",              day: 2, sets: 2, w3: 2, steps: [12, 15, 20],     w: 5,    inc: 2.5, db: false, comp: false, arch: "neckflex",  cap: "FILLER — superset into main-lift rests, costs no clock. Lying face-up, plate on forehead with a towel. SLOW" },
   { id: "seatcurl3", name: "Seated Leg Curl",        day: 3, sets: 4, w3: 3, steps: [10, 12, 15],     w: 135,  inc: 10,  db: false, comp: false, anchor: true, lp: true, arch: "legcurl",   cap: "HAMSTRING PRIORITY. Seated beats lying — hip flexed puts the hamstring at length (Maeo 2021: +14% vs +9%)" },
-  { id: "preacher",  name: "Cable Preacher Curl",    day: 3, sets: 3, w3: 3, steps: [8, 10, 12],      w: 50,   inc: 5,   db: false, comp: false, anchor: true, lp: true, arch: "curl",      cap: "THE ANCHOR CURL — first, fresh. Preacher and incline curls grow different regions of the biceps (Kassiano 2025), which is why Saturday has the incline. Elbows planted, full stretch at the bottom, no leaning back" },
+  { id: "preacher",  name: "Cable Preacher Curl",    day: 3, sets: 3, w3: 3, steps: [8, 10, 12],      w: 50,   inc: 5,   db: false, comp: false, anchor: true, lp: true, arch: "curl",      cap: "THE ANCHOR CURL — first, fresh. Preacher grew the lower biceps more, the incline curl the upper (Kassiano 2025), which is why Saturday has the incline. Elbows planted, full stretch at the bottom, no leaning back" },
   { id: "hammer",    name: "Hammer Curl",            day: 3, sets: 3, w3: 2, steps: [10, 12, 15],     w: 35,   inc: 5,   db: true,  comp: false, arch: "curl",      cap: "BRACHIALIS — sits under the biceps and pushes it up. Neutral grip, slow negative. Stop at RPE 8: the preacher took the failure set", rpe8: true },
-  { id: "legext",    name: "Leg Extension",          day: 3, sets: 2, w3: 1, steps: [12, 15],         w: 125,  inc: 10,  db: false, comp: false, anchor: true, lp: true, arch: "legext",    cap: "Lean back — the rectus femoris only grows when the hip is open" },
+  { id: "legext",    name: "Leg Extension",          day: 3, sets: 2, w3: 1, steps: [12, 15],         w: 125,  inc: 10,  db: false, comp: false, anchor: true, lp: true, arch: "legext",    cap: "Lean back: with the hip reclined the rectus femoris grew more than sitting upright (Larsen 2025)" },
   { id: "latwed",    name: "Cable Lateral Raise",    day: 3, sets: 4, w3: 3, steps: [10, 12, 15],     w: 20,   inc: 2.5, db: false, comp: false, anchor: true, lp: true, arch: "lateral",   cap: "Cable at HAND HEIGHT, not the floor — tension peaks where cable and arm make 90°. 10–15 reps, heavier than before" },
   { id: "vacuum",    name: "Stomach Vacuum (seconds)", day: 3, sets: 2, w3: 2, steps: [30, 45, 60],     w: 0,    inc: 0,   db: false, comp: false, arch: "hlr",       cap: "FILLER \u2014 superset into rests, costs no clock. WAIST: exhale fully, pull the navel to the spine, hold. Trains the transverse abdominis to sit tighter at the same body fat. Never load the obliques \u2014 a thicker oblique is a wider waist" },
   { id: "latthu",    name: "Lateral Raise (Thu)",    day: 4, sets: 4, w3: 3, steps: [12, 15, 18, 20], w: 17.5,   inc: 2.5, db: true,  comp: false, arch: "lateral",   cap: "4 sets — the big side-delt day" },
@@ -932,11 +932,13 @@ function peakSession(wave, week, day, cb, gates) {
   const dayLift = { 1: "sq", 2: "bn", 5: "dl" }[day];
   const push = (b) => blocks.push(b);
   if (week === 4) {
-    if (day === 1) push({ type: "test", name: "TAPER — brief crisp technique, then rest", note: "Cut volume ≥50%. Last DL exposure ~7 days out, squat ~5–7, bench touch ~3–5. Full rest final 2 days. Test is Friday." });
-    if (day === 2) push({ type: "test", name: "TAPER — optional light bench touch", note: "A few crisp triples ~60%, only if it reliably helps you. Otherwise rest. Test is Friday." });
-    if (day === 3 || day === 4) push({ type: "test", name: "TAPER — full rest", note: "Walk, eat, sleep. Nothing heavier than a warm-up. Test is Friday." });
+    // Travis 2020: volume down 30-50%+, intensity held (>=85%), last heavy work
+    // several days out, then rest. Mon = the last heavy touch (4 days out).
+    const att = testAttempts(cb);
+    if (day === 1) push({ type: "test", name: "TAPER \u2014 last heavy touch, then rest", note: `Squat opener ${att.sq.a1} \u00d7 1, then bench opener ${att.bn.a1} \u00d7 1. Crisp, nothing more. Intensity stays up, volume goes to almost nothing. Deadlift's last heavy pull was last Friday. Test is Friday.` });
+    if (day === 2) push({ type: "test", name: "TAPER \u2014 optional light bench", note: `2\u20133 crisp doubles at ${R5(cb.bn * 0.75)}, only if it reliably helps you. Otherwise rest. Test is Friday.` });
+    if (day === 3 || day === 4) push({ type: "test", name: "TAPER \u2014 full rest", note: "Walk, eat, sleep. Nothing heavier than a warm-up. Test is Friday." });
     if (day === 5) {
-      const att = testAttempts(cb);
       push({ type: "test", name: "TEST DAY — 1st/2nd/3rd attempts", note: "Squat → Bench → Deadlift. Safeties + spotters. No misses.", attempts: att });
     }
     return blocks;
@@ -1228,7 +1230,7 @@ const MOVES = {
   revpec:{name:"Reverse Pec Deck",grp:"Arms & Delts",arch:"rearfly",yt:"reverse pec deck",
     cues:["Neutral grip (palms facing each other), arms long","Sweep OUT, not back; squeeze a second at the back","Light and strict: the rear delt is small"],cap:"12–15 reps, 3 sets. Final reps hard, never sloppy."},
   preacher:{name:"Cable Preacher Curl",grp:"Arms & Delts",arch:"curl",yt:"cable preacher curl form",
-    cues:["THE anchor curl — first and fresh on Wednesday","Elbows planted, full stretch at the bottom, no leaning back","Preacher and incline curls grow different regions of the biceps (Kassiano 2025): both belong in the week","Final set: after the last full rep, 3–5 partials in the bottom half"],cap:"Anchor: the one biceps set that goes to failure that day. 8–12 reps."},
+    cues:["THE anchor curl — first and fresh on Wednesday","Elbows planted, full stretch at the bottom, no leaning back","Preacher grew the lower biceps more, the incline curl the upper (Kassiano 2025): both belong in the week","Final set: after the last full rep, 3–5 partials in the bottom half"],cap:"Anchor: the one biceps set that goes to failure that day. 8–12 reps."},
   seatcurl3:{name:"Seated Leg Curl",grp:"Legs",arch:"legcurl",yt:"seated leg curl form",
     cues:["HAMSTRING PRIORITY — seated beats lying (Maeo 2021: +14% vs +9%)","Hips flexed puts the hamstring at length; lean forward slightly","Full stretch at the top, squeeze at the bottom, 2-second eccentric","Final set: after the last full rep, 3–5 partials in the stretched half"],cap:"Anchor on Mon and Wed. One progression, one rung — log both under the same key."},
   hamMon:{name:"Seated Leg Curl",grp:"Legs",arch:"legcurl",yt:"seated leg curl form",
@@ -1635,9 +1637,11 @@ if (typeof module !== "undefined") module.exports = { ARCHS, paintScene, phase, 
 // Spliced into app-shell at /*==NUTRI==*/ and unit-tested from test.js.
 const MODES = {
   gain: { label: "GAIN", kcal: 3050, p: 190, f: 80, c: 415, rate: "+0.25 lb/wk", why: "The default. Slow is what makes it lean." },
-  trim: { label: "TRIM", kcal: 2500, p: 200, f: 70, c: 260, rate: "−1 lb/wk", why: "Only at ~18%. Four weeks, stop at 15%, resume gaining." },
+  trim: { label: "TRIM", kcal: 2500, p: 200, f: 70, c: 260, rate: "−1 lb/wk (~0.5% of bodyweight)", why: "Only at ~18%. Six weeks at most; ends early once the waist is down 1\" or the 7-day average is down 6 lb. Then straight back to gaining." },
 };
-const TRIM_WEEKS = 4;
+// Six weeks is the cap, not the target: the end conditions usually come first.
+const TRIM_WEEKS = 6;
+const TRIM_DONE = { waist: -1, lb: 6 };
 
 // Hillstone Winter Park. ESTIMATES built from the menu's own descriptions and normal
 // restaurant portions — Hillstone publishes no nutrition data. Choose by these; the
@@ -1687,7 +1691,7 @@ const SIDES = [
 // The home meals, portioned to the day. Shift meal comes from Hillstone.
 const HOME = [
   { id: "pre",   mode: "gain", when: "6:10 pre-lift",   name: "Whey + banana",                              kcal: 220,  p: 25 },
-  { id: "preT",  mode: "trim", when: "6:10 pre-lift",   name: "Whey in water",                              kcal: 120,  p: 25 },
+  { id: "preT",  mode: "trim", when: "6:10 pre-lift",   name: "Whey + banana",                              kcal: 220,  p: 25, note: "Keep the carbs before a 7 AM lift, even trimming. Cut them elsewhere" },
   { id: "m1",    mode: "gain", when: "8:45 meal 1",     name: "4 eggs + 1 cup oats in milk + berries + honey", kcal: 800, p: 50 },
   { id: "m1T",   mode: "trim", when: "8:45 meal 1",     name: "4 eggs + ½ cup oats + berries",          kcal: 600,  p: 50 },
   { id: "m2",    mode: "gain", when: "12:30 meal 2",    name: "1½ cup rice + 7 oz chicken thigh + veg", kcal: 750,  p: 50 },
@@ -1731,7 +1735,8 @@ const PHASES = [
     note: "Small surplus for years. Trim only when body fat hits 18%." },
   { id: "ck", name: "The CK cut", target: "~190 lb @ 11% \u00b7 same 170 lb lean", short: "~190 @ 11%", by: "10 weeks after Wave 45", mode: "trim", kcal: 2300, weeks: 10, floorBF: 10,
     gate: "Starts only once 200 @ 15% is real on the tape \u2014 waist and weekly average, not a good morning.",
-    note: "\u22121 lb/wk, protein 200+, heavy lifting held with back-offs cut ~20%. Diet break at week 5. Stop at 10%: that is a floor, not a target. Then three weeks back up to maintenance." },
+    protein: [215, 230],
+    note: "\u22121 lb/wk, protein 215\u2013230 g (Helms 2014: 2.3\u20133.1 g per kg of lean mass), heavy lifting held with back-offs cut ~20%. A refeed day is allowed when hunger bites: it helps you stick to the cut, it does not save muscle (ICECAP). Stop at 10%: that is a floor, not a target. Then three weeks back up to maintenance." },
 ];
 // Ultimate Pump Mode (the date-night primer). Not a training block: a 36-hour fullness + posture protocol.
 // A big session the night before flattens you; the pump is a 45-minute thing timed
@@ -1765,7 +1770,7 @@ const PRIMER = {
            ["G",  "Stomach vacuum, standing",       "3×30 s",       "finisher — pulls the waist IN. An ab wheel pumps the midsection outward and leaves it sore; abs don’t read through a shirt, a tight waist does", 0]],
     finish: "Posture reset, last 3 min: chin tucks ×10 · wall slides ×10 · doorway pec stretch 30 s/side. Stand tall.",
     after: "Banana or rice cakes + 500 ml water with a pinch of salt — extends the pump. Pocket a band: 15 pull-aparts + 5 chin tucks in the car before you walk in — the scapular retractors stay switched on for a while after you fire them.",
-    boosters: ["30–50 g fast carbs 30 min before (banana, juice): insulin raises muscle blood flow and pulls water in with the glycogen", "Citrulline malate 6–8 g, 45–60 min before: nitric-oxide precursor, modest but real vasodilation. Skip arginine — poor absorption", "If you own BFR cuffs: on the arm superset only, 30% load, 30/15/15/15 reps, cuffs off after — the strongest acute-swelling tool there is"] },
+    boosters: ["30–50 g fast carbs 30 min before (banana, juice): insulin raises muscle blood flow and pulls water in with the glycogen", "Citrulline malate 6–8 g, 45–60 min before: nitric-oxide precursor, modest but real vasodilation. Certified (NSF for Sport / Informed Sport) only. Skip arginine — poor absorption", "If you own BFR cuffs: on the arm superset only, 30% load, 30/15/15/15 reps, cuffs off after — the strongest acute-swelling tool there is"] },
   next: "Back to the plan. If the day’s weigh-in said TRIM, start it the day after — the date was the one-day exception. Log the day anyway.",
 };
 // Resolve the pump's loads against a lookup of the current week's working weights.
@@ -1785,6 +1790,19 @@ function primerStage(dateDk, todayDk) {
   const days = Math.round((dkMs(dateDk) - dkMs(todayDk)) / 86400000);
   return days === 1 ? "eve" : days === 0 ? "day" : null;
 }
+// Every product must carry NSF Certified for Sport or Informed Sport: he competes
+// USPA drug-tested (its own banned list, urine tests, no exemptions), and 12-58% of
+// supplements in contamination studies held undeclared banned substances.
+const CERT = "NSF Certified for Sport or Informed Sport";
+const SUPPS = [
+  { tier: 1, name: "Creatine monohydrate", dose: "5 g a day, any time, forever", why: "The best-supported supplement there is (ISSN, Kreider 2017)." },
+  { tier: 1, name: "Whey protein", dose: "1\u20132 scoops a day", why: "Convenience for hitting protein, not magic." },
+  { tier: 1, name: "Caffeine", dose: "3 mg/kg (~250 mg) 50\u201360 min before the lift", why: "ISSN: 3\u20136 mg/kg about an hour out. At this dose, nothing within ~13 h of bed (Gardiner 2023: 8.8 h for a coffee, 13.2 h for a pre-workout dose). Sleep is the bottleneck." },
+  { tier: 2, name: "Omega-3", dose: "Salmon twice a week, or 2 g EPA+DHA", why: "Food first." },
+  { tier: 2, name: "Electrolytes", dose: "Sodium ~500 mg + potassium on sweaty days", why: "Florida shifts and the incline walk." },
+  { tier: 3, name: "Vitamin D3", dose: "Only if a blood test says you are low", why: "No clear strength benefit in athletes who are not deficient (Han 2024)." },
+  { tier: 3, name: "Magnesium glycinate", dose: "300\u2013400 mg before bed if sleep is under 7.5 h", why: "A sleep aid, not a muscle builder." },
+];
 const ALL = () => [...HILLSTONE, ...SIDES, ...HOME];
 const byId = (id) => ALL().find((x) => x.id === id) || null;
 const targets = (mode) => MODES[mode] || MODES.gain;
@@ -1804,23 +1822,54 @@ function weekStats(food, dk, n) {
     avgKcal: Math.round(days.reduce((s, d) => s + d.kcal, 0) / days.length),
     avgP: Math.round(days.reduce((s, d) => s + d.p, 0) / days.length) };
 }
-// The day-10 rule, generalised: a 3-day scale average against a threshold, and the
-// waist against its baseline. Returns a suggestion; the user confirms it, like a gate.
+// The decision rule. 7-day scale averages, measured against where THIS phase
+// started (not a fixed number), plus the waist against its phase-start value,
+// plus a sleep gate: a deficit on short sleep takes the loss from muscle
+// (Nedeltcheva 2010). Returns a suggestion; the user confirms it, like a gate.
+const DK = /^\d{4}-\d{2}-\d{2}$/;
+function avgIn(map, fromDk, toDk, min) {
+  const v = Object.keys(map || {}).filter((k) => DK.test(k) && k >= fromDk && k <= toDk && Number.isFinite(+map[k])).map((k) => +map[k]);
+  return v.length >= (min || 3) ? +(v.reduce((a, b) => a + b, 0) / v.length).toFixed(1) : null;
+}
+const addDays = (dk, n) => msDk(dkMs(dk) + n * 86400000);
 function decision(bw, meas, opts) {
-  const o = Object.assign({ keep: 188, waistUp: 1 }, opts || {});
-  const bk = Object.keys(bw || {}).filter((k) => /^\d{4}-\d{2}-\d{2}$/.test(k) && Number.isFinite(+bw[k])).sort();
-  const last3 = bk.slice(-3).map((k) => +bw[k]);
-  const avg = last3.length ? +(last3.reduce((a, b) => a + b, 0) / last3.length).toFixed(1) : null;
-  const mk = Object.keys(meas || {}).filter((k) => meas[k] && Number.isFinite(meas[k].wa)).sort();
-  const dW = mk.length > 1 ? +(meas[mk[mk.length - 1]].wa - meas[mk[0]].wa).toFixed(2) : null;
-  if (avg == null) return { mode: null, avg, dW, days: bk.length, reason: "Log the scale for 3+ days first." };
-  const heavy = avg > o.keep, wide = dW != null && dW >= o.waistUp;
-  const wTxt = dW == null ? "waist not logged twice yet" : `waist ${dW >= 0 ? "+" : ""}${dW}"`;
-  if (!heavy && !wide) return { mode: "gain", avg, dW, days: bk.length, reason: `3-day avg ${avg} ≤ ${o.keep} · ${wTxt}. Mostly water. Keep gaining.` };
-  return { mode: "trim", avg, dW, days: bk.length, reason: `3-day avg ${avg}${heavy ? ` > ${o.keep}` : ""} · ${wTxt}. Real tissue. Four-week trim.` };
+  const o = Object.assign({ mode: "gain" }, opts || {});
+  const bk = Object.keys(bw || {}).filter((k) => DK.test(k) && Number.isFinite(+bw[k])).sort();
+  const today = o.today || bk[bk.length - 1];
+  const since = o.since && DK.test(o.since) ? o.since : bk[0];
+  const out = { mode: null, avg: null, start: null, dW: null, rate: null, weeks: null, sleep: null, gate: null, days: bk.length };
+  if (!today || !since) return { ...out, reason: "Log the scale for 3+ days first." };
+  out.avg = avgIn(bw, addDays(today, -6), today);
+  out.start = avgIn(bw, since, addDays(since, 6));
+  out.weeks = +((dkMs(today) - dkMs(since)) / (7 * 86400000)).toFixed(1);
+  const mk = Object.keys(meas || {}).filter((k) => DK.test(k) && meas[k] && Number.isFinite(meas[k].wa)).sort();
+  const base = [...mk].reverse().find((k) => k <= since) || mk.find((k) => k > since);
+  const cur = mk[mk.length - 1];
+  out.dW = base && cur && cur !== base ? +(meas[cur].wa - meas[base].wa).toFixed(2) : null;
+  out.sleep = avgIn(o.sleep, addDays(today, -6), today);
+  const shortSleep = out.sleep != null && out.sleep < 7;
+  if (out.avg == null) return { ...out, reason: "Log the scale 3+ mornings this week: the 7-day average is the number." };
+  const wTxt = out.dW == null ? "waist not re-measured this phase" : `waist ${out.dW >= 0 ? "+" : ""}${out.dW}" since the phase began`;
+  if (out.start != null && out.weeks >= 1) out.rate = +((out.avg - out.start) / out.weeks).toFixed(2);
+  if (o.mode === "trim") {
+    if (out.weeks >= TRIM_WEEKS) return { ...out, mode: "gain", reason: `Six weeks is the cap. Back to gaining. (${wTxt})` };
+    if (out.dW != null && out.dW <= TRIM_DONE.waist) return { ...out, mode: "gain", reason: `${wTxt}: the trim did its job. Back to gaining.` };
+    if (out.start != null && out.start - out.avg >= TRIM_DONE.lb) return { ...out, mode: "gain", reason: `7-day average ${out.avg}, down ${(out.start - out.avg).toFixed(1)} from ${out.start}. Done. Back to gaining.` };
+    const fast = out.rate != null && -out.rate > out.avg * 0.01;
+    return { ...out, mode: "trim", gate: shortSleep ? "sleep" : null,
+      reason: `7-day average ${out.avg}${out.start != null ? ` vs ${out.start} at the start` : ""} · ${wTxt}. Keep trimming.${fast ? " Losing faster than 1% a week: add 200 kcal (the slower rate keeps more muscle, Garthe 2011)." : ""}${shortSleep ? ` Sleep is averaging ${out.sleep} h: under 7, the loss comes out of muscle. Fix sleep or end the trim early.` : ""}` };
+  }
+  // gaining
+  if (out.dW != null && out.dW >= 1) {
+    if (shortSleep) return { ...out, mode: "gain", gate: "sleep", reason: `${wTxt} says trim, but sleep is averaging ${out.sleep} h. A deficit on short sleep takes the loss from muscle. Get to 7 h+ first, then start the trim.` };
+    return { ...out, mode: "trim", reason: `${wTxt}: that is tissue, not water. Six-week trim.` };
+  }
+  if (out.rate == null) return { ...out, mode: "gain", reason: `7-day average ${out.avg} · ${wTxt}. The rate needs a full week of this phase. Keep gaining.` };
+  const adj = out.rate > 0.5 ? " Gaining faster than 0.5 lb a week: drop 150 kcal, that extra is fat." : out.rate < 0.1 ? " Flat: add 150 kcal." : " On pace.";
+  return { ...out, mode: "gain", reason: `7-day average ${out.avg}, ${out.rate >= 0 ? "+" : ""}${out.rate} lb/wk since the phase began · ${wTxt}.${adj}` };
 }
 const trimEnd = (sinceDk, weeks) => msDk(dkMs(sinceDk) + (weeks || TRIM_WEEKS) * 7 * 86400000);
-const NUTRI = { MODES, TRIM_WEEKS, PHASES, PRIMER, primerStage, primerLoads, roundLoad, HILLSTONE, SIDES, HOME, byId, targets, dayTotals, weekStats, decision, trimEnd };
+const NUTRI = { CERT, SUPPS, TRIM_DONE, avgIn, MODES, TRIM_WEEKS, PHASES, PRIMER, primerStage, primerLoads, roundLoad, HILLSTONE, SIDES, HOME, byId, targets, dayTotals, weekStats, decision, trimEnd };
 if (typeof module !== "undefined") module.exports = NUTRI;
 
 let animId = null;
@@ -2030,6 +2079,13 @@ window.playbookSheet = () => {
     <p class="note">1 Protein anchor first. 2 Side = wild rice gaining, green veg trimming; fries once a week on a squat or deadlift day, never on a trim day. 3 Sauces on the side (~150–250 each). 4 Short on protein → shrimp or deviled eggs. 5 Twenty minutes of grazing = log 300. 6 Whatever the staff meal allows, the tiers still pick. 7 Alcohol: cap 2, never before squat or deadlift, zero in Week 3 and zero on a trim.</p>
     ${tier("A", "Tier A — order without thinking")}${tier("B", "Tier B — fine with one swap")}${tier("C", "Tier C — once a week, gaining only")}${tier("D", "Tier D — not on this plan")}
     <div class="eyebrow" style="margin-top:10px">Sides</div>${NUTRI.SIDES.map((x) => `<div class="frow"><span class="fn">${esc(x.name)}${x.note ? `<small>${esc(x.note)}</small>` : ""}</span><span class="fv">~${x.kcal}</span></div>`).join("")}`);
+};
+window.suppSheet = () => {
+  const tier = (t, title) => `<div class="eyebrow" style="margin-top:10px">${title}</div>` + NUTRI.SUPPS.filter((x) => x.tier === t).map((x) => `<div class="frow"><span class="fn">${esc(x.name)}<small>${esc(x.why)}</small></span><span class="fv">${esc(x.dose)}</span></div>`).join("");
+  openSheet(`<button class="closex" onclick="closeSheet()">×</button><h2>Supplements</h2>
+    <p class="capnote warn">Every product: ${esc(NUTRI.CERT)}. No exceptions, including whey and caffeine. USPA drug-tested runs its own banned list with urine tests and no exemptions, and contamination studies found undeclared banned substances in 12–58% of supplements.</p>
+    ${tier(1, "Tier 1 — daily")}${tier(2, "Tier 2 — your situation")}${tier(3, "Tier 3 — only if needed")}
+    <p class="note" style="margin-top:8px">Skip: BCAAs, pre-workout blends, fat burners, test boosters, glutamine, ZMA. The blends are where contamination lives.</p>`);
 };
 window.setPrimerDate = (v) => { if (!v) delete S.primer.date; else S.primer.date = v; save(); render(); };
 window.primerSheet = () => {
@@ -2358,7 +2414,8 @@ function renderTrends() {
     : "Scale flat — you're at maintenance, not gaining.";
   const nutriCard = (() => {
     const T = NUTRI.targets(S.nutri.mode), st = NUTRI.weekStats(S.food, keyOf(todayUTC() - 86400000), 7);
-    const dec = NUTRI.decision(S.bw, S.meas);
+    const sleepMap = {}; for (const [k, l] of Object.entries(S.logs)) if (l && Number.isFinite(l.sleep)) sleepMap[k] = l.sleep;
+    const dec = NUTRI.decision(S.bw, S.meas, { mode: S.nutri.mode, since: S.nutri.since, sleep: sleepMap, today: keyOf(todayUTC()) });
     const end = S.nutri.mode === "trim" && S.nutri.since ? NUTRI.trimEnd(S.nutri.since) : null;
     const overdue = end && keyOf(todayUTC()) >= end;
     const modeBtn = (m) => `<button class="btn ${S.nutri.mode === m ? "" : "ghost"}" onclick="setNutriMode('${m}')">${NUTRI.MODES[m].label} · ${NUTRI.MODES[m].kcal}</button>`;
@@ -2368,10 +2425,10 @@ function renderTrends() {
       <p class="note">Phase 1 now: ${esc(NUTRI.PHASES[0].name)} \u2192 ${esc(NUTRI.PHASES[0].target)} by ${esc(NUTRI.PHASES[0].by)}. Phase 2: ${esc(NUTRI.PHASES[1].name)}, ${esc(NUTRI.PHASES[1].by)} \u2014 ${esc(NUTRI.PHASES[1].target)}.</p>
       <div class="statline" style="margin-top:8px;display:flex;justify-content:space-between;gap:10px;align-items:baseline"><span class="note">Last 7 full days</span><b style="font-variant-numeric:tabular-nums">${st.logged ? `${st.avgKcal} kcal · ${st.avgP}P avg · ${st.logged}/7 logged` : "nothing logged"}</b></div>
       ${st.logged ? `<p class="note">${st.avgKcal > T.kcal + 150 ? "⚠️ Averaging over target — that's the overshoot." : st.avgKcal < T.kcal - 200 ? "⚠️ Under target — you will not grow on this." : "✅ On target."}${st.avgP < T.p - 15 ? " Protein is short — add the shrimp or a scoop." : ""}</p>` : ""}
-      <div class="statline" style="margin-top:8px;display:flex;justify-content:space-between;gap:10px;align-items:baseline"><span class="note">Decision rule</span><b>${dec.mode ? (dec.mode === "trim" ? "→ TRIM" : "→ KEEP GAINING") : "—"}</b></div>
+      <div class="statline" style="margin-top:8px;display:flex;justify-content:space-between;gap:10px;align-items:baseline"><span class="note">Decision rule</span><b>${dec.gate === "sleep" && S.nutri.mode === "gain" ? "→ FIX SLEEP FIRST" : dec.mode ? (dec.mode === "trim" ? "→ TRIM" : "→ KEEP GAINING") : "—"}</b></div>
       <p class="note">${esc(dec.reason)}</p>
-      ${dec.mode && dec.mode !== S.nutri.mode ? `<div class="rowbtns"><button class="btn" onclick="setNutriMode('${dec.mode}')">${dec.mode === "trim" ? "Start the 4-week trim" : "Back to gaining"}</button></div>` : ""}
-      <div class="rowbtns"><button class="btn ghost" onclick="playbookSheet()">🍽 Hillstone playbook</button></div></div>`;
+      ${dec.mode && dec.mode !== S.nutri.mode ? `<div class="rowbtns"><button class="btn" onclick="setNutriMode('${dec.mode}')">${dec.mode === "trim" ? "Start the trim (6 weeks max)" : "Back to gaining"}</button></div>` : ""}
+      <div class="rowbtns"><button class="btn ghost" onclick="playbookSheet()">🍽 Hillstone playbook</button><button class="btn ghost" onclick="suppSheet()">💊 Supplements</button></div></div>`;
   })();
   const measCard = `<div class="card single"><div class="eyebrow sig">Waist &amp; frame — the auditor</div>
     <p class="note">Abs are a body-fat number, not a training one. Waist is the metric that tells you whether the scale climbing is muscle or padding.</p>

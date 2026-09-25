@@ -761,18 +761,43 @@ console.log("\n── frame requirements ──");
   const food = { "2026-09-10": [{ kcal: 3000, p: 190 }], "2026-09-11": [{ kcal: 3100, p: 200 }], "2026-09-12": [] , "2026-09-13": [{ kcal: 2900, p: 180 }] };
   eq(N.weekStats(food, "2026-09-13", 7), { logged: 3, avgKcal: 3000, avgP: 190 }, "nutri: weekStats ignores empty days and averages the rest");
   eq(N.weekStats({}, "2026-09-13", 7).logged, 0, "nutri: nothing logged");
-  // the decision rule
-  const bwLight = { "2026-09-15": 187.8, "2026-09-16": 187.6, "2026-09-17": 187.9 };
-  const bwHeavy = { "2026-09-15": 190.2, "2026-09-16": 189.8, "2026-09-17": 190.0 };
-  const waistFlat = { "2026-08-16": { wa: 33 }, "2026-09-07": { wa: 33.25 } };
-  const waistUp = { "2026-08-16": { wa: 33 }, "2026-09-07": { wa: 34.25 } };
-  eq(N.decision(bwLight, waistFlat).mode, "gain", "decision: light + flat waist = keep gaining");
-  eq(N.decision(bwHeavy, waistFlat).mode, "trim", "decision: heavy alone = trim");
-  eq(N.decision(bwLight, waistUp).mode, "trim", "decision: waist +1 alone = trim");
-  eq(N.decision({}, waistFlat).mode, null, "decision: no scale data = no call");
-  eq(N.decision(bwLight, {}).mode, "gain", "decision: waist unlogged does not block a keep-gaining call");
-  eq(N.decision(bwLight, waistFlat).avg, 187.8, "decision: 3-day average is what it uses");
-  eq(N.trimEnd("2026-09-17"), "2026-10-15", "nutri: 4-week trim from Sep 17 ends Oct 15");
+  // the decision rule: 7-day averages against the phase start, waist against its phase-start value, sleep gate
+  const series = (from, n, f) => { const o = {}; for (let i = 0; i < n; i++) o[new Date(Date.UTC(2026, 8, from + i)).toISOString().slice(0, 10)] = f(i); return o; };
+  const bwSlow = series(1, 21, (i) => 188 + i * 0.04);          // ~+0.28 lb/wk
+  const bwFast = series(1, 21, (i) => 188 + i * 0.12);          // ~+0.84 lb/wk
+  const waistFlat = { "2026-08-30": { wa: 33 }, "2026-09-20": { wa: 33.25 } };
+  const waistUp = { "2026-08-30": { wa: 33 }, "2026-09-20": { wa: 34 } };
+  const G = { mode: "gain", since: "2026-09-01", today: "2026-09-21" };
+  eq(N.decision(bwSlow, waistFlat, G).mode, "gain", "decision: slow gain + flat waist = keep gaining");
+  ok(/On pace/.test(N.decision(bwSlow, waistFlat, G).reason), "decision: ~0.3 lb/wk is on pace");
+  ok(N.decision(bwFast, waistFlat, G).mode === "gain" && /drop 150/.test(N.decision(bwFast, waistFlat, G).reason), "decision: fast gain alone = trim the surplus, not a trim phase");
+  eq(N.decision(bwSlow, waistUp, G).mode, "trim", "decision: waist +1 since the phase began = trim");
+  const sleepy = series(15, 7, () => 6.2);
+  const gated = N.decision(bwSlow, waistUp, { ...G, sleep: sleepy });
+  ok(gated.mode === "gain" && gated.gate === "sleep", "decision: sleep under 7 h blocks starting a trim (Nedeltcheva 2010)");
+  eq(N.decision({}, waistFlat, G).mode, null, "decision: no scale data = no call");
+  eq(N.decision(bwSlow, {}, G).mode, "gain", "decision: waist unlogged does not block a keep-gaining call");
+  eq(N.decision(bwSlow, waistFlat, G).avg, N.avgIn(bwSlow, "2026-09-15", "2026-09-21"), "decision: the 7-day average is what it uses");
+  eq(N.decision(bwSlow, waistFlat, G).start, N.avgIn(bwSlow, "2026-09-01", "2026-09-07"), "decision: measured against the phase-start week, not a fixed number");
+  // trim end conditions
+  const T = { mode: "trim", since: "2026-09-01" };
+  const bwCut = series(1, 50, (i) => 192 - i * 0.15);
+  eq(N.decision(bwCut, {}, { ...T, today: "2026-09-21" }).mode, "trim", "trim: week 3, still going");
+  eq(N.decision(bwCut, {}, { ...T, today: "2026-10-13" }).mode, "gain", "trim: down 6 lb on the 7-day average = done");
+  eq(N.decision(series(1, 50, () => 192), {}, { ...T, today: "2026-10-13" }).mode, "gain", "trim: six weeks is the cap");
+  eq(N.decision(bwCut, { "2026-08-31": { wa: 34 }, "2026-09-18": { wa: 33 } }, { ...T, today: "2026-09-21" }).mode, "gain", "trim: waist down 1 inch = done");
+  ok(/1% a week/.test(N.decision(series(1, 30, (i) => 192 - i * 0.4), {}, { ...T, today: "2026-09-21" }).reason), "trim: faster than 1%/wk is flagged (Garthe 2011)");
+  eq(N.TRIM_WEEKS, 6, "trim is six weeks at most");
+  eq(N.trimEnd("2026-09-17"), "2026-10-29", "nutri: 6-week trim from Sep 17 ends Oct 29");
+  // pre-lift carbs stay in the trim
+  ok(/banana/i.test(N.byId("preT").name), "trim pre-lift is whey + banana");
+  // supplements: certified, dosed by the evidence
+  ok(/NSF Certified for Sport/.test(N.CERT) && /Informed Sport/.test(N.CERT), "every supplement must be NSF Certified for Sport or Informed Sport");
+  const caf = N.SUPPS.find((x) => x.name === "Caffeine");
+  ok(/3 mg\/kg/.test(caf.dose) && /50\u201360 min/.test(caf.dose) && /13 h/.test(caf.why), "caffeine: 3 mg/kg, 50-60 min pre, no dose within ~13 h of bed");
+  eq(N.SUPPS.find((x) => /Vitamin D/.test(x.name)).tier, 3, "vitamin D is tier 3");
+  eq(N.PHASES[1].protein, [215, 230], "CK cut protein 215-230 g");
+  ok(!/Diet break at week 5/.test(N.PHASES[1].note) && /does not save muscle/.test(N.PHASES[1].note), "refeeds are for adherence, not muscle (ICECAP)");
   // home plates: what he actually cooks
   const plates = N.HOME.filter((x) => x.grp === "plate");
   ok(plates.some((x) => /Salmon/.test(x.name) && x.mode === "gain") && plates.some((x) => /Salmon/.test(x.name) && x.mode === "trim"), "plates: salmon in both modes");

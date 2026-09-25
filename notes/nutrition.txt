@@ -44,11 +44,11 @@ Getting heavier is not vanity. It is the strength plan. Getting heavier FAST is 
 🗺️ THE FOUR-YEAR ROAD
 ━━━━━━━━━━━━━━━━━━
 
-END 2026 · 156 lean · 185–188 lb · ~240 / 350 / 440
-END 2027 · 160 lean · 188 lb · ~265 / 385 / 475 · first USPA meet summer '27
-END 2028 · 165 lean · 194 lb · ~285 / 405 / 495 ← SQUAT + DEADLIFT LAND
-END 2029 · 169 lean · 199 lb · ~300 / 415 / 510
-MID 2030 · 170 lean · 200 lb @ 15% · 315 / 425 / 520 ← 🏁 3/4/5 COMPLETE, age 31 — PHASE 1 DONE
+REVISED 2026-09-25: the strength road is now computed in the app (Road tab), not printed here.
+Wave 3 bases are measured: bench 255 · squat 295 · deadlift 385.
+On the small-step pace (+2.5 bench, +5 squat and deadlift per wave), the bases reach 405 squat and 495 deadlift around Wave 25 (May 2028) and 315 bench around Wave 27 (summer 2028). Clean gates pull that in; repeats push it out. Your rated singles set the gates.
+First meet: USPA drug-tested, Central Florida, summer 2027.
+Bodyweight and lean-mass targets below are unchanged: 200 lb @ 15% is the Phase 1 finish line.
 SUMMER 2030 · 170 lean · ~190 lb @ 11% ← 🎬 PHASE 2 — THE CK CUT. Ten weeks. The reveal.
 
 ━━━━━━━━━━━━━━━━━━
@@ -60,17 +60,20 @@ GAIN MODE — the default (about 85% of the next 4 years):
 Rate: +0.25 lb/week. Slow is the whole point — slow is what makes it lean.
 About 13 lb of scale weight per year, roughly 5–6 lb of it lean.
 
-TRIM MODE — only when body fat hits ~18% (you are here):
+TRIM MODE — only when body fat hits ~18%:
 2,500 cal · Protein 200 g · Fat 70 g · Carbs ~260 g
-Rate: −1 lb/week. Stop at 15%. Resume gaining immediately.
-NEVER longer than 6 weeks. NEVER during Cycles 5–6.
+Rate: −1 lb/week (~0.5% of bodyweight; faster than 1% a week costs muscle — Garthe 2011).
+SIX WEEKS AT MOST. Ends early when the waist is down 1" from the trim's start, or the 7-day average is down 6 lb. Resume gaining immediately.
+Sleep gate: don't START a trim while sleep averages under 7 h. A deficit on short sleep takes the loss from muscle (Nedeltcheva 2010).
+Pre-lift stays whey + banana on trim days. Cut carbs elsewhere.
+NEVER during Cycles 5–6.
 
-ADJUSTMENT RULES (check Sundays):
-• Gained >2 lb in ONE week → you overshot the surplus. Back to target, don't cut. Half of it is water.
-• Flat 2 weeks in gain mode → +150 cal
-• Gaining >0.5 lb/wk for 2 weeks → −150 cal (that's fat, not muscle)
-• Waist +1" since last check → start a trim block
+ADJUSTMENT RULES (check Sundays) — all on 7-DAY AVERAGES, measured from where this phase started:
+• Gaining >0.5 lb/wk since the phase began → −150 cal (that's fat, not muscle)
+• Flat (<0.1 lb/wk) → +150 cal
+• Waist +1" since the phase began → start a trim (if sleep averages 7 h+)
 • Waist flat while bodyweight rises → perfect, keep going
+The app's Trends tab runs this rule for you.
 
 ━━━━━━━━━━━━━━━━━━
 🍽️ A GAINING DAY (7 AM lift + shift)
@@ -243,17 +246,19 @@ TRIM WEEK: same list, half the rice and oats, skip honey and peanut butter.
 💊 SUPPLEMENTS — BY EVIDENCE, NOT BY LABEL
 ━━━━━━━━━━━━━━━━━━
 
+⚠️ EVERY PRODUCT: NSF Certified for Sport or Informed Sport. No exceptions — whey and caffeine included. You're entering a USPA drug-tested meet: USPA runs its own banned list, tests urine and grants no exemptions. Contamination studies found undeclared banned substances in 12–58% of supplements (Martínez-Sanz 2017).
+
 TIER 1 — proven, take daily, forever
-• Creatine monohydrate 5 g — any time, with anything. You're past loading; just never miss. 500 g tub = 3 months.
-• Whey protein 1–2 scoops/day — a convenience for reaching 190 g, not magic. Any brand with 24–25 g per scoop.
-• Caffeine 100–200 mg 30 min before the 7 AM lift. Hard cutoff noon. Sleep is the actual bottleneck on lean gain.
+• Creatine monohydrate 5 g — any time, with anything. You're past loading; just never miss. (ISSN, Kreider 2017)
+• Whey protein 1–2 scoops/day — a convenience for reaching 190 g, not magic. Certified brand, 24–25 g per scoop.
+• Caffeine 3 mg/kg (~250 mg) 50–60 min before the lift (ISSN 2021). At that dose, nothing within ~13 h of bed (Gardiner 2023: 8.8 h for a coffee, 13.2 h for a pre-workout dose). Sleep is the actual bottleneck on lean gain.
 
 TIER 2 — worth it for YOUR situation
-• Vitamin D3 2,000–4,000 IU with a meal — 7 AM gym, indoor shifts, no sun. Get it tested at your next physical; target 40–60 ng/mL.
 • Omega-3: eat the Salmon twice a week and skip the pills. If you don't, 2 g EPA+DHA a day.
 • Electrolytes (sodium ~500 mg + potassium) on the incline-walk day and any Florida shift you sweat through.
 
-TIER 3 — optional, cheap, low-risk
+TIER 3 — only if needed
+• Vitamin D3 — only if a blood test says you're low. No clear strength benefit in athletes who aren't deficient (Han 2024). Get it tested at your next physical.
 • Magnesium glycinate 300–400 mg before bed if sleep is under 7.5 hr. It's a sleep aid, not a muscle builder.
 
 SKIP: BCAAs (whey covers them), pre-workout blends (caffeine is the only ingredient that works), fat burners, test boosters, glutamine, ZMA. Spend it on chicken thighs.
@@ -272,10 +277,10 @@ THE GATE: starts only when 200 @ 15% is real on the tape — waist and weekly av
 
 THE PROTOCOL
 • 10 weeks. Start at 2,500 (trim mode). If the weekly average stalls two weeks running, 2,300. Never lower.
-• Protein 200+ every day. This is what keeps the 170 while the scale drops.
+• Protein 215–230 g every day (Helms 2014: 2.3–3.1 g per kg of lean mass). This is what keeps the 170 while the scale drops.
 • Lift heavy. Top sets stay; back-offs cut ~20%. The 3/4/5 numbers are HELD, not chased.
 • −1 lb/wk. Ten pounds in ten weeks: 200 → 190.
-• Diet break at week 5: two days at maintenance (~3,000). Then back in.
+• Refeed days (maintenance, ~3,000) are allowed when hunger bites. They help you stick to the cut; they don't save muscle (ICECAP, Peos 2021).
 • Stop at 10%. That is a FLOOR, not a target. Efron at 5% for Baywatch said it wrecked his sleep and his head — that is a photoshoot, not a life.
 • Then three weeks back up to maintenance, +200 a week. Do not rebound-bulk.
 
@@ -290,7 +295,7 @@ THE PREVIEW: the spring-2027 mini-cut to ~183 @ 12% is the same look at a lighte
 ✅ Weigh-in 4+ mornings/week — WEEKLY AVERAGE is the number (daily for the next 10 days)
 ✅ 7.5–9 hr sleep — this is the actual bottleneck on lean gain
 ❌ No bulking past 18%. That's when a trim block starts, not a debate. (Sep 2026: this happened. It's fine. Four weeks.)
-❌ No long cuts. 4–6 weeks maximum, then back to building.
+❌ No long cuts. 6 weeks maximum, then back to building.
 ❌ No abandoning the surplus because you feel soft in week 3. Soft in a gain phase is normal. Ten pounds in three weeks is not.
 
 ━━━━━━━━━━━━━━━━━━
@@ -312,6 +317,6 @@ If bodyweight climbs and waist holds → you are building exactly what you want.
 ━━━━━━━━━━━━━━━━━━
 
 Eat in a small surplus for four years, anchor every shift meal on Tier A,
-keep the waist flat while the scale climbs, and trim for four weeks whenever you hit 18%.
+keep the waist flat while the scale climbs, and trim (six weeks at most) whenever you hit 18%.
 200 @ 15% and 3/4/5 arrive together, around 2030. Then ten weeks to the CK version.
 

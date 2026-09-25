@@ -306,9 +306,9 @@ const ACC = [
   { id: "lpcalf",    name: "Leg Press Calf Raise",   day: 5, sets: 3, w3: 2, steps: [10, 12, 15],     w: 250,  inc: 20,  db: false, comp: false, anchor: true, lp: true, since: 3, arch: "calf",      cap: "STRAIGHT KNEE \u2014 bent-knee calf work grows the soleus only; the gastrocnemius is the calf you can see. Two-second pause in the stretch, no bouncing. Final set: after the last full rep, 3\u20135 partials in the bottom half" },
   { id: "neckcurl",  name: "Neck Curl",              day: 2, sets: 2, w3: 2, steps: [12, 15, 20],     w: 5,    inc: 2.5, db: false, comp: false, arch: "neckflex",  cap: "FILLER — superset into main-lift rests, costs no clock. Lying face-up, plate on forehead with a towel. SLOW" },
   { id: "seatcurl3", name: "Seated Leg Curl",        day: 3, sets: 4, w3: 3, steps: [10, 12, 15],     w: 135,  inc: 10,  db: false, comp: false, anchor: true, lp: true, arch: "legcurl",   cap: "HAMSTRING PRIORITY. Seated beats lying — hip flexed puts the hamstring at length (Maeo 2021: +14% vs +9%)" },
-  { id: "preacher",  name: "Cable Preacher Curl",    day: 3, sets: 3, w3: 3, steps: [8, 10, 12],      w: 50,   inc: 5,   db: false, comp: false, anchor: true, lp: true, arch: "curl",      cap: "THE ANCHOR CURL — first, fresh. Preacher and incline curls grow different regions of the biceps (Kassiano 2025), which is why Saturday has the incline. Elbows planted, full stretch at the bottom, no leaning back" },
+  { id: "preacher",  name: "Cable Preacher Curl",    day: 3, sets: 3, w3: 3, steps: [8, 10, 12],      w: 50,   inc: 5,   db: false, comp: false, anchor: true, lp: true, arch: "curl",      cap: "THE ANCHOR CURL — first, fresh. Preacher grew the lower biceps more, the incline curl the upper (Kassiano 2025), which is why Saturday has the incline. Elbows planted, full stretch at the bottom, no leaning back" },
   { id: "hammer",    name: "Hammer Curl",            day: 3, sets: 3, w3: 2, steps: [10, 12, 15],     w: 35,   inc: 5,   db: true,  comp: false, arch: "curl",      cap: "BRACHIALIS — sits under the biceps and pushes it up. Neutral grip, slow negative. Stop at RPE 8: the preacher took the failure set", rpe8: true },
-  { id: "legext",    name: "Leg Extension",          day: 3, sets: 2, w3: 1, steps: [12, 15],         w: 125,  inc: 10,  db: false, comp: false, anchor: true, lp: true, arch: "legext",    cap: "Lean back — the rectus femoris only grows when the hip is open" },
+  { id: "legext",    name: "Leg Extension",          day: 3, sets: 2, w3: 1, steps: [12, 15],         w: 125,  inc: 10,  db: false, comp: false, anchor: true, lp: true, arch: "legext",    cap: "Lean back: with the hip reclined the rectus femoris grew more than sitting upright (Larsen 2025)" },
   { id: "latwed",    name: "Cable Lateral Raise",    day: 3, sets: 4, w3: 3, steps: [10, 12, 15],     w: 20,   inc: 2.5, db: false, comp: false, anchor: true, lp: true, arch: "lateral",   cap: "Cable at HAND HEIGHT, not the floor — tension peaks where cable and arm make 90°. 10–15 reps, heavier than before" },
   { id: "vacuum",    name: "Stomach Vacuum (seconds)", day: 3, sets: 2, w3: 2, steps: [30, 45, 60],     w: 0,    inc: 0,   db: false, comp: false, arch: "hlr",       cap: "FILLER \u2014 superset into rests, costs no clock. WAIST: exhale fully, pull the navel to the spine, hold. Trains the transverse abdominis to sit tighter at the same body fat. Never load the obliques \u2014 a thicker oblique is a wider waist" },
   { id: "latthu",    name: "Lateral Raise (Thu)",    day: 4, sets: 4, w3: 3, steps: [12, 15, 18, 20], w: 17.5,   inc: 2.5, db: true,  comp: false, arch: "lateral",   cap: "4 sets — the big side-delt day" },
@@ -728,11 +728,13 @@ function peakSession(wave, week, day, cb, gates) {
   const dayLift = { 1: "sq", 2: "bn", 5: "dl" }[day];
   const push = (b) => blocks.push(b);
   if (week === 4) {
-    if (day === 1) push({ type: "test", name: "TAPER — brief crisp technique, then rest", note: "Cut volume ≥50%. Last DL exposure ~7 days out, squat ~5–7, bench touch ~3–5. Full rest final 2 days. Test is Friday." });
-    if (day === 2) push({ type: "test", name: "TAPER — optional light bench touch", note: "A few crisp triples ~60%, only if it reliably helps you. Otherwise rest. Test is Friday." });
-    if (day === 3 || day === 4) push({ type: "test", name: "TAPER — full rest", note: "Walk, eat, sleep. Nothing heavier than a warm-up. Test is Friday." });
+    // Travis 2020: volume down 30-50%+, intensity held (>=85%), last heavy work
+    // several days out, then rest. Mon = the last heavy touch (4 days out).
+    const att = testAttempts(cb);
+    if (day === 1) push({ type: "test", name: "TAPER \u2014 last heavy touch, then rest", note: `Squat opener ${att.sq.a1} \u00d7 1, then bench opener ${att.bn.a1} \u00d7 1. Crisp, nothing more. Intensity stays up, volume goes to almost nothing. Deadlift's last heavy pull was last Friday. Test is Friday.` });
+    if (day === 2) push({ type: "test", name: "TAPER \u2014 optional light bench", note: `2\u20133 crisp doubles at ${R5(cb.bn * 0.75)}, only if it reliably helps you. Otherwise rest. Test is Friday.` });
+    if (day === 3 || day === 4) push({ type: "test", name: "TAPER \u2014 full rest", note: "Walk, eat, sleep. Nothing heavier than a warm-up. Test is Friday." });
     if (day === 5) {
-      const att = testAttempts(cb);
       push({ type: "test", name: "TEST DAY — 1st/2nd/3rd attempts", note: "Squat → Bench → Deadlift. Safeties + spotters. No misses.", attempts: att });
     }
     return blocks;

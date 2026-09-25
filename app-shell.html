@@ -298,7 +298,7 @@ const MOVES = {
   revpec:{name:"Reverse Pec Deck",grp:"Arms & Delts",arch:"rearfly",yt:"reverse pec deck",
     cues:["Neutral grip (palms facing each other), arms long","Sweep OUT, not back; squeeze a second at the back","Light and strict: the rear delt is small"],cap:"12–15 reps, 3 sets. Final reps hard, never sloppy."},
   preacher:{name:"Cable Preacher Curl",grp:"Arms & Delts",arch:"curl",yt:"cable preacher curl form",
-    cues:["THE anchor curl — first and fresh on Wednesday","Elbows planted, full stretch at the bottom, no leaning back","Preacher and incline curls grow different regions of the biceps (Kassiano 2025): both belong in the week","Final set: after the last full rep, 3–5 partials in the bottom half"],cap:"Anchor: the one biceps set that goes to failure that day. 8–12 reps."},
+    cues:["THE anchor curl — first and fresh on Wednesday","Elbows planted, full stretch at the bottom, no leaning back","Preacher grew the lower biceps more, the incline curl the upper (Kassiano 2025): both belong in the week","Final set: after the last full rep, 3–5 partials in the bottom half"],cap:"Anchor: the one biceps set that goes to failure that day. 8–12 reps."},
   seatcurl3:{name:"Seated Leg Curl",grp:"Legs",arch:"legcurl",yt:"seated leg curl form",
     cues:["HAMSTRING PRIORITY — seated beats lying (Maeo 2021: +14% vs +9%)","Hips flexed puts the hamstring at length; lean forward slightly","Full stretch at the top, squeeze at the bottom, 2-second eccentric","Final set: after the last full rep, 3–5 partials in the stretched half"],cap:"Anchor on Mon and Wed. One progression, one rung — log both under the same key."},
   hamMon:{name:"Seated Leg Curl",grp:"Legs",arch:"legcurl",yt:"seated leg curl form",
@@ -571,6 +571,13 @@ window.playbookSheet = () => {
     <p class="note">1 Protein anchor first. 2 Side = wild rice gaining, green veg trimming; fries once a week on a squat or deadlift day, never on a trim day. 3 Sauces on the side (~150–250 each). 4 Short on protein → shrimp or deviled eggs. 5 Twenty minutes of grazing = log 300. 6 Whatever the staff meal allows, the tiers still pick. 7 Alcohol: cap 2, never before squat or deadlift, zero in Week 3 and zero on a trim.</p>
     ${tier("A", "Tier A — order without thinking")}${tier("B", "Tier B — fine with one swap")}${tier("C", "Tier C — once a week, gaining only")}${tier("D", "Tier D — not on this plan")}
     <div class="eyebrow" style="margin-top:10px">Sides</div>${NUTRI.SIDES.map((x) => `<div class="frow"><span class="fn">${esc(x.name)}${x.note ? `<small>${esc(x.note)}</small>` : ""}</span><span class="fv">~${x.kcal}</span></div>`).join("")}`);
+};
+window.suppSheet = () => {
+  const tier = (t, title) => `<div class="eyebrow" style="margin-top:10px">${title}</div>` + NUTRI.SUPPS.filter((x) => x.tier === t).map((x) => `<div class="frow"><span class="fn">${esc(x.name)}<small>${esc(x.why)}</small></span><span class="fv">${esc(x.dose)}</span></div>`).join("");
+  openSheet(`<button class="closex" onclick="closeSheet()">×</button><h2>Supplements</h2>
+    <p class="capnote warn">Every product: ${esc(NUTRI.CERT)}. No exceptions, including whey and caffeine. USPA drug-tested runs its own banned list with urine tests and no exemptions, and contamination studies found undeclared banned substances in 12–58% of supplements.</p>
+    ${tier(1, "Tier 1 — daily")}${tier(2, "Tier 2 — your situation")}${tier(3, "Tier 3 — only if needed")}
+    <p class="note" style="margin-top:8px">Skip: BCAAs, pre-workout blends, fat burners, test boosters, glutamine, ZMA. The blends are where contamination lives.</p>`);
 };
 window.setPrimerDate = (v) => { if (!v) delete S.primer.date; else S.primer.date = v; save(); render(); };
 window.primerSheet = () => {
@@ -899,7 +906,8 @@ function renderTrends() {
     : "Scale flat — you're at maintenance, not gaining.";
   const nutriCard = (() => {
     const T = NUTRI.targets(S.nutri.mode), st = NUTRI.weekStats(S.food, keyOf(todayUTC() - 86400000), 7);
-    const dec = NUTRI.decision(S.bw, S.meas);
+    const sleepMap = {}; for (const [k, l] of Object.entries(S.logs)) if (l && Number.isFinite(l.sleep)) sleepMap[k] = l.sleep;
+    const dec = NUTRI.decision(S.bw, S.meas, { mode: S.nutri.mode, since: S.nutri.since, sleep: sleepMap, today: keyOf(todayUTC()) });
     const end = S.nutri.mode === "trim" && S.nutri.since ? NUTRI.trimEnd(S.nutri.since) : null;
     const overdue = end && keyOf(todayUTC()) >= end;
     const modeBtn = (m) => `<button class="btn ${S.nutri.mode === m ? "" : "ghost"}" onclick="setNutriMode('${m}')">${NUTRI.MODES[m].label} · ${NUTRI.MODES[m].kcal}</button>`;
@@ -909,10 +917,10 @@ function renderTrends() {
       <p class="note">Phase 1 now: ${esc(NUTRI.PHASES[0].name)} \u2192 ${esc(NUTRI.PHASES[0].target)} by ${esc(NUTRI.PHASES[0].by)}. Phase 2: ${esc(NUTRI.PHASES[1].name)}, ${esc(NUTRI.PHASES[1].by)} \u2014 ${esc(NUTRI.PHASES[1].target)}.</p>
       <div class="statline" style="margin-top:8px;display:flex;justify-content:space-between;gap:10px;align-items:baseline"><span class="note">Last 7 full days</span><b style="font-variant-numeric:tabular-nums">${st.logged ? `${st.avgKcal} kcal · ${st.avgP}P avg · ${st.logged}/7 logged` : "nothing logged"}</b></div>
       ${st.logged ? `<p class="note">${st.avgKcal > T.kcal + 150 ? "⚠️ Averaging over target — that's the overshoot." : st.avgKcal < T.kcal - 200 ? "⚠️ Under target — you will not grow on this." : "✅ On target."}${st.avgP < T.p - 15 ? " Protein is short — add the shrimp or a scoop." : ""}</p>` : ""}
-      <div class="statline" style="margin-top:8px;display:flex;justify-content:space-between;gap:10px;align-items:baseline"><span class="note">Decision rule</span><b>${dec.mode ? (dec.mode === "trim" ? "→ TRIM" : "→ KEEP GAINING") : "—"}</b></div>
+      <div class="statline" style="margin-top:8px;display:flex;justify-content:space-between;gap:10px;align-items:baseline"><span class="note">Decision rule</span><b>${dec.gate === "sleep" && S.nutri.mode === "gain" ? "→ FIX SLEEP FIRST" : dec.mode ? (dec.mode === "trim" ? "→ TRIM" : "→ KEEP GAINING") : "—"}</b></div>
       <p class="note">${esc(dec.reason)}</p>
-      ${dec.mode && dec.mode !== S.nutri.mode ? `<div class="rowbtns"><button class="btn" onclick="setNutriMode('${dec.mode}')">${dec.mode === "trim" ? "Start the 4-week trim" : "Back to gaining"}</button></div>` : ""}
-      <div class="rowbtns"><button class="btn ghost" onclick="playbookSheet()">🍽 Hillstone playbook</button></div></div>`;
+      ${dec.mode && dec.mode !== S.nutri.mode ? `<div class="rowbtns"><button class="btn" onclick="setNutriMode('${dec.mode}')">${dec.mode === "trim" ? "Start the trim (6 weeks max)" : "Back to gaining"}</button></div>` : ""}
+      <div class="rowbtns"><button class="btn ghost" onclick="playbookSheet()">🍽 Hillstone playbook</button><button class="btn ghost" onclick="suppSheet()">💊 Supplements</button></div></div>`;
   })();
   const measCard = `<div class="card single"><div class="eyebrow sig">Waist &amp; frame — the auditor</div>
     <p class="note">Abs are a body-fat number, not a training one. Waist is the metric that tells you whether the scale climbing is muscle or padding.</p>

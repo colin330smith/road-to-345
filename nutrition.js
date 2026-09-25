@@ -2,9 +2,11 @@
 // Spliced into app-shell at /*==NUTRI==*/ and unit-tested from test.js.
 const MODES = {
   gain: { label: "GAIN", kcal: 3050, p: 190, f: 80, c: 415, rate: "+0.25 lb/wk", why: "The default. Slow is what makes it lean." },
-  trim: { label: "TRIM", kcal: 2500, p: 200, f: 70, c: 260, rate: "−1 lb/wk", why: "Only at ~18%. Four weeks, stop at 15%, resume gaining." },
+  trim: { label: "TRIM", kcal: 2500, p: 200, f: 70, c: 260, rate: "−1 lb/wk (~0.5% of bodyweight)", why: "Only at ~18%. Six weeks at most; ends early once the waist is down 1\" or the 7-day average is down 6 lb. Then straight back to gaining." },
 };
-const TRIM_WEEKS = 4;
+// Six weeks is the cap, not the target: the end conditions usually come first.
+const TRIM_WEEKS = 6;
+const TRIM_DONE = { waist: -1, lb: 6 };
 
 // Hillstone Winter Park. ESTIMATES built from the menu's own descriptions and normal
 // restaurant portions — Hillstone publishes no nutrition data. Choose by these; the
@@ -54,7 +56,7 @@ const SIDES = [
 // The home meals, portioned to the day. Shift meal comes from Hillstone.
 const HOME = [
   { id: "pre",   mode: "gain", when: "6:10 pre-lift",   name: "Whey + banana",                              kcal: 220,  p: 25 },
-  { id: "preT",  mode: "trim", when: "6:10 pre-lift",   name: "Whey in water",                              kcal: 120,  p: 25 },
+  { id: "preT",  mode: "trim", when: "6:10 pre-lift",   name: "Whey + banana",                              kcal: 220,  p: 25, note: "Keep the carbs before a 7 AM lift, even trimming. Cut them elsewhere" },
   { id: "m1",    mode: "gain", when: "8:45 meal 1",     name: "4 eggs + 1 cup oats in milk + berries + honey", kcal: 800, p: 50 },
   { id: "m1T",   mode: "trim", when: "8:45 meal 1",     name: "4 eggs + ½ cup oats + berries",          kcal: 600,  p: 50 },
   { id: "m2",    mode: "gain", when: "12:30 meal 2",    name: "1½ cup rice + 7 oz chicken thigh + veg", kcal: 750,  p: 50 },
@@ -98,7 +100,8 @@ const PHASES = [
     note: "Small surplus for years. Trim only when body fat hits 18%." },
   { id: "ck", name: "The CK cut", target: "~190 lb @ 11% \u00b7 same 170 lb lean", short: "~190 @ 11%", by: "10 weeks after Wave 45", mode: "trim", kcal: 2300, weeks: 10, floorBF: 10,
     gate: "Starts only once 200 @ 15% is real on the tape \u2014 waist and weekly average, not a good morning.",
-    note: "\u22121 lb/wk, protein 200+, heavy lifting held with back-offs cut ~20%. Diet break at week 5. Stop at 10%: that is a floor, not a target. Then three weeks back up to maintenance." },
+    protein: [215, 230],
+    note: "\u22121 lb/wk, protein 215\u2013230 g (Helms 2014: 2.3\u20133.1 g per kg of lean mass), heavy lifting held with back-offs cut ~20%. A refeed day is allowed when hunger bites: it helps you stick to the cut, it does not save muscle (ICECAP). Stop at 10%: that is a floor, not a target. Then three weeks back up to maintenance." },
 ];
 // Ultimate Pump Mode (the date-night primer). Not a training block: a 36-hour fullness + posture protocol.
 // A big session the night before flattens you; the pump is a 45-minute thing timed
@@ -132,7 +135,7 @@ const PRIMER = {
            ["G",  "Stomach vacuum, standing",       "3×30 s",       "finisher — pulls the waist IN. An ab wheel pumps the midsection outward and leaves it sore; abs don’t read through a shirt, a tight waist does", 0]],
     finish: "Posture reset, last 3 min: chin tucks ×10 · wall slides ×10 · doorway pec stretch 30 s/side. Stand tall.",
     after: "Banana or rice cakes + 500 ml water with a pinch of salt — extends the pump. Pocket a band: 15 pull-aparts + 5 chin tucks in the car before you walk in — the scapular retractors stay switched on for a while after you fire them.",
-    boosters: ["30–50 g fast carbs 30 min before (banana, juice): insulin raises muscle blood flow and pulls water in with the glycogen", "Citrulline malate 6–8 g, 45–60 min before: nitric-oxide precursor, modest but real vasodilation. Skip arginine — poor absorption", "If you own BFR cuffs: on the arm superset only, 30% load, 30/15/15/15 reps, cuffs off after — the strongest acute-swelling tool there is"] },
+    boosters: ["30–50 g fast carbs 30 min before (banana, juice): insulin raises muscle blood flow and pulls water in with the glycogen", "Citrulline malate 6–8 g, 45–60 min before: nitric-oxide precursor, modest but real vasodilation. Certified (NSF for Sport / Informed Sport) only. Skip arginine — poor absorption", "If you own BFR cuffs: on the arm superset only, 30% load, 30/15/15/15 reps, cuffs off after — the strongest acute-swelling tool there is"] },
   next: "Back to the plan. If the day’s weigh-in said TRIM, start it the day after — the date was the one-day exception. Log the day anyway.",
 };
 // Resolve the pump's loads against a lookup of the current week's working weights.
@@ -152,6 +155,19 @@ function primerStage(dateDk, todayDk) {
   const days = Math.round((dkMs(dateDk) - dkMs(todayDk)) / 86400000);
   return days === 1 ? "eve" : days === 0 ? "day" : null;
 }
+// Every product must carry NSF Certified for Sport or Informed Sport: he competes
+// USPA drug-tested (its own banned list, urine tests, no exemptions), and 12-58% of
+// supplements in contamination studies held undeclared banned substances.
+const CERT = "NSF Certified for Sport or Informed Sport";
+const SUPPS = [
+  { tier: 1, name: "Creatine monohydrate", dose: "5 g a day, any time, forever", why: "The best-supported supplement there is (ISSN, Kreider 2017)." },
+  { tier: 1, name: "Whey protein", dose: "1\u20132 scoops a day", why: "Convenience for hitting protein, not magic." },
+  { tier: 1, name: "Caffeine", dose: "3 mg/kg (~250 mg) 50\u201360 min before the lift", why: "ISSN: 3\u20136 mg/kg about an hour out. At this dose, nothing within ~13 h of bed (Gardiner 2023: 8.8 h for a coffee, 13.2 h for a pre-workout dose). Sleep is the bottleneck." },
+  { tier: 2, name: "Omega-3", dose: "Salmon twice a week, or 2 g EPA+DHA", why: "Food first." },
+  { tier: 2, name: "Electrolytes", dose: "Sodium ~500 mg + potassium on sweaty days", why: "Florida shifts and the incline walk." },
+  { tier: 3, name: "Vitamin D3", dose: "Only if a blood test says you are low", why: "No clear strength benefit in athletes who are not deficient (Han 2024)." },
+  { tier: 3, name: "Magnesium glycinate", dose: "300\u2013400 mg before bed if sleep is under 7.5 h", why: "A sleep aid, not a muscle builder." },
+];
 const ALL = () => [...HILLSTONE, ...SIDES, ...HOME];
 const byId = (id) => ALL().find((x) => x.id === id) || null;
 const targets = (mode) => MODES[mode] || MODES.gain;
@@ -171,21 +187,52 @@ function weekStats(food, dk, n) {
     avgKcal: Math.round(days.reduce((s, d) => s + d.kcal, 0) / days.length),
     avgP: Math.round(days.reduce((s, d) => s + d.p, 0) / days.length) };
 }
-// The day-10 rule, generalised: a 3-day scale average against a threshold, and the
-// waist against its baseline. Returns a suggestion; the user confirms it, like a gate.
+// The decision rule. 7-day scale averages, measured against where THIS phase
+// started (not a fixed number), plus the waist against its phase-start value,
+// plus a sleep gate: a deficit on short sleep takes the loss from muscle
+// (Nedeltcheva 2010). Returns a suggestion; the user confirms it, like a gate.
+const DK = /^\d{4}-\d{2}-\d{2}$/;
+function avgIn(map, fromDk, toDk, min) {
+  const v = Object.keys(map || {}).filter((k) => DK.test(k) && k >= fromDk && k <= toDk && Number.isFinite(+map[k])).map((k) => +map[k]);
+  return v.length >= (min || 3) ? +(v.reduce((a, b) => a + b, 0) / v.length).toFixed(1) : null;
+}
+const addDays = (dk, n) => msDk(dkMs(dk) + n * 86400000);
 function decision(bw, meas, opts) {
-  const o = Object.assign({ keep: 188, waistUp: 1 }, opts || {});
-  const bk = Object.keys(bw || {}).filter((k) => /^\d{4}-\d{2}-\d{2}$/.test(k) && Number.isFinite(+bw[k])).sort();
-  const last3 = bk.slice(-3).map((k) => +bw[k]);
-  const avg = last3.length ? +(last3.reduce((a, b) => a + b, 0) / last3.length).toFixed(1) : null;
-  const mk = Object.keys(meas || {}).filter((k) => meas[k] && Number.isFinite(meas[k].wa)).sort();
-  const dW = mk.length > 1 ? +(meas[mk[mk.length - 1]].wa - meas[mk[0]].wa).toFixed(2) : null;
-  if (avg == null) return { mode: null, avg, dW, days: bk.length, reason: "Log the scale for 3+ days first." };
-  const heavy = avg > o.keep, wide = dW != null && dW >= o.waistUp;
-  const wTxt = dW == null ? "waist not logged twice yet" : `waist ${dW >= 0 ? "+" : ""}${dW}"`;
-  if (!heavy && !wide) return { mode: "gain", avg, dW, days: bk.length, reason: `3-day avg ${avg} ≤ ${o.keep} · ${wTxt}. Mostly water. Keep gaining.` };
-  return { mode: "trim", avg, dW, days: bk.length, reason: `3-day avg ${avg}${heavy ? ` > ${o.keep}` : ""} · ${wTxt}. Real tissue. Four-week trim.` };
+  const o = Object.assign({ mode: "gain" }, opts || {});
+  const bk = Object.keys(bw || {}).filter((k) => DK.test(k) && Number.isFinite(+bw[k])).sort();
+  const today = o.today || bk[bk.length - 1];
+  const since = o.since && DK.test(o.since) ? o.since : bk[0];
+  const out = { mode: null, avg: null, start: null, dW: null, rate: null, weeks: null, sleep: null, gate: null, days: bk.length };
+  if (!today || !since) return { ...out, reason: "Log the scale for 3+ days first." };
+  out.avg = avgIn(bw, addDays(today, -6), today);
+  out.start = avgIn(bw, since, addDays(since, 6));
+  out.weeks = +((dkMs(today) - dkMs(since)) / (7 * 86400000)).toFixed(1);
+  const mk = Object.keys(meas || {}).filter((k) => DK.test(k) && meas[k] && Number.isFinite(meas[k].wa)).sort();
+  const base = [...mk].reverse().find((k) => k <= since) || mk.find((k) => k > since);
+  const cur = mk[mk.length - 1];
+  out.dW = base && cur && cur !== base ? +(meas[cur].wa - meas[base].wa).toFixed(2) : null;
+  out.sleep = avgIn(o.sleep, addDays(today, -6), today);
+  const shortSleep = out.sleep != null && out.sleep < 7;
+  if (out.avg == null) return { ...out, reason: "Log the scale 3+ mornings this week: the 7-day average is the number." };
+  const wTxt = out.dW == null ? "waist not re-measured this phase" : `waist ${out.dW >= 0 ? "+" : ""}${out.dW}" since the phase began`;
+  if (out.start != null && out.weeks >= 1) out.rate = +((out.avg - out.start) / out.weeks).toFixed(2);
+  if (o.mode === "trim") {
+    if (out.weeks >= TRIM_WEEKS) return { ...out, mode: "gain", reason: `Six weeks is the cap. Back to gaining. (${wTxt})` };
+    if (out.dW != null && out.dW <= TRIM_DONE.waist) return { ...out, mode: "gain", reason: `${wTxt}: the trim did its job. Back to gaining.` };
+    if (out.start != null && out.start - out.avg >= TRIM_DONE.lb) return { ...out, mode: "gain", reason: `7-day average ${out.avg}, down ${(out.start - out.avg).toFixed(1)} from ${out.start}. Done. Back to gaining.` };
+    const fast = out.rate != null && -out.rate > out.avg * 0.01;
+    return { ...out, mode: "trim", gate: shortSleep ? "sleep" : null,
+      reason: `7-day average ${out.avg}${out.start != null ? ` vs ${out.start} at the start` : ""} · ${wTxt}. Keep trimming.${fast ? " Losing faster than 1% a week: add 200 kcal (the slower rate keeps more muscle, Garthe 2011)." : ""}${shortSleep ? ` Sleep is averaging ${out.sleep} h: under 7, the loss comes out of muscle. Fix sleep or end the trim early.` : ""}` };
+  }
+  // gaining
+  if (out.dW != null && out.dW >= 1) {
+    if (shortSleep) return { ...out, mode: "gain", gate: "sleep", reason: `${wTxt} says trim, but sleep is averaging ${out.sleep} h. A deficit on short sleep takes the loss from muscle. Get to 7 h+ first, then start the trim.` };
+    return { ...out, mode: "trim", reason: `${wTxt}: that is tissue, not water. Six-week trim.` };
+  }
+  if (out.rate == null) return { ...out, mode: "gain", reason: `7-day average ${out.avg} · ${wTxt}. The rate needs a full week of this phase. Keep gaining.` };
+  const adj = out.rate > 0.5 ? " Gaining faster than 0.5 lb a week: drop 150 kcal, that extra is fat." : out.rate < 0.1 ? " Flat: add 150 kcal." : " On pace.";
+  return { ...out, mode: "gain", reason: `7-day average ${out.avg}, ${out.rate >= 0 ? "+" : ""}${out.rate} lb/wk since the phase began · ${wTxt}.${adj}` };
 }
 const trimEnd = (sinceDk, weeks) => msDk(dkMs(sinceDk) + (weeks || TRIM_WEEKS) * 7 * 86400000);
-const NUTRI = { MODES, TRIM_WEEKS, PHASES, PRIMER, primerStage, primerLoads, roundLoad, HILLSTONE, SIDES, HOME, byId, targets, dayTotals, weekStats, decision, trimEnd };
+const NUTRI = { CERT, SUPPS, TRIM_DONE, avgIn, MODES, TRIM_WEEKS, PHASES, PRIMER, primerStage, primerLoads, roundLoad, HILLSTONE, SIDES, HOME, byId, targets, dayTotals, weekStats, decision, trimEnd };
 if (typeof module !== "undefined") module.exports = NUTRI;

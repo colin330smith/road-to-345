@@ -915,5 +915,59 @@ console.log("\n── frame requirements ──");
   ok(farmer.w === 80 && farmer.repN === 30, "since: farmer hold starts Wave 3 on its seed rung");
 }
 
+// ═══ autoregulation: Rules A-D ═══
+{
+  const day = (wv, wk, d) => E.sessionDayUTC(wv, wk, d, 0);
+  const ctx = (ix) => ({ index: ix, offsetWeeks: 0 });
+  const bench = (ix, wv = 5, wk = 2) => E.sessionFor(wv, wk, 2, {}, E.DEFAULT_SPEC, ctx(ix));
+  const plan = bench({});
+  const sgl = plan.find((b) => b.type === "single" && b.lift === "bn"), bo = plan.find((b) => b.type === "backoff" && b.lift === "bn");
+  // pct table sanity: monotonic, 10 = 100%
+  const ks = Object.keys(E.RPE_PCT_1).map(Number).sort((a, b) => a - b);
+  ok(ks.every((k, i) => i === 0 || E.RPE_PCT_1[k] > E.RPE_PCT_1[ks[i - 1]]) && E.RPE_PCT_1[10] === 1, "RPE table rises to 100% at RPE 10");
+  // Rule A
+  const t = day(5, 2, 2);
+  const onT = bench({ "bn-single": [{ t, w: sgl.w, r: 1, rate: "O" }] }).find((b) => b.type === "backoff" && b.lift === "bn");
+  eq(onT.w, bo.w, "Rule A: single on target leaves the back-offs as planned");
+  const easy = bench({ "bn-single": [{ t, w: sgl.w, r: 1, rate: "E" }] }).find((b) => b.type === "backoff" && b.lift === "bn");
+  ok(easy.w > bo.w && easy.w <= E.R5(bo.w * 1.05), `Rule A: easy single raises back-offs, at most +5% (${bo.w} -> ${easy.w})`);
+  const hard = bench({ "bn-single": [{ t, w: sgl.w, r: 1, rpe: 10 }] }).find((b) => b.type === "backoff" && b.lift === "bn");
+  eq(hard.w, E.R5(bo.w * 0.95), "Rule A: a grinder cuts back-offs by 5%, no more");
+  const yesterday = bench({ "bn-single": [{ t: t - E.MS_DAY, w: sgl.w, r: 1, rate: "E" }] }).find((b) => b.type === "backoff" && b.lift === "bn");
+  eq(yesterday.w, bo.w, "Rule A: only today's single scales today's back-offs");
+  eq(E.singleFactor(200, 8, { w: 200, rpe: 8 }), 1, "Rule A: factor 1 on target");
+  // Rule C
+  const incKey = plan.find((b) => /Incline Bench — back/.test(b.name || ""));
+  const lastWk = day(5, 1, 2);
+  const cUp = bench({ "incbb-back": [{ t: lastWk, w: 150, r: 8 }, { t: lastWk, w: 150, r: 8, rate: "E" }] }).find((b) => b.pkey === "incbb-back");
+  eq(cUp.w, E.R5(incKey.w * 1.05), "Rule C: easy last time = +5% next exposure");
+  const cDn = bench({ "incbb-back": [{ t: lastWk, w: 150, r: 8, rate: "H" }] }).find((b) => b.pkey === "incbb-back");
+  eq(cDn.w, E.R5(incKey.w * 0.95), "Rule C: hard last time = -5% next exposure");
+  const row = plan.find((b) => b.pkey === "rowtue");
+  const rUp = bench({ rowtue: [{ t: lastWk, w: row.w, r: 10, rate: "E" }] }).find((b) => b.pkey === "rowtue");
+  eq(rUp.w, E.R25(row.w + 5), "Rule C: accessories move one increment");
+  const stale = bench({ "incbb-back": [{ t: lastWk - 21 * E.MS_DAY, w: 150, r: 8, rate: "E" }] }).find((b) => b.pkey === "incbb-back");
+  eq(stale.w, incKey.w, "Rule C: a rating older than 14 days is ignored");
+  const superseded = bench({ "incbb-back": [{ t: lastWk - E.MS_DAY * 3, w: 150, r: 8, rate: "E" }, { t: lastWk, w: 150, r: 8 }] }).find((b) => b.pkey === "incbb-back");
+  eq(superseded.w, incKey.w, "Rule C: a newer unrated session supersedes an older rating");
+  ok(E.sessionFor(5, 2, 2, {}, E.DEFAULT_SPEC).every((b, i) => b.w === plan[i].w && !plan[i].auto), "no history = the plan's loads, untouched");
+  // Rule D
+  const tb = E.mainTables(5).t;
+  const d5 = (L, wk) => day(5, wk, { sq: 1, bn: 2, dl: 5 }[L]);
+  const single = (L, wk, x) => ({ [L + "-single"]: [{ t: d5(L, wk), w: tb[L].s[wk - 1], r: 1, ...x }] });
+  eq(E.autoGate(5, {}, ctx(single("bn", 3, { rate: "O" }))).bn.result, "clean", "Rule D: wk3 single on the cap = clean");
+  eq(E.autoGate(5, {}, ctx(single("bn", 3, { rpe: 8.5 }))).bn.result, "small", "Rule D: RPE 8.5 = small");
+  eq(E.autoGate(5, {}, ctx(single("bn", 3, { rpe: 9 }))).bn.result, "repeat", "Rule D: RPE 9 = repeat");
+  eq(E.autoGate(5, {}, ctx(single("bn", 3, { rpe: 10 }))).bn.result, "reset", "Rule D: a max-effort wk3 single = reset");
+  eq(E.autoGate(5, {}, ctx(single("bn", 3, { rpe: 7 }))).bn.result, "clean", "Rule D: under the cap = clean (not reserved for RPE 7: base is not e1RM)");
+  eq(E.autoGate(5, {}, ctx(single("sq", 2, { rate: "H" }))).sq.week, 2, "Rule D: falls back to the latest rated single");
+  eq(E.autoGate(6, {}, ctx(single("bn", 3, { rate: "O" }))), null, "Rule D: never auto-gates out of a peak (the test sets that base)");
+  const g = E.withAutoGates({}, ctx(single("bn", 3, { rpe: 9 })));
+  eq([g[6].bn, g[6].auto.bn.result], ["repeat", "repeat"], "withAutoGates fills the unset gate");
+  eq(E.cbFor(6, g).bn, E.cbFor(5).bn, "an auto repeat holds the base");
+  eq(E.withAutoGates({ 6: { bn: "clean" } }, ctx(single("bn", 3, { rpe: 9 })))[6].bn, "clean", "a gate the lifter set wins over Rule D");
+  eq(E.withAutoGates({}, ctx({ "bn-single": [{ t: E.sessionDayUTC(2, 3, 2, 0), w: 100, r: 1, rpe: 10 }] }))[3], undefined, "Rule D never overrides the calibration pin");
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

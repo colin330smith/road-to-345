@@ -411,7 +411,7 @@ function trackedFor(id, wave, week, gates) {
     rpe: tp[2], moveId: T.key, pkey: T.key + "-top", note: T.note, added: !!T.added, disp: label(R5(cb * tp[0])) });
   out.push({ type: "backoff", lift: id, name: T.name + " \u2014 " + (tp ? "back-offs" : "light"), w: R5(cb * bk[0]),
     reps: bk[1], sets: bk[2], rpe: tp ? "7" + "\u2013" + "8" : "5" + "\u2013" + "6", moveId: T.key,
-    pkey: T.key + "-back", light: !tp, added: !!T.added, disp: label(R5(cb * bk[0])) });
+    pkey: T.key + "-back", light: !tp, added: !!T.added, disp: label(R5(cb * bk[0])), inc: T.step });
   return out;
 }
 const inclineCB = (wave, gates) => trackedCB("inc", wave, gates);
@@ -626,7 +626,7 @@ function sx(name, seed, steps, sets, rpe, arch, moveId, db, cap, inc, wv, since)
   const lo = steps[st.i], hi = steps[Math.min(st.i + 1, last)];
   return {
     type: "accessory", name, w: st.w, reps: lo === hi ? String(lo) : lo + "\u2013" + hi,
-    sets, rpe, arch, moveId, db: !!db, cap: cap || "", spec: true, repN: lo,
+    sets, rpe, arch, moveId, db: !!db, cap: cap || "", spec: true, repN: lo, inc: inc == null ? 5 : inc,
     top: hi === steps[last] && steps.length > 1, pkey: pkeyOf(name), prog: st.prog,
   };
 }
@@ -806,7 +806,7 @@ const WARM_PB = [["Bar", 15], [95, 8], [115, 5], [135, 3]];
 // returns ordered blocks for wave/week/day (1=Mon…5=Fri)
 function sessionFor(wave, week, day, gates, spec, histCtx) {
   HISTCTX = histCtx || null;
-  try { return sessionForInner(wave, week, day, gates, spec); }
+  try { return autoregulate(sessionForInner(wave, week, day, gates, spec), wave, week, day, histCtx); }
   finally { HISTCTX = null; }
 }
 function sessionForInner(wave, week, day, gates, spec) {
@@ -897,7 +897,7 @@ function sessionForInner(wave, week, day, gates, spec) {
     // frame bias: lat-width / upper-back priority trims the Friday row to 2 sets
     let sets = p.sets;
     if (day === 5 && a.id === "rowfri" && (spec.framePrimary === "latwidth" || spec.framePrimary === "upperback") && week < 4) sets = Math.min(sets, 2);
-    push({ type: "accessory", name: a.name, w: p.w, reps: p.reps, sets, rpe: p.rpe, db: a.db, top: p.top, moveId: a.id, cap: a.cap, pkey: a.id, prog: p.prog, lastHard: p.lastHard, lp: !!(a.lp && p.lastHard) });
+    push({ type: "accessory", name: a.name, w: p.w, reps: p.reps, sets, rpe: p.rpe, db: a.db, top: p.top, moveId: a.id, cap: a.cap, pkey: a.id, prog: p.prog, lastHard: p.lastHard, lp: !!(a.lp && p.lastHard), inc: a.inc });
   }
   if (day === 4 && week < 4 && xfer) push({ type: "note", name: "Delt & triceps isolation → Saturday", note: "Your side-delt, rear-delt and pushdown work lives in Saturday's frame day now — keeps weekly volume under cap." });
   if (day === 3 && cyc !== 6) {
@@ -994,7 +994,112 @@ function redSession(wave, day, gates) {
   return blocks;
 }
 
-const ENGINE = { postTestBase, CALIBRATION, PROJ_DEFAULT, cbChain, etaWave, explicitCB, TRACKED, trackedCB, trackedFor, ARM_START, ARM_GOAL, clearedInWave, inclineCB, inclineFor, INCLINE_START, INCLINE_GOAL, pkeyOf, accStateLogged, R5, R25, START, LIFTS, LIFT_NAME, gateDelta, cbFor, cycleOf, macroOf, CYCLE_NAME, waveStartUTC, whereIs, NOTES, mainTables, ohpFor, ACC, accState, accFor, sessionFor, testAttempts, yellowW, redSession, WAVE1_MONDAY, MS_DAY,
+// ── autoregulation (EVIDENCE.md: Rules A-D) ────────────────────────────
+// Loads are planned from the base; how the day's sets actually felt adjusts them.
+// %1RM for a single at each RPE (RIR-based RPE, Zourdos 2016 / Helms 2016; the
+// Tuchscherer RTS single-rep column).
+const RPE_PCT_1 = { 6: 0.863, 6.5: 0.878, 7: 0.892, 7.5: 0.907, 8: 0.922, 8.5: 0.939, 9: 0.955, 9.5: 0.978, 10: 1 };
+const pctAt = (rpe) => RPE_PCT_1[Math.max(6, Math.min(10, Math.round(rpe * 2) / 2))];
+const capNum = (rpe) => { const m = String(rpe).match(/\d+(\.\d+)?/); return m ? +m[0] : 8; };
+// Rule B: a one-tap rating on the last set. Easy = ~1.5 RPE under the target,
+// On target = the target, Hard = ~1 over it.
+const RATE = { E: -1.5, O: 0, H: 1 };
+const RATE_LABEL = { E: "Easy", O: "On target", H: "Hard" };
+function effRPE(e, cap) {
+  if (e && Number.isFinite(e.rpe)) return e.rpe;
+  if (e && RATE[e.rate] != null) return cap + RATE[e.rate];
+  return null;
+}
+const rated = (e) => !!e && (Number.isFinite(e.rpe) || RATE[e.rate] != null);
+function sessionDayUTC(wave, week, day, off) { return waveStartUTC(wave, off || 0) + ((week - 1) * 7 + (day - 1)) * MS_DAY; }
+// the rated entry of a pkey on one day (the last set carries the rating)
+function ratedOn(ix, pkey, t) {
+  const hist = (ix && ix[pkey]) || [];
+  const day = hist.filter((e) => e.t === t);
+  for (let i = day.length - 1; i >= 0; i--) if (rated(day[i])) return day[i];
+  return null;
+}
+// Rule A: the single sets the back-offs. e1RM from the single vs the e1RM the
+// plan assumed, clamped to +/-5%.
+function singleFactor(planW, cap, e) {
+  const r = effRPE(e, cap);
+  if (r == null || !(e.w > 0) || !(planW > 0)) return null;
+  const f = (e.w / pctAt(r)) / (planW / pctAt(cap));
+  return Math.max(0.95, Math.min(1.05, f));
+}
+const ROUND = (b, x) => (b.db ? R25(x) : R5(x));
+function autoregulate(blocks, wave, week, day, ctx) {
+  if (!ctx || !ctx.index || !Array.isArray(blocks)) return blocks;
+  const ix = ctx.index, off = ctx.offsetWeeks || 0, today = sessionDayUTC(wave, week, day, off);
+  return blocks.map((b) => {
+    if (!b || !b.pkey || !(b.w > 0) || b.light || b.type === "single" || b.type === "warmup") return b;
+    // Rule A: main-lift back-offs follow today's single
+    if (b.type === "backoff" && LIFTS.includes(b.lift)) {
+      const sgl = blocks.find((x) => x.type === "single" && x.lift === b.lift);
+      const e = sgl ? ratedOn(ix, b.lift + "-single", today) : null;
+      const f = e ? singleFactor(sgl.w, capNum(sgl.rpe), e) : null;
+      if (f != null) {
+        const w = R5(b.w * f);
+        if (w === b.w) return { ...b, auto: { rule: "A", f } };
+        return { ...b, w, planned: b.w, auto: { rule: "A", f }, note: `Auto: single ${e.w} @ RPE ${effRPE(e, capNum(sgl.rpe))} → back-offs ${w > b.w ? "up" : "down"} to ${w} (plan ${b.w})` };
+      }
+    }
+    // Rule C: the next exposure follows the last rating (within 14 days)
+    const hist = (ix[b.pkey] || []).filter((e) => e.t < today && e.t >= today - 14 * MS_DAY && RATE[e.rate] != null && e.rate !== "O");
+    if (!hist.length) return b;
+    const last = hist.reduce((a, e) => (e.t >= a.t ? e : a));
+    if (last.t !== Math.max(...(ix[b.pkey] || []).filter((e) => e.t < today).map((e) => e.t))) return b; // a newer unrated session supersedes it
+    const up = last.rate === "E";
+    let w;
+    if (b.type === "accessory" || b.added) w = ROUND(b, b.w + (up ? 1 : -1) * (b.inc || 5));
+    else w = R5(b.w * (up ? 1.05 : 0.95));
+    if (w <= 0) return b;
+    return { ...b, w, planned: b.w, auto: { rule: "C", rate: last.rate }, note: `Auto: last time rated ${RATE_LABEL[last.rate]} → ${w} (plan ${b.w})` };
+  });
+}
+// Rule D: the gate from rated singles. Compares the e1RM of the wave's last rated
+// single against the e1RM the program assumed when it planned that single at its
+// cap. On or under the cap = clean (the v7 gate), ~RPE 8.5 = small, ~RPE 9 = repeat,
+// worse = reset. Judgment call: the reviewer's "clean only at RPE 7" rule assumed
+// base = e1RM; this program's base is submaximal, so its own model is the yardstick.
+const GATE_CUTS = [[0.99, "clean"], [0.975, "small"], [0.955, "repeat"]];
+function autoGate(wave, gates, ctx) {
+  if (!ctx || !ctx.index || cycleOf(wave) === 6) return null;
+  const { t, cyc } = mainTables(wave, gates);
+  const off = ctx.offsetWeeks || 0, out = {};
+  const dayOf = { sq: 1, bn: 2, dl: 5 };
+  for (const L of LIFTS) {
+    let best = null;
+    for (let wk = 3; wk >= 1 && !best; wk--) {
+      const e = ratedOn(ctx.index, L + "-single", sessionDayUTC(wave, wk, dayOf[L], off));
+      if (!e) continue;
+      const cap = capNum(cyc === 5 ? RPE_CAP_C5[wk] : RPE_CAP[wk]);
+      const plan = t[L].s[wk - 1];
+      const ratio = (e.w / pctAt(effRPE(e, cap))) / (plan / pctAt(cap));
+      const result = (GATE_CUTS.find(([c]) => ratio >= c - 1e-9) || [0, "reset"])[1];
+      best = { result, ratio: Math.round(ratio * 1000) / 1000, week: wk, w: e.w, rpe: effRPE(e, cap) };
+    }
+    if (best) out[L] = best;
+  }
+  return Object.keys(out).length ? out : null;
+}
+// gates with Rule D filled in wherever the lifter has not set a result or a base
+function withAutoGates(gates, ctx, upTo = 19) {
+  const g = JSON.parse(JSON.stringify(gates || {}));
+  for (let w = 2; w <= upTo; w++) {
+    const a = autoGate(w - 1, g, ctx);
+    if (!a) continue;
+    for (const L of LIFTS) {
+      if (!a[L] || (g[w] && (g[w][L] || (g[w].cb && g[w].cb[L] != null))) || explicitCB(w, g, L) != null) continue;
+      g[w] = g[w] || {};
+      g[w][L] = a[L].result;
+      (g[w].auto = g[w].auto || {})[L] = a[L];
+    }
+  }
+  return g;
+}
+
+const ENGINE = { defaultGate, RPE_PCT_1, pctAt, RATE, RATE_LABEL, singleFactor, autoregulate, autoGate, withAutoGates, sessionDayUTC, GATE_CUTS, postTestBase, CALIBRATION, PROJ_DEFAULT, cbChain, etaWave, explicitCB, TRACKED, trackedCB, trackedFor, ARM_START, ARM_GOAL, clearedInWave, inclineCB, inclineFor, INCLINE_START, INCLINE_GOAL, pkeyOf, accStateLogged, R5, R25, START, LIFTS, LIFT_NAME, gateDelta, cbFor, cycleOf, macroOf, CYCLE_NAME, waveStartUTC, whereIs, NOTES, mainTables, ohpFor, ACC, accState, accFor, sessionFor, testAttempts, yellowW, redSession, WAVE1_MONDAY, MS_DAY,
   FRAME_OPTS, FRAME_LABEL, DETAIL_OPTS, DETAIL_LABEL, DEFAULT_SPEC, isDefaultSpec, saturdaySession, sundaySession, sundayPlanned };
 if (typeof module !== "undefined") module.exports = ENGINE;
 
@@ -1023,7 +1128,10 @@ S.settings = S.settings || { offsetWeeks: 0 };
 S.spec = S.spec || { ...E.DEFAULT_SPEC };
 if (!S.v32) { S.spec.sundayOn = false; S.v32 = 1; } // v32: Sunday is rest by default (stored specs predate it)
 S.ledger = S.ledger || {};
-const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} };
+const save = () => { _gx = null; try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} };
+// effective gates: what the lifter set, plus Rule D (rated singles) wherever he has not
+let _gx = null;
+const GX = () => _gx || (_gx = E.withAutoGates(S.gates, { index: histIndex(), offsetWeeks: (S.settings && S.settings.offsetWeeks) || 0 }));
 // exercise history for log-driven progression: pkey -> [{t,w,r}]
 function histIndex() {
   const ix = {};
@@ -1032,7 +1140,7 @@ function histIndex() {
     const t = Date.parse(dk);
     for (const arr of Object.values(log.sets)) for (const st of arr) {
       if (!st || !st.k) continue;
-      (ix[st.k] = ix[st.k] || []).push({ t, w: +st.w || 0, r: +st.r || 0 });
+      (ix[st.k] = ix[st.k] || []).push({ t, w: +st.w || 0, r: +st.r || 0, rpe: Number.isFinite(st.rpe) ? st.rpe : null, rate: st.rate || null });
     }
   }
   return ix;
@@ -1796,8 +1904,8 @@ function renderToday() {
   if (loc.day === 6 || loc.day === 7) inner += `<div class="rowbtns" style="margin:-2px 0 6px"><button class="btn ghost" onclick="specSheet()">⚙ Specialize · ${esc(E.FRAME_LABEL[S.spec.framePrimary])}</button></div>`;
 
   const hctx = { index: histIndex(), offsetWeeks: off };
-  let blocks = E.sessionFor(loc.wave, loc.week, loc.day, S.gates, S.spec, hctx);
-  if (ready === "R") blocks = E.redSession(loc.wave, loc.day, S.gates);
+  let blocks = E.sessionFor(loc.wave, loc.week, loc.day, GX(), S.spec, hctx);
+  if (ready === "R") blocks = E.redSession(loc.wave, loc.day, GX());
   else if (ready === "Y") blocks = blocks.map(E.yellowW).filter(Boolean);
 
   let planned = 0, doneN = 0;
@@ -1850,10 +1958,12 @@ function renderToday() {
       </div>${b.moveId ? `<button class="ibtn" onclick="moveSheet('${b.moveId}')" aria-label="How to">?</button>` : ""}</div>
       <div class="setrow">${Array.from({ length: isSingle ? 1 : b.sets }, (_, si) =>
         si < sets.length
-          ? `<button class="chip hit" onclick="editSet('${dk}','${bkey}',${si})">${sets[si].w === 0 ? "BW" : esc(String(sets[si].w))}×${esc(String(sets[si].r))}${sets[si].rpe != null ? "@" + esc(String(sets[si].rpe)) : ""}</button>`
+          ? `<button class="chip hit" onclick="editSet('${dk}','${bkey}',${si})">${sets[si].w === 0 ? "BW" : esc(String(sets[si].w))}×${esc(String(sets[si].r))}${sets[si].rpe != null ? "@" + esc(String(sets[si].rpe)) : ""}${sets[si].rate ? " · " + esc(E.RATE_LABEL[sets[si].rate] || "") : ""}</button>`
           : `<button class="chip ${b.lastHard && si === b.sets - 1 ? "hard" : ""}" onclick="hitSet('${dk}','${bkey}',${b.w},${b.repN ?? b.reps},'${esc(b.pkey || "")}')" aria-label="Log set ${si + 1}${b.lastHard && si === b.sets - 1 ? ` — take this one to RPE 9 to 10${b.lp ? ", then 3 to 5 lengthened partials" : ""}` : ""}">×${esc(String(b.reps))}${b.lastHard && si === b.sets - 1 ? `<small>→9–10${b.lp ? " +LP" : ""}</small>` : ""}</button>`).join("")}
         ${sets.length >= (isSingle ? 1 : b.sets) ? `<button class="chip add" onclick="hitSet('${dk}','${bkey}',${b.w},${b.repN ?? b.reps},'${esc(b.pkey || "")}')">＋</button>` : ""}
-      </div></div>`;
+      </div>${done && b.pkey && b.w > 0 ? (() => { const cur = sets[sets.length - 1].rate;
+        return `<div class="seg rate" role="group" aria-label="How did the last set feel">${["E", "O", "H"].map((r) => `<button class="${r === "E" ? "g" : r === "O" ? "y" : "r"} ${cur === r ? "on" : ""}" onclick="rateSet('${dk}','${bkey}','${r}')">${E.RATE_LABEL[r]}</button>`).join("")}</div>
+          ${cur ? "" : `<p class="note" style="margin-top:2px">${isSingle ? "Rate the single: it sets today's back-offs and the gate." : "Rate the last set: it sets next time's load."}</p>`}`; })() : ""}</div>`;
   });
 
   if (loc.day === 7 && loc.week === 4 && loc.wave < 19) inner += `<div class="card single"><div class="eyebrow sig">⚠ Gate day — end of Wave ${loc.wave}</div><p class="note">Review the wave, then set each lift's gate for Wave ${loc.wave + 1}.</p><div class="rowbtns"><button class="btn" onclick="gateSheet(${loc.wave + 1})">Set the Wave ${loc.wave + 1} gate</button></div></div>`;
@@ -1918,7 +2028,7 @@ window.primerSheet = () => {
     <div class="eyebrow" style="margin-top:12px">${esc(P.day.title)} — fuel</div>${li(P.day.fuel)}
     <div class="eyebrow" style="margin-top:12px">${esc(P.pump.title)}</div><p class="note">${esc(P.pump.rule)}</p>
     ${(() => { const loc = E.whereIs(todayUTC(), S.settings.offsetWeeks || 0); const wk = Math.min(Math.max(loc.week || 1, 1), 3), wv = Math.max(loc.wave || 1, 1);
-        const findW = (nm) => { const re = new RegExp(nm, "i"); for (let d = 1; d <= 7; d++) for (const b of E.sessionFor(wv, wk, d, S.gates, S.spec)) if (re.test(b.name || "") && Number.isFinite(b.w) && b.w > 0) return b.w; return null; };
+        const findW = (nm) => { const re = new RegExp(nm, "i"); for (let d = 1; d <= 7; d++) for (const b of E.sessionFor(wv, wk, d, GX(), S.spec)) if (re.test(b.name || "") && Number.isFinite(b.w) && b.w > 0) return b.w; return null; };
         return NUTRI.primerLoads(findW).map((x) => `<div class="frow"><span class="fn">${esc(x.k)} \u00b7 ${esc(x.name)}<small>${esc(x.why)}</small></span><span class="fv"><b>${esc(x.disp)}</b>${x.sr ? ` \u00b7 ${esc(x.sr)}` : ""}</span></div>`).join("")
           + `<p class="note" style="margin-top:6px">Weights are ~75\u201385% of this week\u2019s working loads and move with them. Pump reps, not PRs.</p>`; })()}
     <p class="note" style="margin-top:8px">${esc(P.pump.finish)}</p><p class="note">${esc(P.pump.after)}</p>
@@ -1940,6 +2050,12 @@ window.hitSet = (dk, bkey, w, reps, pk) => {
   const st = { w, r: reps, rpe: null };
   if (pk) st.k = pk;
   arr.push(st); save(); render();
+};
+// Rule B: one tap on the last set. Tapping the current rating again clears it.
+window.rateSet = (dk, bkey, r) => {
+  const arr = ((S.logs[dk] || {}).sets || {})[bkey]; if (!arr || !arr.length) return;
+  const st = arr[arr.length - 1]; st.rate = st.rate === r ? undefined : r; if (!st.rate) delete st.rate;
+  save(); render();
 };
 window.editSet = (dk, bkey, si) => {
   const st = S.logs[dk].sets[bkey][si];
@@ -1964,7 +2080,7 @@ window.delSet = (dk, bkey, si) => { S.logs[dk].sets[bkey].splice(si, 1); save();
 function renderRoad() {
   const off = S.settings.offsetWeeks || 0;
   const now = E.whereIs(todayUTC(), off);
-  const cbNow = E.cbFor(Math.max(1, Math.min(now.wave || 1, 19)), S.gates);
+  const cbNow = E.cbFor(Math.max(1, Math.min(now.wave || 1, 19)), GX());
   const GOALS = { bn: [225, 315], sq: [315, 405], dl: [405, 495] };
   const bwRows = Object.entries(S.bw).filter(([k]) => DK_RE.test(k)).sort();
   const bwNow = bwRows.length ? bwRows[bwRows.length - 1][1] : 182;
@@ -1972,7 +2088,7 @@ function renderRoad() {
   let h = `<div class="card single"><div class="eyebrow sig">The Goal — 315/405/495 · 15" arms · 200 @ 15%</div><div class="summit">
     ${E.LIFTS.map((L) => { const [s0, g] = GOALS[L]; const pct = Math.max(0, Math.min(100, Math.round(((cbNow[L] - s0) / (g - s0)) * 100))); return `<div class="srow"><span>${E.LIFT_NAME[L]}</span><div class="sbar"><i style="width:${pct}%"></i></div><span class="sval">${cbNow[L]} / ${g}</span></div>`; }).join("")}
     ${["inc", "chin", "dip", "rdl"].map((id) => {
-        const T = E.TRACKED[id], v = E.trackedCB(id, Math.max(1, Math.min(now.wave || 1, 19)), S.gates);
+        const T = E.TRACKED[id], v = E.trackedCB(id, Math.max(1, Math.min(now.wave || 1, 19)), GX());
         const p = Math.max(0, Math.min(100, Math.round(((v - T.start) / (T.goal - T.start)) * 100)));
         const lbl = { inc: "Incline", chin: "Chin-up", dip: "Dip", rdl: "RDL" }[id];
         const f = (x) => (T.added ? "+" + x : x);
@@ -1988,14 +2104,14 @@ function renderRoad() {
     <p class="note" style="margin-top:2px"><b style="color:var(--chalk)">${esc(p2.name)}</b> \u2014 ${esc(p2.by)}. ${esc(p2.gate)} Same lean mass, ${p2.weeks} weeks, floor ${p2.floorBF}%. The Calvin Klein Wahlberg with 25 more pounds of muscle than the ad.</p>`; })()}</div>
   <p class="note">19 waves · 4 macros. Wave 3 runs from your measured bases. Projections re-compute from your gate results; a future gate you have not set assumes the small step (+2.5 bench, +5 squat and deadlift), the honest pace past the novice years.</p>`;
   for (let w = 1; w <= 19; w++) {
-    const cb = E.cbFor(w, S.gates);
+    const cb = E.cbFor(w, GX());
     const cyc = E.cycleOf(w);
-    const t = E.mainTables(w, S.gates).t;
+    const t = E.mainTables(w, GX()).t;
     const start = E.waveStartUTC(w, off);
     const cur = now.wave === w;
     const past = now.wave > w;
-    const g = S.gates[w] || {};
-    const gateTxt = w === 1 ? "" : E.LIFTS.map((L) => { const v = g.cb && g.cb[L] != null ? "set" : (g[L] || "clean"); return `<span class="gatechip ${v === "clean" ? "clean" : "warn"}">${E.LIFT_NAME[L][0]} ${esc(v)}</span>`; }).join("");
+    const g = GX()[w] || {};
+    const gateTxt = w === 1 ? "" : E.LIFTS.map((L) => { const v = g.cb && g.cb[L] != null ? "set" : E.explicitCB(w, GX(), L) != null ? "measured" : (g[L] || E.defaultGate(w)) + (g.auto && g.auto[L] ? " (auto)" : ""); return `<span class="gatechip ${/^(clean|measured)/.test(v) ? "clean" : "warn"}">${E.LIFT_NAME[L][0]} ${esc(v)}</span>`; }).join("");
     const nxt = w === (now.wave || 0) + 1 || (now.pre && w <= 2);
     const dates = `${fmtShort(start)} – ${fmtShort(start + 27 * E.MS_DAY)}${cyc === 6 ? " · 🏁 TEST " + fmtShort(start + 25 * E.MS_DAY) : ""}`;
     let mid;
@@ -2008,8 +2124,8 @@ function renderRoad() {
       ${mid}</button>`;
   }
   { const GOAL = { bn: 315, sq: 405, dl: 495 };
-    const rows = E.LIFTS.map((L) => { const eta = E.etaWave(L, GOAL[L], S.gates);
-      return `<tr><td>${E.LIFT_NAME[L]}</td><td>${cbNow[L]}</td><td>${E.cbFor(19, S.gates)[L]}</td><td>${GOAL[L]}</td><td>${eta ? "Wave " + eta + " · " + fmtShort(E.waveStartUTC(eta, off)) + " " + new Date(E.waveStartUTC(eta, off)).getUTCFullYear() : "beyond Wave 80"}</td></tr>`; }).join("");
+    const rows = E.LIFTS.map((L) => { const eta = E.etaWave(L, GOAL[L], GX());
+      return `<tr><td>${E.LIFT_NAME[L]}</td><td>${cbNow[L]}</td><td>${E.cbFor(19, GX())[L]}</td><td>${GOAL[L]}</td><td>${eta ? "Wave " + eta + " · " + fmtShort(E.waveStartUTC(eta, off)) + " " + new Date(E.waveStartUTC(eta, off)).getUTCFullYear() : "beyond Wave 80"}</td></tr>`; }).join("");
     h += `<div class="card" style="border-color:#2c5c42"><div class="eyebrow" style="color:var(--go)">Where the pace lands you</div>
     <div class="tablewrap"><table><tr><th>Lift</th><th>Now</th><th>Wave 19</th><th>Goal</th><th>Base reaches goal</th></tr>${rows}</table></div>
     <p class="note" style="margin-top:8px">Computed, not promised: your set gates, then the small step for every gate still ahead. Clean gates pull these dates in; repeats push them out. A base is ~96% of a true max, so the meet total runs a little ahead of this table.</p>
@@ -2017,7 +2133,7 @@ function renderRoad() {
   $("#view").innerHTML = h;
 }
 window.waveSheet = (w) => {
-  const { cb, cyc, t } = E.mainTables(w, S.gates);
+  const { cb, cyc, t } = E.mainTables(w, GX());
   const off = S.settings.offsetWeeks || 0;
   let h = `<button class="closex" onclick="closeSheet()">×</button>
     <h2>Wave ${w} · ${E.CYCLE_NAME[cyc]}</h2>
@@ -2044,14 +2160,18 @@ window.waveSheet = (w) => {
   openSheet(h);
 };
 function gateEditor(intoWave) {
-  const g = S.gates[intoWave] || {};
+  const set = S.gates[intoWave] || {}, g = GX()[intoWave] || {}, auto = g.auto || {};
   return `<hr class="divider"><div class="eyebrow sig">Gate into Wave ${intoWave}</div>
-    <p class="note">Per lift: Wk3 single ≤RPE 8 + back-offs in cap + technique stable + 3 normal weeks = clean.</p>
-    ${E.LIFTS.map((L) => `<div style="margin:8px 0"><b style="font-size:13px">${E.LIFT_NAME[L]}</b>
+    <p class="note">Per lift: Wk3 single ≤RPE 8 + back-offs in cap + technique stable + 3 normal weeks = clean. Rate your singles and the app proposes the gate (Rule D); a gate you tap here always wins.</p>
+    ${E.LIFTS.map((L) => { const cur = g[L] || E.defaultGate(intoWave), a = auto[L], pinned = E.explicitCB(intoWave, GX(), L) != null;
+      return `<div style="margin:8px 0"><b style="font-size:13px">${E.LIFT_NAME[L]}</b>
+      ${pinned ? `<div class="note">Base set directly: ${E.cbFor(intoWave, GX())[L]}.</div>` : ""}
+      ${a && !set[L] ? `<div class="note">Auto from the Wk${a.week} single ${a.w} @ RPE ${a.rpe}: ${esc(a.result)} (${Math.round(a.ratio * 100)}% of the planned e1RM).</div>` : !set[L] && !pinned ? `<div class="note">Not set: ${intoWave > 3 ? "the projection assumes the small step" : "assumed clean"}.</div>` : ""}
       <div class="rowbtns">${["clean","small","repeat","reset"].map((o) =>
-        `<button class="btn ghost" style="${(g[L] || "clean") === o ? "border-color:#6b5518;color:var(--signal)" : ""}" onclick="setGate(${intoWave},'${L}','${o}')">${o === "clean" ? "clean +" + (L === "bn" ? 5 : 10) : o === "small" ? "+" + (L === "bn" ? "2.5" : "5") : o === "repeat" ? "repeat" : "−5%"}</button>`).join("")}</div></div>`).join("")}`;
+        `<button class="btn ghost" style="${cur === o ? "border-color:#6b5518;color:var(--signal)" : ""}" onclick="setGate(${intoWave},'${L}','${o}')">${o === "clean" ? "clean +" + (L === "bn" ? 5 : 10) : o === "small" ? "+" + (L === "bn" ? "2.5" : "5") : o === "repeat" ? "repeat" : "−5%"}</button>`).join("")}
+        ${set[L] ? `<button class="btn ghost" onclick="setGate(${intoWave},'${L}',null)">auto</button>` : ""}</div></div>`; }).join("")}`;
 }
-window.setGate = (w, L, o) => { S.gates[w] = S.gates[w] || {}; S.gates[w][L] = o; save(); waveSheet(w - 1); };
+window.setGate = (w, L, o) => { S.gates[w] = S.gates[w] || {}; if (o) S.gates[w][L] = o; else delete S.gates[w][L]; save(); waveSheet(w - 1); };
 window.setTM = (w, L, v) => {
   if (!Number.isFinite(+v) || +v <= 0) return;
   S.testMax[w] = S.testMax[w] || {}; S.testMax[w][L] = +v;
@@ -2392,7 +2512,7 @@ function render() {
   else ws.innerHTML = [1, 2, 3, 4].map((w) => `<i class="${w < loc.week ? "past" : w === loc.week ? "cur" : ""}"></i>`).join("");
   $("#ctxline").innerHTML = loc.pre ? "Wave 1 begins Mon Jul 20, 2026"
     : loc.wave > 19 ? "Beyond Wave 19 — ask for the next map"
-    : `Wave ${loc.wave} · Week ${loc.week} · ${E.CYCLE_NAME[E.cycleOf(loc.wave)]} · CB <b>${E.cbFor(loc.wave, S.gates).bn}/${E.cbFor(loc.wave, S.gates).sq}/${E.cbFor(loc.wave, S.gates).dl}</b>`;
+    : `Wave ${loc.wave} · Week ${loc.week} · ${E.CYCLE_NAME[E.cycleOf(loc.wave)]} · CB <b>${E.cbFor(loc.wave, GX()).bn}/${E.cbFor(loc.wave, GX()).sq}/${E.cbFor(loc.wave, GX()).dl}</b>`;
   ({ today: renderToday, road: renderRoad, moves: renderMoves, trends: renderTrends, more: renderMore })[tab]();
 }
 window.closeSheet = closeSheet; window.moveSheet = moveSheet;

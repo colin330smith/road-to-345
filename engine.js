@@ -222,7 +222,7 @@ function trackedFor(id, wave, week, gates) {
     rpe: tp[2], moveId: T.key, pkey: T.key + "-top", note: T.note, added: !!T.added, disp: label(R5(cb * tp[0])) });
   out.push({ type: "backoff", lift: id, name: T.name + " \u2014 " + (tp ? "back-offs" : "light"), w: R5(cb * bk[0]),
     reps: bk[1], sets: bk[2], rpe: tp ? "7" + "\u2013" + "8" : "5" + "\u2013" + "6", moveId: T.key,
-    pkey: T.key + "-back", light: !tp, added: !!T.added, disp: label(R5(cb * bk[0])) });
+    pkey: T.key + "-back", light: !tp, added: !!T.added, disp: label(R5(cb * bk[0])), inc: T.step });
   return out;
 }
 const inclineCB = (wave, gates) => trackedCB("inc", wave, gates);
@@ -437,7 +437,7 @@ function sx(name, seed, steps, sets, rpe, arch, moveId, db, cap, inc, wv, since)
   const lo = steps[st.i], hi = steps[Math.min(st.i + 1, last)];
   return {
     type: "accessory", name, w: st.w, reps: lo === hi ? String(lo) : lo + "\u2013" + hi,
-    sets, rpe, arch, moveId, db: !!db, cap: cap || "", spec: true, repN: lo,
+    sets, rpe, arch, moveId, db: !!db, cap: cap || "", spec: true, repN: lo, inc: inc == null ? 5 : inc,
     top: hi === steps[last] && steps.length > 1, pkey: pkeyOf(name), prog: st.prog,
   };
 }
@@ -617,7 +617,7 @@ const WARM_PB = [["Bar", 15], [95, 8], [115, 5], [135, 3]];
 // returns ordered blocks for wave/week/day (1=Mon…5=Fri)
 function sessionFor(wave, week, day, gates, spec, histCtx) {
   HISTCTX = histCtx || null;
-  try { return sessionForInner(wave, week, day, gates, spec); }
+  try { return autoregulate(sessionForInner(wave, week, day, gates, spec), wave, week, day, histCtx); }
   finally { HISTCTX = null; }
 }
 function sessionForInner(wave, week, day, gates, spec) {
@@ -708,7 +708,7 @@ function sessionForInner(wave, week, day, gates, spec) {
     // frame bias: lat-width / upper-back priority trims the Friday row to 2 sets
     let sets = p.sets;
     if (day === 5 && a.id === "rowfri" && (spec.framePrimary === "latwidth" || spec.framePrimary === "upperback") && week < 4) sets = Math.min(sets, 2);
-    push({ type: "accessory", name: a.name, w: p.w, reps: p.reps, sets, rpe: p.rpe, db: a.db, top: p.top, moveId: a.id, cap: a.cap, pkey: a.id, prog: p.prog, lastHard: p.lastHard, lp: !!(a.lp && p.lastHard) });
+    push({ type: "accessory", name: a.name, w: p.w, reps: p.reps, sets, rpe: p.rpe, db: a.db, top: p.top, moveId: a.id, cap: a.cap, pkey: a.id, prog: p.prog, lastHard: p.lastHard, lp: !!(a.lp && p.lastHard), inc: a.inc });
   }
   if (day === 4 && week < 4 && xfer) push({ type: "note", name: "Delt & triceps isolation → Saturday", note: "Your side-delt, rear-delt and pushdown work lives in Saturday's frame day now — keeps weekly volume under cap." });
   if (day === 3 && cyc !== 6) {
@@ -805,6 +805,111 @@ function redSession(wave, day, gates) {
   return blocks;
 }
 
-const ENGINE = { postTestBase, CALIBRATION, PROJ_DEFAULT, cbChain, etaWave, explicitCB, TRACKED, trackedCB, trackedFor, ARM_START, ARM_GOAL, clearedInWave, inclineCB, inclineFor, INCLINE_START, INCLINE_GOAL, pkeyOf, accStateLogged, R5, R25, START, LIFTS, LIFT_NAME, gateDelta, cbFor, cycleOf, macroOf, CYCLE_NAME, waveStartUTC, whereIs, NOTES, mainTables, ohpFor, ACC, accState, accFor, sessionFor, testAttempts, yellowW, redSession, WAVE1_MONDAY, MS_DAY,
+// ── autoregulation (EVIDENCE.md: Rules A-D) ────────────────────────────
+// Loads are planned from the base; how the day's sets actually felt adjusts them.
+// %1RM for a single at each RPE (RIR-based RPE, Zourdos 2016 / Helms 2016; the
+// Tuchscherer RTS single-rep column).
+const RPE_PCT_1 = { 6: 0.863, 6.5: 0.878, 7: 0.892, 7.5: 0.907, 8: 0.922, 8.5: 0.939, 9: 0.955, 9.5: 0.978, 10: 1 };
+const pctAt = (rpe) => RPE_PCT_1[Math.max(6, Math.min(10, Math.round(rpe * 2) / 2))];
+const capNum = (rpe) => { const m = String(rpe).match(/\d+(\.\d+)?/); return m ? +m[0] : 8; };
+// Rule B: a one-tap rating on the last set. Easy = ~1.5 RPE under the target,
+// On target = the target, Hard = ~1 over it.
+const RATE = { E: -1.5, O: 0, H: 1 };
+const RATE_LABEL = { E: "Easy", O: "On target", H: "Hard" };
+function effRPE(e, cap) {
+  if (e && Number.isFinite(e.rpe)) return e.rpe;
+  if (e && RATE[e.rate] != null) return cap + RATE[e.rate];
+  return null;
+}
+const rated = (e) => !!e && (Number.isFinite(e.rpe) || RATE[e.rate] != null);
+function sessionDayUTC(wave, week, day, off) { return waveStartUTC(wave, off || 0) + ((week - 1) * 7 + (day - 1)) * MS_DAY; }
+// the rated entry of a pkey on one day (the last set carries the rating)
+function ratedOn(ix, pkey, t) {
+  const hist = (ix && ix[pkey]) || [];
+  const day = hist.filter((e) => e.t === t);
+  for (let i = day.length - 1; i >= 0; i--) if (rated(day[i])) return day[i];
+  return null;
+}
+// Rule A: the single sets the back-offs. e1RM from the single vs the e1RM the
+// plan assumed, clamped to +/-5%.
+function singleFactor(planW, cap, e) {
+  const r = effRPE(e, cap);
+  if (r == null || !(e.w > 0) || !(planW > 0)) return null;
+  const f = (e.w / pctAt(r)) / (planW / pctAt(cap));
+  return Math.max(0.95, Math.min(1.05, f));
+}
+const ROUND = (b, x) => (b.db ? R25(x) : R5(x));
+function autoregulate(blocks, wave, week, day, ctx) {
+  if (!ctx || !ctx.index || !Array.isArray(blocks)) return blocks;
+  const ix = ctx.index, off = ctx.offsetWeeks || 0, today = sessionDayUTC(wave, week, day, off);
+  return blocks.map((b) => {
+    if (!b || !b.pkey || !(b.w > 0) || b.light || b.type === "single" || b.type === "warmup") return b;
+    // Rule A: main-lift back-offs follow today's single
+    if (b.type === "backoff" && LIFTS.includes(b.lift)) {
+      const sgl = blocks.find((x) => x.type === "single" && x.lift === b.lift);
+      const e = sgl ? ratedOn(ix, b.lift + "-single", today) : null;
+      const f = e ? singleFactor(sgl.w, capNum(sgl.rpe), e) : null;
+      if (f != null) {
+        const w = R5(b.w * f);
+        if (w === b.w) return { ...b, auto: { rule: "A", f } };
+        return { ...b, w, planned: b.w, auto: { rule: "A", f }, note: `Auto: single ${e.w} @ RPE ${effRPE(e, capNum(sgl.rpe))} → back-offs ${w > b.w ? "up" : "down"} to ${w} (plan ${b.w})` };
+      }
+    }
+    // Rule C: the next exposure follows the last rating (within 14 days)
+    const hist = (ix[b.pkey] || []).filter((e) => e.t < today && e.t >= today - 14 * MS_DAY && RATE[e.rate] != null && e.rate !== "O");
+    if (!hist.length) return b;
+    const last = hist.reduce((a, e) => (e.t >= a.t ? e : a));
+    if (last.t !== Math.max(...(ix[b.pkey] || []).filter((e) => e.t < today).map((e) => e.t))) return b; // a newer unrated session supersedes it
+    const up = last.rate === "E";
+    let w;
+    if (b.type === "accessory" || b.added) w = ROUND(b, b.w + (up ? 1 : -1) * (b.inc || 5));
+    else w = R5(b.w * (up ? 1.05 : 0.95));
+    if (w <= 0) return b;
+    return { ...b, w, planned: b.w, auto: { rule: "C", rate: last.rate }, note: `Auto: last time rated ${RATE_LABEL[last.rate]} → ${w} (plan ${b.w})` };
+  });
+}
+// Rule D: the gate from rated singles. Compares the e1RM of the wave's last rated
+// single against the e1RM the program assumed when it planned that single at its
+// cap. On or under the cap = clean (the v7 gate), ~RPE 8.5 = small, ~RPE 9 = repeat,
+// worse = reset. Judgment call: the reviewer's "clean only at RPE 7" rule assumed
+// base = e1RM; this program's base is submaximal, so its own model is the yardstick.
+const GATE_CUTS = [[0.99, "clean"], [0.975, "small"], [0.955, "repeat"]];
+function autoGate(wave, gates, ctx) {
+  if (!ctx || !ctx.index || cycleOf(wave) === 6) return null;
+  const { t, cyc } = mainTables(wave, gates);
+  const off = ctx.offsetWeeks || 0, out = {};
+  const dayOf = { sq: 1, bn: 2, dl: 5 };
+  for (const L of LIFTS) {
+    let best = null;
+    for (let wk = 3; wk >= 1 && !best; wk--) {
+      const e = ratedOn(ctx.index, L + "-single", sessionDayUTC(wave, wk, dayOf[L], off));
+      if (!e) continue;
+      const cap = capNum(cyc === 5 ? RPE_CAP_C5[wk] : RPE_CAP[wk]);
+      const plan = t[L].s[wk - 1];
+      const ratio = (e.w / pctAt(effRPE(e, cap))) / (plan / pctAt(cap));
+      const result = (GATE_CUTS.find(([c]) => ratio >= c - 1e-9) || [0, "reset"])[1];
+      best = { result, ratio: Math.round(ratio * 1000) / 1000, week: wk, w: e.w, rpe: effRPE(e, cap) };
+    }
+    if (best) out[L] = best;
+  }
+  return Object.keys(out).length ? out : null;
+}
+// gates with Rule D filled in wherever the lifter has not set a result or a base
+function withAutoGates(gates, ctx, upTo = 19) {
+  const g = JSON.parse(JSON.stringify(gates || {}));
+  for (let w = 2; w <= upTo; w++) {
+    const a = autoGate(w - 1, g, ctx);
+    if (!a) continue;
+    for (const L of LIFTS) {
+      if (!a[L] || (g[w] && (g[w][L] || (g[w].cb && g[w].cb[L] != null))) || explicitCB(w, g, L) != null) continue;
+      g[w] = g[w] || {};
+      g[w][L] = a[L].result;
+      (g[w].auto = g[w].auto || {})[L] = a[L];
+    }
+  }
+  return g;
+}
+
+const ENGINE = { defaultGate, RPE_PCT_1, pctAt, RATE, RATE_LABEL, singleFactor, autoregulate, autoGate, withAutoGates, sessionDayUTC, GATE_CUTS, postTestBase, CALIBRATION, PROJ_DEFAULT, cbChain, etaWave, explicitCB, TRACKED, trackedCB, trackedFor, ARM_START, ARM_GOAL, clearedInWave, inclineCB, inclineFor, INCLINE_START, INCLINE_GOAL, pkeyOf, accStateLogged, R5, R25, START, LIFTS, LIFT_NAME, gateDelta, cbFor, cycleOf, macroOf, CYCLE_NAME, waveStartUTC, whereIs, NOTES, mainTables, ohpFor, ACC, accState, accFor, sessionFor, testAttempts, yellowW, redSession, WAVE1_MONDAY, MS_DAY,
   FRAME_OPTS, FRAME_LABEL, DETAIL_OPTS, DETAIL_LABEL, DEFAULT_SPEC, isDefaultSpec, saturdaySession, sundaySession, sundayPlanned };
 if (typeof module !== "undefined") module.exports = ENGINE;

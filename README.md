@@ -123,7 +123,7 @@ Everything is `localStorage` under the key `r345.v1`, on the device running the 
 }
 ```
 
-No backend. Export/import lives in the app under **More → Data** — export after every test day.
+No backend. **More → Data → Back up now** opens the share sheet (save to iCloud Drive / Files); import takes the file or pasted text. Today shows a reminder when the last backup is 7+ days old (`lastBackup`).
 
 ---
 

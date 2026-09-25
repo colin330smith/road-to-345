@@ -790,6 +790,23 @@ function testAttempts(cb, entered = {}) {
 // the next wave's base after a test: 96% of the best made lift, so the next
 // build starts from submaximal work instead of from a peaked max
 const postTestBase = (max) => R5(max * 0.96);
+// USPA meets load in kilograms, in 2.5 kg steps. The opener rounds DOWN (it must
+// go on the worst day); the 2nd and 3rd round to the nearest plate.
+const LB_PER_KG = 2.20462;
+const kgDown = (lb) => Math.floor(lb / LB_PER_KG / 2.5 + 1e-9) * 2.5;
+const kgNear = (lb) => Math.round(lb / LB_PER_KG / 2.5) * 2.5;
+function attemptsKg(att) {
+  const out = {};
+  for (const L of Object.keys(att)) out[L] = { a1: kgDown(att[L].a1), a2: kgNear(att[L].a2), a3: kgNear(att[L].a3) };
+  return out;
+}
+// e1RM for the strength chart: a rated single goes through the RPE table; other
+// sets use Epley, only up to 10 reps where it stays honest
+function e1rm(st, cap) {
+  if (!st || !(st.w > 0) || !(st.r >= 1)) return null;
+  if (st.r === 1) { const r = effRPE(st, cap); return Math.round(r != null ? st.w / pctAt(r) : st.w * (1 + 1 / 30)); }
+  return st.r <= 10 ? Math.round(st.w * (1 + st.r / 30)) : null;
+}
 
 // yellow transform: applied by UI — single cap RPE 7, back-off −5% (or −1 set), 2 sets/accessory, skip cardio
 function yellowW(block) {
@@ -917,6 +934,6 @@ function withAutoGates(gates, ctx, upTo = 19) {
   return g;
 }
 
-const ENGINE = { defaultGate, RPE_PCT_1, pctAt, RATE, RATE_LABEL, singleFactor, autoregulate, autoGate, withAutoGates, sessionDayUTC, GATE_CUTS, postTestBase, CALIBRATION, PROJ_DEFAULT, cbChain, etaWave, explicitCB, TRACKED, trackedCB, trackedFor, ARM_START, ARM_GOAL, clearedInWave, inclineCB, inclineFor, INCLINE_START, INCLINE_GOAL, pkeyOf, accStateLogged, R5, R25, START, LIFTS, LIFT_NAME, gateDelta, cbFor, cycleOf, macroOf, CYCLE_NAME, waveStartUTC, whereIs, NOTES, mainTables, ohpFor, ACC, accState, accFor, sessionFor, testAttempts, yellowW, redSession, WAVE1_MONDAY, MS_DAY,
+const ENGINE = { kgDown, kgNear, attemptsKg, e1rm, LB_PER_KG, defaultGate, RPE_PCT_1, pctAt, RATE, RATE_LABEL, singleFactor, autoregulate, autoGate, withAutoGates, sessionDayUTC, GATE_CUTS, postTestBase, CALIBRATION, PROJ_DEFAULT, cbChain, etaWave, explicitCB, TRACKED, trackedCB, trackedFor, ARM_START, ARM_GOAL, clearedInWave, inclineCB, inclineFor, INCLINE_START, INCLINE_GOAL, pkeyOf, accStateLogged, R5, R25, START, LIFTS, LIFT_NAME, gateDelta, cbFor, cycleOf, macroOf, CYCLE_NAME, waveStartUTC, whereIs, NOTES, mainTables, ohpFor, ACC, accState, accFor, sessionFor, testAttempts, yellowW, redSession, WAVE1_MONDAY, MS_DAY,
   FRAME_OPTS, FRAME_LABEL, DETAIL_OPTS, DETAIL_LABEL, DEFAULT_SPEC, isDefaultSpec, saturdaySession, sundaySession, sundayPlanned };
 if (typeof module !== "undefined") module.exports = ENGINE;

@@ -500,7 +500,9 @@ function renderToday() {
     if (b.type === "note") { inner += `<div class="card" style="padding:9px 12px"><p class="note">${esc(b.name)} — ${esc(b.note || "")}</p></div>`; return; }
     if (b.type === "test") {
       inner += `<div class="card single"><div class="eyebrow sig">${esc(b.name)}</div><p class="note">${esc(b.note || "")}</p>`;
-      if (b.attempts) inner += `<div class="tablewrap"><table><tr><th></th><th>Opener</th><th>2nd</th><th>3rd</th></tr>${E.LIFTS.map((L) => `<tr><td>${E.LIFT_NAME[L]}</td><td>${b.attempts[L].a1}</td><td>${b.attempts[L].a2}</td><td>${b.attempts[L].a3} <small class="note">${esc(b.attempts[L].a3note)}</small></td></tr>`).join("")}</table></div>`;
+      if (b.attempts) { const kg = E.attemptsKg(b.attempts);
+        inner += `<div class="tablewrap"><table><tr><th></th><th>Opener</th><th>2nd</th><th>3rd</th></tr>${E.LIFTS.map((L) => `<tr><td>${E.LIFT_NAME[L]}</td><td><b>${kg[L].a1} kg</b><br><small class="note">${b.attempts[L].a1} lb</small></td><td><b>${kg[L].a2} kg</b><br><small class="note">${b.attempts[L].a2} lb</small></td><td><b>${kg[L].a3} kg</b><br><small class="note">${b.attempts[L].a3} lb · ${esc(b.attempts[L].a3note)}</small></td></tr>`).join("")}</table></div>
+          <p class="note">USPA loads kilograms. Hand in the kg numbers. The opener is rounded down on purpose.</p>`; }
       inner += `</div>`; return;
     }
     const isSingle = b.type === "single";
@@ -522,6 +524,8 @@ function renderToday() {
           ${cur ? "" : `<p class="note" style="margin-top:2px">${isSingle ? "Rate the single: it sets today's back-offs and the gate." : "Rate the last set: it sets next time's load."}</p>`}`; })() : ""}</div>`;
   });
 
+  { const age = backupAgeDays(), hasLogs = Object.keys(S.logs).length > 0;
+    if (hasLogs && (age == null || age >= 7)) inner += `<div class="card single"><div class="eyebrow sig">Back up your logs</div><p class="note">${age == null ? "You have never backed up." : `Last backup was ${age} days ago.`} Everything lives on this phone only. One tap, save it to iCloud Drive.</p><div class="rowbtns"><button class="btn" onclick="exportData()">Back up now</button></div></div>`; }
   if (loc.day === 7 && loc.week === 4 && loc.wave < 19) inner += `<div class="card single"><div class="eyebrow sig">⚠ Gate day — end of Wave ${loc.wave}</div><p class="note">Review the wave, then set each lift's gate for Wave ${loc.wave + 1}.</p><div class="rowbtns"><button class="btn" onclick="gateSheet(${loc.wave + 1})">Set the Wave ${loc.wave + 1} gate</button></div></div>`;
   if ((loc.day === 6 || loc.day === 7) && loc.week === 4) inner += `<div class="card"><div class="eyebrow sig">Weak-point ledger</div><p class="note">End of a training block — log this cycle's anchor lift + note whether the target or another muscle failed first. Photos + measurements every 4 weeks drive the 8-week decision.</p><div class="rowbtns"><button class="btn ghost" onclick="ledgerSheet()">Open ledger</button></div></div>`;
 
@@ -712,12 +716,12 @@ window.waveSheet = (w) => {
           <tr><td>Paused BN</td>${[0,1,2].map((i) => `<td>${t.pb[i]}</td>`).join("")}<td>${t.pb[3]}</td></tr></table></div>`;
   } else {
     const tm = S.testMax[w] || {};
-    const att = E.testAttempts(cb, tm);
+    const att = E.testAttempts(cb, tm), attKg = E.attemptsKg(att);
     h += `<p class="capnote warn">Peak wave: Wk1 single@8 + 3×3 · Wk2 single@8–8.5 + 3×2 · Wk3 opener practice · Wk4 taper + TEST Friday.</p>
       <div class="eyebrow" style="margin-top:10px">Test-day attempts</div>
       <div class="tablewrap"><table><tr><th>Lift</th><th>Target / made (edit)</th><th>Opener</th><th>2nd</th><th>3rd</th></tr>
-      ${E.LIFTS.map((L) => `<tr><td>${E.LIFT_NAME[L]}</td><td><input type="number" step="5" value="${tm[L] || att[L].max}" onchange="setTM(${w},'${L}',this.value)"></td><td>${att[L].a1}</td><td>${att[L].a2}</td><td>${att[L].a3}</td></tr>`).join("")}</table></div>
-      <p class="note">Opener ~91%, 2nd ~95.5%, 3rd = target. After the test, enter your best MADE lift: the next wave's base becomes 96% of it.</p>`;
+      ${E.LIFTS.map((L) => `<tr><td>${E.LIFT_NAME[L]}</td><td><input type="number" step="5" value="${tm[L] || att[L].max}" onchange="setTM(${w},'${L}',this.value)"></td><td>${attKg[L].a1} kg<br><small class="note">${att[L].a1}</small></td><td>${attKg[L].a2} kg<br><small class="note">${att[L].a2}</small></td><td>${attKg[L].a3} kg<br><small class="note">${att[L].a3}</small></td></tr>`).join("")}</table></div>
+      <p class="note">Target and made lifts are in lb; attempts show the kg you hand in (USPA loads kg, 2.5 kg steps). Opener ~91%, 2nd ~95.5%, 3rd = target. After the test, enter your best MADE lift: the next wave's base becomes 96% of it.</p>`;
   }
   if (w < 19) h += gateEditor(w + 1);
   openSheet(h);
@@ -866,28 +870,33 @@ function renderTrends() {
   const band = [];
   // lo = net pace incl. annual trim blocks · hi = gain-phase pace (+0.25/wk)
   for (let wk = 0; wk <= 210; wk += 2) band.push({ x: E.WAVE1_MONDAY + wk * 7 * E.MS_DAY, lo: Math.round((182 + 0.085 * wk) * 10) / 10, hi: Math.round((182 + 0.25 * wk) * 10) / 10 });
-  const tops = [], e1s = [];
-  for (const [dk, log] of Object.entries(S.logs).filter(([k]) => DK_RE.test(k)).sort()) {
-    if (!log.sets) continue;
-    const loc = E.whereIs(Date.parse(dk), S.settings.offsetWeeks || 0);
-    if ({ 1: "sq", 2: "bn", 5: "dl" }[loc.day] !== trendLift) continue;
-    let best = 0, bestE = 0;
-    for (const arr of Object.values(log.sets)) for (const st of arr) {
-      if (st.w > best && st.r >= 1) best = st.w;
-      const e = st.w * (1 + st.r / 30); if (e > bestE) bestE = e;
+  // only the lift itself counts: squat day also has a 470 lb leg press
+  const MAIN_K = (L) => new Set([L + "-single", L + "-back", L + "-light"]);
+  const off0 = S.settings.offsetWeeks || 0;
+  const liftSets = (L) => {
+    const out = [], keys = MAIN_K(L);
+    for (const [dk, log] of Object.entries(S.logs).filter(([k]) => DK_RE.test(k)).sort()) {
+      if (!log.sets) continue;
+      const t = Date.parse(dk), loc = E.whereIs(t, off0);
+      const cap = loc.week === 1 ? 7 : loc.week === 2 ? 7.5 : 8;
+      for (const arr of Object.values(log.sets)) for (const st of arr) if (st && keys.has(st.k) && st.w > 0 && st.r >= 1) out.push({ dk, t, st, cap, wave: loc.wave });
     }
-    if (best) tops.push({ x: Date.parse(dk), y: best });
-    if (bestE) e1s.push({ x: Date.parse(dk), y: Math.round(bestE) });
-  }
+    return out;
+  };
+  const tops = [], e1s = [], baseLine = [];
+  { const byDay = new Map();
+    for (const x of liftSets(trendLift)) {
+      const d = byDay.get(x.t) || { best: 0, e: 0, wave: x.wave };
+      d.best = Math.max(d.best, x.st.w); d.e = Math.max(d.e, E.e1rm(x.st, x.cap) || 0); byDay.set(x.t, d);
+    }
+    for (const [t, d] of [...byDay].sort((p, q) => p[0] - q[0])) {
+      if (d.e) e1s.push({ x: t, y: d.e });
+      tops.push({ x: t, y: d.best });
+      if (d.wave >= 1 && d.wave <= 60) baseLine.push({ x: t, y: E.cbFor(d.wave, GX())[trendLift] });
+    } }
   const prs = E.LIFTS.map((L) => {
     let best = null;
-    for (const [dk, log] of Object.entries(S.logs).filter(([k]) => DK_RE.test(k))) {
-      if (!log.sets) continue;
-      const loc = E.whereIs(Date.parse(dk), S.settings.offsetWeeks || 0);
-      if ({ 1: "sq", 2: "bn", 5: "dl" }[loc.day] !== L) continue;
-      for (const arr of Object.values(log.sets)) for (const st of arr)
-        if (st.r >= 1 && (!best || st.w > best.w)) best = { w: st.w, dk };
-    }
+    for (const x of liftSets(L)) if (!best || x.st.w > best.w) best = { w: x.st.w, dk: x.dk };
     return { L, best };
   });
   const wkAvg = weeklyAverages(8);
@@ -939,14 +948,15 @@ function renderTrends() {
       <div class="chartwrap">${svgChart(bwPts, { band, empty: "Log a morning weigh-in on the Today tab and the road to 200 draws itself." })}</div>
       <div class="legend"><span><span class="k" style="background:#e9e7e1"></span>morning weigh-ins</span><span><span class="k" style="background:rgba(255,178,36,.5)"></span>on-pace band (0.25–0.5 lb/wk)</span></div>
       ${wkAvg.length ? `<div class="tablewrap" style="margin-top:10px"><table><tr><th>Week of</th><th>Avg</th><th>Δ</th><th>Call</th></tr>${wkAvg.map((r) => `<tr><td>${r.wk}</td><td>${r.avg}</td><td>${r.d === null ? "—" : (r.d > 0 ? "+" : "") + r.d}</td><td class="note">${r.call}</td></tr>`).join("")}</table></div>` : ""}
-      <p class="note" style="margin-top:8px">Gain mode: 3,050 cal · P 190 · +0.25 lb/wk. Trim only at ~18% BF (4–6 wks, stop at 15%). Goal: <b style="color:var(--chalk)">200 @ 15%</b> ≈ 170 lb lean.</p></div>
+      <p class="note" style="margin-top:8px">Gain mode: 3,050 cal · P 190 · +0.25 lb/wk. Trim only at ~18% BF (6 weeks at most, stop at 15%). Goal: <b style="color:var(--chalk)">200 @ 15%</b> ≈ 170 lb lean.</p></div>
     <div class="card"><div class="eyebrow sig">Strength</div>
       <div class="seg">${E.LIFTS.map((L) => `<button class="y ${trendLift === L ? "on" : ""}" onclick="trendLift='${L}';render()">${E.LIFT_NAME[L]}</button>`).join("")}</div>
-      <div class="chartwrap">${svgChart(tops, { line2: e1s, empty: "Log sets on a " + E.LIFT_NAME[trendLift] + " day to start this chart." })}</div>
-      <div class="legend"><span><span class="k" style="background:#e9e7e1"></span>heaviest set that day</span><span><span class="k" style="background:#8b919c"></span>est. 1RM (Epley)</span></div></div>
+      <div class="chartwrap">${svgChart(e1s, { line2: baseLine, extraY: tops.map((p) => p.y), empty: "Log and rate your " + E.LIFT_NAME[trendLift].toLowerCase() + " single to start this chart." })}</div>
+      <div class="legend"><span><span class="k" style="background:#e9e7e1"></span>estimated max that day</span><span><span class="k" style="background:#8b919c"></span>cycle base (dashed)</span></div>
+      <p class="note" style="margin-top:6px">Rated singles are read through the RPE chart; unrated sets use Epley up to 10 reps. Rate the single and the estimate gets honest. Singles that land on target put the estimate at about 97–100% of the base; that is the plan working. A clear drop below that is what makes the gate say repeat.</p></div>
     <div class="card"><div class="eyebrow">All-time bests (logged)</div>
       ${prs.map((p) => `<div class="lset"><span>${E.LIFT_NAME[p.L]}</span><span class="x" style="color:var(--chalk);font-weight:700">${p.best ? esc(String(p.best.w)) + " · " + esc(p.best.dk) : "—"}</span></div>`).join("")}
-      <p class="note" style="margin-top:6px">North Star 315 / 405 / 495 · Dec checkpoint 235–245 / 315–335 / 405–425</p></div>`;
+      <p class="note" style="margin-top:6px">Competition lifts only (singles and back-offs). North Star 315 / 405 / 495 · bases now ${(() => { const c = E.cbFor(Math.max(1, Math.min(E.whereIs(todayUTC(), off0).wave || 1, 19)), GX()); return c.bn + " / " + c.sq + " / " + c.dl; })()}.</p></div>`;
 }
 function weeklyAverages(n) {
   const out = []; const t = todayUTC();
@@ -982,8 +992,8 @@ function renderMore() {
       <p class="note">Sat = frame overload · Sun = optional detail. Focus: <b style="color:var(--chalk)">${esc(E.FRAME_LABEL[S.spec.framePrimary])}</b> + <b style="color:var(--chalk)">${esc(E.DETAIL_LABEL[S.spec.detail])}</b>.</p>
       <div class="rowbtns"><button class="btn" onclick="specSheet()">⚙ Configure</button><button class="btn ghost" onclick="ledgerSheet()">📒 Ledger</button><button class="btn ghost" onclick="playbookSheet()">🍽 Playbook</button><button class="btn ghost" onclick="primerSheet()">🔥 Ultimate Pump</button></div></div>
     <div class="card"><div class="eyebrow sig">Data</div>
-      <p class="note">Logs live in THIS browser only. Export after every test day and keep the file safe.</p>
-      <div class="rowbtns"><button class="btn" onclick="exportData()">Export backup</button>
+      <p class="note">Logs live on THIS phone only. Back up weekly: the share sheet saves the file to iCloud Drive or Files. ${backupAgeDays() == null ? "<b style=\"color:var(--signal)\">No backup yet.</b>" : `Last backup ${esc(S.lastBackup)} (${backupAgeDays()} days ago).`}</p>
+      <div class="rowbtns"><button class="btn" onclick="exportData()">Back up now</button>
       <button class="btn ghost" onclick="importSheet()">Import</button></div></div>
     <div class="card"><div class="eyebrow sig">Settings</div>
       <label class="note">Schedule shift (weeks) — for mini-cuts or life: <input type="number" value="${S.settings.offsetWeeks || 0}" onchange="S.settings.offsetWeeks=+this.value||0;save();render()"></label>
@@ -1006,14 +1016,26 @@ window.logMeas = () => {
   save(); render();
 };
 window.delDay = (dk) => { if (confirm("Delete this session log?")) { delete S.logs[dk]; save(); render(); } };
-window.exportData = () => {
-  const blob = new Blob([JSON.stringify(S, null, 1)], { type: "application/json" });
-  const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
-  a.download = `road345-backup-${keyOf(todayUTC())}.json`; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+// Backups: the share sheet on a phone (Save to Files / iCloud Drive / AirDrop),
+// a download everywhere else. Stamps S.lastBackup so the app can nag.
+window.exportData = async () => {
+  const name = `road345-backup-${keyOf(todayUTC())}.json`;
+  const text = JSON.stringify(S, null, 1);
+  const file = typeof File === "function" ? new File([text], name, { type: "application/json" }) : null;
+  const stamp = () => { S.lastBackup = keyOf(todayUTC()); save(); render(); };
+  try {
+    if (file && navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], title: "Road to 3/4/5 backup" }); stamp(); return; }
+  } catch (e) { if (e && e.name === "AbortError") return; }
+  const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([text], { type: "application/json" }));
+  a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 5000); stamp();
 };
+const backupAgeDays = () => S.lastBackup && DK_RE.test(S.lastBackup) ? Math.round((todayUTC() - Date.parse(S.lastBackup)) / E.MS_DAY) : null;
+// ask the browser not to evict our storage (installed PWAs on iOS are already exempt)
+try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) {}
 window.importSheet = () => {
   openSheet(`<button class="closex" onclick="closeSheet()">×</button><h2>Import backup</h2>
-    <p class="note">Paste a backup JSON below. Replaces everything here.</p>
+    <p class="note">Pick the backup file, or paste its text. Replaces everything here.</p>
+    <input type="file" accept="application/json,.json" onchange="const f=this.files[0];if(f)f.text().then((t)=>{$('#imp').value=t;})" style="margin:6px 0">
     <textarea id="imp" rows="6" style="width:100%"></textarea>
     <div class="rowbtns"><button class="btn" onclick="doImport()">Import</button></div>`);
 };

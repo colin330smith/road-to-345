@@ -19,6 +19,7 @@ Sources were cite-checked against PubMed or the journal page on 2026-09-25. The 
 |---|---|---|---|
 | Wave 3 bases 255 / 295 / 385 (`CALIBRATION`) | Truth | His own Wave 3 sessions | Bench ran ahead of the printed chain; squat and deadlift ran behind it. |
 | RPE is reps in reserve; main lifts stop at RPE 8 | Evidence | Zourdos 2016, *J Strength Cond Res* 30(1):267 · Helms 2016, *Strength Cond J* 38(4):42 | The RIR-based RPE scale is valid for resistance training. |
+| Strength chart: estimated max from rated singles (RPE chart), Epley up to 10 reps otherwise; competition sets only | Partly | RTS chart (above) · Epley formula | Epley is a rough estimate and gets worse past about 10 reps, so the chart ignores those sets. Counting only the competition lift is a bug fix: leg press used to count as the squat. |
 | %1RM for a single at each RPE (`RPE_PCT_1`: 7 = 89.2%, 8 = 92.2%, 9 = 95.5%, 10 = 100%) | Partly | RTS (Tuchscherer) coaching chart | This is a coaching chart, not a study. It is used because the RIR scale above is validated. |
 | Autoregulation (Rules A and C: loads follow how the sets felt) | Evidence | Helms 2018, *Front Physiol* 9:247 · Graham & Cleather 2021, *J Strength Cond Res* 35(9):2451 · Larsen 2021, *PeerJ* 9:e10663 (systematic review) | RPE-based or RIR-based loading matched or beat fixed percentages for strength. Helms 2018 found a small edge that was not significant. |
 | Rule A/C clamp at ±5% or one increment | Judgment | — | This stops one bad day, or one good one, from moving a load more than a normal wave step. |
@@ -28,6 +29,7 @@ Sources were cite-checked against PubMed or the journal page on 2026-09-25. The 
 | Tracked lifts move at most one step a wave with their anchor; a calibration moves them zero | Judgment | — | A re-measured anchor says nothing about the tracked lift's own strength. |
 | Chin-up anchored to bench, not deadlift | Judgment | — | An upper-body pull follows the upper-body gate. |
 | Test attempts .91 / .955 / target | Evidence | Travis 2021, *Percept Mot Skills* 128(1):507 · Howells 2022, *J Sports Med Phys Fitness* 62(4):476 | Elite lifters opened at about 91% of their third attempt and took their second at about 96%. Openers averaged 92% of the day's best. A third attempt of 100% of target comes from coaching practice. |
+| Meet attempts shown in kilograms, 2.5 kg steps; opener rounded down | Partly | USPA Technical Rules 2025 | USPA meets load in kilograms. The 2.5 kg step is the usual minimum jump outside record attempts; confirm it against the rulebook before meet day. Rounding the opener down is a judgment: it has to go on a bad day. |
 | Post-test base = 96% of the best lift made | Judgment | — | This is the inverse of the default target (base × 1.04), so the next build starts from submaximal work. |
 | Peak taper: volume near zero, intensity held, last heavy touch 4 days out, then rest | Evidence | Travis 2020, *Sports* 8(9):125 | Cut volume 30–70% (30–50% looks best) and keep intensity at 85% or more over a 1–2 week step taper. The review does not fix the day of the last heavy session, so 4 days out is a judgment. |
 

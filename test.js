@@ -1049,5 +1049,20 @@ for (let w = 1; w <= 19; w++) for (const [L, d] of [["sq", 1], ["bn", 2], ["dl",
 eq(E.sessionFor(1, 1, 5, {}, E.DEFAULT_SPEC).find((b) => b.type === "warmup").rows.map((r) => r[0]), [135, 225, 275, 315], "Wave 1 deadlift warm-up is the printed one");
 eq(E.sessionFor(2, 1, 1, {}, E.DEFAULT_SPEC).find((b) => b.type === "warmup").rows.map((r) => r[0]).slice(-1), [225], "Wave 2 squat indicator is the printed 225");
 
+// ═══ meet attempts in kilograms (USPA loads kg, 2.5 kg steps) ═══
+{
+  eq([E.kgDown(331), E.kgNear(331), E.kgNear(347)], [150, 150, 157.5], "kg: 331 lb opener rounds down to 150, 347 lb to 157.5");
+  const k = E.attemptsKg(E.testAttempts({ sq: 365, bn: 255, dl: 455 }));
+  for (const L of E.LIFTS) {
+    ok([k[L].a1, k[L].a2, k[L].a3].every((x) => Math.abs(x / 2.5 - Math.round(x / 2.5)) < 1e-9), `kg ${L}: every attempt is a 2.5 kg step`);
+    ok(k[L].a1 < k[L].a2 && k[L].a2 <= k[L].a3, `kg ${L}: attempts climb (${k[L].a1}/${k[L].a2}/${k[L].a3})`);
+    ok(k[L].a1 * E.LB_PER_KG <= E.testAttempts({ sq: 365, bn: 255, dl: 455 })[L].a1 + 0.01, `kg ${L}: opener never heavier than the lb opener`);
+  }
+  eq(E.e1rm({ w: 300, r: 1, rpe: 8 }, 8), Math.round(300 / 0.922), "e1rm: a rated single uses the RPE table");
+  eq(E.e1rm({ w: 300, r: 1, rate: "O" }, 8), Math.round(300 / 0.922), "e1rm: a one-tap rating works the same");
+  eq(E.e1rm({ w: 200, r: 5 }), Math.round(200 * (1 + 5 / 30)), "e1rm: multi-rep sets use Epley");
+  eq(E.e1rm({ w: 100, r: 15 }), null, "e1rm: no estimate past 10 reps");
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

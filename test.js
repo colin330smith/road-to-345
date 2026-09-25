@@ -1027,5 +1027,17 @@ console.log("\n── frame requirements ──");
   ok(cbHard.bn >= 255 * 0.95 - 5, "year sim: repeats hold, they never spiral down");
 }
 
+// ═══ every citation the app or the notes make is in EVIDENCE.md ═══
+{
+  const fs = require("fs");
+  const ev = fs.readFileSync(__dirname + "/EVIDENCE.md", "utf8");
+  const src = ["engine.js", "app-shell.html", "nutrition.js", "notes/nutrition.txt"].map((f) => fs.readFileSync(__dirname + "/" + f, "utf8")).join("\n");
+  const MONTHS = /^(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)/;
+  const cites = new Set((src.match(/\b[A-Z][a-z\u00C0-\u017F][a-zA-Z\u00C0-\u017F-]* (?:19|20)\d{2}\b/g) || []).filter((c) => !MONTHS.test(c)));
+  ok(cites.size >= 10, `citations found in the app: ${cites.size}`);
+  for (const c of cites) ok(ev.includes(c), `EVIDENCE.md covers "${c}"`);
+  ok(!/Barbalho/.test(src), "the retracted Barbalho papers are never cited");
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

@@ -16,7 +16,7 @@ git clone https://github.com/colin330smith/road-to-345.git
 cd road-to-345
 
 python3 build.py --check     # build + syntax check
-node test.js                 # 10,937 assertions — must pass
+node test.js                 # ~14,000 assertions — must pass
 python3 -m http.server 8471  # open http://localhost:8471/road-to-345.html
 ```
 
@@ -46,7 +46,9 @@ Three source files splice into two deliverables. **Never edit the deliverables**
 Pure logic, no DOM. Exported as `ENGINE`; works under Node (`require`) and in the browser.
 
 - **Cycle bases (CB)** chain forward from `START = {bn:225, sq:315, dl:405}`. Each wave's gate result (`clean` / `small` / `repeat` / `reset`) sets the next wave's CB — see `cbFor(wave, gates)`.
-- **Waves 1–4 main lifts are hardcoded** in `NOTES` and must match the printed wave notes in Apple Notes verbatim. Waves 5–19 are generated from the percentage windows in `PCT`.
+- **Calibration.** `CALIBRATION` pins measured bases (Wave 3: bench 255 / squat 295 / deadlift 385). A gate's own `cb` overrides it. Gates nobody has set default to `clean` up to the calibration and to `small` after it (`PROJ_DEFAULT`); `cbChain()` keeps the pure notes arithmetic.
+- **Waves 1–2 print the notes** in `NOTES` verbatim. Any explicit base or non-clean gate at or before a wave regenerates its tables from `PCT`, so Waves 3+ are generated.
+- **Autoregulation (Rules A–D).** The lifter rates the last set of a block Easy / On target / Hard (typed RPE wins). A: today's rated single scales that lift's back-offs (±5%). C: the next exposure moves ±5% or one increment off the last rating. D: `withAutoGates()` proposes each unset gate from the wave's last rated single against the plan's own model. See EVIDENCE.md.
 - **6-wave macrocycles.** `cycleOf(wave)` → 1 Calibration, 2 Build, 3 Accumulate, 4 Specificity, 5 Intensification, 6 Peak (test day).
 - **7-day week.** `sessionFor(wave, week, day, gates, spec)` where day 1=Mon squat, 2=Tue bench, 3=Wed paused squat, 4=Thu paused bench+OHP, 5=Fri deadlift, 6=Sat frame specialization, 7=Sun optional arms.
 - **Double progression** drives every accessory through `accState()` — rep waypoints advance per wave, then weight climbs by `inc` and reps reset. Both the weekday `ACC` array and the weekend `sx()` spec exercises use it.
@@ -54,9 +56,10 @@ Pure logic, no DOM. Exported as `ENGINE`; works under Node (`require`) and in th
 
 ### Invariants worth not breaking
 
-- Weekly caps: **biceps 16, triceps 14, side delts 16.** Current default (arms priority) sits at 16 / 13 / 10, with 8 vertical-pull sets.
+- Weekly caps: **biceps 16, triceps 14, side delts 16.** Side delts run 11 sets (Tue 4, Wed 4, Sat 3).
 - Main lifts stop at **RPE 8**. Week 3 trims accessory sets, week 4 is a deload, cycle 6 drops specialization entirely.
-- Waves 1–4 output must equal the printed notes.
+- Waves 1–2 output must equal the printed notes.
+- Every evidence claim in the app has a test and a row in EVIDENCE.md.
 - Yellow mode = −5% on back-offs, 2 sets per accessory. Red = 3×3 @ 60%.
 
 ---
@@ -110,9 +113,9 @@ Everything is `localStorage` under the key `r345.v1`, on the device running the 
 
 ```js
 {
-  logs:     { "2026-07-20": { r: "G", sleep: 7.5, note: "", sets: { b1: [{w,r,rpe}] } } },
+  logs:     { "2026-07-20": { r: "G", sleep: 7.5, note: "", sets: { b1: [{w,r,rpe,k,rate}] } } },  // rate: "E"|"O"|"H" on the last set
   bw:       { "2026-07-20": 182 },
-  gates:    { 2: { sq: "clean", bn: "repeat" } },
+  gates:    { 2: { sq: "clean", bn: "repeat" }, 7: { cb: { bn: 265 } } },  // cb = 96% of a test max
   testMax:  { 6: { sq: 365 } },
   spec:     { framePrimary: "arms", frameSecondary: "latwidth", detail: "triceps", sundayOn: true },
   ledger:   {},

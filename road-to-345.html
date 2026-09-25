@@ -133,6 +133,7 @@
 
   .chartwrap{margin:8px 0}
   .chartwrap svg{width:100%;height:auto;display:block}
+  .chartwrap .hit{cursor:pointer}
   .legend{display:flex;gap:14px;font-size:12px;color:var(--ash);margin-top:4px;flex-wrap:wrap}
   .legend .k{display:inline-block;width:14px;height:3px;border-radius:2px;margin-right:5px;vertical-align:middle}
 
@@ -1110,7 +1111,9 @@ function autoGate(wave, gates, ctx) {
 // gates with Rule D filled in wherever the lifter has not set a result or a base
 function withAutoGates(gates, ctx, upTo = 19) {
   const g = JSON.parse(JSON.stringify(gates || {}));
-  for (let w = 2; w <= upTo; w++) {
+  // history up to the calibration is settled: those waves were run from printed
+  // numbers, so an old typed RPE must never regenerate them after the fact
+  for (let w = CAL_LAST + 1; w <= upTo; w++) {
     const a = autoGate(w - 1, g, ctx);
     if (!a) continue;
     for (const L of LIFTS) {
@@ -2056,6 +2059,7 @@ function renderToday() {
     <textarea rows="2" style="width:100%" placeholder="pain, technique, PRs…" onchange="setLog('${dk}','note',this.value)">${esc(log.note || "")}</textarea></div>`;
   $("#view").innerHTML = inner;
 }
+window.chartTap = (el) => { const cap = el.closest(".chartwrap") && el.closest(".chartwrap").querySelector(".chartcap"); if (cap) cap.textContent = el.dataset.t; };
 window.shiftDay = (n) => { viewDate += n * E.MS_DAY; render(); };
 window.addFood = (dk, id) => { const x = NUTRI.byId(id); if (!x) return; (S.food[dk] = S.food[dk] || []).push({ id, name: x.name, kcal: x.kcal, p: x.p }); save(); closeSheet(); render(); };
 window.addFoodManual = (dk) => { const n = $("#fn").value.trim() || "Food", k = +$("#fk").value, p = +$("#fp").value || 0; if (!Number.isFinite(k) || k <= 0) return; (S.food[dk] = S.food[dk] || []).push({ id: "manual", name: n, kcal: Math.round(k), p: Math.round(p) }); save(); closeSheet(); render(); };
@@ -2353,7 +2357,7 @@ function renderMoves() {
 function svgChart(pts, opts = {}) {
   const W = 520, H = 170, P = 34;
   if (!pts.length) return `<p class="note">${opts.empty || "Nothing logged yet — this chart grows as you train."}</p>`;
-  const xs = pts.map((p) => p.x), ys = pts.map((p) => p.y).concat(opts.extraY || []);
+  const xs = pts.map((p) => p.x), ys = pts.map((p) => p.y).concat(opts.extraY || [], (opts.line2 || []).map((p) => p.y));
   const x0 = Math.min(...xs), x1 = Math.max(...xs, x0 + 1);
   let y0 = Math.min(...ys), y1 = Math.max(...ys);
   const pad = Math.max((y1 - y0) * 0.15, 2); y0 -= pad; y1 += pad;
@@ -2377,7 +2381,9 @@ function svgChart(pts, opts = {}) {
     <text x="${P - 5}" y="${Y(y0 + pad) + 4}" fill="#8b919c" font-size="11" text-anchor="end">${Math.round(y0 + pad)}</text>
     <text x="${X(last.x)}" y="${Y(last.y) - 9}" fill="#ffb224" font-size="12" font-weight="700" text-anchor="middle">${last.y}</text>
     <text x="${P}" y="${H - 6}" fill="#5d6470" font-size="10.5">${fmtShort(x0)}</text>
-    <text x="${W - 10}" y="${H - 6}" fill="#5d6470" font-size="10.5" text-anchor="end">${fmtShort(x1)}</text></svg>`;
+    <text x="${W - 10}" y="${H - 6}" fill="#5d6470" font-size="10.5" text-anchor="end">${fmtShort(x1)}</text>
+    ${pts.map((p) => `<circle class="hit" cx="${X(p.x)}" cy="${Y(p.y)}" r="14" fill="transparent" data-t="${esc(fmtShort(p.x))} · ${esc(String(p.y))}${opts.unit || ""}" onclick="chartTap(this)"/>`).join("")}</svg>
+    <p class="note chartcap" aria-live="polite">Tap a point for its value.</p>`;
 }
 let trendLift = "sq";
 function renderTrends() {
@@ -2460,13 +2466,13 @@ function renderTrends() {
     <p class="note" style="margin-top:8px">Visible abs sit at 10–12% for most men. At your 15% goal expect a flat stomach, not a six-pack — run a 6–8 week trim when you want them for a date.</p></div>`;
   $("#view").innerHTML = measCard + nutriCard + `
     <div class="card"><div class="eyebrow sig">Bodyweight — road to 200</div>
-      <div class="chartwrap">${svgChart(bwPts, { band, empty: "Log a morning weigh-in on the Today tab and the road to 200 draws itself." })}</div>
+      <div class="chartwrap">${svgChart(bwPts, { band, unit: " lb", empty: "Log a morning weigh-in on the Today tab and the road to 200 draws itself." })}</div>
       <div class="legend"><span><span class="k" style="background:#e9e7e1"></span>morning weigh-ins</span><span><span class="k" style="background:rgba(255,178,36,.5)"></span>on-pace band (0.25–0.5 lb/wk)</span></div>
       ${wkAvg.length ? `<div class="tablewrap" style="margin-top:10px"><table><tr><th>Week of</th><th>Avg</th><th>Δ</th><th>Call</th></tr>${wkAvg.map((r) => `<tr><td>${r.wk}</td><td>${r.avg}</td><td>${r.d === null ? "—" : (r.d > 0 ? "+" : "") + r.d}</td><td class="note">${r.call}</td></tr>`).join("")}</table></div>` : ""}
       <p class="note" style="margin-top:8px">Gain mode: 3,050 cal · P 190 · +0.25 lb/wk. Trim only at ~18% BF (6 weeks at most, stop at 15%). Goal: <b style="color:var(--chalk)">200 @ 15%</b> ≈ 170 lb lean.</p></div>
     <div class="card"><div class="eyebrow sig">Strength</div>
       <div class="seg">${E.LIFTS.map((L) => `<button class="y ${trendLift === L ? "on" : ""}" onclick="trendLift='${L}';render()">${E.LIFT_NAME[L]}</button>`).join("")}</div>
-      <div class="chartwrap">${svgChart(e1s, { line2: baseLine, extraY: tops.map((p) => p.y), empty: "Log and rate your " + E.LIFT_NAME[trendLift].toLowerCase() + " single to start this chart." })}</div>
+      <div class="chartwrap">${svgChart(e1s, { line2: baseLine, unit: " lb est. max", extraY: tops.map((p) => p.y), empty: "Log and rate your " + E.LIFT_NAME[trendLift].toLowerCase() + " single to start this chart." })}</div>
       <div class="legend"><span><span class="k" style="background:#e9e7e1"></span>estimated max that day</span><span><span class="k" style="background:#8b919c"></span>cycle base (dashed)</span></div>
       <p class="note" style="margin-top:6px">Rated singles are read through the RPE chart; unrated sets use Epley up to 10 reps. Rate the single and the estimate gets honest. Singles that land on target put the estimate at about 97–100% of the base; that is the plan working. A clear drop below that is what makes the gate say repeat.</p></div>
     <div class="card"><div class="eyebrow">All-time bests (logged)</div>

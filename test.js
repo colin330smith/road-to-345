@@ -1064,5 +1064,19 @@ eq(E.sessionFor(2, 1, 1, {}, E.DEFAULT_SPEC).find((b) => b.type === "warmup").ro
   eq(E.e1rm({ w: 100, r: 15 }), null, "e1rm: no estimate past 10 reps");
 }
 
+// ═══ Rule D leaves settled history alone; sessions fit the 90-minute slot ═══
+{
+  const old = { index: { "bn-single": [{ t: E.sessionDayUTC(1, 3, 2, 0), w: 200, r: 1, rpe: 9.5 }] }, offsetWeeks: 0 };
+  eq(E.withAutoGates({}, old)[2], undefined, "Rule D: a typed RPE from Wave 1 cannot re-gate Wave 2");
+  ok(E.mainTables(2, E.withAutoGates({}, old)).explicit, "Wave 2 still prints its notes");
+  // rough clock: warm-up 8, single 4, main back-off set 3.5, paused/OHP 3, tracked 2.5, accessory 1.75-2, fillers free
+  const cost = (b) => /FILLER|PRIMER/.test(b.cap || "") ? 0 : b.type === "single" ? 4 : b.type === "backoff" && E.LIFTS.includes(b.lift) ? b.sets * 3.5
+    : b.type === "paused" || b.type === "ohp" ? b.sets * 3 : b.type === "backoff" ? b.sets * 2.5 : b.type === "accessory" ? b.sets * (b.db ? 2 : 1.75)
+    : b.type === "warmup" ? 8 : b.type === "conditioning" ? 18 : b.type === "cooldown" ? 5 : 0;
+  let worst = 0;
+  for (let w = 1; w <= 19; w++) for (let wk = 1; wk <= 4; wk++) for (let d = 1; d <= 7; d++) worst = Math.max(worst, E.sessionFor(w, wk, d, {}, E.DEFAULT_SPEC).reduce((a, b) => a + cost(b), 0));
+  ok(worst <= 85, `session budget: the longest session estimates ${Math.round(worst)} min, inside the 7:00-8:30 slot`);
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

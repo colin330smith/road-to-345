@@ -921,7 +921,9 @@ function autoGate(wave, gates, ctx) {
 // gates with Rule D filled in wherever the lifter has not set a result or a base
 function withAutoGates(gates, ctx, upTo = 19) {
   const g = JSON.parse(JSON.stringify(gates || {}));
-  for (let w = 2; w <= upTo; w++) {
+  // history up to the calibration is settled: those waves were run from printed
+  // numbers, so an old typed RPE must never regenerate them after the fact
+  for (let w = CAL_LAST + 1; w <= upTo; w++) {
     const a = autoGate(w - 1, g, ctx);
     if (!a) continue;
     for (const L of LIFTS) {

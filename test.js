@@ -1039,5 +1039,15 @@ console.log("\n── frame requirements ──");
   ok(!/Barbalho/.test(src), "the retracted Barbalho papers are never cited");
 }
 
+// ═══ warm-ups climb: the bridge is never lighter than the indicator ═══
+for (let w = 1; w <= 19; w++) for (const [L, d] of [["sq", 1], ["bn", 2], ["dl", 5]]) {
+  const wu = E.sessionFor(w, 1, d, {}, E.DEFAULT_SPEC).find((b) => b.type === "warmup");
+  if (!wu) continue;
+  const nums = wu.rows.map((r) => r[0]).filter((x) => typeof x === "number");
+  ok(nums.every((x, i) => i === 0 || x > nums[i - 1]), `warm-up w${w} ${L} climbs: ${nums.join(" ")}`);
+}
+eq(E.sessionFor(1, 1, 5, {}, E.DEFAULT_SPEC).find((b) => b.type === "warmup").rows.map((r) => r[0]), [135, 225, 275, 315], "Wave 1 deadlift warm-up is the printed one");
+eq(E.sessionFor(2, 1, 1, {}, E.DEFAULT_SPEC).find((b) => b.type === "warmup").rows.map((r) => r[0]).slice(-1), [225], "Wave 2 squat indicator is the printed 225");
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

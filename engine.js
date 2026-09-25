@@ -599,15 +599,20 @@ function isDefaultSpec(spec) {
 }
 
 // ── warm-ups ────────────────────────────────────────────────────────
+// the printed indicator (225 / 165 / 315), capped by the Wave 1 ratio to the base
+// (225/315, 165/225, 315/405) so a calibrated or reset base never puts the bridge under it
+const IND_PCT = { sq: 0.714, bn: 0.733, dl: 0.778 }, IND_FIXED = { sq: 225, bn: 165, dl: 315 };
 function warmups(lift, wave, gates) {
-  const { t } = mainTables(wave, gates);
+  const { t, cb } = mainTables(wave, gates);
   const br = t.bridge ? t.bridge[lift] : null;
-  const base = {
-    sq: [["Bar", 10], [95, 5], [135, 5], [185, 3], [225, "1 · indicator — film"]],
-    bn: [["Bar", 15], [95, 8], [135, 5], [155, 3], [165, "1 · indicator — film"]],
-    dl: [[135, 5], [225, 3], [275, 2], [315, "1 · indicator — film"]],
-  }[lift].slice();
-  if (br) base.push([br, "1 · bridge"]);
+  const ind = Math.min(IND_FIXED[lift], R5(cb[lift] * IND_PCT[lift]));
+  const ramp = {
+    sq: [["Bar", 10], [95, 5], [135, 5], [185, 3]],
+    bn: [["Bar", 15], [95, 8], [135, 5], [155, 3]],
+    dl: [[135, 5], [225, 3], [275, 2]],
+  }[lift].filter((r) => typeof r[0] !== "number" || r[0] < ind);
+  const base = [...ramp, [ind, "1 · indicator — film"]];
+  if (br && br > ind) base.push([br, "1 · bridge"]);
   return base;
 }
 const WARM_PS = [["Bar", 10], [95, 5], [135, 5], [175, 3]];

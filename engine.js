@@ -20,17 +20,51 @@ function gateDelta(lift, result, prevCB) {
   return lift === "bn" ? 5 : 10; // clean (default)
 }
 
+// CALIBRATION: bases measured from his own sessions, pinned at the wave they took
+// effect. Waves 1-2 ran the printed notes; by Wave 3 his real numbers had moved
+// (bench ahead of the chain, squat and deadlift behind it), so Wave 3 runs from
+// what he actually lifts. A gate with its own `cb` still overrides these.
+const CALIBRATION = { 3: { bn: 255, sq: 295, dl: 385 } };
+const CAL_LAST = Math.max(...Object.keys(CALIBRATION).map(Number));
+// Default for a gate nobody has set yet. History (up to the last calibration)
+// assumes clean, since the notes he ran were built that way. The future assumes
+// "small": the honest pace for a lifter past the novice years (EVIDENCE.md, Latella).
+const PROJ_DEFAULT = "small";
+function defaultGate(w) { return w <= CAL_LAST ? "clean" : PROJ_DEFAULT; }
+// explicit base for wave w, if any: the user's gate cb wins over the calibration
+function explicitCB(w, gates, L) {
+  const g = (gates || {})[w];
+  if (g && g.cb && Number.isFinite(g.cb[L])) return g.cb[L];
+  const c = CALIBRATION[w];
+  return c && Number.isFinite(c[L]) ? c[L] : null;
+}
+
 // gates: {2:{sq:'clean'|'small'|'repeat'|'reset',...}, ...} keyed by the wave the gate FEEDS INTO
 function cbFor(wave, gates = {}) {
   const cb = { ...START };
   for (let w = 2; w <= wave; w++) {
     const g = gates[w] || {};
     for (const L of LIFTS) {
-      if (g.cb && Number.isFinite(g.cb[L])) cb[L] = g.cb[L]; // explicit CB (e.g. set from a test day)
-      else cb[L] = cb[L] + gateDelta(L, g[L] || "clean", cb[L]);
+      const x = explicitCB(w, gates, L); // explicit CB (calibration, or set from a test day)
+      if (x != null) cb[L] = x;
+      else cb[L] = cb[L] + gateDelta(L, g[L] || defaultGate(w), cb[L]);
     }
   }
   return cb;
+}
+// the pure chain, no calibration and all-clean defaults: the arithmetic the notes were built on
+function cbChain(wave, gates = {}) {
+  const cb = { ...START };
+  for (let w = 2; w <= wave; w++) {
+    const g = gates[w] || {};
+    for (const L of LIFTS) cb[L] = g.cb && Number.isFinite(g.cb[L]) ? g.cb[L] : cb[L] + gateDelta(L, g[L] || "clean", cb[L]);
+  }
+  return cb;
+}
+// first wave whose base reaches `goal` for lift L (null if not within `limit` waves)
+function etaWave(L, goal, gates, limit = 80) {
+  for (let w = 1; w <= limit; w++) if (cbFor(w, gates)[L] >= goal) return w;
+  return null;
 }
 
 const cycleOf = (wave) => ((wave - 1) % 6) + 1;
@@ -112,7 +146,7 @@ const PCT = {
 // ── incline bench: a tracked secondary press ramping to a 225 goal ──────
 // Starts at 180 (≈0.80× his 225 bench CB, the usual flat:incline ratio) and
 // gains in lockstep with the bench gate — one gate decision, two lifts. Reaches
-// 225 when the bench CB reaches 270, i.e. wave 10 on a clean chain.
+// 225 in nine incline steps: wave 11 on clean gates, wave 19 on the small-step default.
 // Did the lifter clear a standard for this exercise during a given wave?
 // null = no data (caller falls back to the schedule) · true = advance · false = hold.
 function clearedInWave(pkey, wave, minW, minReps, minSets) {
@@ -138,7 +172,7 @@ const TRACKED = {
     note: "Ramping to 225. Bench set to 30\u00b0 \u2014 NOT 45\u00b0: past 30 the front delt takes over and the upper chest stops being the limiter. Elbows ~45\u00b0 from the torso, bar to the upper chest.",
   },
   chin: {
-    key: "chin", name: "Weighted Chin-Up", start: 35, goal: 90, step: 5, anchor: "dl", added: true,
+    key: "chin", name: "Weighted Chin-Up", start: 35, goal: 90, step: 5, anchor: "bn", added: true,
     top:  [[0.60, 6, "7"], [0.80, 5, "7.5"], [1.00, 4, "8"], null],
     back: [[0.35, 8, 3], [0.45, 7, 3], [0.55, 6, 3], [0, 8, 2]],
     note: "Ramping to +90. Supinated, dead hang to chin over the bar. THE biceps compound. NO STRAPS on the back-offs \u2014 that is free forearm work; straps on the top set only if grip is the limiter.",
@@ -170,8 +204,12 @@ function trackedCB(id, wave, gates) {
     const target = R5(cb * T.top[2][0]);
     const cleared = clearedInWave(T.key + "-top", w, target, T.top[2][1], 1);
     if (cleared === null) {
-      const d = cbFor(w + 1, gates)[T.anchor] - cbFor(w, gates)[T.anchor];
-      cb += Math.min(d, T.step);
+      // follow the anchor's gate, clamped to one step either way. An explicit base
+      // (calibration or test) is a re-measurement of the anchor, not progress, so it
+      // moves this lift by nothing: a 30 lb deadlift correction says nothing about the RDL.
+      const d = explicitCB(w + 1, gates, T.anchor) != null ? 0
+        : cbFor(w + 1, gates)[T.anchor] - cbFor(w, gates)[T.anchor];
+      cb += Math.max(-T.step, Math.min(d, T.step));
     } else if (cleared) cb += T.step;
   }
   return cb;
@@ -219,11 +257,14 @@ function mainsFor(wave, gates) {
   out.gen.deload = { m: [R5(cb.sq * 0.55), R5(cb.bn * 0.55), R5(cb.dl * 0.55)], ps: R5(cb.sq * 0.52), pb: R5(cb.bn * 0.51) };
   return out;
 }
+// the printed notes are only valid while the chain they were built on holds:
+// any non-clean gate or explicit base (calibration included) at or before this wave
+// means the tables must be generated from the real base instead.
 function hasNonCleanGate(gates, upTo) {
-  if (!gates) return false;
   for (let w = 2; w <= upTo; w++) {
-    const g = gates[w];
+    const g = (gates || {})[w];
     if (g && LIFTS.some((L) => g[L] && g[L] !== "clean")) return true;
+    if (LIFTS.some((L) => explicitCB(w, gates, L) != null)) return true;
   }
   return false;
 }
@@ -755,6 +796,6 @@ function redSession(wave, day, gates) {
   return blocks;
 }
 
-const ENGINE = { TRACKED, trackedCB, trackedFor, ARM_START, ARM_GOAL, clearedInWave, inclineCB, inclineFor, INCLINE_START, INCLINE_GOAL, pkeyOf, accStateLogged, R5, R25, START, LIFTS, LIFT_NAME, gateDelta, cbFor, cycleOf, macroOf, CYCLE_NAME, waveStartUTC, whereIs, NOTES, mainTables, ohpFor, ACC, accState, accFor, sessionFor, testAttempts, yellowW, redSession, WAVE1_MONDAY, MS_DAY,
+const ENGINE = { CALIBRATION, PROJ_DEFAULT, cbChain, etaWave, explicitCB, TRACKED, trackedCB, trackedFor, ARM_START, ARM_GOAL, clearedInWave, inclineCB, inclineFor, INCLINE_START, INCLINE_GOAL, pkeyOf, accStateLogged, R5, R25, START, LIFTS, LIFT_NAME, gateDelta, cbFor, cycleOf, macroOf, CYCLE_NAME, waveStartUTC, whereIs, NOTES, mainTables, ohpFor, ACC, accState, accFor, sessionFor, testAttempts, yellowW, redSession, WAVE1_MONDAY, MS_DAY,
   FRAME_OPTS, FRAME_LABEL, DETAIL_OPTS, DETAIL_LABEL, DEFAULT_SPEC, isDefaultSpec, saturdaySession, sundaySession, sundayPlanned };
 if (typeof module !== "undefined") module.exports = ENGINE;

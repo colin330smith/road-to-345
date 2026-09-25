@@ -10,12 +10,34 @@ const ok = (cond, label) => { if (cond) pass++; else { fail++; console.log("FAIL
 
 // ── CB chain ──
 eq(E.cbFor(1), { bn: 225, sq: 315, dl: 405 }, "cb w1");
-eq(E.cbFor(4), { bn: 240, sq: 345, dl: 435 }, "cb w4 clean");
-eq(E.cbFor(19), { bn: 315, sq: 495, dl: 585 }, "cb w19 paper"); // sq/dl overshoot on paper — chain math only
-eq(E.cbFor(3, { 3: { bn: "repeat" } }), { bn: 230, sq: 335, dl: 425 }, "gate repeat bn");
-eq(E.cbFor(3, { 3: { sq: "small" } }), { bn: 235, sq: 330, dl: 425 }, "gate small sq");
+eq(E.cbChain(4), { bn: 240, sq: 345, dl: 435 }, "chain w4 clean");
+eq(E.cbChain(19), { bn: 315, sq: 495, dl: 585 }, "chain w19 paper"); // sq/dl overshoot on paper — chain math only
+eq(E.cbChain(3, { 3: { bn: "repeat" } }), { bn: 230, sq: 335, dl: 425 }, "chain gate repeat bn");
+eq(E.cbChain(3, { 3: { sq: "small" } }), { bn: 235, sq: 330, dl: 425 }, "chain gate small sq");
+// ── calibration: Wave 3 runs from his measured bases ──
+eq(E.cbFor(2), { bn: 230, sq: 325, dl: 415 }, "history before the calibration is the clean chain");
+eq(E.cbFor(3), { bn: 255, sq: 295, dl: 385 }, "Wave 3 bases are the calibrated 255/295/385");
+eq(E.cbFor(3, { 3: { cb: { bn: 250 } } }).bn, 250, "a user-set base overrides the calibration");
+eq(E.cbFor(3, { 3: { bn: "repeat" } }).bn, 255, "a gate result cannot move a pinned base");
+eq(E.cbFor(4), { bn: 257.5, sq: 300, dl: 390 }, "future gates default to the small step");
+eq(E.cbFor(4, { 4: { bn: "clean", sq: "clean", dl: "clean" } }), { bn: 260, sq: 305, dl: 395 }, "a set gate beats the default");
+eq(E.PROJ_DEFAULT, "small", "projection default is small");
+eq(E.cbFor(19), { bn: 295, sq: 375, dl: 465 }, "Wave 19 on the small-step pace");
+eq([E.etaWave("bn", 315), E.etaWave("sq", 405), E.etaWave("dl", 495)], [27, 25, 25], "honest ETAs for 3/4/5 on the small-step pace");
+ok(E.mainTables(3).explicit === false && E.mainTables(3).t.bn.s[2] === E.R5(255 * 0.893), "Wave 3 tables regenerate from the calibrated base");
 eq(E.cbFor(2, { 2: { dl: "reset" } }).dl, 385, "gate reset dl"); // R5(405*.95)=385
 
+// ── tracked lifts follow their anchor's gate, one step at most either way ──
+eq(E.TRACKED.chin.anchor, "bn", "chin-up is anchored to bench (an upper-body pull, not the deadlift)");
+for (const id of Object.keys(E.TRACKED)) {
+  const T = E.TRACKED[id];
+  for (let w = 1; w < 19; w++) {
+    const d = E.trackedCB(id, w + 1, {}) - E.trackedCB(id, w, {});
+    ok(Math.abs(d) <= T.step, `tracked ${id} w${w}->${w + 1}: moves at most one step (${d})`);
+  }
+}
+eq(E.trackedCB("rdl", 3, {}) - E.trackedCB("rdl", 2, {}), 0, "a calibration is a re-measurement: the RDL neither gains nor loses from it");
+eq(E.trackedCB("rdl", 4, {}) - E.trackedCB("rdl", 3, {}), 5, "after it, the RDL follows the deadlift's small step");
 // ── schedule ──
 const d = (y, m, dd) => Date.UTC(y, m - 1, dd);
 eq(E.whereIs(d(2026, 7, 20)), { wave: 1, week: 1, day: 1, dow: 0 }, "date w1w1d1");
@@ -63,9 +85,11 @@ const w2 = E.mainTables(2).t;
 eq(w2.sq.s, [275,285,295], "w2 sq singles");
 eq(w2.dl.b[2], [330,3,4], "w2 dl wk3 backoff");
 eq(w2.pb, [150,160,170,130], "w2 paused bench");
-const w4 = E.mainTables(4).t;
-eq(w4.bn.s, [205,210,215], "w4 bn singles");
-eq(w4.sq.b[2], [275,3,5], "w4 sq wk3 backoff");
+const w1 = E.mainTables(1);
+ok(w1.explicit && w1.t.bn.s[0] === 190, "w1 still prints the notes");
+const w4 = E.mainTables(4);
+ok(!w4.explicit, "w4 is generated: the notes' chain no longer holds after calibration");
+eq(w4.t.bn.s, [220,225,230], "w4 bn singles from the calibrated base");
 
 // ── generated waves 5–19: every load inside its v7 window ──
 const WIN = {
@@ -97,7 +121,7 @@ for (let w = 5; w <= 19; w++) {
 }
 
 // ── monotonic under clean gates: singles never go down wave-over-wave within same cycle type ──
-for (let w = 6; w <= 19; w++) {
+for (let w = 3 + 6; w <= 19; w++) { // from the calibration on; before it the chain was fiction
   const a = E.mainTables(w - 6), b = E.mainTables(w);
   if (E.cycleOf(w) === 6) continue;
   for (const L of E.LIFTS) ok(b.t[L].s[2] > a.t[L].s[2], `w${w} ${L} wk3 single beats prior macro`);
@@ -411,8 +435,10 @@ console.log("\n── frame requirements ──");
 // ═══ incline ramp to 225 + posture block ═══
 {
   eq(E.inclineCB(1, {}), 180, "incline: starts at 180");
-  eq(E.inclineCB(10, {}), 225, "incline: reaches the 225 goal at wave 10 on a clean chain");
-  eq(E.inclineCB(10, { 3: { bn: "repeat" } }), 220, "incline: a failed bench gate holds the incline too");
+  const C = { bn: "clean", sq: "clean", dl: "clean" }, CG = { 4: C, 5: C, 6: C, 7: C, 8: C, 9: C, 10: C, 11: C };
+  eq(E.inclineCB(11, CG), 225, "incline: reaches the 225 goal at wave 11 on clean gates");
+  eq(E.inclineCB(11, { ...CG, 5: { ...C, bn: "repeat" } }), 220, "incline: a failed bench gate holds the incline too");
+  eq(E.inclineCB(19, {}), 225, "incline: on the small-step default it reaches 225 at wave 19");
   const tue = E.sessionFor(1, 1, 2, {}, E.DEFAULT_SPEC);
   const names = tue.map((b) => b.name || "");
   ok(names.some((n) => /Incline Bench — top set/.test(n)), "incline: Tue has a ramping top set");
@@ -455,7 +481,7 @@ console.log("\n── frame requirements ──");
   const hit = (w, wt, r) => [{ t: W(w) + 16 * MS, w: wt, r }];
   const top = (wave, ctx) => E.sessionFor(wave, 1, 2, {}, E.DEFAULT_SPEC, ctx).find((b) => /Incline Bench — top/.test(b.name)).w;
   eq(E.inclineCB(1, {}), 180, "incline: starts at 180");
-  eq(E.inclineCB(10, {}), 225, "incline: unlogged still reaches 225 by wave 10");
+  eq(E.inclineCB(19, {}), 225, "incline: unlogged still reaches 225 (wave 19 on the default pace)");
   eq(top(2, { index: { "incbb-top": hit(1, 155, 3) }, offsetWeeks: 0 }), 145, "incline: cleared top set advances");
   eq(top(2, { index: { "incbb-top": hit(1, 155, 2) }, offsetWeeks: 0 }), 140, "incline: missed top set holds");
   eq(top(2, { index: {}, offsetWeeks: 0 }), 145, "incline: no history falls back to the bench gate (+5), same as before");

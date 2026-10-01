@@ -600,7 +600,7 @@ console.log("\n── frame requirements ──");
       if (["accessory", "single", "backoff", "main", "ohp", "paused"].includes(b.type) && !/^FILLER/.test(b.cap || "") && !/Pull-Apart/.test(b.name || "")) hard += b.sets;
     ok(hard <= (d === 6 ? 25 : 22), `v32 day ${d}: ${hard} non-filler sets - room for 3-min rests on compounds (Sat has no compound, cap 25: the arm block adds a 4th overhead set from Wave 4)`);
   }
-  eq([E.ARM_START, E.ARM_GOAL], [13, 15], "arms: 13 -> 15 in, the honest target from his real baseline");
+  eq([E.ARM_START, E.ARM_GOAL], [13, 16], "arms: 13 -> 16 in on the 200 lb @ 15% build (arms lead, slightly disproportionate)");
 }
 
 

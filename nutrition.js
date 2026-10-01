@@ -96,7 +96,7 @@ const HOME = [
 // lean mass at ~11% — the 1992 Calvin Klein Wahlberg, carrying ~25 lb more muscle than
 // the ad. It is not a multi-year goal; it is a ten-week trim once Phase 1 is real.
 const PHASES = [
-  { id: "build", name: "Pain & Gain build", target: "200 lb @ 15% \u00b7 170 lb lean \u00b7 315/405/495 \u00b7 15\" arms", by: "~Wave 45 (2030)", mode: "gain",
+  { id: "build", name: "Pain & Gain build", target: "200 lb @ 15% \u00b7 170 lb lean \u00b7 315/405/495 \u00b7 16\" arms", by: "~Wave 45 (2030)", mode: "gain",
     note: "Small surplus for years. Trim only when body fat hits 18%." },
   { id: "ck", name: "The CK cut", target: "~190 lb @ 11% \u00b7 same 170 lb lean", short: "~190 @ 11%", by: "10 weeks after Wave 45", mode: "trim", kcal: 2300, weeks: 10, floorBF: 10,
     gate: "Starts only once 200 @ 15% is real on the tape \u2014 waist and weekly average, not a good morning.",

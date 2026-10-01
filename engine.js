@@ -192,8 +192,9 @@ const TRACKED = {
 };
 const INCLINE_START = TRACKED.inc.start, INCLINE_GOAL = TRACKED.inc.goal;
 // Arms are the stated calling card. 13" at 182 lb is a genuinely lagging part;
-// 15" at 200 lb is +33% cross-sectional area, which is the honest multi-year target.
-const ARM_START = 13, ARM_GOAL = 15;
+// The goal is 16" at 200 lb and 15% body fat: arms that lead the build, slightly out of
+// proportion on purpose. 13" -> 16" is roughly +50% cross-sectional area, a multi-year target.
+const ARM_START = 13, ARM_GOAL = 16;
 
 // Log-adaptive base: a past wave advances only if its week-3 top set was cleared.
 // Unlogged waves track the anchor lift's gate, so casual use still progresses.

@@ -4,7 +4,7 @@ CYCLE BASES: bench 255 · squat 295 · deadlift 385
 TRACKED: incline 185 → 225 · chin-up +40 → +90 · dip +40 → +100 · RDL 280 → 315
 
 ARMS ARE THE CALLING CARD. 13 in → 15 in. Chin-up drives the biceps side,
-dip the triceps side, and TRICEPS ARE TWO-THIRDS OF ARM CIRCUMFERENCE —
+dip the triceps side, and TRICEPS ARE ~55% OF UPPER-ARM MUSCLE —
 so they carry the larger share, most of it overhead and at length.
 Chin-up, dip, RDL and incline all climb like the big three do.
 
@@ -177,15 +177,15 @@ Fri — Comp Deadlift + Back
 
 Sat — Frame Spec
   Frame Specialization — Arms (bi + tri) priority — Overload day. Hit your weak point fresh — quality reps, not a set count.
-  Incline DB Curl: 40 × 10–12 × 3 @ RPE 8–9 · per hand
-  Bayesian Cable Curl: 30 × 10–12 × 2 @ RPE 8–9
-  Cross-Body Cable Y-Raise: 25 × 10–12 × 3 @ RPE 8–9
-  Overhead Cable Extension: 75 × 10–12 × 3 @ RPE 8–9
-  Incline DB Press (30°): 60 × 8–10 × 3 @ RPE 8 · per hand
-  Heavy Farmer Hold (seconds): 80 × 30–40 × 2 @ RPE 8–9 · per hand
-  Unilateral Cable Pulldown: 105 × 10–12 × 3 @ RPE 8
-  Rope / Single-Arm Pushdown: 95 × 10–12 × 3 @ RPE 8–9
-  Ab Wheel / Cable Crunch: 70 × 12–15 × 2 @ RPE 8–9
+  Incline DB Curl: 40 × 12 × 3 @ RPE 8–9 · per hand
+  Bayesian Cable Curl: 30 × 12 × 2 @ RPE 8–9
+  Cross-Body Cable Y-Raise: 25 × 12 × 3 @ RPE 8–9
+  Overhead Cable Extension: 75 × 12 × 3 @ RPE 8–9
+  Incline DB Press (30°): 60 × 10 × 3 @ RPE 8 · per hand
+  Heavy Farmer Hold (seconds): 80 × 40 × 2 @ RPE 8–9 · per hand
+  Unilateral Cable Pulldown: 105 × 12 × 3 @ RPE 8
+  Rope / Single-Arm Pushdown: 95 × 12 × 3 @ RPE 8–9
+  Ab Wheel / Cable Crunch: 70 × 15 × 2 @ RPE 8–9
 
 Sun — Rest
   Optional detail day — off — REST. Six hard days need a seventh off — recovery is where the sets you already did turn into muscle. Easy walk at most. (Optional detail day can be re-enabled in Specialize.)

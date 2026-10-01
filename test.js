@@ -598,7 +598,7 @@ console.log("\n── frame requirements ──");
     let hard = 0;
     for (const b of E.sessionFor(1, 1, d, {}, E.DEFAULT_SPEC))
       if (["accessory", "single", "backoff", "main", "ohp", "paused"].includes(b.type) && !/^FILLER/.test(b.cap || "") && !/Pull-Apart/.test(b.name || "")) hard += b.sets;
-    ok(hard <= (d === 6 ? 24 : 22), `v32 day ${d}: ${hard} non-filler sets - room for 3-min rests on compounds (Sat has no compound, cap 24)`);
+    ok(hard <= (d === 6 ? 25 : 22), `v32 day ${d}: ${hard} non-filler sets - room for 3-min rests on compounds (Sat has no compound, cap 25: the arm block adds a 4th overhead set from Wave 4)`);
   }
   eq([E.ARM_START, E.ARM_GOAL], [13, 15], "arms: 13 -> 15 in, the honest target from his real baseline");
 }
@@ -911,7 +911,7 @@ console.log("\n── frame requirements ──");
 // ═══ evidence rules (EVIDENCE.md) ═══
 {
   const fs = require("fs");
-  const src = fs.readFileSync(__dirname + "/engine.js", "utf8") + fs.readFileSync(__dirname + "/app-shell.html", "utf8");
+  const src = ["engine.js", "app-shell.html", "sync.py", "out/note-wave3.txt", "out/note-wave4.txt"].map((f) => fs.readFileSync(__dirname + "/" + f, "utf8")).join("\n");
   ok(!/two-thirds/i.test(src), "evidence: triceps are ~55% of upper-arm muscle, never 'two-thirds'");
   ok(!/Sato 2021/.test(src), "evidence: no 'preacher beat incline' claim; the regions differ (Kassiano 2025)");
   ok(!/ZERO tension|zero tension/.test(src), "evidence: DB and cable laterals grew side delts equally (Larsen 2025)");
@@ -1092,6 +1092,40 @@ eq(E.sessionFor(2, 1, 1, {}, E.DEFAULT_SPEC).find((b) => b.type === "warmup").ro
   const curl = sat(11, 1, ix).find((b) => /Incline DB Curl/.test(b.name)), oh = sat(11, 1, ix).find((b) => /Overhead Cable Extension/.test(b.name));
   ok(curl.w > 35 && curl.prog !== "held", `one-tap Saturdays: incline curl climbs (${curl.w}, ${curl.prog})`);
   ok(oh.w > 70 && oh.prog !== "held", `one-tap Saturdays: overhead extension climbs (${oh.w}, ${oh.prog})`);
+}
+
+// ═══ arm specialization (Wave 4+): EVIDENCE.md "Arm specialization" ═══
+{
+  const week = (wv, wk) => { const o = []; for (let d = 1; d <= 7; d++) for (const b of E.sessionFor(wv, wk, d, {}, E.DEFAULT_SPEC)) o.push({ ...b, d }); return o; };
+  const isCurl = (n) => /Curl/i.test(n) && !/Leg Curl|Wrist|Neck|Hammer|Reverse/i.test(n);
+  const isTri = (n) => /(Extension|Pushdown)/i.test(n) && !/Leg|Wrist|Neck/i.test(n);
+  const count = (wv, wk, f) => week(wv, wk).filter((b) => b.type === "accessory" && f(b.name || "")).reduce((n, b) => n + b.sets, 0);
+  eq([count(3, 1, isCurl), count(3, 1, isTri)], [8, 11], "arms: Waves 1-3 are history, unchanged (8 curl / 11 triceps sets)");
+  eq([count(4, 1, isCurl), count(4, 1, isTri)], [11, 15], "arms: from Wave 4, 11 curl sets and 15 triceps isolation sets a week");
+  ok(count(4, 1, isTri) - 11 > count(4, 1, isCurl) - 8, "arms: triceps get the bigger raise (Baz-Valle 2022, Brigatto 2022); biceps a moderate one (Heaselgrave 2019)");
+  const days = (f) => new Set(week(4, 1).filter((b) => b.type === "accessory" && f(b.name || "")).map((b) => b.d));
+  eq([...days(isCurl)].sort(), [1, 3, 6], "arms: curls on Mon, Wed, Sat (48 h+ between the hard biceps days)");
+  ok(!days(isTri).has(1), "arms: no triceps isolation on Monday, 24 h before bench (Ferreira 2017)");
+  const thuTri = week(4, 1).filter((b) => b.d === 4 && b.type === "accessory" && isTri(b.name)).reduce((n, b) => n + b.sets, 0);
+  eq(thuTri, 5, "arms: Thursday triceps unchanged (already at the per-session ceiling)");
+  const tue = E.sessionFor(4, 1, 2, {}, E.DEFAULT_SPEC), ohIdx = tue.findIndex((b) => b.pkey === "ohtue");
+  ok(ohIdx > tue.findIndex((b) => /Incline Bench — back-offs/.test(b.name || "")) && ohIdx > tue.findIndex((b) => /Bench — back-offs/.test(b.name || "")), "arms: Tuesday overhead extension comes after ALL pressing (Soares 2016)");
+  for (const id of ["curlmon", "ohtue"]) for (const wk of [1, 2]) {
+    const b = week(4, wk).find((x) => x.pkey === id);
+    ok(b && b.rpe === "8" && !b.lastHard, `arms: added ${id} sets stop at RPE 8, no extra failure sets (wk${wk})`);
+  }
+  eq(week(4, 3).find((b) => b.pkey === "curlmon").sets, 2, "arms: week 3 trims the added sets");
+  ok(week(4, 4).filter((b) => b.pkey === "curlmon" || b.pkey === "ohtue").every((b) => b.light && b.sets === 2), "arms: week 4 deloads them");
+  ok(!week(6, 1).some((b) => b.pkey === "curlmon" && b.sets > 2), "arms: the peak cuts them back with everything else");
+  eq(E.accState(E.ACC.find((a) => a.id === "curlmon"), 4).w, 25, "arms: new exercises start Wave 4 on their seed rung");
+}
+
+// deload sets never feed Rule C: an "Easy" light-week set must not raise the next load
+{
+  const t = E.sessionDayUTC(4, 4, 1, 0);
+  const next = E.sessionFor(5, 1, 1, {}, E.DEFAULT_SPEC, { index: { curlmon: [{ t, w: 20, r: 10, rate: "E" }] }, offsetWeeks: 0 }).find((b) => b.pkey === "curlmon");
+  ok(next && E.sessionFor(4, 4, 1, {}, E.DEFAULT_SPEC).find((b) => b.pkey === "curlmon").light, "deload accessory blocks are flagged light");
+  ok(!next.auto, "a rating on a deload set does not move the next exposure");
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

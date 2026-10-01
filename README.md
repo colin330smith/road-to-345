@@ -56,7 +56,7 @@ Pure logic, no DOM. Exported as `ENGINE`; works under Node (`require`) and in th
 
 ### Invariants worth not breaking
 
-- Weekly caps: **biceps 16, triceps 14, side delts 16.** Side delts run 11 sets (Tue 4, Wed 4, Sat 3).
+- Weekly caps: **biceps 16, triceps 16, side delts 16.** From Wave 4 the arm block runs 11 curl and 15 triceps isolation sets (Mon curl, Tue overhead extension, 4th Sat overhead set); side delts run 11 sets (Tue 4, Wed 4, Sat 3).
 - Main lifts stop at **RPE 8**. Week 3 trims accessory sets, week 4 is a deload, cycle 6 drops specialization entirely.
 - Waves 1–2 output must equal the printed notes.
 - Every evidence claim in the app has a test and a row in EVIDENCE.md.

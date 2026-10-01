@@ -67,7 +67,7 @@ def note_body(wave, data):
          f"RDL {tr['rdl']['cb']} → {tr['rdl']['goal']}",
          "",
          "ARMS ARE THE CALLING CARD. 13 in → 15 in. Chin-up drives the biceps side,",
-         "dip the triceps side, and TRICEPS ARE TWO-THIRDS OF ARM CIRCUMFERENCE —",
+         "dip the triceps side, and TRICEPS ARE ~55% OF UPPER-ARM MUSCLE —",
          "so they carry the larger share, most of it overhead and at length.",
          "Chin-up, dip, RDL and incline all climb like the big three do.",
          "",

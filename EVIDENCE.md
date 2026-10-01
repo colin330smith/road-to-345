@@ -51,6 +51,23 @@ Sources were cite-checked against PubMed or the journal page on 2026-09-25. The 
 | Straight-knee calf work for the gastrocnemius | Evidence | Kinoshita 2023, *Front Physiol* 14:1272106 | Standing raises grew the gastrocnemius +9–12% vs +1–2% seated. The soleus grew similarly either way. |
 | Lengthened partials on anchor sets | Evidence | Wolf 2023, *Int J Strength Cond* 3(1) · Pedrosa 2022, *Eur J Sport Sci* 22(8):1250 · Wolf 2025, *PeerJ* 13:e18904 | Partials at long muscle lengths grew muscle as well as full range, or better. |
 
+## Arm specialization (Wave 4 on)
+
+His stated priority is arms that are slightly disproportionate to the rest of him. From Wave 4 the default plan adds a Monday Bayesian curl (3 sets), a Tuesday overhead cable extension (3 sets) and a 4th Saturday overhead set. Weekly isolation goes from 8 to 11 curl sets and from 11 to 15 triceps sets, plus 6 hammer and reverse-curl sets and the chin-ups and dips. Sources were cite-checked on 2026-10-01.
+
+| Plan element | Label | Source | What it supports |
+|---|---|---|---|
+| More weekly sets for the priority muscle | Evidence | Pelland 2025 (above) · Schoenfeld 2017 (above) | Hypertrophy keeps rising with weekly sets, with diminishing returns. Compound sets count about half (fractional counting fit best). |
+| Biceps raised moderately (8 to 11 curl sets, about 17 direct elbow-flexor sets with hammers and reverse curls) | Evidence | Heaselgrave 2019, *Int J Sports Physiol Perform* 14(3):360 | In trained men, 9, 18 and 27 weekly biceps sets gave +4.3%, +9.5% and +5.4% thickness: no extra gain past about 18. |
+| Triceps raised more (11 to 15 isolation sets) | Evidence | Baz-Valle 2022 (systematic review of trained lifters, excludes retracted studies) · Brigatto 2022, *J Strength Cond Res* 36(1):22 | Triceps responded to higher weekly volume in trained lifters; biceps did not separate as clearly. |
+| The added triceps work is overhead | Evidence | Maeo 2023 (above) · Brandão 2020, *J Strength Cond Res* 34(5):1254 | Overhead beat pushdowns for the long head and the whole triceps. Bench-only training barely grew the long head, so pressing does not replace it. |
+| No added triceps on Monday; Tuesday's comes after all pressing | Evidence | Ferreira 2017, *Muscle Nerve* 56(5):963 · Soares 2016, *J Sports Sci Med* 15(1):111 | Triceps work can stay reduced for up to 48 h; a pushdown before bench cut bench volume about 22%. |
+| No added triceps on Thursday | Partly | Remmert 2025 (preprint, not peer reviewed) | Past about 11 fractional sets per muscle per session, more sets in that session stop showing a detectable gain. Thursday is already there. |
+| Curls 48 h apart (Mon, Wed, Sat) | Partly | Soares 2015, *J Strength Cond Res* 29(9):2594 | Preacher-curl torque was still 8% down at 24 h in trained men. |
+| Added sets stop at RPE 8; still one failure set per muscle per day | Evidence | Refalo 2023 (above) · Vasconcelos 2026, *Muscles* 5(3):61 · Hermann 2025, *Med Sci Sports Exerc* 57(9):2021 | In trained lifters, preacher curls to failure grew no more than stopping 1–3 reps short. |
+| First two weeks of a new arm exercise at RPE 7 | Judgment | McHugh 2003, *Scand J Med Sci Sports* 13(2):88 | The first exposures to a new exercise cause the most soreness; the protection builds fast. The two-week ramp is a judgment. |
+| Nothing else is cut to pay for it | Judgment | — | The block fits the 90-minute slot (the longest session still estimates under 85 min), so the trade is recovery, not time. Waves 1–3 stay as they were run. |
+
 ## Nutrition and recovery
 
 | Plan element | Label | Source | What it supports |
@@ -77,5 +94,5 @@ Sources were cite-checked against PubMed or the journal page on 2026-09-25. The 
 3. Small-step projection default. It is above Latella's average for squat and deadlift, and gates correct it every wave.
 4. Post-test base 96%; default test target base × 1.04; the taper's last heavy touch 4 days out.
 5. Tracked-lift clamp; chin-up anchored to bench.
-6. Exact weekly set counts and caps; neutral-grip reverse pec deck; face pull rep steps.
+6. Exact weekly set counts and caps, including the arm block's 11 curl and 15 triceps sets and the RPE 7 ramp; neutral-grip reverse pec deck; face pull rep steps.
 7. Six-week trim cap and its end conditions; the 1%/wk flag; phase-relative 7-day decision rule; whey + banana before a trim lift.

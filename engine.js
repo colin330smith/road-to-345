@@ -299,8 +299,16 @@ const ACC = [
   { id: "hlr",       name: "Hanging Leg Raise",      day: 1, sets: 3, w3: 3, steps: [10, 12, 15],     w: 0,    inc: 0,   db: false, comp: false, anchor: true, arch: "hlr",       cap: "Once you own the top of the rep range, hold a dumbbell between the feet — bodyweight alone stops progressing" },
   { id: "lowhigh",   name: "Low-to-High Cable Fly",  day: 1, sets: 4, w3: 3, steps: [12, 15, 20],     w: 30,   inc: 5,   db: false, comp: false, anchor: true, arch: "rearfly",   cap: "Upper-chest shelf — sweep up and in, squeeze the top" },
   { id: "shrug",     name: "Machine / DB Shrug",     day: 1, sets: 1, w3: 1, steps: [10, 12, 15],     w: 160,  inc: 10,  db: false, comp: false, arch: "shrug",     cap: "Hold the top 1s, no rolling. 1 quality set + your deadlifts = developed, not overdeveloped" },
+  // ARM SPECIALIZATION (Wave 4+): arms are the declared priority, so they get the most
+  // volume the evidence supports, spread to respect recovery. Biceps get a moderate
+  // rise (trained-lifter data level off near 18 weekly sets: Heaselgrave 2019); triceps
+  // get more (Baz-Valle 2022, Brigatto 2022), as overhead work (Maeo 2023). No added
+  // triceps on Monday (24 h before bench: Ferreira 2017) or Thursday (already at the
+  // per-session ceiling). Added sets stop at RPE 8: no extra failure sets.
+  { id: "curlmon",   name: "Bayesian Cable Curl (Mon)", day: 1, sets: 3, w3: 2, steps: [10, 12, 15], w: 25, inc: 5, db: false, comp: false, rpe8: true, since: 4, from: 4, arch: "curl", cap: "ARMS PRIORITY \u2014 third biceps day, 48 h before Wednesday's preacher. Arm behind the body, full stretch at the bottom, elbow still. Stop at RPE 8. First two weeks: RPE 7, the elbow needs to get used to it" },
   { id: "rowtue",    name: "Chest-Supported DB Row", day: 2, sets: 4, w3: 3, steps: [8, 10, 12],      w: 60,   inc: 5,   db: true,  comp: true,  arch: "row",       cap: "Strict, chest stays on pad" },
   { id: "lattue",    name: "Leaning DB Lateral Raise", day: 2, sets: 4, w3: 3, steps: [10, 12, 15],   w: 20,   inc: 2.5, db: true,  comp: false, anchor: true, lp: true, arch: "lateral",   cap: "LEAN AWAY from a rack, holding it one-handed. Dumbbell and cable laterals grew the side delt equally head to head (Larsen 2025): the lean is for feel, not magic. 10–15 reps, strict" },
+  { id: "ohtue",     name: "Overhead Cable Extension (Tue)", day: 2, sets: 3, w3: 2, steps: [10, 12, 15], w: 65, inc: 5, db: false, comp: false, rpe8: true, since: 4, from: 4, arch: "ohtri", cap: "ARMS PRIORITY \u2014 after ALL pressing, never before (pre-fatiguing the triceps cut bench volume ~22%: Soares 2016). Long head at length, elbows in. Stop at RPE 8: Thursday's paused bench is 48 h away. First two weeks: RPE 7" },
   { id: "revpec",    name: "Reverse Pec Deck",       day: 2, sets: 3, w3: 2, steps: [12, 15],         w: 100,  inc: 10,  db: false, comp: false, arch: "rearfly",   cap: "NEUTRAL GRIP (palms facing), arms long, sweep out. Light + strict beats heavy + sloppy. Rows and chins hit the rear delt too, but a dedicated fly is what isolates it" },
   { id: "pullapart", name: "Band Pull-Apart",        day: 2, sets: 2, w3: 2, steps: [20, 25, 30],     w: 0,    inc: 0,   db: false, comp: false, arch: "rearfly",   cap: "PRIMER \u2014 do these BEFORE pressing. 60 seconds, opens the chest, sets the shoulders back" },
   { id: "lpcalf",    name: "Leg Press Calf Raise",   day: 5, sets: 3, w3: 2, steps: [10, 12, 15],     w: 250,  inc: 20,  db: false, comp: false, anchor: true, lp: true, since: 3, arch: "calf",      cap: "STRAIGHT KNEE \u2014 bent-knee calf work grows the soleus only; the gastrocnemius is the calf you can see. Two-second pause in the stretch, no bouncing. Final set: after the last full rep, 3\u20135 partials in the bottom half" },
@@ -463,7 +471,7 @@ const FRAME_MODULE = {
   arms: (v) => [
     sx("Incline DB Curl", 35, [10, 12, 15], 3, "8\u20139", "curl", "inccurl", true, "Stretch curl \u2014 arms hang behind you. Wednesday's preacher is the anchor; this is the second angle, hit fresh", 5, v),
     sx("Bayesian Cable Curl", 25, [10, 12, 15], 2, "8\u20139", "curl", "cablecurl", false, "Arm behind the body, constant tension, biceps at full length. Superset with the overhead extension", 5, v),
-    sx("Overhead Cable Extension", 70, [10, 12, 15], 3, "8\u20139", "ohtri", "ohrope", false, "Long head \u2014 the biggest triceps head, and only overhead work hits it", 5, v),
+    sx("Overhead Cable Extension", 70, [10, 12, 15], v >= 4 ? 4 : 3, "8\u20139", "ohtri", "ohrope", false, "Long head \u2014 the biggest triceps head, and only overhead work loads it at length. 4 sets: the triceps carry the bigger share of the arm block", 5, v),
   ],
   traps: (v) => [
     sx("Machine / Chest-Supported Shrug", 160, [8, 10, 15], 3, "8", "shrug", "shrug", false, "Brief hold at the top; no rolling", 10, v),
@@ -708,6 +716,7 @@ function sessionForInner(wave, week, day, gates, spec) {
   for (const a of ACC.filter((x) => x.day === day)) {
     if (day === 4 && THU_DROP.has(a.id)) continue;
     if (a.id === "pullapart") continue;   // already pushed as the pre-press primer
+    if (a.from && wave < a.from) continue; // not in the plan yet (the arm block starts Wave 4)
     if (a.id === "incline" && spec.secondaryPress === "closegrip") {
       const cg = mainTables(wave, gates).cb.bn;
       push({ type: "accessory", name: "Close-Grip Bench", w: R5(cg * 0.62), reps: week === 2 ? 8 : 6, sets: week === 3 ? 2 : 3,
@@ -720,7 +729,7 @@ function sessionForInner(wave, week, day, gates, spec) {
     // frame bias: lat-width / upper-back priority trims the Friday row to 2 sets
     let sets = p.sets;
     if (day === 5 && a.id === "rowfri" && (spec.framePrimary === "latwidth" || spec.framePrimary === "upperback") && week < 4) sets = Math.min(sets, 2);
-    push({ type: "accessory", name: a.name, w: p.w, reps: p.reps, sets, rpe: p.rpe, db: a.db, top: p.top, moveId: a.id, cap: a.cap, pkey: a.id, prog: p.prog, lastHard: p.lastHard, lp: !!(a.lp && p.lastHard), inc: a.inc });
+    push({ type: "accessory", name: a.name, w: p.w, reps: p.reps, sets, rpe: p.rpe, db: a.db, top: p.top, moveId: a.id, cap: a.cap, pkey: a.id, prog: p.prog, lastHard: p.lastHard, lp: !!(a.lp && p.lastHard), inc: a.inc, light: !!p.light });
   }
   if (day === 4 && week < 4 && xfer) push({ type: "note", name: "Delt & triceps isolation → Saturday", note: "Your side-delt, rear-delt and pushdown work lives in Saturday's frame day now — keeps weekly volume under cap." });
   if (day === 3 && cyc !== 6) {
@@ -887,7 +896,8 @@ function autoregulate(blocks, wave, week, day, ctx) {
       }
     }
     // Rule C: the next exposure follows the last rating (within 14 days)
-    const hist = (ix[b.pkey] || []).filter((e) => e.t < today && e.t >= today - 14 * MS_DAY && RATE[e.rate] != null && e.rate !== "O");
+    // deload-week sets are light on purpose: their ratings say nothing about the working load
+    const hist = (ix[b.pkey] || []).filter((e) => e.t < today && e.t >= today - 14 * MS_DAY && RATE[e.rate] != null && e.rate !== "O" && whereIs(e.t, off).week !== 4);
     if (!hist.length) return b;
     const last = hist.reduce((a, e) => (e.t >= a.t ? e : a));
     if (last.t !== Math.max(...(ix[b.pkey] || []).filter((e) => e.t < today).map((e) => e.t))) return b; // a newer unrated session supersedes it

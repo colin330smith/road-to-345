@@ -1128,5 +1128,16 @@ eq(E.sessionFor(2, 1, 1, {}, E.DEFAULT_SPEC).find((b) => b.type === "warmup").ro
   ok(!next.auto, "a rating on a deload set does not move the next exposure");
 }
 
+// ═══ upper chest (Wave 4+): incline growth sets on Thursday, 4th Saturday incline set ═══
+{
+  const upper = (wv, wk) => { let n = 0; for (let d = 1; d <= 7; d++) for (const b of E.sessionFor(wv, wk, d, {}, E.DEFAULT_SPEC)) if (/Incline Bench|Incline DB Press|Low-to-High/.test(b.name || "") && b.sets) n += b.sets; return n; };
+  eq([upper(3, 1), upper(4, 1)], [11, 14], "upper chest: 11 -> 14 incline-biased sets a week from Wave 4");
+  const thu = E.sessionFor(4, 1, 4, {}, E.DEFAULT_SPEC);
+  const h = thu.find((b) => b.pkey === "incbbh");
+  ok(h && h.w > 0 && h.w < E.trackedCB("inc", 4, {}) && h.rpe === "7.5–8", `upper chest: Thursday growth sets are 30° incline at ${h && h.w}`);
+  ok(thu.some((b) => /Paused Bench/.test(b.name || "")), "upper chest: Thursday keeps the paused competition bench");
+  ok(!E.sessionFor(3, 1, 4, {}, E.DEFAULT_SPEC).some((b) => b.pkey === "incbbh"), "upper chest: Waves 1-3 unchanged");
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

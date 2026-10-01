@@ -68,6 +68,16 @@ His stated priority is arms that are slightly disproportionate to the rest of hi
 | First two weeks of a new arm exercise at RPE 7 | Judgment | McHugh 2003, *Scand J Med Sci Sports* 13(2):88 | The first exposures to a new exercise cause the most soreness; the protection builds fast. The two-week ramp is a judgment. |
 | Nothing else is cut to pay for it | Judgment | — | The block fits the 90-minute slot (the longest session still estimates under 85 min), so the trade is recovery, not time. Waves 1–3 stay as they were run. |
 
+## Upper chest (Wave 4 on)
+
+From Wave 4, Thursday's two touch-and-go "growth" bench sets move to a 30° incline, and Saturday's incline DB press goes from 3 to 4 sets. Incline-biased work goes from 11 to 14 sets a week over four days (Mon fly, Tue incline bench, Thu incline, Sat incline DB). The paused competition bench is untouched.
+
+| Plan element | Label | Source | What it supports |
+|---|---|---|---|
+| Incline pressing for the upper (clavicular) chest | Partly | Chaves 2020, *Int J Exerc Sci* (Western Kentucky University, open access) | 47 men, 8 weeks: incline-only pressing grew the upper pec clearly more than flat or mixed pressing. Caveat: untrained men, one session a week. |
+| 30° rather than steeper | Partly | Saeterbakken 2017, *J Hum Kinet* 57:61 · existing 30° cue | Steeper inclines shift work to the front delt; 30° is the cue the app already uses. The exact angle is partly judgment. |
+| Growth sets moved, competition sets kept | Judgment | — | The paused sets carry the meet specificity; the touch-and-go sets were there for size, so they go where the size is wanted. |
+
 ## Nutrition and recovery
 
 | Plan element | Label | Source | What it supports |

@@ -757,7 +757,7 @@ function saturdaySession(wave, week, spec) {
   const frame = FRAME_MODULE[spec.framePrimary](wave);
   frame.forEach((ex) => blocks.push({ ...ex, sets: reduced ? 2 : ex.sets, primary: true }));
   // declared weak points (Wave 3 feedback): a second upper-chest press angle and real grip work
-  blocks.push(sx("Incline DB Press (30\u00b0)", 60, [8, 10, 12], reduced ? 2 : 3, "8", "incpress", "incdb", true, "UPPER CHEST \u2014 dumbbells go deeper than the bar, so the clavicular pec is loaded at length. 30\u00b0 bench, elbows ~45\u00b0, stop the descent when the stretch peaks", 5, wave, 3));
+  blocks.push(sx("Incline DB Press (30\u00b0)", 60, [8, 10, 12], reduced ? 2 : wave >= 4 ? 4 : 3, "8", "incpress", "incdb", true, "UPPER CHEST \u2014 dumbbells go deeper than the bar, so the clavicular pec is loaded at length. 30\u00b0 bench, elbows ~45\u00b0, stop the descent when the stretch peaks", 5, wave, 3));
   blocks.push(sx("Heavy Farmer Hold (seconds)", 80, [30, 40, 50], 2, "8\u20139", "shrug", "farmer", true, "FOREARMS \u2014 grip is the forearm's compound. Heaviest dumbbells you can hold for the time, shoulders back, no straps ever", 10, wave, 3));
   const triSpec = spec.detail === "triceps";
   if (!reduced) {
@@ -891,7 +891,11 @@ function sessionForInner(wave, week, day, gates, spec) {
     else {
       const hyp = Math.floor(scheme[1] / 2);
       push({ type: "paused", lift: "bn", name: "Paused Bench (1–2 sec pause)", w: pbW, reps: scheme[0], sets: scheme[1] - hyp, rpe: ["6.5–7", "7", "7–7.5"][wk], moveId: "pb", pkey: "pb", note: "Specificity work: crisp pause, chest tight" });
-      push({ type: "paused", lift: "bn", name: "Bench — hypertrophy back-offs (no pause)", w: pbW, reps: 8, sets: hyp, rpe: "7.5–8", moveId: "bn", pkey: "pbh", hyp: true, note: "Same bar, touch-and-go, 6–8 reps. The chest and triceps growth set" });
+      // UPPER CHEST (Wave 4+): the growth sets move to a 30° incline. Incline-only training
+      // grew the clavicular pec clearly more than flat (Chaves 2020); the paused sets above
+      // keep the competition bench practice.
+      if (wave >= 4) push({ type: "paused", lift: "inc", name: "Incline Bench — hypertrophy back-offs (30°)", w: R5(trackedCB("inc", wave, gates) * 0.73), reps: 8, sets: hyp, rpe: "7.5–8", moveId: "incbb", pkey: "incbbh", hyp: true, note: "UPPER CHEST. Same 30° bench as Tuesday, 6–8 reps, bar to the upper chest. The paused sets above are the meet practice; these are the growth sets" });
+      else push({ type: "paused", lift: "bn", name: "Bench — hypertrophy back-offs (no pause)", w: pbW, reps: 8, sets: hyp, rpe: "7.5–8", moveId: "bn", pkey: "pbh", hyp: true, note: "Same bar, touch-and-go, 6–8 reps. The chest and triceps growth set" });
     }
     const o = ohpFor(wave, gates)[week - 1];
     push({ type: "ohp", name: "Overhead Press", w: o[0], reps: o[1], sets: o[2], rpe: week === 4 ? "5–6" : "7–8", note: "Add reps to 3×8 clean → +5 lb → back to 3×6", moveId: "ohp", pkey: "ohp" });

@@ -642,7 +642,7 @@ function sx(name, seed, steps, sets, rpe, arch, moveId, db, cap, inc, wv, since)
   const lo = steps[st.i], hi = steps[Math.min(st.i + 1, last)];
   return {
     type: "accessory", name, w: st.w, reps: lo === hi ? String(lo) : lo + "\u2013" + hi,
-    sets, rpe, arch, moveId, db: !!db, cap: cap || "", spec: true, repN: lo, inc: inc == null ? 5 : inc,
+    sets, rpe, arch, moveId, db: !!db, cap: cap || "", spec: true, repN: lo, repHi: hi, inc: inc == null ? 5 : inc,
     top: hi === steps[last] && steps.length > 1, pkey: pkeyOf(name), prog: st.prog,
   };
 }
@@ -830,6 +830,13 @@ function sessionFor(wave, week, day, gates, spec, histCtx) {
   try { return autoregulate(sessionForInner(wave, week, day, gates, spec), wave, week, day, histCtx); }
   finally { HISTCTX = null; }
 }
+// Week 2 targets the TOP of every weekend rep range, as accFor does on weekdays.
+// The rung only advances when the top is reached, and one-tap logging records
+// exactly what the chip shows, so a bottom-of-range chip could never progress.
+function topWeek(blocks, week) {
+  if (week !== 2) return blocks;
+  return blocks.map((b) => (b && b.spec && b.repHi && b.repHi !== b.repN ? { ...b, repN: b.repHi, reps: String(b.repHi) } : b));
+}
 function sessionForInner(wave, week, day, gates, spec) {
   spec = spec || DEFAULT_SPEC;
   const cycEarly = cycleOf(wave);
@@ -837,7 +844,7 @@ function sessionForInner(wave, week, day, gates, spec) {
   if (day === 6) {
     const label = FRAME_LABEL[spec.framePrimary] || "Frame";
     const head = { type: "spechead", name: "Frame Specialization — " + label + " priority", note: cycEarly === 6 ? "Peak macro — spec paused." : week === 4 ? "Light week — maintenance only." : (week === 3 || cycEarly === 5) ? "Reduced sets this week." : "Overload day. Hit your weak point fresh — quality reps, not a set count.", moveId: null };
-    return [head, ...saturdaySession(wave, week, spec)];
+    return [head, ...topWeek(saturdaySession(wave, week, spec), week)];
   }
   // ── Sunday (day 7): optional detail ──
   if (day === 7) {
@@ -845,7 +852,7 @@ function sessionForInner(wave, week, day, gates, spec) {
     if (!s) return [{ type: "spechead", name: "Optional detail day — off", note: cycEarly > 4 ? "No weekend specialization in this cycle. Rest or an easy walk + conditioning." : week > 2 ? "Sunday detail runs only Weeks 1–2 of a cycle. Rest today." : (spec && spec.sundayOn) ? "Rest today." : "REST. Six hard days need a seventh off \u2014 recovery is where the sets you already did turn into muscle. Easy walk at most. (Optional detail day can be re-enabled in Specialize.)", moveId: null }];
     const label = DETAIL_LABEL[spec.detail] || "Detail";
     const head = { type: "spechead", name: "Optional Detail — " + (spec.framePrimary === "arms" ? "Biceps-led (Sat carried the triceps)" : isDefaultSpec(spec) ? "Arms & silhouette" : label), note: "Green only: 7h+ sleep, normal Fri deadlift + Sat, no elbow/shoulder pain, no flat session. Anchor first, then supersets — 35–45 min, 60–90s rest. Printed loads are FLOORS: if a set is easy, jump the weight and log what you did.", moveId: null };
-    return [head, ...s];
+    return [head, ...topWeek(s, week)];
   }
   const { cb, cyc, t } = mainTables(wave, gates);
   const blocks = [];

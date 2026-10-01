@@ -1078,5 +1078,21 @@ eq(E.sessionFor(2, 1, 1, {}, E.DEFAULT_SPEC).find((b) => b.type === "warmup").ro
   ok(worst <= 85, `session budget: the longest session estimates ${Math.round(worst)} min, inside the 7:00-8:30 slot`);
 }
 
+// ═══ one-tap logging must be able to progress Saturday arm work ═══
+{
+  const sat = (wv, wk, ix) => E.sessionFor(wv, wk, 6, {}, E.DEFAULT_SPEC, ix ? { index: ix, offsetWeeks: 0 } : undefined).filter((b) => b.type === "accessory");
+  ok(sat(4, 2).every((b) => !b.repHi || b.repN === b.repHi), "Saturday week 2 asks for the top of every rep range");
+  ok(sat(4, 1).some((b) => b.repHi && b.repN < b.repHi), "Saturday week 1 still starts at the bottom");
+  // simulate a year of one-tap Saturdays: every chip logged exactly as shown
+  const ix = {};
+  for (let wv = 1; wv <= 10; wv++) for (let wk = 1; wk <= 3; wk++) {
+    const t = E.sessionDayUTC(wv, wk, 6, 0);
+    for (const b of sat(wv, wk, ix)) for (let k = 0; k < b.sets; k++) (ix[b.pkey] = ix[b.pkey] || []).push({ t, w: b.w, r: b.repN });
+  }
+  const curl = sat(11, 1, ix).find((b) => /Incline DB Curl/.test(b.name)), oh = sat(11, 1, ix).find((b) => /Overhead Cable Extension/.test(b.name));
+  ok(curl.w > 35 && curl.prog !== "held", `one-tap Saturdays: incline curl climbs (${curl.w}, ${curl.prog})`);
+  ok(oh.w > 70 && oh.prog !== "held", `one-tap Saturdays: overhead extension climbs (${oh.w}, ${oh.prog})`);
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

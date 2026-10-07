@@ -1,0 +1,298 @@
+<title>Model 2 Screens</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800;900&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* layout: a wrapping wall of 390pt phone frames, each a real screen with his Wave 4 numbers */
+:root{
+  --ground:#0b0c0e; --iron:#121418; --plate:#1a1d23; --plate2:#22262e; --steel:#2e333d;
+  --chalk:#efece4; --ash:#959ba6; --dim:#646a75;
+  --gold:#f5b22d; --gold2:#ffd27a; --go:#4fbf83; --stop:#ef5d50;
+  --disp:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;
+  --body:"IBM Plex Sans",-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,monospace;
+  color-scheme:dark;
+}
+body{background:var(--ground);color:var(--chalk);font-family:var(--body);margin:0}
+.wrap{padding-inline:16px;padding-block:28px 48px;max-width:1360px;margin:0 auto}
+header.page{max-width:760px;margin-bottom:26px}
+.kicker{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+h1{font-family:var(--disp);font-weight:900;font-size:clamp(40px,7vw,68px);line-height:.92;letter-spacing:.01em;margin:8px 0 12px;text-transform:uppercase;text-wrap:balance}
+h1 em{font-style:normal;color:var(--gold)}
+.lede{color:var(--ash);font-size:15.5px;line-height:1.55;max-width:64ch;margin:0}
+.wall{display:grid;grid-template-columns:repeat(auto-fill,minmax(318px,1fr));gap:30px 22px;align-items:start}
+figure{margin:0;min-width:0}
+figcaption{margin-top:12px;font-size:13.5px;line-height:1.5;color:var(--ash);max-width:40ch}
+figcaption b{color:var(--chalk);font-weight:600;display:block;margin-bottom:2px;font-size:14px}
+.phone{width:100%;max-width:340px;aspect-ratio:9/19;border-radius:40px;background:var(--iron);border:1px solid var(--steel);box-shadow:0 30px 60px -30px #000,inset 0 0 0 6px #08090b;overflow:hidden;position:relative;display:flex;flex-direction:column}
+.status{height:34px;display:flex;justify-content:space-between;align-items:end;padding:0 26px 4px;font:600 12px var(--body);color:var(--chalk)}
+.scr{flex:1;overflow:hidden;padding:6px 14px 0;display:flex;flex-direction:column;gap:10px}
+.tabs{display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid var(--steel);padding:7px 6px 16px;background:#14171c}
+.tabs span{font:600 9.5px var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--dim);text-align:center}
+.tabs span.on{color:var(--gold)}
+.tabs span i{display:block;width:18px;height:18px;margin:0 auto 3px;border:1.6px solid currentColor;border-radius:5px}
+.top{display:flex;justify-content:space-between;align-items:center}
+.brand{font:900 17px var(--disp);letter-spacing:.06em;text-transform:uppercase}
+.brand b{color:var(--gold)}
+.m2{font:600 9.5px var(--mono);letter-spacing:.1em;color:var(--gold);border:1px solid #6b5518;border-radius:99px;padding:2px 7px;margin-left:6px;vertical-align:3px}
+.ctx{font:500 10.5px var(--mono);letter-spacing:.08em;color:var(--ash);text-transform:uppercase}
+.card{background:var(--plate);border:1px solid var(--steel);border-radius:16px;padding:13px 14px}
+.eyebrow{font:600 10.5px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ash)}
+.gold{color:var(--gold)}
+.now{background:radial-gradient(120% 90% at 85% 0%,#3a2a0c 0%,var(--plate) 55%);border-color:#5c4613;padding:15px 15px 14px}
+.nowtop{display:flex;align-items:center;gap:11px}
+.ring{width:46px;height:46px;flex:none}
+.ring .bg{fill:none;stroke:var(--steel);stroke-width:5}
+.ring .fg{fill:none;stroke:var(--gold);stroke-width:5;stroke-linecap:round}
+.ex{font:800 19px var(--disp);letter-spacing:.04em;text-transform:uppercase;margin-top:12px}
+.big{font:900 84px/0.86 var(--disp);letter-spacing:-.01em;margin-top:4px;font-variant-numeric:tabular-nums}
+.big small{font-size:34px;color:var(--ash);font-weight:800}
+.sub{font-size:12.5px;color:var(--ash);margin-top:6px}
+.sub b{color:var(--chalk);font-weight:600}
+.plates{display:flex;align-items:center;gap:4px;margin-top:11px}
+.pl{display:grid;place-items:center;border-radius:4px;font:700 10px var(--mono);color:#0b0c0e}
+.p45{width:20px;height:54px;background:#d83b33}.p35{width:18px;height:48px;background:#e6c13a}.p25{width:16px;height:42px;background:#3d8b55}
+.p10{width:13px;height:32px;background:#e9e5dc}.p5{width:11px;height:26px;background:#3c6ec4;color:#fff}.p2{width:9px;height:22px;background:#9aa0aa}
+.sleeve{width:26px;height:10px;background:#7b818c;border-radius:2px}
+.pltxt{font-size:11px;color:var(--ash);margin-left:8px;line-height:1.3}
+.cue{margin:11px 0 0;font-size:13px;line-height:1.45;color:var(--chalk);border-left:2px solid var(--gold);padding-left:9px}
+.logbtn{margin-top:13px;height:58px;border-radius:14px;background:var(--gold);color:#1a1204;display:flex;align-items:center;justify-content:center;font:900 21px var(--disp);letter-spacing:.06em;text-transform:uppercase}
+.ghost{height:40px;border-radius:12px;border:1px solid var(--steel);display:flex;align-items:center;justify-content:center;font:600 12.5px var(--body);color:var(--chalk)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.strip{display:flex;gap:6px;overflow:hidden}
+.chip{flex:none;font:600 10.5px var(--body);border-radius:99px;padding:5px 9px;border:1px solid var(--steel);color:var(--ash);white-space:nowrap}
+.chip.ok{color:var(--go);border-color:#2b5b41}.chip.cur{color:#1a1204;background:var(--gold);border-color:var(--gold)}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.seg span{height:40px;border-radius:11px;border:1px solid var(--steel);display:grid;place-items:center;font:700 13px var(--disp);letter-spacing:.07em;text-transform:uppercase;color:var(--ash)}
+.seg .g{color:var(--go);border-color:#2b5b41;background:#123020}.seg.big span{height:64px;font-size:17px}
+.seg .y.sel{color:#1a1204;background:var(--gold);border-color:var(--gold)}
+.timer{display:grid;place-items:center;margin:8px 0 2px}
+.timer svg{width:190px;height:190px}
+.tnum{font:900 58px var(--disp);fill:var(--chalk)}
+.tlab{font:600 10px var(--mono);fill:var(--ash);letter-spacing:.12em}
+.kv{display:flex;justify-content:space-between;align-items:baseline;padding:9px 0;border-bottom:1px solid #262a33;font-size:13px}
+.kv:last-child{border-bottom:none}
+.kv span{color:var(--ash)}.kv b{font:800 19px var(--disp);letter-spacing:.03em;font-variant-numeric:tabular-nums}
+.up{color:var(--go);font:600 12px var(--body);margin-left:4px}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tile{background:var(--plate2);border-radius:12px;padding:10px 11px}
+.tile b{display:block;font:900 30px/1 var(--disp);margin-top:3px;font-variant-numeric:tabular-nums}
+.tile .up{margin:0}
+.pr{background:linear-gradient(135deg,#3b2c0a,#1e1a10);border:1px solid #6b5518}
+.bodies{display:grid;grid-template-columns:1fr 1fr;gap:6px;align-items:end}
+.bodies svg{width:100%;height:auto}
+.bodies figcaption{display:none}
+.lbl{font:600 9.5px var(--mono);fill:var(--ash);letter-spacing:.08em}
+.legend{display:flex;justify-content:space-between;font:500 10px var(--mono);color:var(--ash);margin-top:2px}
+.legbar{height:5px;border-radius:3px;background:linear-gradient(90deg,#2a2e36,#6b5518,var(--gold));margin-top:4px}
+.goal{display:grid;grid-template-columns:1fr auto;gap:2px 8px;padding:9px 0;border-bottom:1px solid #262a33}
+.goal:last-child{border-bottom:none}
+.goal h4{margin:0;font:800 15px var(--disp);letter-spacing:.05em;text-transform:uppercase}
+.goal .v{font-size:12px;color:var(--ash);grid-column:1}
+.goal svg{grid-row:1/3;grid-column:2;width:92px;height:34px}
+.pill{font:600 9.5px var(--mono);letter-spacing:.06em;border-radius:99px;padding:2px 7px;border:1px solid var(--steel);color:var(--ash);text-transform:uppercase;margin-left:6px;vertical-align:2px}
+.pill.on{color:var(--chalk);border-color:#4a505c}.pill.ah{color:var(--go);border-color:#2b5b41}.pill.be{color:var(--stop);border-color:#6b2b25}
+.ladder{display:grid;gap:9px}
+.lad{display:grid;grid-template-columns:62px 1fr 66px;align-items:center;gap:8px;font-size:12px}
+.lad .tr{height:8px;background:var(--plate2);border-radius:5px;position:relative;overflow:visible}
+.lad .tr i{position:absolute;inset:0 auto 0 0;border-radius:5px;background:linear-gradient(90deg,#8a6a1c,var(--gold))}
+.lad .tr u{position:absolute;top:-4px;width:2px;height:16px;background:var(--chalk);opacity:.5}
+.lad b{font:800 16px var(--disp);text-align:right;font-variant-numeric:tabular-nums}
+.pad{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.pad span{height:46px;border-radius:12px;background:var(--plate2);display:grid;place-items:center;font:800 22px var(--disp)}
+.steps{display:flex;gap:5px}.steps i{flex:1;height:4px;border-radius:3px;background:var(--steel)}.steps i.d{background:var(--gold)}
+.tape{font:900 74px/1 var(--disp);text-align:center;font-variant-numeric:tabular-nums}
+.tape small{font-size:30px;color:var(--ash)}
+.proto{font-size:12.5px;line-height:1.45;color:var(--ash);text-align:center;margin:0}
+.tokens{margin-top:44px;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
+.tok{background:var(--iron);border:1px solid var(--steel);border-radius:16px;padding:16px}
+.tok h3{margin:0 0 10px;font:800 18px var(--disp);letter-spacing:.06em;text-transform:uppercase}
+.sw{display:flex;gap:6px;flex-wrap:wrap}.sw i{width:38px;height:38px;border-radius:9px;border:1px solid #ffffff14}
+.tok p{margin:8px 0 0;color:var(--ash);font-size:13px;line-height:1.5}
+@media (prefers-reduced-motion:no-preference){.logbtn{transition:transform .15s}.logbtn:active{transform:scale(.97)}}
+</style>
+
+<div class="wrap">
+<header class="page">
+  <div class="kicker">Road to 3/4/5 · Model 2 redesign</div>
+  <h1>Built like the <em>body</em> you're building</h1>
+  <p class="lede">Six screens, drawn with your real Wave 4 numbers: bench base 257.5, a 220 top single, 13¼" arms headed for 16", and your Model 2 priorities (11 curl, 15 triceps, 14 upper-chest, 13 side-delt, 9 rear-delt and 6 trap sets a week). Gold means two things only: your next move, and the muscles that make you disproportionate.</p>
+</header>
+
+<div class="wall">
+
+<figure>
+<div class="phone"><div class="status"><span>7:04</span><span>●●● 5G</span></div>
+<div class="scr">
+  <div class="top"><div class="brand">Road to <b>3/4/5</b><span class="m2">MODEL 2</span></div></div>
+  <div class="ctx">Wave 4 · Wk 1 · Bench day · Green</div>
+  <div class="card now">
+    <div class="nowtop">
+      <svg class="ring" viewBox="0 0 46 46"><circle class="bg" cx="23" cy="23" r="19"/><circle class="fg" cx="23" cy="23" r="19" stroke-dasharray="11 119" transform="rotate(-90 23 23)"/></svg>
+      <div><div class="eyebrow gold">Now · 3 of 30 sets</div><div class="sub" style="margin-top:2px">~64 min left · done by 8:10</div></div>
+    </div>
+    <div class="ex">Bench · top single</div>
+    <div class="big">220<small> × 1</small></div>
+    <div class="sub">Cap <b>RPE 7</b> · wait for <b>START</b>, pause, <b>PRESS</b>, hold for <b>RACK</b></div>
+    <div class="plates"><span class="sleeve"></span><span class="pl p45">45</span><span class="pl p35"></span><span class="pl p5"></span><span class="pl p2"></span><span class="pltxt">45 · 35 · 5 · 2.5<br>per side</span></div>
+    <p class="cue">Shoulder blades pinned, feet driving back. Same setup every set.</p>
+    <div class="logbtn">✓ Log 220 × 1</div>
+    <div class="row2"><div class="ghost">Different weight</div><div class="ghost">Form</div></div>
+  </div>
+  <div class="strip"><span class="chip ok">✓ Primer</span><span class="chip cur">Bench single</span><span class="chip">Back-offs</span><span class="chip">Incline</span><span class="chip">Row</span><span class="chip">Laterals</span></div>
+</div>
+<div class="tabs"><span class="on"><i></i>Today</span><span><i></i>Road</span><span><i></i>Moves</span><span><i></i>Trends</span><span><i></i>More</span></div></div>
+<figcaption><b>Today · the coach</b>One question answered at arm's length: what now? Weight in 84-point type, the plates to load, the meet command, one cue, one button. The full session collapses below.</figcaption>
+</figure>
+
+<figure>
+<div class="phone"><div class="status"><span>7:09</span><span>●●● 5G</span></div>
+<div class="scr">
+  <div class="ctx">Bench day · rating</div>
+  <div class="card now">
+    <div class="eyebrow gold">Just logged</div>
+    <div class="ex">Bench · top single</div>
+    <div class="big">220<small> × 1</small></div>
+    <p class="cue">How did that feel? This sets today's 5 back-offs.</p>
+    <div class="seg big" style="margin-top:12px"><span class="g">Easy</span><span class="y sel">On target</span><span>Hard</span></div>
+    <div class="sub" style="margin-top:10px">Easy → back-offs 195 · On target → 185 · Hard → 180</div>
+  </div>
+  <div class="card">
+    <div class="eyebrow">Rest · then back-offs</div>
+    <div class="timer"><svg viewBox="0 0 190 190"><circle cx="95" cy="95" r="80" fill="none" stroke="#2e333d" stroke-width="9"/><circle cx="95" cy="95" r="80" fill="none" stroke="#f5b22d" stroke-width="9" stroke-linecap="round" stroke-dasharray="390 503" transform="rotate(-90 95 95)"/><text x="95" y="104" text-anchor="middle" class="tnum">2:19</text><text x="95" y="128" text-anchor="middle" class="tlab">OF 3:00</text></svg></div>
+    <div class="row2"><div class="ghost">+30 s</div><div class="ghost">Skip rest</div></div>
+    <div class="sub" style="text-align:center;margin-top:8px">Up next: <b>185 × 5</b> · set 1 of 5</div>
+  </div>
+</div>
+<div class="tabs"><span class="on"><i></i>Today</span><span><i></i>Road</span><span><i></i>Moves</span><span><i></i>Trends</span><span><i></i>More</span></div></div>
+<figcaption><b>Rate, then rest</b>The single that steers the day gets rated with one thumb, and the effect on the back-offs is shown before he chooses. Then the screen becomes a timer he can read across the room, and it stays awake.</figcaption>
+</figure>
+
+<figure>
+<div class="phone"><div class="status"><span>8:07</span><span>●●● 5G</span></div>
+<div class="scr">
+  <div class="card now">
+    <div class="eyebrow gold">Session complete</div>
+    <div class="ex" style="font-size:30px;margin-top:6px">Bench day done</div>
+    <div class="sub">30 sets · 63 min · logged at 8:07</div>
+  </div>
+  <div class="tiles">
+    <div class="tile pr"><span class="eyebrow gold">Est. bench max</span><b>247</b><span class="up">▲ +6 vs best</span></div>
+    <div class="tile"><span class="eyebrow">Volume</span><b>14,690</b><span class="sub">lb moved</span></div>
+    <div class="tile"><span class="eyebrow">Incline top</span><b>145×5</b><span class="up">▲ rung cleared</span></div>
+    <div class="tile"><span class="eyebrow">Frame sets</span><b>17</b><span class="sub">delts · triceps</span></div>
+  </div>
+  <div class="card">
+    <div class="eyebrow">What today built</div>
+    <div class="kv"><span>Upper chest</span><b class="gold">4 / 14</b></div>
+    <div class="kv"><span>Side delts</span><b class="gold">4 / 13</b></div>
+    <div class="kv"><span>Triceps</span><b class="gold">3 / 15</b></div>
+    <div class="kv"><span>Rear delts</span><b class="gold">3 / 9</b></div>
+  </div>
+  <div class="sub">Next: <b>Wed · paused squat + arms</b>. Eat 40 g protein within the hour.</div>
+</div>
+<div class="tabs"><span class="on"><i></i>Today</span><span><i></i>Road</span><span><i></i>Moves</span><span><i></i>Trends</span><span><i></i>More</span></div></div>
+<figcaption><b>The payoff</b>Every session ends by showing what it built: the estimated max against his best, and today's sets counted toward the weekly target for each priority muscle. Example figures.</figcaption>
+</figure>
+
+<figure>
+<div class="phone"><div class="status"><span>21:40</span><span>●●● 5G</span></div>
+<div class="scr">
+  <div class="top"><div class="brand">Physique</div><span class="ctx">Wave 4 · this week</span></div>
+  <div class="card" style="padding:10px 10px 8px">
+    <div class="bodies">
+      <svg viewBox="0 0 120 210" role="img" aria-label="Front: upper chest, side delts and biceps highlighted">
+        <circle cx="60" cy="16" r="11" fill="#2a2e36"/>
+        <path d="M44 33 Q60 28 76 33 L80 40 L40 40Z" fill="#6b5518"/>
+        <ellipse cx="33" cy="47" rx="11" ry="10" fill="#f5b22d"/><ellipse cx="87" cy="47" rx="11" ry="10" fill="#f5b22d"/>
+        <path d="M42 41 L78 41 L77 52 L43 52Z" fill="#f5b22d"/>
+        <path d="M43 53 L77 53 L75 66 L45 66Z" fill="#8a6a1c"/>
+        <rect x="21" y="57" width="12" height="30" rx="6" fill="#f5b22d"/><rect x="87" y="57" width="12" height="30" rx="6" fill="#f5b22d"/>
+        <rect x="19" y="89" width="11" height="30" rx="5" fill="#8a6a1c"/><rect x="90" y="89" width="11" height="30" rx="5" fill="#8a6a1c"/>
+        <rect x="47" y="68" width="26" height="40" rx="7" fill="#3a3f49"/>
+        <rect x="44" y="112" width="15" height="52" rx="7" fill="#4b4f58"/><rect x="61" y="112" width="15" height="52" rx="7" fill="#4b4f58"/>
+        <rect x="45" y="166" width="13" height="36" rx="6" fill="#3a3f49"/><rect x="62" y="166" width="13" height="36" rx="6" fill="#3a3f49"/>
+        <text x="60" y="208" text-anchor="middle" class="lbl">FRONT</text>
+      </svg>
+      <svg viewBox="0 0 120 210" role="img" aria-label="Back: traps, rear delts and triceps highlighted">
+        <circle cx="60" cy="16" r="11" fill="#2a2e36"/>
+        <path d="M42 30 Q60 24 78 30 L74 50 L60 56 L46 50Z" fill="#f5b22d"/>
+        <ellipse cx="33" cy="47" rx="11" ry="10" fill="#f5b22d"/><ellipse cx="87" cy="47" rx="11" ry="10" fill="#f5b22d"/>
+        <path d="M44 52 L60 58 L76 52 L74 84 L60 92 L46 84Z" fill="#8a6a1c"/>
+        <rect x="21" y="57" width="12" height="30" rx="6" fill="#f5b22d"/><rect x="87" y="57" width="12" height="30" rx="6" fill="#f5b22d"/>
+        <rect x="19" y="89" width="11" height="30" rx="5" fill="#6b5518"/><rect x="90" y="89" width="11" height="30" rx="5" fill="#6b5518"/>
+        <rect x="50" y="88" width="20" height="22" rx="5" fill="#4b4f58"/>
+        <rect x="44" y="112" width="15" height="52" rx="7" fill="#4b4f58"/><rect x="61" y="112" width="15" height="52" rx="7" fill="#4b4f58"/>
+        <rect x="45" y="166" width="13" height="36" rx="6" fill="#3a3f49"/><rect x="62" y="166" width="13" height="36" rx="6" fill="#3a3f49"/>
+        <text x="60" y="208" text-anchor="middle" class="lbl">BACK</text>
+      </svg>
+    </div>
+    <div class="legbar"></div><div class="legend"><span>maintenance</span><span>growth dose</span><span>priority</span></div>
+  </div>
+  <div class="card" style="padding:4px 13px">
+    <div class="kv"><span>Arms · curls / triceps</span><b class="gold">11 · 15</b></div>
+    <div class="kv"><span>Upper chest</span><b class="gold">14</b></div>
+    <div class="kv"><span>Side · rear delts</span><b class="gold">13 · 9</b></div>
+    <div class="kv"><span>Traps</span><b class="gold">6</b></div>
+  </div>
+</div>
+<div class="tabs"><span><i></i>Today</span><span class="on"><i></i>Road</span><span><i></i>Moves</span><span><i></i>Trends</span><span><i></i>More</span></div></div>
+<figcaption><b>Road · the physique map</b>Front and back, shaded by this week's sets per region. Gold marks the muscles that make the build: delts, arms, upper chest and traps. Tap a region to see its exercises and trend.</figcaption>
+</figure>
+
+<figure>
+<div class="phone"><div class="status"><span>21:41</span><span>●●● 5G</span></div>
+<div class="scr">
+  <div class="top"><div class="brand">Goals</div><span class="ctx">38 months to Wave 45</span></div>
+  <div class="card" style="padding:6px 13px">
+    <div class="goal"><h4>16" arms <span class="pill on">On track</span></h4>
+      <svg viewBox="0 0 92 34"><path d="M2 30 L90 4" stroke="#646a75" stroke-dasharray="3 3" fill="none"/><path d="M2 30 L30 26 L60 22 L74 19" stroke="#f5b22d" stroke-width="2.5" fill="none"/><circle cx="74" cy="19" r="3" fill="#f5b22d"/></svg>
+      <div class="v">13¼" → 16" · needs +0.07"/mo · measured +0.08</div></div>
+    <div class="goal"><h4>200 @ 15% <span class="pill">Too early</span></h4>
+      <svg viewBox="0 0 92 34"><path d="M2 28 L90 8" stroke="#646a75" stroke-dasharray="3 3" fill="none"/><path d="M2 28 L22 27 L40 25" stroke="#f5b22d" stroke-width="2.5" fill="none"/><circle cx="40" cy="25" r="3" fill="#f5b22d"/></svg>
+      <div class="v">157.5 lb lean · 17.2% (tape) → 170 lean</div></div>
+    <div class="goal"><h4>3D shoulders <span class="pill ah">Ahead</span></h4>
+      <svg viewBox="0 0 92 34"><path d="M2 28 L90 10" stroke="#646a75" stroke-dasharray="3 3" fill="none"/><path d="M2 28 L30 22 L58 16 L74 12" stroke="#4fbf83" stroke-width="2.5" fill="none"/><circle cx="74" cy="12" r="3" fill="#4fbf83"/></svg>
+      <div class="v">Shoulder ÷ waist 1.38 → 1.50</div></div>
+    <div class="goal"><h4>Upper back <span class="pill">Photo check</span></h4>
+      <div class="v">traps 6 · rear delts 9 · rows 7 sets/wk · next photos Nov 9</div></div>
+  </div>
+  <div class="card">
+    <div class="eyebrow">Strength ladder · base → goal</div>
+    <div class="ladder" style="margin-top:10px">
+      <div class="lad"><span>Squat</span><div class="tr"><i style="width:73%"></i><u style="left:84%"></u></div><b>300/405</b></div>
+      <div class="lad"><span>Bench</span><div class="tr"><i style="width:82%"></i><u style="left:88%"></u></div><b>257/315</b></div>
+      <div class="lad"><span>Deadlift</span><div class="tr"><i style="width:79%"></i><u style="left:87%"></u></div><b>390/495</b></div>
+    </div>
+    <div class="sub" style="margin-top:9px">Tick = projected at the June 2027 meet. Bases reach 3/4/5 around mid-2028 on the current pace.</div>
+  </div>
+</div>
+<div class="tabs"><span><i></i>Today</span><span class="on"><i></i>Road</span><span><i></i>Moves</span><span><i></i>Trends</span><span><i></i>More</span></div></div>
+<figcaption><b>Road · goals as trends</b>Each goal draws the pace it needs (dashed) against the pace his readings show. It only says ahead or behind once the data beats tape noise. Example readings shown.</figcaption>
+</figure>
+
+<figure>
+<div class="phone"><div class="status"><span>7:31</span><span>●●● 5G</span></div>
+<div class="scr">
+  <div class="top"><div class="brand">Measure day</div><span class="ctx">3 of 5</span></div>
+  <div class="steps"><i class="d"></i><i class="d"></i><i class="d"></i><i></i><i></i></div>
+  <div class="card now" style="text-align:center">
+    <div class="eyebrow gold">Right arm · flexed</div>
+    <div class="tape" style="margin-top:10px">13.25<small>in</small></div>
+    <p class="proto" style="margin-top:8px">Cold, before training. Tape across the peak of the biceps, flexed hard, level all the way round.</p>
+    <div class="sub" style="margin-top:8px">Last month 13.0" · goal 16"</div>
+  </div>
+  <div class="pad"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>.25</span><span>0</span><span>⌫</span></div>
+  <div class="logbtn" style="margin-top:2px">Next · Shoulders</div>
+</div>
+<div class="tabs"><span><i></i>Today</span><span><i></i>Road</span><span><i></i>Moves</span><span class="on"><i></i>Trends</span><span><i></i>More</span></div></div>
+<figcaption><b>Measure day · guided</b>Five screens every four weeks: waist, neck, flexed arm, shoulders, chest. Each shows its protocol and a big keypad, then the six photos. Clean data in means honest verdicts out.</figcaption>
+</figure>
+
+</div>
+
+<section class="tokens">
+  <div class="tok"><h3>Color</h3><div class="sw"><i style="background:#121418"></i><i style="background:#1a1d23"></i><i style="background:#22262e"></i><i style="background:#efece4"></i><i style="background:#f5b22d"></i><i style="background:#4fbf83"></i><i style="background:#ef5d50"></i></div><p>Iron surfaces in three depths. Gold only for "your move", personal bests and priority muscles. Green for progress, red for pull back.</p></div>
+  <div class="tok"><h3>Type</h3><p style="margin:0;font:900 40px/1 var(--disp)">220 × 5</p><p>A condensed scoreboard face for every number, readable from the bench. A clean sans for words, a mono for labels and data.</p></div>
+  <div class="tok"><h3>Touch</h3><p style="margin:0">Primary action 58 pt tall and full width, every target 44 pt or more, one-thumb reach. Logging a set is one tap, rating a single is one tap, and the next weight reads at arm's length.</p></div>
+</section>
+</div>

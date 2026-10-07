@@ -1,13 +1,14 @@
 <title>Model 2 Screens</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap">
 <style>
 /* layout: a live phone on the left running his real Wave 4 Tuesday; the four lenses that shaped it on the right */
 :root{
-  --ground:#0a0b0d; --iron:#111317; --plate:#191c22; --plate2:#21252d; --steel:#2d323c;
+  --ground:#0a0b0d; --iron:#111317; --plate:#181b21; --plate2:#20242c; --steel:#2c313b;
   --chalk:#f0ede5; --ash:#969ca7; --dim:#626873;
-  --gold:#f5b22d; --goldd:#8a6a1c; --go:#4fbf83; --stop:#ef5d50;
+  --gold:#f5b22d; --goldd:#8a6a1c; --go:#4fbf83; --warn:#e9b949; --stop:#ef5d50; --cool:#7f93ad;
   --disp:"Big Shoulders Display","Arial Narrow","Helvetica Neue Condensed",Impact,sans-serif;
   --body:"IBM Plex Sans",-apple-system,"Segoe UI",Roboto,sans-serif;
   --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
@@ -15,13 +16,13 @@
 }
 *{box-sizing:border-box}
 body{background:var(--ground);color:var(--chalk);font-family:var(--body);margin:0}
-button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
-button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+button:focus-visible,input:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 .wrap{padding-inline:16px;padding-block:26px 48px;max-width:1240px;margin:0 auto}
 .kicker{font:600 12px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
-h1{font:900 clamp(38px,6.4vw,64px)/.92 var(--disp);letter-spacing:.01em;margin:8px 0 12px;text-transform:uppercase;text-wrap:balance;max-width:16ch}
+h1{font:900 clamp(38px,6.4vw,64px)/.92 var(--disp);letter-spacing:.01em;margin:8px 0 12px;text-transform:uppercase;text-wrap:balance;max-width:17ch}
 h1 em{font-style:normal;color:var(--gold)}
-.lede{color:var(--ash);font-size:15.5px;line-height:1.55;max-width:66ch;margin:0 0 26px}
+.lede{color:var(--ash);font-size:15.5px;line-height:1.55;max-width:64ch;margin:0 0 26px}
 .stage{display:grid;grid-template-columns:minmax(0,380px) minmax(0,1fr);gap:34px;align-items:start}
 @media (max-width:860px){.stage{grid-template-columns:minmax(0,1fr)}}
 
@@ -34,7 +35,7 @@ h1 em{font-style:normal;color:var(--gold)}
 .tabs button{font:600 10px var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--dim);display:grid;justify-items:center;gap:4px;padding:4px 0;min-height:44px}
 .tabs button svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 .tabs button[aria-selected="true"]{color:var(--gold)}
-.top{display:flex;justify-content:space-between;align-items:center}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .brand{font:900 18px var(--disp);letter-spacing:.06em;text-transform:uppercase}
 .brand b{color:var(--gold)}
 .m2{font:600 9.5px var(--mono);letter-spacing:.1em;color:var(--gold);border:1px solid #6b5518;border-radius:99px;padding:2px 7px;margin-left:6px;vertical-align:3px}
@@ -43,15 +44,20 @@ h1 em{font-style:normal;color:var(--gold)}
 .eyebrow{font:600 10.5px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ash)}
 .gold{color:var(--gold)}
 .now{background:radial-gradient(130% 90% at 90% 0%,#3d2c0b 0%,var(--plate) 58%);border-color:#5c4613}
+.now.y{background:radial-gradient(130% 90% at 90% 0%,#3a300c 0%,var(--plate) 58%)}
+.now.r{background:radial-gradient(130% 90% at 90% 0%,#3a1512 0%,var(--plate) 58%);border-color:#5c2520}
 .nowtop{display:flex;align-items:center;gap:12px}
-.ring{width:48px;height:48px;flex:none}
+.ring{width:44px;height:44px;flex:none}
 .ring circle{fill:none;stroke-width:5}
 .ring .bg{stroke:var(--steel)} .ring .fg{stroke:var(--gold);stroke-linecap:round;transition:stroke-dasharray .4s ease}
-.ex{font:800 20px var(--disp);letter-spacing:.04em;text-transform:uppercase;margin-top:12px;text-wrap:balance}
+.ex{font:800 21px var(--disp);letter-spacing:.04em;text-transform:uppercase;margin-top:12px;text-wrap:balance}
 .big{font:900 92px/.84 var(--disp);letter-spacing:-.01em;margin-top:6px;font-variant-numeric:tabular-nums}
 .big small{font-size:36px;color:var(--ash);font-weight:800}
 .sub{font-size:12.5px;line-height:1.45;color:var(--ash);margin-top:7px}
 .sub b{color:var(--chalk);font-weight:600}
+.dots{display:flex;gap:5px;margin-top:10px}
+.dots i{width:22px;height:6px;border-radius:3px;background:var(--steel)}
+.dots i.d{background:var(--go)} .dots i.c{background:var(--gold)} .dots i.h{box-shadow:0 0 0 1.5px var(--stop) inset}
 .plates{display:flex;align-items:center;gap:3px;margin-top:12px;min-height:56px}
 .pl{display:grid;place-items:center;border-radius:4px;font:700 9.5px var(--mono);color:#0b0c0e}
 .p45{width:19px;height:56px;background:#d83b33;color:#fff}.p35{width:17px;height:50px;background:#e6c13a}.p25{width:15px;height:44px;background:#3d8b55;color:#fff}
@@ -66,14 +72,21 @@ h1 em{font-style:normal;color:var(--gold)}
 .cta.flash{filter:brightness(1.25)}
 .ghost{height:44px;border-radius:13px;border:1px solid var(--steel);font:600 13px var(--body)}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.step{display:grid;grid-template-columns:44px 1fr 44px;align-items:center;border:1px solid var(--steel);border-radius:13px;height:46px;overflow:hidden}
+.step button{height:100%;font:700 20px var(--body);color:var(--ash)}
+.step button:active{background:var(--plate2)}
+.step span{text-align:center;font:600 13px var(--body);color:var(--ash)}.step span b{font:800 18px var(--disp);color:var(--chalk);letter-spacing:.03em}
 .strip{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
 .strip::-webkit-scrollbar{display:none}
 .chip{flex:none;font:600 11px var(--body);border-radius:99px;padding:6px 10px;border:1px solid var(--steel);color:var(--ash);white-space:nowrap}
 .chip.ok{color:var(--go);border-color:#2b5b41}.chip.cur{color:#1a1204;background:var(--gold);border-color:var(--gold)}
 .rate{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:14px}
-.rate button{height:68px;border-radius:15px;border:1px solid var(--steel);font:800 17px var(--disp);letter-spacing:.06em;text-transform:uppercase;display:grid;place-items:center;line-height:1.05}
+.rate button{height:72px;border-radius:15px;border:1px solid var(--steel);font:800 17px var(--disp);letter-spacing:.06em;text-transform:uppercase;display:grid;place-items:center;line-height:1.05}
 .rate button small{display:block;font:500 11px var(--mono);letter-spacing:0;text-transform:none;color:var(--ash);margin-top:3px}
 .rate .e{color:var(--go);border-color:#2b5b41;background:#10291b}.rate .o{color:var(--gold);border-color:#6b5518;background:#2a210c}.rate .h{color:var(--stop);border-color:#6b2b25;background:#2c1412}
+.cmds{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-top:12px}
+.cmds span{font:800 13px var(--disp);letter-spacing:.12em;text-align:center;padding:7px 0;border-radius:9px;background:var(--plate2);color:var(--ash)}
+.cmds span:nth-child(2){color:var(--gold)}
 .timer{display:grid;place-items:center;margin-top:6px}
 .timer svg{width:200px;height:200px}
 .timer .tr{fill:none;stroke:var(--steel);stroke-width:9}.timer .tf{fill:none;stroke:var(--gold);stroke-width:9;stroke-linecap:round}
@@ -89,57 +102,103 @@ h1 em{font-style:normal;color:var(--gold)}
 .up{color:var(--go);font:600 12px var(--body)}
 @keyframes rise{from{transform:translateY(8px);opacity:.4}to{transform:none;opacity:1}}
 .enter{animation:rise .28s ease-out}
-@media (prefers-reduced-motion:reduce){.enter{animation:none}.cta,.ring .fg{transition:none}}
+@media (prefers-reduced-motion:reduce){.enter{animation:none}.cta,.ring .fg,.sil *{transition:none!important}}
+
+/* readiness + brief */
+.ready{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}
+.ready button{border:1px solid var(--steel);border-radius:13px;padding:9px 4px 8px;font:800 15px var(--disp);letter-spacing:.08em;text-transform:uppercase;color:var(--ash)}
+.ready button i{display:block;width:10px;height:10px;border-radius:50%;margin:0 auto 5px}
+.ready button[aria-pressed="true"]{color:var(--chalk);border-color:currentColor;background:var(--plate2)}
+.ready .g i{background:var(--go)}.ready .y i{background:var(--warn)}.ready .r i{background:var(--stop)}
+.ready .g[aria-pressed="true"]{color:var(--go)}.ready .y[aria-pressed="true"]{color:var(--warn)}.ready .r[aria-pressed="true"]{color:var(--stop)}
+.mini{display:grid;grid-template-columns:1fr 1fr;gap:2px;width:120px;flex:none}
+.mini svg{width:100%;height:auto}
+.brief{display:flex;gap:12px;align-items:center}
+.builds{display:grid;gap:7px;margin-top:4px}
+.bl{display:grid;grid-template-columns:82px 1fr 40px;gap:8px;align-items:center;font-size:12px;color:var(--ash)}
+.bl b{font:800 15px var(--disp);color:var(--chalk);text-align:right;font-variant-numeric:tabular-nums}
+.hb{height:8px;border-radius:4px;background:var(--plate2);position:relative;overflow:hidden}
+.hb i{position:absolute;inset:0 auto 0 0;border-radius:4px;background:linear-gradient(90deg,var(--goldd),var(--gold))}
+.hb i.c{background:linear-gradient(90deg,#3e4a5c,var(--cool))}
+.hb s{position:absolute;inset:0 auto 0 0;border-radius:4px;background:rgba(245,178,45,.28)}
+/* warm-up ramp */
+.ramp{display:flex;align-items:flex-end;gap:5px;height:118px;margin-top:12px}
+.ramp div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;height:100%}
+.ramp i{width:100%;border-radius:7px 7px 3px 3px;background:var(--plate2);border:1px solid var(--steel)}
+.ramp .d i{background:#1c3a29;border-color:#2b5b41}.ramp .c i{background:var(--gold);border-color:var(--gold)}
+.ramp .t i{background:repeating-linear-gradient(135deg,#3d2c0b 0 5px,#2a210c 5px 10px);border:1px dashed var(--gold)}
+.ramp span{font:600 10px var(--mono);color:var(--ash);white-space:nowrap}.ramp .c span{color:var(--gold)}
+.ramp em{font:600 9px var(--mono);font-style:normal;color:var(--dim)}
+.flag{display:inline-block;font:600 10px var(--mono);letter-spacing:.06em;text-transform:uppercase;border-radius:6px;padding:3px 7px;background:#2a210c;color:var(--gold);border:1px solid #6b5518;margin-top:8px}
+.ladder{display:flex;gap:4px;margin-top:10px;align-items:center}
+.ladder span{font:700 12px var(--mono);padding:5px 9px;border-radius:8px;background:var(--plate2);color:var(--dim)}
+.ladder span.c{background:var(--gold);color:#1a1204}.ladder span.n{color:var(--chalk);border:1px dashed var(--steel)}
+.ladder em{font:500 11px var(--body);font-style:normal;color:var(--ash);margin-left:4px;line-height:1.3}
 
 /* physique */
-.bodies{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.bodies{display:grid;grid-template-columns:1fr 1fr;gap:2px}
 .bodies svg{width:100%;height:auto}
-.mus{stroke:#0b0c0e;stroke-width:1.2;cursor:pointer;transition:filter .15s}
-.mus:hover,.mus.sel{filter:brightness(1.35)}
-.mus.pri{stroke:var(--gold);stroke-width:1.6}
-.skin{fill:#2a2e36}
+.skin{fill:#232731}
+.mus{stroke:#0e1013;stroke-width:1;cursor:pointer;transition:filter .15s}
+.mus:hover,.mus.sel{filter:brightness(1.4) drop-shadow(0 0 4px rgba(245,178,45,.6))}
 .figlab{font:600 9px var(--mono);fill:var(--ash);letter-spacing:.1em}
-.scale{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:8px}
-.scale span{font:500 9.5px var(--mono);color:var(--ash);text-align:center}
-.scale i{display:block;height:6px;border-radius:3px;margin-bottom:4px}
-.detail{min-height:118px}
+.legend{display:flex;justify-content:center;gap:14px;font:500 10.5px var(--mono);color:var(--ash);margin-top:6px;flex-wrap:wrap}
+.legend i{display:inline-block;width:18px;height:7px;border-radius:3px;vertical-align:1px;margin-right:5px}
 .detail h3{margin:0;font:800 19px var(--disp);letter-spacing:.05em;text-transform:uppercase}
 .bar{height:9px;background:var(--plate2);border-radius:5px;position:relative;margin:10px 0 6px}
 .bar i{position:absolute;inset:0 auto 0 0;border-radius:5px;background:linear-gradient(90deg,var(--goldd),var(--gold))}
 .bar u{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--chalk);opacity:.55}
+.rank{display:grid;gap:6px}
+.rank button{display:grid;grid-template-columns:96px 1fr 30px;gap:8px;align-items:center;text-align:left;font-size:12px;color:var(--ash);padding:2px 0}
+.rank button[aria-pressed="true"]{color:var(--chalk)}
+.rank b{font:800 15px var(--disp);color:var(--chalk);text-align:right}
 
 /* goals */
-.goal{display:grid;grid-template-columns:1fr 96px;gap:2px 10px;padding:10px 0;border-bottom:1px solid #262a33;align-items:center}
+.sil{width:100%;height:auto;display:block}
+.sil path,.sil ellipse{transition:d .25s ease}
+input[type=range]{width:100%;accent-color:var(--gold);margin:6px 0 0}
+.ends{display:flex;justify-content:space-between;font:600 10px var(--mono);color:var(--ash);letter-spacing:.06em;text-transform:uppercase}
+.trio{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}
+.trio div{background:var(--plate2);border-radius:12px;padding:8px 9px}
+.trio b{display:block;font:900 24px/1 var(--disp);font-variant-numeric:tabular-nums;margin-top:3px}
+.trio small{font:500 10px var(--mono);color:var(--dim)}
+.goal{display:grid;grid-template-columns:1fr 92px;gap:2px 10px;padding:10px 0;border-bottom:1px solid #262a33;align-items:center}
 .goal:last-child{border-bottom:none}
 .goal h4{margin:0;font:800 16px var(--disp);letter-spacing:.05em;text-transform:uppercase}
 .goal .v{font-size:12px;color:var(--ash);line-height:1.4}
-.goal svg{grid-row:1/3;grid-column:2;width:96px;height:38px}
+.goal svg{grid-row:1/3;grid-column:2;width:92px;height:36px}
 .pill{font:600 9.5px var(--mono);letter-spacing:.06em;border-radius:99px;padding:2px 7px;border:1px solid var(--steel);color:var(--ash);text-transform:uppercase;margin-left:6px;vertical-align:2px;white-space:nowrap}
 .pill.on{color:var(--chalk);border-color:#4a505c}.pill.ah{color:var(--go);border-color:#2b5b41}
-.lad{display:grid;grid-template-columns:58px 1fr 70px;align-items:center;gap:8px;font-size:12px;margin-top:9px}
-.lad .bar{margin:0}
-.lad b{font:800 16px var(--disp);text-align:right;font-variant-numeric:tabular-nums}
+.chart{width:100%;height:auto;display:block;margin-top:8px}
 .example{font:600 9.5px var(--mono);letter-spacing:.08em;color:var(--dim);text-transform:uppercase}
 
+/* measure */
+.keys{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.keys button{height:50px;border-radius:12px;background:var(--plate2);font:800 23px var(--disp)}
+.keys button:active{background:var(--steel)}
+.mprog{display:flex;gap:5px}.mprog i{flex:1;height:4px;border-radius:3px;background:var(--steel)}.mprog i.d{background:var(--gold)}
+
 /* the four lenses */
-.lenses{display:grid;gap:14px}
+.lenses{display:grid;gap:12px}
 .lens{background:var(--iron);border:1px solid var(--steel);border-radius:18px;padding:16px 18px}
 .lens h2{margin:0 0 4px;font:800 22px var(--disp);letter-spacing:.05em;text-transform:uppercase}
 .lens .who{font:600 11px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}
-.lens ul{margin:10px 0 0;padding-left:18px;color:var(--ash);font-size:14px;line-height:1.55}
+.lens ul{margin:8px 0 0;padding-left:18px;color:var(--ash);font-size:14px;line-height:1.5}
 .lens li{margin:4px 0}.lens li b{color:var(--chalk);font-weight:600}
+.show{margin-top:10px;font:600 12px var(--mono);letter-spacing:.06em;color:var(--gold);border:1px solid #6b5518;border-radius:99px;padding:7px 12px}
+.show:hover{background:#2a210c}
 .hint{font:500 12.5px var(--mono);color:var(--ash);text-align:center;margin-top:12px}
 </style>
 
 <div class="wrap">
-  <div class="kicker">Road to 3/4/5 · Model 2 · interactive prototype</div>
+  <div class="kicker">Road to 3/4/5 · Model 2 · interactive prototype · pass 2</div>
   <h1>Your Tuesday, <em>Wave 4</em>, live</h1>
-  <p class="lede">This phone runs the real Model 2 bench day the app prescribes for Tuesday Oct 13: band primers, a 220 top single, 185 back-offs, the 30° incline, the lat row, leaning laterals, overhead extensions and the rear-delt anchor. Tap Log and it behaves like the finished app. Rate the single and watch the back-offs move. The Physique and Goals tabs show the rest.</p>
+  <p class="lede">The phone runs the bench day the engine prescribes for Tuesday Oct 13, pulled straight from <code>engine.js</code>: the readiness check, your real warm-up ramp to a 220 single, 185 back-offs, the 30° incline, then the row, laterals, overhead extensions and rear delts on their rep ladders. Goals draws your frame from your own tape numbers and the engine's projection to 315/405/495.</p>
 
   <div class="stage">
     <div>
       <div class="phone" id="phone">
-        <div class="status"><span id="clock">7:04</span><span>●●● 5G</span></div>
+        <div class="status"><span>7:04</span><span>●●● 5G</span></div>
         <div class="view" id="view" aria-live="polite"></div>
         <nav class="tabs" role="tablist">
           <button role="tab" aria-selected="true" data-tab="today"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4"/></svg>Today</button>
@@ -148,124 +207,195 @@ h1 em{font-style:normal;color:var(--gold)}
           <button role="tab" aria-selected="false" data-tab="measure"><svg viewBox="0 0 24 24"><path d="M3 15l6-6 12 12M7 11l2 2M10 8l2 2M13 11l2 2"/></svg>Measure</button>
         </nav>
       </div>
-      <p class="hint">Rest runs at 20× speed in this demo · <button id="reset" style="text-decoration:underline;color:var(--gold)">restart the session</button></p>
+      <p class="hint">Rest runs at 20× speed in this demo · <button id="reset" style="text-decoration:underline;color:var(--gold)">restart</button></p>
     </div>
 
     <div class="lenses">
-      <section class="lens"><div class="who">Exercise scientist</div><h2>Dose you can see</h2><ul>
-        <li><b>Stimulus per muscle, not per exercise.</b> The Physique map counts weekly fractional sets (a compound set counts half, as in Pelland 2025) and shades each muscle by where it sits on the dose-response curve.</li>
-        <li><b>Honest uncertainty.</b> A goal only reads ahead or behind once the trend beats tape noise. Body fat from the tape is a trend, and one DXA scan calibrates it.</li>
-        <li><b>Effort is measured, not guessed.</b> One rating on the top single feeds the RPE chart and moves the back-offs the same morning.</li></ul></section>
       <section class="lens"><div class="who">Powerbuilder</div><h2>The bar comes first</h2><ul>
-        <li><b>Plates per side on every barbell set</b>, so the bar gets loaded without math.</li>
-        <li><b>USPA commands on every heavy single</b> (START, PRESS, RACK), so meet day feels rehearsed.</li>
-        <li><b>The frame work is visible:</b> the session ends by counting what it added to upper chest, side and rear delts, triceps and traps.</li></ul></section>
-      <section class="lens"><div class="who">Personal trainer</div><h2>One cue, one reason</h2><ul>
-        <li><b>One coaching cue per set</b>, the one that fixes the most common mistake on that lift.</li>
-        <li><b>A one-line "why"</b> under each exercise ties it to your goal: 16" arms, 3D shoulders, the upper chest, the yoke.</li>
-        <li><b>A last set worth chasing:</b> the anchor set is flagged "to RPE 9–10" and everything else stops short, so effort goes where it pays.</li></ul></section>
+        <li><b>Your real warm-up ramp</b>: bar, 95, 135, 155, then 165 filmed for bar speed and 205 as the last step before 220. Plates per side on every barbell set.</li>
+        <li><b>Meet commands on the single</b> (START, PRESS, RACK), so the platform in summer 2027 feels like any Tuesday.</li>
+        <li><b>One rating moves the day</b>: Easy, On target or Hard on the 220 sets the five back-offs at 190, 185 or 180.</li></ul>
+        <button class="show" data-show="warm">Show the ramp →</button></section>
+      <section class="lens"><div class="who">Exercise scientist</div><h2>Dose you can see</h2><ul>
+        <li><b>Gold is your goal muscles, blue is support.</b> Brightness is weekly sets, compounds counted at half (Pelland 2025). The gold lands on delts, upper chest, arms and upper back, which is the point.</li>
+        <li><b>Honest trend lines</b>: a goal reads ahead or behind only once the trend beats tape noise. Tape body fat is a trend, and a DXA scan calibrates it.</li></ul>
+        <button class="show" data-show="body">Show the map →</button></section>
+      <section class="lens"><div class="who">Personal trainer</div><h2>One cue, one reason, one ladder</h2><ul>
+        <li><b>The rep ladder on every accessory</b>: 2 sets hitting the target moves you up a step next time (10 → 12 → 15), then the weight goes up. You see the next step before you lift.</li>
+        <li><b>One hard set per muscle</b>: only the anchor's last set goes to RPE 9–10 plus partials, and it's flagged on the set dots.</li>
+        <li><b>A readiness check that changes the plan</b>: Yellow takes 5% off the back-offs and caps accessories at 2 sets. Red is 155 × 3 × 3, done in 30–45 minutes.</li></ul>
+        <button class="show" data-show="lat">Show the laterals →</button></section>
       <section class="lens"><div class="who">App developer</div><h2>Zero thinking at 7 AM</h2><ul>
-        <li><b>One screen, one action:</b> Log → (rate) → rest → next, with the thumb never leaving the bottom third.</li>
-        <li><b>84–92 pt numerals</b> readable at arm's length, a ring for progress and an honest minutes-left estimate.</li>
-        <li><b>Motion that means something:</b> the button flashes on log, the ring fills, the rest dial drains. Nothing decorative, and reduce-motion is respected.</li></ul></section>
+        <li><b>One screen, one action</b>: log → rate → rest → next, with the thumb in the bottom third. The rest timer redraws only its ring, so a tap on Skip never misses.</li>
+        <li><b>Everything connects</b>: measure your arm and the Goals frame redraws from it. Rate the single and the back-offs change.</li></ul>
+        <button class="show" data-show="goals">Show your frame →</button></section>
     </div>
   </div>
 </div>
 
 <script>
 (() => {
-// ── his real Wave 4 Tuesday (engine.js, Model 2) ──
-const S = [
-  { n: "Band External Rotation", w: 0, r: 15, s: 2, rpe: "7", kind: "primer", cue: "Elbow pinned on a rolled towel. Rotate out, two seconds back.", why: "Shoulder insurance before a heavy pressing day." },
-  { n: "Band Pull-Apart", w: 0, r: 25, s: 2, rpe: "7", kind: "primer", cue: "Arms straight, squeeze the shoulder blades, slow return.", why: "Sets the shoulders back before the bar touches your chest." },
-  { n: "Bench — top single", w: 220, r: 1, s: 1, rpe: "7", kind: "single", bar: true, cap: 7, cue: "Wait for START. Bar motionless on the chest until PRESS. Hold for RACK.", why: "<b>3/4/5:</b> this single steers today's back-offs and the gate into Wave 5." },
+// ── his real Wave 4 Tuesday: engine.js sessionFor(4, 1, 2), Model 2 ──
+const BASE = [
+  { n: "Shoulder primer", kind: "primer", s: 1, items: [["Band External Rotation", "2 × 15 / arm"], ["Band Pull-Apart", "2 × 25"]], cue: "Elbow pinned on a rolled towel for the rotations. Warm-up effort, never to fatigue.", why: "Cuff and shoulder-blade warm-up before a heavy pressing day (Andersson 2017, handball players)." },
+  { n: "Bench warm-up", kind: "warm", rows: [["Bar", 15], [95, 8], [135, 5], [155, 3], [165, 1, "ind"], [205, 1, "bridge"]] },
+  { n: "Bench — top single", w: 220, r: 1, s: 1, rpe: "7", kind: "single", bar: true, cap: 7, cue: "Arms locked and still, wait for START. Bar motionless on the chest until PRESS. Hold the lockout for RACK.", why: "<b>3/4/5:</b> this single steers today's back-offs and the gate into Wave 5." },
   { n: "Bench — back-offs", w: 185, r: 5, s: 5, rpe: "6.5–7", kind: "main", bar: true, cue: "Same setup as the single: blades pinned, feet driving back.", why: "<b>3/4/5:</b> bench volume at a weight that builds without grinding." },
-  { n: "Incline Bench — top set", w: 145, r: 5, s: 1, rpe: "7", kind: "single", bar: true, cap: 7, cue: "30°, not 45°. Bar to the upper chest, elbows about 45° out.", why: "<b>Upper chest:</b> incline-only pressing grew the upper pec more than flat (Chaves 2020)." },
+  { n: "Incline Bench — top set", w: 145, r: 5, s: 1, rpe: "7", kind: "single", bar: true, cap: 7, cue: "30°, not 45°. Bar to the upper chest, elbows about 45° out.", why: "<b>Upper chest:</b> incline pressing grew the upper pec more than flat (Chaves 2020). Ramping to 225." },
   { n: "Incline Bench — back-offs", w: 130, r: 8, s: 3, rpe: "7–8", kind: "tracked", bar: true, cue: "Touch high on the chest, press back toward the face.", why: "<b>Upper chest:</b> 4 of your 14 weekly incline sets." },
-  { n: "Chest-Supported DB Row", w: 65, r: 10, s: 4, rpe: "8–9", kind: "acc", db: true, cue: "Elbow to the hip, chest stays on the pad, full stretch at the bottom.", why: "<b>Back width:</b> the tucked lat row. Friday's high-elbow row builds the yoke." },
-  { n: "Leaning DB Lateral Raise", w: 22.5, r: 12, s: 4, rpe: "8–9", kind: "acc", db: true, hard: true, cue: "Lean away, elbow leads, thumb level with the pinky, stop at shoulder height.", why: "<b>3D shoulders:</b> side delts are the width. Last set to RPE 9–10, then partials." },
-  { n: "Overhead Cable Extension", w: 65, r: 10, s: 3, rpe: "8", kind: "acc", cue: "Elbows in and pointed up, full stretch behind the head.", why: "<b>16\" arms:</b> overhead grew the long head 1.5× more than pushdowns (Maeo 2023)." },
-  { n: "Reverse Pec Deck", w: 130, r: 12, s: 3, rpe: "8–9", kind: "acc", hard: true, cue: "Neutral grip, arms long, sweep out at shoulder height.", why: "<b>3D shoulders:</b> the rear-delt anchor that rounds the shoulder from behind." },
-  { n: "Neck Curl", w: 7.5, r: 15, s: 2, rpe: "8–9", kind: "filler", cue: "Slow. Plate on the forehead with a towel.", why: "Filler: superset it into rests, it costs no clock." },
+  { n: "Chest-Supported DB Row", w: 65, r: 10, s: 4, rpe: "8–9", kind: "acc", db: true, steps: [8, 10, 12], inc: 5, cue: "Elbow to the hip, chest stays on the pad, full stretch at the bottom.", why: "<b>Back width:</b> the tucked lat row. Friday's high-elbow row builds the yoke." },
+  { n: "Leaning DB Lateral Raise", w: 22.5, r: 12, s: 4, rpe: "8–9", kind: "acc", db: true, hard: true, steps: [10, 12, 15], inc: 2.5, cue: "Lean away, elbow leads, thumb level with the pinky, stop at shoulder height.", why: "<b>3D shoulders:</b> side delts are the width. Thumb level kept the work on the side delt (Coratella 2020)." },
+  { n: "Overhead Cable Extension", w: 65, r: 10, s: 3, rpe: "8", kind: "acc", steps: [10, 12, 15], inc: 5, cue: "Elbows in and pointed up, full stretch behind the head.", why: "<b>16\" arms:</b> overhead grew the triceps 1.5× more than pushdowns (Maeo 2023)." },
+  { n: "Reverse Pec Deck", w: 130, r: 12, s: 3, rpe: "8–9", kind: "acc", hard: true, steps: [12, 15], inc: 10, cue: "Neutral grip, arms long, sweep out at shoulder height.", why: "<b>3D shoulders:</b> the rear-delt anchor that rounds the shoulder from behind." },
+  { n: "Neck Curl", w: 7.5, r: 15, s: 2, rpe: "8–9", kind: "filler", steps: [12, 15, 20], inc: 2.5, cue: "Slow. Plate on the forehead with a towel.", why: "Filler: superset it into a rest, it costs no clock." },
 ];
-const REST = { primer: 30, single: 180, main: 180, tracked: 150, acc: 90, filler: 0 };
-const COST = { primer: 0.5, single: 4, main: 3.5, tracked: 2.5, acc: 1.75, filler: 0.5 };
+const R5 = (w) => Math.round(w / 5) * 5;
+// engine.js yellowW / redSession for Tuesday
+function plan(ready) {
+  const S = BASE.map((x) => ({ ...x }));
+  if (ready === "Y") return S.map((x) => x.kind === "main" || x.kind === "tracked" ? { ...x, w: R5(x.w * 0.95), yel: "−5%" } : x.kind === "acc" || x.kind === "filler" ? { ...x, s: Math.min(2, x.s), rpe: "≤8", hard: false, yel: "2 sets" } : x);
+  if (ready === "R") return [S[0], { ...S[1], rows: S[1].rows.slice(0, 3) },
+    { n: "Bench — Red day 3×3", w: 155, r: 3, s: 3, rpe: "≤6", kind: "main", bar: true, cue: "Smooth reps. Nothing grinds today.", why: "Skip the single. A Red day keeps the groove and banks recovery." },
+    { ...S[7], s: 2, rpe: "≤8", hard: false }, { ...S[9], s: 2, rpe: "≤8", hard: false }];
+  return S;
+}
+const REST = { primer: 0, warm: 0, single: 180, main: 180, tracked: 150, acc: 90, filler: 0 };
+const COST = { primer: 3, warm: 8, single: 4, main: 3.5, tracked: 2.5, acc: 1.75, filler: 0.5 };
 const PCT = { 6: .863, 6.5: .878, 7: .892, 7.5: .907, 8: .922, 8.5: .939, 9: .955, 9.5: .978, 10: 1 };
 // Same clamp as engine.js pctAt: Easy at a cap of 7 reads as RPE 6, not an off-chart 5.5.
 const pctAt = (rpe) => PCT[Math.max(6, Math.min(10, Math.round(rpe * 2) / 2))];
-const RATE = { E: -1.5, O: 0, H: 1 };
+const RATE = { E: -1.5, O: 0, H: 1 }, RL = { E: "Easy", O: "On target", H: "Hard" };
+// example tape (Measure overwrites it): 17.2% by the Navy equation at 5'8.5"
+const MEAS0 = { bw: 190.2, wa: 34, nk: 15.5, arm: 13.25, sh: 47 };
+const GOAL = { bw: 200, bf: 15, arm: 16, ratio: 1.5 };
+const HEIGHT = 68.5;
+const navy = (wa, nk) => 86.010 * Math.log10(wa - nk) - 70.041 * Math.log10(HEIGHT) + 36.76;
 let st;
-const fresh = () => ({ i: 0, set: 0, logs: S.map(() => []), phase: "set", rest: 0, restMax: 0, adj: {}, tab: "today", sel: "sidedelt", tstart: 0 });
+const fresh = () => ({ tab: "today", phase: "brief", ready: "G", S: plan("G"), i: 0, wi: 0, logs: BASE.map(() => []), adj: {}, reps: {}, sel: "sidedelt", meas: { ...MEAS0 }, mi: 0, entry: "", mdone: false, t: 0, tstart: 0 });
 st = fresh();
 const $ = (q) => document.querySelector(q);
 const view = $("#view");
 const plates = (w) => { if (!(w > 45)) return null; let s = (w - 45) / 2; const o = []; for (const p of [45, 35, 25, 10, 5, 2.5]) while (s >= p - 1e-9) { o.push(p); s -= p; } return s > 1e-6 ? null : o; };
-const plateHTML = (w) => { const p = plates(w); if (!p) return ""; return `<div class="plates" aria-label="Plates per side"><span class="sleeve"></span>${p.map((x) => `<span class="pl p${x === 2.5 ? "2" : x}">${x >= 25 ? x : ""}</span>`).join("")}<span class="pltxt">${p.join(" · ")}<br>per side · 45 bar</span></div>`; };
-const total = S.reduce((n, x) => n + x.s, 0);
-const done = () => st.logs.reduce((n, l) => n + l.length, 0);
-const left = () => S.reduce((m, x, k) => m + Math.max(0, x.s - st.logs[k].length) * COST[x.kind], 0);
-const ring = (f) => { const r = 20, c = 2 * Math.PI * r; return `<svg class="ring" viewBox="0 0 48 48" aria-hidden="true"><circle class="bg" cx="24" cy="24" r="${r}"/><circle class="fg" cx="24" cy="24" r="${r}" stroke-dasharray="${f * c} ${c}" transform="rotate(-90 24 24)"/></svg>`; };
-const wOf = (k) => { const x = S[k], a = st.adj[k]; return a ? a.w : x.w; };
-const fmtW = (w) => (w === 0 ? "BW" : String(w));
-const head = () => `<div class="top"><div class="brand">Road to <b>3/4/5</b><span class="m2">MODEL 2</span></div></div>
-  <div class="ctx">Wave 4 · Wk 1 · Tue · Bench day · Green</div>`;
-const strip = () => `<div class="strip">${S.map((x, k) => `<span class="chip ${st.logs[k].length >= x.s ? "ok" : k === st.i ? "cur" : ""}">${st.logs[k].length >= x.s ? "✓ " : ""}${x.n.replace(" — ", " · ").replace("Chest-Supported ", "").replace("Overhead Cable ", "OH ")}</span>`).join("")}</div>`;
-const nowTop = () => `<div class="nowtop">${ring(done() / total)}<div><div class="eyebrow gold">Now · ${done()} of ${total} sets</div><div class="sub" style="margin-top:2px">~${Math.max(1, Math.round(left()))} min left</div></div></div>`;
+const plateHTML = (w) => { const p = plates(w); if (!p) return w === 45 ? `<div class="sub">Empty bar</div>` : ""; return `<div class="plates" aria-label="Plates per side"><span class="sleeve"></span>${p.map((x) => `<span class="pl p${x === 2.5 ? "2" : x}">${x >= 25 ? x : ""}</span>`).join("")}<span class="pltxt">${p.join(" · ")}<br>per side · 45 bar</span></div>`; };
+const S = () => st.S;
+const nsets = (x) => (x.kind === "warm" ? x.rows.length : x.s);
+const total = () => S().reduce((n, x) => n + (x.kind === "warm" || x.kind === "primer" ? 0 : x.s), 0);
+const done = () => S().reduce((n, x, k) => n + (x.kind === "warm" || x.kind === "primer" ? 0 : st.logs[k].length), 0);
+const left = () => S().reduce((m, x, k) => m + (x.kind === "warm" || x.kind === "primer" ? (st.logs[k].length ? 0 : COST[x.kind]) : Math.max(0, x.s - st.logs[k].length) * COST[x.kind]), 0);
+const ring = (f) => { const r = 19, c = 2 * Math.PI * r; return `<svg class="ring" viewBox="0 0 44 44" aria-hidden="true"><circle class="bg" cx="22" cy="22" r="${r}"/><circle class="fg" cx="22" cy="22" r="${r}" stroke-dasharray="${f * c} ${c}" transform="rotate(-90 22 22)"/></svg>`; };
+const wOf = (k) => (st.adj[k] ? st.adj[k].w : S()[k].w);
+const rOf = (k) => st.reps[k] ?? S()[k].r;
+const RC = { G: "Green", Y: "Yellow", R: "Red" };
+const head = () => `<div class="top"><div class="brand">Road to <b>3/4/5</b><span class="m2">MODEL 2</span></div><span class="ctx" style="color:var(--${st.ready === "G" ? "go" : st.ready === "Y" ? "warn" : "stop"})">● ${RC[st.ready]}</span></div>
+  <div class="ctx">Wave 4 · Wk 1 · Tue Oct 13 · Bench day</div>`;
+const short = (n) => n.replace(" — ", " · ").replace("Chest-Supported ", "").replace("Overhead Cable ", "OH ").replace("Shoulder primer", "Primer");
+const strip = () => `<div class="strip">${S().map((x, k) => { const ok = st.logs[k].length >= nsets(x); return `<span class="chip ${ok ? "ok" : k === st.i ? "cur" : ""}">${ok ? "✓ " : ""}${short(x.n)}</span>`; }).join("")}</div>`;
+const nowTop = () => `<div class="nowtop">${ring(done() / total())}<div><div class="eyebrow gold">${done()} of ${total()} work sets</div><div class="sub" style="margin-top:2px">~${Math.max(1, Math.round(left()))} min left</div></div></div>`;
+const haptic = () => { try { navigator.vibrate && navigator.vibrate(12); } catch (e) {} };
 
+// what today trains, direct sets (weekly targets from the Wave 4 plan)
+const TODAY_HITS = [["Upper chest", "upperchest", 4, 14, (k) => k === 4 || k === 5], ["Side delts", "sidedelt", 4, 13, (k) => k === 7], ["Rear delts", "reardelt", 3, 9, (k) => k === 9], ["Triceps", "triceps", 3, 15, (k) => k === 8], ["Lats", "lats", 4, 7, (k) => k === 6]];
+
+function brief() {
+  const r = st.ready, P = plan(r);
+  const main = r === "R" ? "Bench 155 × 3 × 3" : `Bench 220 single → ${P[3].w} × 5 × 5`;
+  const mins = Math.round(P.reduce((m, x) => m + (x.kind === "warm" || x.kind === "primer" ? COST[x.kind] : x.s * COST[x.kind]), 0));
+  const note = { G: "Slept 7 h+, joints quiet, warm-ups move. Run the plan as written.", Y: "5.5–7 h sleep, a hard shift or joint noise. Single capped at RPE 7, back-offs −5%, accessories 2 sets, nothing past RPE 8.", R: "Under 5.5 h, sick or something hurts. Skip the single: 155 × 3 × 3 and two easy accessories. Out in 30–45 min." }[r];
+  return `${head()}
+    <div class="card enter"><div class="eyebrow">How are you today?</div>
+      <div class="ready">${["G", "Y", "R"].map((k) => `<button class="${k.toLowerCase()}" data-ready="${k}" aria-pressed="${k === r}"><i></i>${RC[k]}</button>`).join("")}</div>
+      <p class="why" style="margin-top:9px">${note}</p></div>
+    <div class="card now ${r === "Y" ? "y" : r === "R" ? "r" : ""} enter">
+      <div class="brief"><div style="flex:1;min-width:0"><div class="eyebrow gold">Today · ~${mins} min</div>
+        <div class="ex" style="margin-top:6px;font-size:26px">Bench day</div>
+        <div class="sub" style="font-size:13.5px;margin-top:4px"><b>${main}</b></div>
+        <div class="sub">then incline ${r === "R" ? "skipped" : "145 × 5"} · row · laterals · OH extension · rear delts</div></div>
+        <div class="mini" aria-hidden="true">${figFront(true)}${figBack(true)}</div></div>
+      ${r === "R" ? "" : `<div class="eyebrow" style="margin-top:12px">Builds toward your frame · this week</div>
+      <div class="builds">${TODAY_HITS.map(([n, , d, w]) => { const dd = r === "Y" && n !== "Upper chest" ? Math.min(2, d) : d; return `<div class="bl"><span>${n}</span><div class="hb"><i style="width:${(dd / w) * 100}%"></i></div><b>+${dd}</b></div>`; }).join("")}</div>`}
+      <button class="cta" data-act="start">Start · ${r === "R" ? "easy day" : "warm up"}</button></div>`;
+}
 function today() {
+  if (st.phase === "brief") return brief();
   if (st.phase === "rate") {
-    const k = st.rateK, x = S[k], w = st.logs[k][st.logs[k].length - 1].w, nb = k + 1;
-    const nbW = (f) => Math.round((S[nb].w * f) / 5) * 5;
+    const k = st.rateK, x = S()[k], w = st.logs[k][st.logs[k].length - 1].w, nb = k + 1, B = S()[nb];
+    const nbW = (f) => Math.round((B.w * f) / 5) * 5;
     const fac = (r) => Math.max(.95, Math.min(1.05, pctAt(x.cap) / pctAt(x.cap + RATE[r])));
     return `${head()}<div class="card now enter"><div class="eyebrow gold">Just logged</div><div class="ex">${x.n}</div>
       <div class="big">${w}<small> × ${x.r}</small></div>
-      <p class="cue">How did that feel? Your answer sets the ${S[nb].s} back-offs.</p>
-      <div class="rate">${["E", "O", "H"].map((r) => `<button class="${r.toLowerCase() === "e" ? "e" : r === "O" ? "o" : "h"}" data-rate="${r}">${{ E: "Easy", O: "On target", H: "Hard" }[r]}<small>→ ${nbW(fac(r))} × ${S[nb].r}</small></button>`).join("")}</div>
-      <p class="why">Easy reads as about RPE ${Math.max(6, x.cap - 1.5)}, Hard as RPE ${x.cap + 1}, through the RPE chart (Zourdos 2016).</p></div>${strip()}`;
+      <p class="cue">How did that feel? Your answer sets the ${B.s} back-offs.</p>
+      <div class="rate">${["E", "O", "H"].map((r) => `<button class="${r.toLowerCase()}" data-rate="${r}">${RL[r]}<small>→ ${nbW(fac(r))} × ${B.r}</small></button>`).join("")}</div>
+      <p class="why">Easy reads as about RPE ${Math.max(6, x.cap - 1.5)}, Hard as RPE ${x.cap + 1}, through the RPE chart (Zourdos 2016). Your rating also feeds the Wave 5 gate.</p></div>${strip()}`;
   }
   if (st.phase === "rest") {
-    const k = st.i, x = S[k], c = 2 * Math.PI * 82, f = st.rest / st.restMax;
+    const k = st.i, x = S()[k], c = 2 * Math.PI * 82, f = st.rest / st.restMax;
     const m = Math.floor(st.rest / 60), s = String(Math.ceil(st.rest % 60) % 60).padStart(2, "0");
+    const nk = S().findIndex((y, j) => y.kind === "filler" && st.logs[j].length < y.s);
+    const filler = nk > k && S()[k].kind === "acc" ? `<div class="sub" style="text-align:center;margin-top:8px">Fits here: <b>${S()[nk].n} ${S()[nk].w} × ${S()[nk].r}</b></div>` : "";
     return `${head()}<div class="card enter"><div class="eyebrow">Rest · up next</div>
       <div class="timer"><svg viewBox="0 0 200 200"><circle class="tr" cx="100" cy="100" r="82"/><circle id="tf" class="tf" cx="100" cy="100" r="82" stroke-dasharray="${f * c} ${c}" transform="rotate(-90 100 100)"/><text x="100" y="110" text-anchor="middle" class="tnum" id="tnum">${m}:${s}</text><text x="100" y="136" text-anchor="middle" class="tlab">OF ${Math.floor(st.restMax / 60)}:${String(st.restMax % 60).padStart(2, "0")}</text></svg></div>
-      <div class="sub" style="text-align:center;font-size:14px">Next: <b>${x.n}</b><br><b style="font:800 26px var(--disp)">${fmtW(wOf(k))} × ${x.r}</b> · set ${st.logs[k].length + 1} of ${x.s}</div>
+      <div class="sub" style="text-align:center;font-size:14px">Next: <b>${x.n}</b><br><b style="font:800 26px var(--disp)">${wOf(k)} × ${rOf(k)}</b> · set ${st.logs[k].length + 1} of ${x.s}</div>${filler}
       <div class="row2"><button class="ghost" data-act="plus">+30 s</button><button class="ghost" data-act="skip">Skip rest</button></div></div>${strip()}`;
   }
-  if (st.i >= S.length) return summary();
-  const k = st.i, x = S[k], w = wOf(k), n = st.logs[k].length, a = st.adj[k];
-  const lastHard = x.hard && n === x.s - 1;
-  return `${head()}<div class="card now enter">${nowTop()}
+  if (st.i >= S().length) return summary();
+  const k = st.i, x = S()[k];
+  if (x.kind === "primer") return `${head()}<div class="card now enter">${nowTop()}
     <div class="ex">${x.n}</div>
-    <div class="big">${fmtW(w)}<small> × ${x.r}</small></div>
-    <div class="sub">Set <b>${n + 1} of ${x.s}</b> · ${x.kind === "single" ? "cap" : "target"} RPE <b>${x.rpe}</b>${x.db ? " · per hand" : ""}${lastHard ? ' · <b class="gold">last set → RPE 9–10 + partials</b>' : ""}</div>
-    ${a ? `<div class="sub" style="color:var(--gold)">Auto: ${a.why}</div>` : ""}
-    ${x.bar ? plateHTML(w) : ""}
+    ${x.items.map(([n, d]) => `<div class="kv"><span>${n}</span><b>${d}</b></div>`).join("")}
     <p class="cue">${x.cue}</p><p class="why">${x.why}</p>
-    <button class="cta" data-act="log">✓ Log ${w ? fmtW(w) + " × " : ""}${x.r}</button>
-    <div class="row2"><button class="ghost" data-act="minus">− ${x.db ? 2.5 : 5} lb</button><button class="ghost" data-act="plus5">+ ${x.db ? 2.5 : 5} lb</button></div></div>${strip()}`;
+    <button class="cta" data-act="primer">✓ Primer done</button></div>${strip()}`;
+  if (x.kind === "warm") {
+    const row = x.rows[st.wi], w = row[0] === "Bar" ? 45 : row[0], max = 220;
+    const tag = row[2] === "ind" ? `<span class="flag">🎥 Film this one · bar speed check</span><p class="why">If 165 moves slower than usual, rate honestly after 220. The back-offs adjust either way.</p>` : row[2] === "bridge" ? `<span class="flag">Bridge single · last step to 220</span><p class="why">Same commands as the top single. Rest 2–3 min after it.</p>` : `<p class="why">Warm-ups are fast: about a minute between them, no timer.</p>`;
+    return `${head()}<div class="card now enter">${nowTop()}
+      <div class="ex">${x.n} · ${st.wi + 1} of ${x.rows.length}</div>
+      <div class="big">${row[0]}<small> × ${row[1]}</small></div>
+      ${plateHTML(w)}${tag}
+      <div class="ramp" aria-label="Warm-up ramp to 220">${x.rows.map((r, j) => { const ww = r[0] === "Bar" ? 45 : r[0]; return `<div class="${j < st.wi ? "d" : j === st.wi ? "c" : ""}"><i style="height:${(ww / max) * 86}px"></i><span>${r[0]}</span><em>×${r[1]}</em></div>`; }).join("")}${st.ready === "R" ? "" : `<div class="t"><i style="height:86px"></i><span>220</span><em>×1</em></div>`}</div>
+      <button class="cta" data-act="warm">✓ ${row[0]} × ${row[1]}</button></div>${strip()}`;
+  }
+  const w = wOf(k), r = rOf(k), n = st.logs[k].length, a = st.adj[k];
+  const lastHard = x.hard && n === x.s - 1;
+  const dots = `<div class="dots" aria-label="Sets">${Array.from({ length: x.s }, (_, j) => `<i class="${j < n ? "d" : j === n ? "c" : ""} ${x.hard && j === x.s - 1 ? "h" : ""}"></i>`).join("")}</div>`;
+  let lad = "";
+  if (x.steps) {
+    const i = x.steps.indexOf(x.r), top = i === x.steps.length - 1;
+    const nextTxt = top ? `2 sets of ${x.r} → ${x.w + x.inc} × ${x.steps[0]} next time` : `2 sets of ${x.r} → ${x.steps[i + 1]} reps next time`;
+    lad = `<div class="ladder">${x.steps.map((s, j) => `<span class="${j === i ? "c" : j === i + 1 ? "n" : ""}">${s}</span>`).join("")}<em>${nextTxt}</em></div>`;
+  }
+  return `${head()}<div class="card now ${st.ready === "Y" ? "y" : st.ready === "R" ? "r" : ""} enter">${nowTop()}
+    <div class="ex">${x.n}</div>
+    <div class="big">${w}<small> × ${r}</small></div>
+    ${dots}
+    <div class="sub">Set <b>${n + 1} of ${x.s}</b> · ${x.kind === "single" ? "cap" : "target"} RPE <b>${x.rpe}</b>${x.db ? " · per hand" : ""}${x.yel ? ` · <b style="color:var(--warn)">Yellow ${x.yel}</b>` : ""}${lastHard ? ' · <b style="color:var(--stop)">last set → RPE 9–10 + partials</b>' : ""}</div>
+    ${a ? `<div class="sub" style="color:var(--gold)">Auto: ${a.why}</div>` : ""}
+    ${x.bar ? plateHTML(w) : ""}${x.kind === "single" && x.r === 1 ? `<div class="cmds"><span>START</span><span>PRESS</span><span>RACK</span></div>` : ""}${lad}
+    <p class="cue">${x.cue}</p><p class="why">${x.why}</p>
+    <button class="cta" data-act="log">✓ Log ${w} × ${r}</button>
+    <div class="row2"><div class="step"><button data-act="wdn" aria-label="Less weight">−</button><span><b>${w}</b> lb</span><button data-act="wup" aria-label="More weight">+</button></div>
+      <div class="step"><button data-act="rdn" aria-label="One rep fewer">−</button><span><b>${r}</b> reps</span><button data-act="rup" aria-label="One rep more">+</button></div></div></div>${strip()}`;
 }
 function summary() {
-  let vol = 0; S.forEach((x, k) => st.logs[k].forEach((l) => { if (l.w > 0) vol += l.w * x.r; }));
-  const top = st.logs[2][0] || { w: 220, rate: "O" }, rpe = 7 + (RATE[top.rate || "O"] || 0), est = Math.round(top.w / PCT[rpe]);
+  let vol = 0; S().forEach((x, k) => st.logs[k].forEach((l) => { if (l.w > 0) vol += l.w * (l.r || 0); }));
+  const kS = S().findIndex((x) => x.kind === "single" && x.r === 1);
+  const top = kS >= 0 && st.logs[kS][0], rpe = top ? Math.max(6, 7 + (RATE[top.rate || "O"] || 0)) : null, est = top ? Math.round(top.w / pctAt(rpe)) : null;
   const mins = Math.max(1, Math.round((Date.now() - st.tstart) / 60000 * 20));
-  return `${head()}<div class="card now enter"><div class="eyebrow gold">Session complete</div><div class="ex" style="font-size:32px;margin-top:6px">Bench day done 🏁</div>
-    <div class="sub">${done()} sets · demo time ${mins} min</div></div>
+  const moves = S().map((x, k) => { if (!x.steps) return null; const hit = st.logs[k].filter((l) => l.r >= x.r && l.w >= x.w).length; if (hit < 2) return null; const i = x.steps.indexOf(x.r), topR = i === x.steps.length - 1; return `<div class="kv"><span>${x.n}</span><b class="gold">${topR ? `${x.w + x.inc} × ${x.steps[0]}` : `${x.w} × ${x.steps[i + 1]}`}</b></div>`; }).filter(Boolean);
+  return `${head()}<div class="card now enter"><div class="eyebrow gold">Session complete</div><div class="ex" style="font-size:32px;margin-top:6px">Bench day done</div>
+    <div class="sub">${done()} work sets · demo time ${mins} min</div></div>
     <div class="tiles enter">
-      <div class="tile pr"><span class="eyebrow gold">Est. bench max</span><b>${est}</b><span class="up">from ${top.w} @ RPE ${rpe}</span></div>
+      ${est ? `<div class="tile pr"><span class="eyebrow gold">Est. bench max</span><b>${est}</b><span class="up">${top.w} @ RPE ${rpe} · goal 315</span></div>` : `<div class="tile"><span class="eyebrow">Red day</span><b>Banked</b><span class="sub">no single today</span></div>`}
       <div class="tile"><span class="eyebrow">Volume</span><b>${vol.toLocaleString("en-US")}</b><span class="sub">lb moved</span></div></div>
-    <div class="card enter"><div class="eyebrow">What today built · this week's target</div>
-      <div class="kv"><span>Upper chest</span><b class="gold">4 / 14</b></div>
-      <div class="kv"><span>Side delts</span><b class="gold">4 / 13</b></div>
-      <div class="kv"><span>Rear delts</span><b class="gold">3 / 9</b></div>
-      <div class="kv"><span>Triceps</span><b class="gold">3 / 15</b></div>
-      <div class="kv"><span>Lats</span><b>4 / 7</b></div></div>
-    <div class="sub">Next: <b>Wed · paused squat + arms</b>. 40 g protein within the hour, 7+ h tonight.</div>`;
+    ${st.ready === "R" ? "" : `<div class="card enter"><div class="eyebrow">What today built · this week</div><div class="builds" style="margin-top:8px">${TODAY_HITS.map(([n, , , wk, f]) => { const d = S().reduce((m, x, k) => m + (f(BASE.indexOf(BASE.find((b) => b.n === x.n))) ? st.logs[k].length : 0), 0); return `<div class="bl"><span>${n}</span><div class="hb"><i style="width:${(d / wk) * 100}%"></i></div><b>${d}/${wk}</b></div>`; }).join("")}</div></div>`}
+    ${moves.length ? `<div class="card enter"><div class="eyebrow gold">Next time · you climbed the ladder</div>${moves.join("")}</div>` : ""}
+    <div class="card enter"><div class="eyebrow">Cooldown · 5 min</div><div class="sub">Doorway pec stretch 2 × 30 s · cross-body delt 30 s a side · wall slides × 10 · easy breathing</div></div>
+    <div class="sub">Next: <b>Wed · paused squat + arms</b>. 40 g protein within the hour, 7 h+ in bed tonight.</div>`;
 }
 
-// ── physique: a muscle map shaded by weekly fractional sets (compound = 0.5) ──
+// ── physique: weekly fractional sets (compound = 0.5); gold = his goal muscles ──
 const M = {
   sidedelt: { n: "Side delts", sets: 13, goal: "3D shoulders", pri: 1, note: "Shoulder width. Tue leaning laterals, Wed cable laterals, Sat Y-raise." },
-  frontdelt: { n: "Front delts", sets: 12, goal: "3D shoulders", note: "Already loaded by every press; no direct work needed." },
+  frontdelt: { n: "Front delts", sets: 12, goal: "Support", note: "Every press already loads them; no direct work needed." },
   reardelt: { n: "Rear delts", sets: 13, goal: "3D shoulders", pri: 1, note: "9 direct (Tue anchor, Thu face pull, Sat raise) + rows at half." },
   traps: { n: "Upper traps", sets: 8, goal: "Upper back", pri: 1, note: "Mon shrug anchor 3 + Sat Y-shrug 3, deadlift and farmer at half." },
   midtraps: { n: "Mid traps · rhomboids", sets: 12, goal: "Upper back", pri: 1, note: "Friday's high-elbow row and the rear-delt work." },
@@ -273,84 +403,161 @@ const M = {
   chest: { n: "Mid chest", sets: 10, goal: "3/4/5", note: "Competition bench and paused bench." },
   biceps: { n: "Biceps", sets: 15, goal: "16\" arms", pri: 1, note: "11 curls on Mon, Wed, Sat + chins and rows at half." },
   triceps: { n: "Triceps", sets: 21, goal: "16\" arms", pri: 1, note: "15 isolation (mostly overhead) + dips and pressing at half." },
-  forearms: { n: "Forearms", sets: 12, goal: "16\" arms", note: "Hammers, reverse curls, wrist work, farmer holds." },
-  lats: { n: "Lats", sets: 13, goal: "Back width", note: "Tue row, chins, Sat pulldown." },
-  abs: { n: "Abs", sets: 5, goal: "Shredded look", note: "Visible abs are a body-fat number, not a set count." },
+  forearms: { n: "Forearms", sets: 12, goal: "16\" arms", pri: 1, note: "Hammers, reverse curls, wrist work, farmer holds." },
+  lats: { n: "Lats", sets: 13, goal: "Shredded back", pri: 1, note: "Tue row, chins, Sat pulldown. Width now, the cut shows it." },
+  abs: { n: "Abs", sets: 5, goal: "Support", note: "Visible abs are a body-fat number, not a set count." },
   erectors: { n: "Lower back", sets: 6, goal: "3/4/5", note: "Deadlift and RDL." },
   quads: { n: "Quads", sets: 12, goal: "3/4/5", note: "Squat, paused squat, leg press, leg extension." },
   hams: { n: "Hamstrings", sets: 11, goal: "3/4/5", note: "Seated curl Mon and Wed, RDL." },
   glutes: { n: "Glutes", sets: 8, goal: "3/4/5", note: "Squat and deadlift." },
-  calves: { n: "Calves", sets: 6, goal: "Proportion", note: "Standing and leg-press calf raises." },
+  calves: { n: "Calves", sets: 6, goal: "Support", note: "Standing and leg-press calf raises." },
 };
-const tier = (s) => (s >= 15 ? "#f5b22d" : s >= 10 ? "#b8861f" : s >= 5 ? "#6a5220" : "#343944");
-const mus = (id, d) => `<path class="mus ${M[id].pri ? "pri" : ""} ${st.sel === id ? "sel" : ""}" data-m="${id}" d="${d}" fill="${tier(M[id].sets)}"><title>${M[id].n}: ${M[id].sets} sets/wk</title></path>`;
+const GOLD = ["#5a4515", "#93701f", "#c9921f", "#f5b22d"], COOL = ["#262c37", "#344050", "#4b5c73", "#6f84a1"];
+const shade = (id) => { const s = M[id].sets, t = s >= 15 ? 3 : s >= 10 ? 2 : s >= 5 ? 1 : 0; return (M[id].pri ? GOLD : COOL)[t]; };
+const TODAY_IDS = new Set(TODAY_HITS.map((h) => h[1]).concat(["chest", "frontdelt"]));
+let MINI = false;
+const mus = (id, d) => MINI ? `<path d="${d}" fill="${TODAY_IDS.has(id) ? shade(id) : "#262b34"}" stroke="#0e1013" stroke-width="1"/>` : `<path class="mus ${st.sel === id ? "sel" : ""}" data-m="${id}" d="${d}" fill="${shade(id)}"><title>${M[id].n}: ${M[id].sets} sets/wk</title></path>`;
 const both = (id, d) => mus(id, d) + `<g transform="translate(200 0) scale(-1 1)">${mus(id, d)}</g>`;
-function figFront() {
-  return `<svg viewBox="0 0 200 400" role="img" aria-label="Front muscle map">
-    <ellipse class="skin" cx="100" cy="30" rx="15" ry="19"/><path class="skin" d="M92 46h16l2 10H90z"/>
-    ${both("traps", "M90 54 Q78 60 66 64 L92 62Z")}
-    ${both("frontdelt", "M66 64 Q58 68 57 84 Q66 82 74 74 L76 66Z")}
-    ${both("sidedelt", "M64 64 Q48 68 48 92 Q53 90 57 84 Q58 70 66 64Z")}
-    ${both("upperchest", "M76 66 L100 66 L100 84 L78 84 Q73 78 76 66Z")}
-    ${both("chest", "M78 84 L100 84 L100 104 Q86 108 77 98 Q74 90 78 84Z")}
-    ${both("biceps", "M50 94 Q44 114 48 132 Q58 132 61 114 Q62 100 57 88Z")}
-    ${both("forearms", "M47 136 Q40 162 44 188 Q52 189 56 166 Q60 148 59 134Z")}
-    ${both("abs", "M90 110 L100 110 L100 172 L91 172 Q87 140 90 110Z")}
-    ${both("lats", "M77 100 Q72 120 78 140 L88 138 Q86 120 90 108Z")}
-    ${both("quads", "M79 182 Q70 232 80 286 L97 286 Q101 232 98 184Z")}
-    ${both("calves", "M82 300 Q76 336 85 372 L95 372 Q98 338 95 300Z")}
-    <text x="100" y="394" text-anchor="middle" class="figlab">FRONT</text></svg>`;
+const skinBoth = (d) => `<path class="skin" d="${d}"/><path class="skin" d="${d}" transform="translate(200 0) scale(-1 1)"/>`;
+// a V-tapered powerbuilder: broad capped delts, thick arms, narrow waist
+const SKIN_F = "M100 54 L91 54 L90 62 Q70 64 56 70 Q40 76 38 96 Q34 120 38 146 Q32 172 34 204 L36 222 Q42 226 46 220 L50 206 Q58 178 58 150 L62 126 Q70 150 74 178 Q70 196 72 212 Q64 262 72 318 Q70 356 76 388 L94 392 Q98 356 96 318 Q100 270 99 222 L100 222Z";
+function figFront(mini) {
+  MINI = !!mini;
+  const s = `<svg viewBox="0 0 200 400" role="img" aria-label="Front muscle map">
+    ${skinBoth(SKIN_F)}<ellipse class="skin" cx="100" cy="32" rx="14" ry="18"/>
+    ${both("traps", "M91 58 Q78 62 64 68 L76 70 Q86 66 92 64Z")}
+    ${both("sidedelt", "M62 69 Q44 72 39 94 Q40 106 46 112 Q50 92 60 80Z")}
+    ${both("frontdelt", "M66 70 Q60 74 58 82 Q50 96 48 112 Q58 106 66 94 Q72 82 76 72Z")}
+    ${both("upperchest", "M77 72 Q90 70 99 72 L99 92 Q86 94 72 90 Q70 80 77 72Z")}
+    ${both("chest", "M72 92 Q86 96 99 94 L99 118 Q86 126 76 118 Q68 108 72 92Z")}
+    ${both("biceps", "M47 114 Q38 128 40 148 Q46 160 54 152 Q60 134 58 112 Q52 108 47 114Z")}
+    ${both("forearms", "M40 154 Q32 176 35 202 Q40 210 46 204 Q56 182 56 158 Q48 160 40 154Z")}
+    ${both("lats", "M74 120 Q66 132 68 152 Q72 164 78 168 L80 140 Q80 128 84 122Z")}
+    ${both("abs", "M86 124 L99 124 L99 200 L90 198 Q82 174 80 150 Q82 134 86 124Z")}
+    ${both("quads", "M74 214 Q64 262 74 312 Q86 320 96 312 Q100 266 98 222 Q86 214 74 214Z")}
+    ${both("calves", "M76 330 Q70 356 78 384 L92 386 Q96 358 94 330 Q86 326 76 330Z")}
+    ${mini ? "" : `<text x="100" y="398" text-anchor="middle" class="figlab">FRONT</text>`}</svg>`;
+  MINI = false; return s;
 }
-function figBack() {
-  return `<svg viewBox="0 0 200 400" role="img" aria-label="Back muscle map">
-    <ellipse class="skin" cx="100" cy="30" rx="15" ry="19"/>
-    ${both("lats", "M74 80 Q66 116 80 152 L100 136 L100 128 Q84 104 76 78Z")}
-    ${both("midtraps", "M100 76 L76 72 Q86 104 100 128Z")}
-    ${both("traps", "M100 46 L90 50 Q80 60 64 66 L100 78Z")}
-    ${both("reardelt", "M64 66 Q48 72 49 92 Q58 86 66 80 L76 74Z")}
-    ${both("triceps", "M50 94 Q43 114 48 134 Q60 132 63 112 Q63 100 58 88Z")}
-    ${both("forearms", "M47 138 Q40 164 44 190 Q52 191 56 168 Q60 150 59 136Z")}
-    ${both("erectors", "M90 132 L100 136 L100 178 L91 178Z")}
-    ${both("glutes", "M81 178 Q72 198 84 212 L100 210 L100 178Z")}
-    ${both("hams", "M80 214 Q73 252 81 288 L97 288 Q101 250 98 214Z")}
-    ${both("calves", "M81 298 Q72 324 83 356 L96 356 Q100 326 96 298Z")}
-    <text x="100" y="394" text-anchor="middle" class="figlab">BACK</text></svg>`;
+function figBack(mini) {
+  MINI = !!mini;
+  const s = `<svg viewBox="0 0 200 400" role="img" aria-label="Back muscle map">
+    ${skinBoth(SKIN_F)}<ellipse class="skin" cx="100" cy="32" rx="14" ry="18"/>
+    ${both("traps", "M100 48 L92 52 Q86 62 64 68 Q80 76 100 98Z")}
+    ${both("midtraps", "M100 98 Q84 82 72 76 Q76 98 84 112 Q92 120 100 124Z")}
+    ${both("reardelt", "M62 69 Q44 72 39 94 Q42 104 48 108 Q56 90 70 78Z")}
+    ${both("triceps", "M48 110 Q38 126 40 148 Q46 160 56 152 Q62 132 60 108 Q54 104 48 110Z")}
+    ${both("forearms", "M40 154 Q32 176 35 202 Q40 210 46 204 Q56 182 56 158 Q48 160 40 154Z")}
+    ${both("lats", "M70 82 Q62 110 66 140 Q70 166 80 184 L92 172 Q98 150 100 128 Q84 116 76 94Z")}
+    ${both("erectors", "M92 176 L99 136 L99 210 L88 208Z")}
+    ${both("glutes", "M74 206 Q68 226 76 242 Q90 248 99 240 L99 210 Q86 204 74 206Z")}
+    ${both("hams", "M74 246 Q66 280 74 314 Q86 320 96 312 Q100 278 98 248 Q86 252 74 246Z")}
+    ${both("calves", "M74 326 Q66 350 76 376 Q86 382 94 374 Q98 350 94 326 Q84 320 74 326Z")}
+    ${mini ? "" : `<text x="100" y="398" text-anchor="middle" class="figlab">BACK</text>`}</svg>`;
+  MINI = false; return s;
 }
 function body() {
   const m = M[st.sel], dose = m.sets >= 15 ? "priority dose" : m.sets >= 10 ? "growth dose" : m.sets >= 5 ? "moderate" : "maintenance";
+  const pri = Object.entries(M).filter(([, v]) => v.pri).sort((a, b) => b[1].sets - a[1].sets);
   return `<div class="top"><div class="brand">Physique</div><span class="ctx">Wave 4 · this week</span></div>
-    <div class="card" style="padding:10px"><div class="bodies">${figFront()}${figBack()}</div>
-      <div class="scale"><span><i style="background:#343944"></i>&lt;5</span><span><i style="background:#6a5220"></i>5–9</span><span><i style="background:#b8861f"></i>10–14</span><span><i style="background:#f5b22d"></i>15+</span></div>
-      <div class="sub" style="text-align:center">Weekly sets per muscle · gold outline = your priorities · tap a muscle</div></div>
-    <div class="card detail enter"><div class="eyebrow gold">${m.goal}</div><h3>${m.n}</h3>
-      <div class="bar"><i style="width:${Math.min(100, (m.sets / 22) * 100)}%"></i><u style="left:${(10 / 22) * 100}%"></u></div>
+    <div class="card" style="padding:10px 8px 12px"><div class="bodies">${figFront()}${figBack()}</div>
+      <div class="legend"><span><i style="background:linear-gradient(90deg,${GOLD[1]},${GOLD[3]})"></i>your goal muscles</span><span><i style="background:linear-gradient(90deg,${COOL[1]},${COOL[3]})"></i>support</span><span>brighter = more sets</span></div></div>
+    <div class="card detail enter"><div class="eyebrow ${m.pri ? "gold" : ""}">${m.goal}</div><h3>${m.n}</h3>
+      <div class="bar"><i style="width:${Math.min(100, (m.sets / 22) * 100)}%;${m.pri ? "" : `background:linear-gradient(90deg,${COOL[1]},${COOL[3]})`}"></i><u style="left:${(10 / 22) * 100}%"></u></div>
       <div class="sub"><b>${m.sets} sets/wk</b> · ${dose} · tick = 10, where most of the dose-response gain is (Pelland 2025)</div>
-      <p class="why">${m.note}</p></div>`;
+      <p class="why">${m.note}</p></div>
+    <div class="card"><div class="eyebrow">Goal muscles, ranked by weekly sets</div><div class="rank" style="margin-top:8px">${pri.map(([id, v]) => `<button data-m="${id}" aria-pressed="${st.sel === id}"><span>${v.n.replace(" · rhomboids", "")}</span><div class="hb"><i style="width:${(v.sets / 22) * 100}%"></i></div><b>${v.sets}</b></button>`).join("")}</div></div>`;
 }
-const spark = (pts, need, col) => `<svg viewBox="0 0 96 38"><path d="M3 ${need[0]} L93 ${need[1]}" stroke="#626873" stroke-dasharray="3 3" fill="none"/><path d="${pts.map((p, j) => (j ? "L" : "M") + p[0] + " " + p[1]).join(" ")}" stroke="${col}" stroke-width="2.5" fill="none" stroke-linecap="round"/><circle cx="${pts[pts.length - 1][0]}" cy="${pts[pts.length - 1][1]}" r="3.2" fill="${col}"/></svg>`;
+
+// ── goals: the frame drawn from his own tape, and the engine's road to 3/4/5 ──
+function frame(p) {
+  // half-widths in viewBox units, scaled from circumferences (shoulders 47" ↔ 50 units, waist 34" ↔ 25, arm 13.25" ↔ 15)
+  const sw = (p.sh / 47) * 50, ww = (p.wa / 34) * 25, aw = (p.arm / 13.25) * 18, cx = 100;
+  const f = (n) => n.toFixed(1), X = (o) => f(cx - o);
+  // neck, traps, lat flare into the waist: the V
+  const torso = `M${cx} 50 L${X(8)} 50 L${X(9)} 60 Q${X(sw * 0.55)} 62 ${X(sw - 10)} 70 L${X(sw - 12)} 104 Q${X(sw - 13)} 116 ${X(sw - 15)} 124 Q${X(ww + 3)} 160 ${X(ww)} 186 Q${X(ww - 1)} 204 ${X(ww + 4)} 224 L${X(ww + 4)} 236 L${cx} 236 Z`;
+  // the capped delt: grows outward with the shoulders
+  const dx = cx - sw + 5, rx = 12, ry = 18;
+  const delt = `M${f(dx - rx)} 88 a${rx} ${ry} 0 1 0 ${2 * rx} 0 a${rx} ${ry} 0 1 0 ${-2 * rx} 0Z`;
+  // the arm hangs a little away from the lat; thickness scales with the flexed arm
+  const c = (y) => cx - sw + 4 - (y - 100) * 0.1;
+  const arm = `M${f(c(98) - aw * 0.42)} 98 Q${f(c(124) - aw * 0.6)} 124 ${f(c(150) - aw * 0.4)} 150 Q${f(c(164) - aw * 0.48)} 164 ${f(c(204) - aw * 0.22)} 204 L${f(c(204) + aw * 0.22)} 204 Q${f(c(166) + aw * 0.42)} 166 ${f(c(150) + aw * 0.34)} 150 Q${f(c(124) + aw * 0.52)} 124 ${f(c(98) + aw * 0.42)} 98Z`;
+  return [torso, arm, delt];
+}
+const lerp = (a, b, t) => a + (b - a) * t;
+function goalFrame() {
+  const m = st.meas;
+  // the goal: 200 lb at 15%, 16" flexed arm, shoulders 1.50 × the same waist
+  return { sh: GOAL.ratio * m.wa, wa: m.wa, arm: GOAL.arm, bw: GOAL.bw, bf: GOAL.bf };
+}
 function goals() {
-  return `<div class="top"><div class="brand">Goals</div><span class="ctx">38 months to Wave 45</span></div>
-    <div class="card" style="padding:4px 14px"><div class="example" style="padding-top:8px">Example readings · fills from your measure days</div>
-      <div class="goal"><h4>16" arms <span class="pill on">On track</span></h4>${spark([[3, 32], [26, 29], [50, 27], [70, 24]], [32, 6], "#f5b22d")}<div class="v">13¼" flexed → 16" · needs +0.07"/mo · measuring +0.08</div></div>
-      <div class="goal"><h4>200 @ 15% <span class="pill">Too early</span></h4>${spark([[3, 30], [24, 29], [42, 28]], [30, 8], "#f5b22d")}<div class="v">157.5 lb lean · 17.2% (tape) → 170 lean · DXA calibrates</div></div>
-      <div class="goal"><h4>3D shoulders <span class="pill ah">Ahead</span></h4>${spark([[3, 30], [30, 24], [56, 18], [74, 13]], [30, 12], "#4fbf83")}<div class="v">Shoulder ÷ waist 1.38 → 1.50</div></div>
-      <div class="goal"><h4>Upper chest · upper back <span class="pill">Photos</span></h4><div class="v">Front, side and rear photos every 4 weeks · next Nov 9</div></div>
-      <div class="goal"><h4>Shredded back <span class="pill">Phase 2</span></h4><div class="v">Build the muscle now; the ~11% cut reveals it</div></div></div>
-    <div class="card"><div class="eyebrow">Strength · base → 3/4/5</div>
-      <div class="lad"><span>Squat</span><div class="bar"><i style="width:74%"></i><u style="left:84%"></u></div><b>300/405</b></div>
-      <div class="lad"><span>Bench</span><div class="bar"><i style="width:82%"></i><u style="left:88%"></u></div><b>257/315</b></div>
-      <div class="lad"><span>Dead</span><div class="bar"><i style="width:79%"></i><u style="left:87%"></u></div><b>390/495</b></div>
-      <div class="sub" style="margin-top:10px">Tick = projected base at the June 2027 meet. The bases reach 3/4/5 around mid-2028 at the current pace; your rated singles move that date.</div></div>`;
+  const m = st.meas, bf = navy(m.wa, m.nk), g = goalFrame(), t = st.t;
+  const cur = { sh: lerp(m.sh, g.sh, t), wa: m.wa, arm: lerp(m.arm, g.arm, t) };
+  const mir = (ds) => ds.map((d) => `<path d="${d}"/><path d="${d}" transform="translate(200 0) scale(-1 1)"/>`).join("");
+  // engine.js cbFor at default gates: bases climb +5 / +2.5 / +5 per 4-week wave from Wave 4 (Oct 12 2026)
+  const W = Array.from({ length: 25 }, (_, j) => j + 4), d0 = Date.UTC(2026, 9, 12);
+  const pts = { sq: W.map((w) => (300 + 5 * (w - 4)) / 405), bn: W.map((w) => (257.5 + 2.5 * (w - 4)) / 315), dl: W.map((w) => (390 + 5 * (w - 4)) / 495) };
+  const X = (j) => 26 + (j / 24) * 300, Y = (v) => 118 - ((Math.min(v, 1.04) - 0.7) / 0.34) * 104;
+  const line = (a, col) => `<path d="${a.map((v, j) => (j ? "L" : "M") + X(j).toFixed(1) + " " + Y(v).toFixed(1)).join(" ")}" stroke="${col}" stroke-width="2.2" fill="none"/>`;
+  const meetJ = 13 - 4, yr = (j) => new Date(d0 + j * 28 * 864e5).toISOString().slice(0, 7);
+  const spark = (pts, need, col) => `<svg viewBox="0 0 92 36"><path d="M3 ${need[0]} L89 ${need[1]}" stroke="#626873" stroke-dasharray="3 3" fill="none"/><path d="${pts.map((p, j) => (j ? "L" : "M") + p[0] + " " + p[1]).join(" ")}" stroke="${col}" stroke-width="2.5" fill="none" stroke-linecap="round"/><circle cx="${pts[pts.length - 1][0]}" cy="${pts[pts.length - 1][1]}" r="3.2" fill="${col}"/></svg>`;
+  return `<div class="top"><div class="brand">Goals</div><span class="ctx">${st.mdone ? "from today's tape" : "example tape"}</span></div>
+    <div class="card now enter"><div class="eyebrow gold">Your frame → the build</div>
+      <svg class="sil" viewBox="10 14 180 224" role="img" aria-label="Your frame now inside the goal frame">
+        <defs><linearGradient id="gfill" gradientUnits="userSpaceOnUse" x1="0" y1="40" x2="0" y2="236"><stop offset="0" stop-color="#465066"/><stop offset="1" stop-color="#1b1f27"/></linearGradient>
+          <linearGradient id="halo" gradientUnits="userSpaceOnUse" x1="0" y1="40" x2="0" y2="236"><stop offset="0" stop-color="#f5b22d" stop-opacity=".55"/><stop offset="1" stop-color="#f5b22d" stop-opacity=".08"/></linearGradient></defs>
+        <g fill="url(#halo)">${mir(frame(g))}</g>
+        <g fill="url(#gfill)">${mir(frame(cur))}</g>
+        <ellipse cx="100" cy="33" rx="12" ry="15.5" fill="#2f3542"/>
+      </svg>
+      <input type="range" min="0" max="100" value="${Math.round(t * 100)}" data-slider aria-label="Now to goal">
+      <div class="ends"><span>Now</span><span class="gold">Gold rim = left to build</span><span>Goal</span></div>
+      <div class="trio"><div><span class="eyebrow">Arm</span><b>${cur.arm.toFixed(2)}"</b><small>goal 16"</small></div><div><span class="eyebrow">Shldr ÷ waist</span><b>${(cur.sh / m.wa).toFixed(2)}</b><small>goal 1.50</small></div><div><span class="eyebrow">Body fat</span><b>${lerp(bf, g.bf, t).toFixed(1)}%</b><small>tape · goal 15%</small></div></div>
+      <p class="why">Drawn from your tape ratios, not a photo: shoulder and arm widths scale with your measurements, waist held. Photos every 4 weeks judge the upper chest and back.</p></div>
+    <div class="card enter"><div class="eyebrow">Road to 315 · 405 · 495 · % of goal</div>
+      <svg class="chart" viewBox="0 0 340 140" role="img" aria-label="Projected bases as percent of goal">
+        <line x1="26" x2="326" y1="${Y(1)}" y2="${Y(1)}" stroke="#f0ede5" stroke-opacity=".5" stroke-dasharray="4 4"/>
+        <text x="22" y="${Y(1) + 3}" text-anchor="end" fill="#969ca7" font-size="9" font-family="IBM Plex Mono, ui-monospace, monospace">100%</text>
+        <text x="22" y="${Y(0.8) + 3}" text-anchor="end" fill="#626873" font-size="9" font-family="IBM Plex Mono, ui-monospace, monospace">80%</text>
+        <line x1="${X(meetJ)}" x2="${X(meetJ)}" y1="10" y2="122" stroke="#f5b22d" stroke-opacity=".5"/>
+        <text x="${X(meetJ) + 4}" y="20" fill="#f5b22d" font-size="9" font-family="IBM Plex Mono, ui-monospace, monospace">USPA · summer 2027</text>
+        ${line(pts.dl, "#f0ede5")}${line(pts.bn, "#f5b22d")}${line(pts.sq, "#7f93ad")}
+        <text x="26" y="136" fill="#626873" font-size="9" font-family="IBM Plex Mono, ui-monospace, monospace">${yr(0)}</text><text x="326" y="136" text-anchor="end" fill="#626873" font-size="9" font-family="IBM Plex Mono, ui-monospace, monospace">${yr(24)}</text>
+      </svg>
+      <div class="legend" style="justify-content:flex-start"><span><i style="background:#7f93ad"></i>Squat 300→405</span><span><i style="background:#f5b22d"></i>Bench 257.5→315</span><span><i style="background:#f0ede5"></i>Dead 390→495</span></div>
+      <p class="why">Training bases from the engine at default gates. At the meet window they're 345 / 280 / 435. They reach 405 and 495 at Wave 25 (May 2028) and 315 at Wave 27 (Jul 2028). Every rated single moves these lines.</p></div>
+    <div class="card" style="padding:4px 14px"><div class="example" style="padding-top:8px">Example trend lines · fill from your measure days</div>
+      <div class="goal"><h4>16" arms <span class="pill on">On track</span></h4>${spark([[3, 30], [26, 27], [50, 25], [70, 22]], [30, 6], "#f5b22d")}<div class="v">${m.arm}" flexed → 16" · needs +0.07"/mo · measuring +0.08</div></div>
+      <div class="goal"><h4>200 @ 15% <span class="pill">Too early</span></h4>${spark([[3, 28], [24, 27], [42, 26]], [28, 8], "#f5b22d")}<div class="v">${(m.bw * (1 - bf / 100)).toFixed(1)} lb lean · ${bf.toFixed(1)}% (tape) → 170 lean</div></div>
+      <div class="goal"><h4>3D shoulders <span class="pill ah">Ahead</span></h4>${spark([[3, 28], [30, 22], [56, 16], [74, 11]], [28, 12], "#4fbf83")}<div class="v">Shoulder ÷ waist ${(m.sh / m.wa).toFixed(2)} → 1.50</div></div>
+      <div class="goal"><h4>Shredded back <span class="pill">Phase 2</span></h4><div class="v" style="grid-column:1/3">Build the lats and upper back now; the ~11% cut shows them.</div></div></div>`;
 }
+
+// ── measure day: five numbers, then the Navy equation and the frame update ──
+const MSTEPS = [["bw", "Body weight", "lb", "Morning, after the bathroom, before food. Same scale every time."], ["wa", "Waist · navel", "in", "Relaxed, end of a normal exhale. Tape level, snug, not pressing."], ["nk", "Neck", "in", "Just below the larynx, tape sloping slightly down to the front."], ["arm", "Right arm · flexed", "in", "Cold, before training. Across the biceps peak, flexed hard, level all round. A tape varies about ¼\" between honest readings."], ["sh", "Shoulders", "in", "Around the widest point of the delts, arms relaxed at your sides."]];
 function measure() {
-  return `<div class="top"><div class="brand">Measure day</div><span class="ctx">3 of 5</span></div>
-    <div style="display:flex;gap:5px">${[1, 1, 1, 0, 0].map((d) => `<i style="flex:1;height:4px;border-radius:3px;background:${d ? "var(--gold)" : "var(--steel)"}"></i>`).join("")}</div>
-    <div class="card now" style="text-align:center"><div class="eyebrow gold">Right arm · flexed</div>
-      <div class="big" style="font-size:80px;margin-top:10px">13.25<small>in</small></div>
-      <p class="why" style="text-align:center">Cold, before training. Tape across the peak of the biceps, flexed hard, level all the way round. A tape varies about ¼" between honest readings, so the app waits for a trend.</p></div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px">${["1", "2", "3", "4", "5", "6", "7", "8", "9", ".25", "0", "⌫"].map((x) => `<span style="height:48px;border-radius:12px;background:var(--plate2);display:grid;place-items:center;font:800 23px var(--disp)">${x}</span>`).join("")}</div>
-    <button class="cta" style="margin-top:2px">Next · Shoulders</button>`;
+  if (st.mdone) {
+    const m = st.meas, bf = navy(m.wa, m.nk), lean = m.bw * (1 - bf / 100);
+    return `<div class="top"><div class="brand">Measure day</div><span class="ctx">done</span></div>
+      <div class="card now enter"><div class="eyebrow gold">Today's read</div>
+        <div class="tiles" style="margin-top:10px"><div class="tile pr"><span class="eyebrow gold">Body fat · tape</span><b>${bf.toFixed(1)}%</b><span class="sub">goal 15%</span></div><div class="tile"><span class="eyebrow">Lean mass</span><b>${lean.toFixed(1)}</b><span class="sub">lb · goal 170</span></div>
+        <div class="tile"><span class="eyebrow">Arm</span><b>${m.arm}"</b><span class="sub">${(16 - m.arm).toFixed(2)}" to go</span></div><div class="tile"><span class="eyebrow">Shldr ÷ waist</span><b>${(m.sh / m.wa).toFixed(2)}</b><span class="sub">goal 1.50</span></div></div>
+        <p class="why">Navy equation (Hodgdon &amp; Beckett 1984) at 5'8.5". It's a trend, not a truth: one DXA scan sets the offset. Goals redrew your frame from these numbers.</p>
+        <button class="cta" data-act="togoals">See your frame</button></div>
+      <button class="ghost" data-act="remeasure">Measure again</button>`;
+  }
+  const [key, name, unit, how] = MSTEPS[st.mi], prev = MEAS0[key], val = st.entry || String(st.meas[key]);
+  const diff = st.entry ? +st.entry - prev : 0;
+  return `<div class="top"><div class="brand">Measure day</div><span class="ctx">${st.mi + 1} of ${MSTEPS.length}</span></div>
+    <div class="mprog">${MSTEPS.map((_, j) => `<i class="${j <= st.mi ? "d" : ""}"></i>`).join("")}</div>
+    <div class="card now" style="text-align:center"><div class="eyebrow gold">${name}</div>
+      <div class="big" style="font-size:78px;margin-top:10px">${val}<small>${unit}</small></div>
+      <div class="sub">Last time <b>${prev}</b>${st.entry && Number.isFinite(diff) ? ` · <b style="color:${diff >= 0 ? "var(--go)" : "var(--stop)"}">${diff >= 0 ? "+" : ""}${diff.toFixed(2)}</b>` : ""}</div>
+      <p class="why" style="text-align:center">${how}</p></div>
+    <div class="keys">${["1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "0", "⌫"].map((x) => `<button data-key="${x}">${x}</button>`).join("")}</div>
+    <button class="cta" data-act="mnext" style="margin-top:2px">${st.mi < MSTEPS.length - 1 ? "Next · " + MSTEPS[st.mi + 1][1].split(" ·")[0] : "Finish"}</button>`;
 }
+
 function render() {
   view.innerHTML = { today, body, goals, measure }[st.tab]();
   document.querySelectorAll(".tabs button").forEach((b) => b.setAttribute("aria-selected", b.dataset.tab === st.tab));
@@ -358,9 +565,9 @@ function render() {
 let timer = null;
 function startRest(sec) {
   clearInterval(timer);
-  if (!sec) { st.phase = "set"; render(); return; }
+  if (!sec) { st.phase = "go"; render(); return; }
   st.phase = "rest"; st.rest = sec; st.restMax = sec; render();
-  timer = setInterval(() => { st.rest -= 1; if (st.rest <= 0) { clearInterval(timer); st.phase = "set"; render(); } else tick(); }, 50);
+  timer = setInterval(() => { st.rest -= 1; if (st.rest <= 0) { clearInterval(timer); st.phase = "go"; haptic(); render(); } else tick(); }, 50);
 }
 // Tick touches only the ring and the digits, so the buttons under a thumb never get rebuilt mid-tap.
 function tick() {
@@ -369,29 +576,55 @@ function tick() {
   a.setAttribute("stroke-dasharray", `${(st.rest / st.restMax) * c} ${c}`);
   n.textContent = `${Math.floor(st.rest / 60)}:${String(Math.ceil(st.rest % 60) % 60).padStart(2, "0")}`;
 }
-function advance() { while (st.i < S.length && st.logs[st.i].length >= S[st.i].s) st.i++; }
+function advance() { while (st.i < S().length && st.logs[st.i].length >= nsets(S()[st.i])) { st.i++; st.wi = 0; } }
+function start(ready) { st.ready = ready; st.S = plan(ready); st.logs = st.S.map(() => []); st.adj = {}; st.reps = {}; st.i = 0; st.wi = 0; st.phase = "go"; st.tstart = Date.now(); }
 view.addEventListener("click", (e) => {
-  const t = e.target.closest("[data-act],[data-rate],[data-m]"); if (!t) return;
+  const t = e.target.closest("[data-act],[data-rate],[data-m],[data-ready],[data-key]"); if (!t) return;
   if (t.dataset.m) { st.sel = t.dataset.m; render(); return; }
+  if (t.dataset.ready) { st.ready = t.dataset.ready; render(); return; }
+  if (t.dataset.key) { const k = t.dataset.key; let v = st.entry; v = k === "⌫" ? v.slice(0, -1) : k === "." && v.includes(".") ? v : (v + k).slice(0, 6); st.entry = v; render(); return; }
   if (t.dataset.rate) {
-    const k = st.rateK, x = S[k], r = t.dataset.rate, last = st.logs[k][st.logs[k].length - 1]; last.rate = r;
-    const f = Math.max(.95, Math.min(1.05, pctAt(x.cap) / pctAt(x.cap + RATE[r]))), nb = k + 1, w = Math.round((S[nb].w * f) / 5) * 5;
-    if (w !== S[nb].w) st.adj[nb] = { w, why: `top set rated ${{ E: "Easy", O: "On target", H: "Hard" }[r]} → ${w} (plan ${S[nb].w})` }; else delete st.adj[nb];
+    const k = st.rateK, x = S()[k], r = t.dataset.rate, last = st.logs[k][st.logs[k].length - 1]; last.rate = r; haptic();
+    const f = Math.max(.95, Math.min(1.05, pctAt(x.cap) / pctAt(x.cap + RATE[r]))), nb = k + 1, w = Math.round((S()[nb].w * f) / 5) * 5;
+    if (w !== S()[nb].w) st.adj[nb] = { w, why: `top set rated ${RL[r]} → ${w} (plan ${S()[nb].w})` }; else delete st.adj[nb];
     advance(); startRest(REST.single); return;
   }
-  const act = t.dataset.act, k = st.i, x = S[k];
-  if (act === "skip") { clearInterval(timer); st.phase = "set"; render(); return; }
+  const act = t.dataset.act, k = st.i, x = S()[k];
+  if (act === "start") { start(st.ready); render(); return; }
+  if (act === "togoals") { st.tab = "goals"; st.t = 0; render(); return; }
+  if (act === "remeasure") { st.mdone = false; st.mi = 0; st.entry = ""; render(); return; }
+  if (act === "mnext") { const key = MSTEPS[st.mi][0], v = parseFloat(st.entry); if (Number.isFinite(v) && v > 0) st.meas[key] = v; st.entry = ""; haptic(); if (st.mi < MSTEPS.length - 1) st.mi++; else st.mdone = true; render(); return; }
+  if (act === "skip") { clearInterval(timer); st.phase = "go"; render(); return; }
   if (act === "plus") { st.rest += 30; st.restMax += 30; tick(); return; }
-  if (act === "minus" || act === "plus5") { const d = (x.db ? 2.5 : 5) * (act === "minus" ? -1 : 1), w = Math.max(0, wOf(k) + d); st.adj[k] = { w, why: `you changed it to ${w}; the next sets follow` }; render(); return; }
+  if (act === "primer") { st.logs[k].push({ w: 0 }); haptic(); advance(); render(); return; }
+  if (act === "warm") { const row = x.rows[st.wi]; st.logs[k].push({ w: row[0] === "Bar" ? 45 : row[0], r: row[1] }); haptic(); st.wi++; if (st.wi >= x.rows.length) advance(); render(); return; }
+  if (act === "wdn" || act === "wup") { const d = (x.db ? 2.5 : 5) * (act === "wdn" ? -1 : 1), w = Math.max(0, wOf(k) + d); st.adj[k] = { w, why: `you set ${w}; the next sets follow` }; render(); return; }
+  if (act === "rdn" || act === "rup") { st.reps[k] = Math.max(0, rOf(k) + (act === "rdn" ? -1 : 1)); render(); return; }
   if (act === "log") {
-    if (!st.tstart) st.tstart = Date.now();
-    st.logs[k].push({ w: wOf(k) }); const b = $(".cta"); if (b) b.classList.add("flash");
-    if (x.kind === "single" && S[k + 1] && S[k + 1].kind !== "single") { st.rateK = k; st.phase = "rate"; render(); return; }
-    advance(); startRest(st.i >= S.length ? 0 : REST[x.kind]);
+    st.logs[k].push({ w: wOf(k), r: rOf(k) }); haptic(); const b = $(".cta"); if (b) b.classList.add("flash");
+    if (x.kind === "single" && S()[k + 1] && S()[k + 1].kind !== "single") { st.rateK = k; st.phase = "rate"; render(); return; }
+    advance(); startRest(st.i >= S().length ? 0 : REST[x.kind]);
   }
+});
+view.addEventListener("input", (e) => {
+  if (!e.target.matches("[data-slider]")) return;
+  st.t = e.target.value / 100;
+  // redraw just the frame and the readouts, keeping the slider under the thumb
+  const card = e.target.closest(".card"), tmp = document.createElement("div"); tmp.innerHTML = goals();
+  const fresh = tmp.querySelector(".card.now");
+  card.querySelector(".sil").replaceWith(fresh.querySelector(".sil")); card.querySelector(".trio").replaceWith(fresh.querySelector(".trio"));
 });
 document.querySelector(".tabs").addEventListener("click", (e) => { const b = e.target.closest("[data-tab]"); if (!b) return; st.tab = b.dataset.tab; render(); });
 $("#reset").addEventListener("click", () => { clearInterval(timer); const tab = st.tab; st = fresh(); st.tab = tab; render(); });
+// "Show me" buttons on the lenses drive the phone to the state each lens describes
+document.querySelector(".lenses").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-show]"); if (!b) return; clearInterval(timer);
+  const s = b.dataset.show;
+  if (s === "warm") { st.tab = "today"; start("G"); st.logs[0].push({ w: 0 }); st.i = 1; st.wi = 4; for (let j = 0; j < 4; j++) st.logs[1].push({ w: 1 }); }
+  else if (s === "lat") { st.tab = "today"; start("G"); for (let k = 0; k < 7; k++) { const x = st.S[k]; for (let j = 0; j < nsets(x); j++) st.logs[k].push({ w: x.w || 0, r: x.r }); } st.i = 7; st.logs[7].push({ w: 22.5, r: 12 }, { w: 22.5, r: 12 }); }
+  else st.tab = s;
+  render(); $("#phone").scrollIntoView({ behavior: "smooth", block: "center" });
+});
 render();
 })();
 </script>

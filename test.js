@@ -1438,5 +1438,36 @@ eq(E.sessionFor(2, 1, 1, {}, E.DEFAULT_SPEC).find((b) => b.type === "warmup").ro
   }
 }
 
+// ═══ logging: tracked-lift ratings, the Road bars, the strength chart, swaps ═══
+{
+  const day = (wv, wk, d) => E.sessionDayUTC(wv, wk, d, 0);
+  // RTS reps-to-failure table: 8 reps @ RPE 7.5 = 72.3%, 5 @ 6.5 = 77.4%
+  eq([+E.pctReps(8, 7.5).toFixed(3), +E.pctReps(5, 6.5).toFixed(3), E.pctReps(1, 10)], [0.723, 0.774, 1], "RTS: reps-to-failure %1RM interpolates the chart");
+  // ENG-7: a rated tracked top set sets today's back-offs (Wave 4+); Waves 1-3 unchanged
+  const fri = (ix, w = 4) => E.sessionFor(w, 2, 5, {}, E.DEFAULT_SPEC, { index: ix, offsetWeeks: 0 });
+  const plan = fri({}), rt = plan.find((b) => b.pkey === "rdl-top"), rb = plan.find((b) => b.pkey === "rdl-back").w, ct = plan.find((b) => b.pkey === "chin-top"), cb = plan.find((b) => b.pkey === "chin-back").w;
+  const rated = (r) => fri({ "rdl-top": [{ t: day(4, 2, 5), w: rt.w, r: rt.reps, rate: r }], "chin-top": [{ t: day(4, 2, 5), w: ct.w, r: ct.reps, rate: r }] });
+  const bk = (s, k) => s.find((b) => b.pkey === k).w;
+  ok(bk(rated("E"), "rdl-back") > rb && bk(rated("H"), "rdl-back") < rb && bk(rated("O"), "rdl-back") === rb, `tracked: the RDL top set sets the back-offs (E ${bk(rated("E"), "rdl-back")} / O ${rb} / H ${bk(rated("H"), "rdl-back")})`);
+  eq([bk(rated("E"), "chin-back"), bk(rated("O"), "chin-back"), bk(rated("H"), "chin-back")], [cb + 5, cb, cb - 5], "tracked: chin-up back-offs move one 5 lb step on an Easy or Hard top set");
+  const w3 = E.sessionFor(3, 2, 5, {}, E.DEFAULT_SPEC, { index: { "rdl-top": [{ t: day(3, 2, 5), w: 999, r: 6, rate: "E" }] }, offsetWeeks: 0 }).find((b) => b.pkey === "rdl-back");
+  eq(w3.w, E.sessionFor(3, 2, 5, {}, E.DEFAULT_SPEC).find((b) => b.pkey === "rdl-back").w, "tracked: Waves 1-3 back-offs unchanged by a rating");
+  // ENG-8: the tracked base reads the logs when the caller passes them (the Road tab)
+  const miss = { index: { "incbb-top": [{ t: day(3, 3, 2), w: E.R5(E.trackedCB("inc", 3, {}) * 0.86), r: 2 }] }, offsetWeeks: 0 };
+  eq([E.trackedCB("inc", 4, {}), E.trackedCB("inc", 4, {}, miss)], [187.5, 185], "Road: a missed Wave 3 incline top set holds the base at 185 (it showed 187.5)");
+  // ENG-9: one day's estimated max; deloads, Red days and light sets never count
+  eq([E.dayE1RM([{ k: "sq-light", w: 195, r: 3 }], { week: 4 }), E.dayE1RM([{ k: "sq-back", w: 180, r: 3 }], { week: 2, red: true }), E.dayE1RM([{ k: "sq-red", w: 180, r: 3 }], { week: 2 })], [null, null, null], "chart: deload, Red and light days are left out");
+  const e = E.dayE1RM([{ k: "sq-back", w: 220, r: 5 }], { week: 1 });
+  ok(Math.abs(e / (250 / 0.892) - 1) <= 0.03, `chart: an unrated 220x5 back-off day reads ${e}, within 3% of the plan's 280`);
+  eq(E.dayE1RM([{ k: "sq-single", w: 270, r: 1, rate: "O", cap: 8 }, { k: "sq-back", w: 240, r: 3 }], { week: 3 }), Math.round(270 / 0.922), "chart: a rated single wins");
+  // LOG-7: a swapped exercise logs under its own key and never moves the planned rung
+  const k = E.altKey("rowhi", E.ALT.rowhi[0]);
+  ok(/^rowhi~/.test(k) && E.ALT.rowhi.length >= 1, "swap: the key is rowhi~<slug>");
+  const rh = E.ACC.find((a) => a.id === "rowhi"), def = { w: rh.w, steps: rh.steps, inc: rh.inc, db: rh.db, pkey: "rowhi", since: rh.since };
+  const sw = { index: { [k]: [0, 1, 2].map(() => ({ t: day(4, 1, 5), w: 180, r: 15 })) }, offsetWeeks: 0 };
+  eq(E.accStateLogged(def, 5, sw).w, E.accState(def, 5).w, "swap: 180 x 15 on the swap leaves the high-elbow row on schedule");
+  eq(E.accStateLogged(def, 5, { index: { rowhi: sw.index[k] }, offsetWeeks: 0 }).prog, "ahead", "swap: the same sets under the planned key would have moved it");
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

@@ -141,10 +141,10 @@
   .btn.danger{background:none;border:1px solid #6b2b25;color:var(--stop);font-weight:600}
   .rowbtns{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;align-items:center}
 
-  #timer{position:fixed;right:14px;bottom:calc(84px + env(safe-area-inset-bottom));z-index:25;
-    background:var(--plate2);border:1px solid var(--steel);border-radius:999px;padding:9px 14px;
-    font-variant-numeric:tabular-nums;font-weight:700;font-size:15px;color:var(--ash);box-shadow:0 4px 18px rgba(0,0,0,.4)}
+  #timer{background:var(--plate2);border:1px solid var(--steel);border-radius:999px;padding:6px 12px;
+    font-variant-numeric:tabular-nums;font-weight:700;font-size:14px;color:var(--ash)}
   #timer.run{color:var(--signal);border-color:#6b5518}
+  #timer.over{color:var(--stop);border-color:#6b2b25}
 
   .chartwrap{margin:8px 0}
   .chartwrap svg{width:100%;height:auto;display:block}
@@ -166,7 +166,11 @@
   .stepbtn{width:44px;height:44px;flex:none;border:1px solid var(--steel);border-radius:9px;font-size:19px;font-weight:700;color:var(--chalk);background:var(--plate2)}
   .editrow{display:flex;align-items:center;gap:8px;margin:10px 0}
   .editrow .lbl{width:56px;color:var(--ash);font-size:13px;flex:none}
-  .editrow input{flex:1;width:auto;text-align:center;font-size:18px;font-weight:700;padding:9px 6px}
+  .editrow input{flex:1 1 0;min-width:0;width:0;text-align:center;font-size:18px;font-weight:700;padding:9px 6px}
+  .chip.off{border-color:#6b5518;color:var(--signal)}
+  .chip.extra{border-style:dashed}
+  .linkbtn{background:none;border:none;color:inherit;font:inherit;text-align:left;padding:0;cursor:pointer}
+  .hdrbtns{display:flex;gap:8px;align-items:center}
   .todaypill{font-size:11px;color:var(--signal);border:1px solid #6b5518;border-radius:999px;padding:2px 9px;margin-left:8px;letter-spacing:.05em}
   .cycdesc{font-size:12px;color:var(--ash);margin-top:3px}
   #timer.run{animation:tpulse 1.6s ease-in-out infinite}
@@ -192,13 +196,12 @@
 
 <div id="app">
   <header>
-    <div class="brand"><h1>Road to <b>3/4/5</b></h1><button class="ibtn" id="rulesbtn" aria-label="Rules">§</button></div>
+    <div class="brand"><h1>Road to <b>3/4/5</b></h1><span class="hdrbtns"><button id="timer" aria-label="Rest timer">⏱ rest</button><button class="ibtn" id="rulesbtn" aria-label="Rules">§</button></span></div>
     <div class="ctx" id="ctxline"></div>
     <div class="wkstrip" id="wkstrip" aria-hidden="true"></div>
   </header>
   <main id="view"></main>
 </div>
-<button id="timer" aria-label="Rest timer">⏱ rest</button>
 <nav><div class="tabs" id="tabs"></div></nav>
 <div id="modal" role="dialog" aria-modal="true"><div class="sheet" id="sheet"></div></div>
 
@@ -354,8 +357,7 @@ const PCT = {
 // 225 in nine incline steps: wave 11 on clean gates, wave 19 on the small-step default.
 // Did the lifter clear a standard for this exercise during a given wave?
 // null = no data (caller falls back to the schedule) · true = advance · false = hold.
-function clearedInWave(pkey, wave, minW, minReps, minSets) {
-  const ctx = HISTCTX;
+function clearedInWave(pkey, wave, minW, minReps, minSets, ctx = HISTCTX) {
   if (!ctx || !ctx.index) return null;
   const hist = ctx.index[pkey];
   if (!hist || !hist.length) return null;
@@ -403,12 +405,12 @@ const ARM_START = 13, ARM_GOAL = 16;
 
 // Log-adaptive base: a past wave advances only if its week-3 top set was cleared.
 // Unlogged waves track the anchor lift's gate, so casual use still progresses.
-function trackedCB(id, wave, gates) {
+function trackedCB(id, wave, gates, ctx = HISTCTX) {
   const T = TRACKED[id];
   let cb = T.start;
   for (let w = 1; w < wave; w++) {
     const target = R5(cb * T.top[2][0]);
-    const cleared = clearedInWave(T.key + "-top", w, target, T.top[2][1], 1);
+    const cleared = clearedInWave(T.key + "-top", w, target, T.top[2][1], 1, ctx);
     if (cleared === null) {
       // follow the anchor's gate, clamped to one step either way. An explicit base
       // (calibration or test) is a re-measurement of the anchor, not progress, so it
@@ -1202,6 +1204,35 @@ function e1rm(st, cap) {
   return st.r <= 10 ? Math.round(st.w * (1 + st.r / 30)) : null;
 }
 
+// one day of one lift for the strength chart. A rated single (or tracked top set) goes through the RPE
+// table; otherwise back-off sets go through reps to failure at their capped RPE (stored cap, else the
+// week's plan). Red days, deload weeks and light sets never count.
+function dayE1RM(sets, opts = {}) {
+  if (opts.red || opts.week === 4) return null;
+  const s = (sets || []).filter((x) => x && x.w > 0 && x.r >= 1 && !/-(light|red)$/.test(x.k || ""));
+  const isTop = (x) => /-(single|top)$/.test(x.k || ""), capOf = (x, d) => (Number.isFinite(x.cap) ? x.cap : d);
+  const top = [...s].reverse().find((x) => isTop(x) && rated(x));
+  if (top) return Math.round(top.w / pctReps(top.r, effRPE(top, capOf(top, opts.cap || 8))));
+  const backs = s.filter((x) => /-back$/.test(x.k || "") && x.r <= 10);
+  const wkRpe = { 1: 6.5, 2: 7, 3: 7.5 }[opts.week] || 7;
+  if (backs.length) return Math.round(Math.max(...backs.map((x) => x.w / pctReps(x.r, Number.isFinite(x.rpe) ? x.rpe : capOf(x, wkRpe)))));
+  const u = s.find(isTop);
+  return u ? Math.round(u.w / pctReps(u.r, capOf(u, opts.cap || 8))) : null;
+}
+// LOG-7: swaps for a busy gym, same muscle and length bias (judgment). A swapped exercise logs under
+// "<pkey>~<slug>", so it never moves the planned exercise's rung.
+const ALT = {
+  rowhi: ["Seated Cable Row (wide grip)", "T-Bar Row (chest pad, wide grip)"],
+  rowtue: ["Seated Cable Row (close grip)", "Single-Arm DB Row"],
+  legpress: ["Hack Squat", "Pendulum Squat"],
+  hamMon: ["Lying Leg Curl"], seatcurl3: ["Lying Leg Curl"],
+  preacher: ["DB Preacher Curl"],
+  ohtue: ["DB Overhead Extension"], ohthu: ["DB Overhead Extension"],
+  latwed: ["DB Lateral Raise"], lattue: ["Cable Lateral Raise"],
+  lowhigh: ["Incline DB Fly"],
+  revpec: ["Cable Rear-Delt Fly"], facepull: ["Band Face Pull"],
+};
+const altKey = (pkey, name) => pkey + "~" + pkeyOf(name);
 // yellow transform: single cap RPE 7, back-off −5% (or −1 set), 2 sets/accessory with nothing past
 // RPE 8 (no failure set, no partials), skip cardio. sessionFor applies it when histCtx.ready === "Y".
 function yellowW(block) {
@@ -1240,6 +1271,13 @@ function redSession(wave, day, gates) {
 const RPE_PCT_1 = { 6: 0.863, 6.5: 0.878, 7: 0.892, 7.5: 0.907, 8: 0.922, 8.5: 0.939, 9: 0.955, 9.5: 0.978, 10: 1 };
 const pctAt = (rpe) => RPE_PCT_1[Math.max(6, Math.min(10, Math.round(rpe * 2) / 2))];
 const capNum = (rpe) => { const m = String(rpe).match(/\d+(\.\d+)?/); return m ? +m[0] : 8; };
+// %1RM by reps to failure (reps done + reps in reserve): the RTS chart's RPE-10 column, interpolated.
+// 8 reps at RPE 7.5 = 10.5 to failure = 72.3%.
+const RTS_N = { 1: 1, 2: 0.955, 3: 0.922, 4: 0.892, 5: 0.863, 6: 0.837, 7: 0.811, 8: 0.786, 9: 0.762, 10: 0.739, 11: 0.707, 12: 0.68 };
+function pctReps(r, rpe) {
+  const n = Math.max(1, Math.min(12, r + 10 - (Number.isFinite(rpe) ? rpe : 10))), lo = Math.floor(n), hi = Math.ceil(n);
+  return lo === hi ? RTS_N[lo] : RTS_N[lo] + (RTS_N[hi] - RTS_N[lo]) * (n - lo);
+}
 // Rule B: a one-tap rating on the last set. Easy = ~1.5 RPE under the target,
 // On target = the target, Hard = ~1 over it.
 const RATE = { E: -1.5, O: 0, H: 1 };
@@ -1282,6 +1320,19 @@ function autoregulate(blocks, wave, week, day, ctx) {
         const w = R5(b.w * f);
         if (w === b.w) return { ...b, auto: { rule: "A", f } };
         return { ...b, w, planned: b.w, auto: { rule: "A", f }, note: `Auto: single ${e.w} @ RPE ${effRPE(e, capNum(sgl.rpe))} → back-offs ${w > b.w ? "up" : "down"} to ${w} (plan ${b.w})` };
+      }
+    }
+    // Rule A for the tracked lifts (Wave 4+): today's rated top set scales today's back-offs, clamped
+    // to ±5% (incline, RDL: through reps to failure); the chin-up and dip (added load) move one step.
+    if (b.type === "backoff" && TRACKED[b.lift] && wave >= 4) {
+      const top = blocks.find((x) => x.type === "single" && x.lift === b.lift);
+      const e = top ? ratedOn(ix, top.pkey, today) : null;
+      if (e) {
+        const T = TRACKED[b.lift], cap = capNum(top.rpe), r = effRPE(e, cap);
+        const w = T.added ? Math.max(0, b.w + (r <= cap - 1 ? T.step : r >= cap + 1 ? -T.step : 0))
+          : R5(b.w * Math.max(0.95, Math.min(1.05, (e.w / pctReps(e.r || top.reps, r)) / (top.w / pctReps(top.reps, cap)))));
+        if (w === b.w) return { ...b, auto: { rule: "A" } };
+        return { ...b, w, planned: b.w, auto: { rule: "A" }, note: `Auto: top set ${T.added ? "+" : ""}${e.w} × ${e.r} @ RPE ${r} → back-offs ${w > b.w ? "up" : "down"} to ${T.added ? "+" : ""}${w} (plan ${T.added ? "+" : ""}${b.w})` };
       }
     }
     // Rule C: the next exposure follows the last rating (within 14 days)
@@ -1342,7 +1393,7 @@ function withAutoGates(gates, ctx, upTo = 19) {
   return g;
 }
 
-const ENGINE = { kgDown, kgNear, attemptsKg, e1rm, LB_PER_KG, defaultGate, RPE_PCT_1, pctAt, RATE, RATE_LABEL, singleFactor, autoregulate, autoGate, withAutoGates, sessionDayUTC, GATE_CUTS, postTestBase, CALIBRATION, PROJ_DEFAULT, cbChain, etaWave, explicitCB, TRACKED, trackedCB, trackedFor, ARM_START, ARM_GOAL, clearedInWave, inclineCB, inclineFor, INCLINE_START, INCLINE_GOAL, pkeyOf, accStateLogged, R5, R25, START, LIFTS, LIFT_NAME, gateDelta, cbFor, cycleOf, macroOf, CYCLE_NAME, waveStartUTC, whereIs, NOTES, mainTables, ohpFor, ACC, accState, accFor, sessionFor, testAttempts, yellowW, yellowFor, redSession, WAVE1_MONDAY, MS_DAY, capNum, effRPE, targetsOf, peakEstimate, applyTestEntry, migrateTestMax, lbFloor, COMMANDS, PEAK_CAP,
+const ENGINE = { kgDown, kgNear, attemptsKg, e1rm, LB_PER_KG, defaultGate, RPE_PCT_1, pctAt, RATE, RATE_LABEL, singleFactor, autoregulate, autoGate, withAutoGates, sessionDayUTC, GATE_CUTS, postTestBase, CALIBRATION, PROJ_DEFAULT, cbChain, etaWave, explicitCB, TRACKED, trackedCB, trackedFor, ARM_START, ARM_GOAL, clearedInWave, inclineCB, inclineFor, INCLINE_START, INCLINE_GOAL, pkeyOf, accStateLogged, R5, R25, START, LIFTS, LIFT_NAME, gateDelta, cbFor, cycleOf, macroOf, CYCLE_NAME, waveStartUTC, whereIs, NOTES, mainTables, ohpFor, ACC, accState, accFor, sessionFor, testAttempts, yellowW, yellowFor, redSession, RTS_N, pctReps, dayE1RM, ALT, altKey, WAVE1_MONDAY, MS_DAY, capNum, effRPE, targetsOf, peakEstimate, applyTestEntry, migrateTestMax, lbFloor, COMMANDS, PEAK_CAP,
   FRAME_OPTS, FRAME_LABEL, DETAIL_OPTS, DETAIL_LABEL, DEFAULT_SPEC, isDefaultSpec, saturdaySession, sundaySession, sundayPlanned };
 if (typeof module !== "undefined") module.exports = ENGINE;
 
@@ -1396,6 +1447,22 @@ const fmtShort = (ms) => new Date(ms).toLocaleDateString("en-US", { month: "shor
 function todayUTC() { const n = new Date(); return Date.UTC(n.getFullYear(), n.getMonth(), n.getDate()); }
 const keyOf = (ms) => new Date(ms).toISOString().slice(0, 10);
 let viewDate = todayUTC();
+let shownToday = viewDate;
+// iOS resumes a home-screen app without reloading it: roll the view to the new day before any write.
+// Returns true when the day changed and the view moved with it.
+function rollDay() {
+  const t = todayUTC();
+  if (t === shownToday) return false;
+  const moved = viewDate === shownToday;
+  if (moved) viewDate = t;
+  shownToday = t;
+  if (typeof render === "function") render();
+  return moved;
+}
+// a handler holding the old "today" key writes to the new today instead
+const liveDk = (dk) => { const old = keyOf(shownToday); return rollDay() && dk === old ? keyOf(viewDate) : dk; };
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") rollDay(); });
+window.addEventListener("pageshow", rollDay); window.addEventListener("focus", rollDay); setInterval(rollDay, 60000);
 let tab = "today";
 
 /* ── movement library ── */
@@ -2133,11 +2200,16 @@ function whereUsed(id) {
   if (a) return ["", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"][a.day] + (id === "bander" ? " and Thursday, before pressing" : "");
   return { xbody: "Saturday — side delt", rdraise: "Saturday — rear delt", yshrug: "Saturday — traps", inccurl: "Saturday — arms", incdb: "Saturday — upper chest", farmer: "Saturday — grip", pulldown: "Saturday — lats" }[id] || "";
 }
-function moveSheet(id) {
+function moveSheet(id, pkey) {
   const m = MOVES[id]; if (!m) return;
+  const hx = pkey ? (histIndex()[pkey] || []) : [], days = [...new Set(hx.map((e) => e.t))].sort((a, b) => b - a).slice(0, 6);
+  const best = (t) => Math.max(0, ...hx.filter((e) => e.t === t && e.r >= 1 && e.r <= 10).map((e) => Math.round(e.w * (1 + e.r / 30))));
+  const hist = days.length ? `<div class="eyebrow" style="margin-top:4px">Your last ${days.length === 1 ? "session" : days.length + " sessions"}</div>
+    ${days.map((t) => { const ss = hx.filter((e) => e.t === t), r = [...ss].reverse().find((e) => e.rate); return `<div class="lset hist"><span>${fmtShort(t)} · ${ss.map((e) => `${e.w}×${e.r}`).join(", ")}${r ? " · " + esc(E.RATE_LABEL[r.rate]) : ""}</span></div>`; }).join("")}
+    <div class="chartwrap">${svgChart([...days].reverse().map((t) => ({ x: t, y: best(t) })).filter((q) => q.y > 0), { unit: " lb est." })}</div>` : "";
   openSheet(`<button class="closex" onclick="closeSheet()">×</button>
     <h2>${esc(m.name)}</h2>
-    <p class="note" style="margin-bottom:8px">${esc(whereUsed(id))}</p>
+    <p class="note" style="margin-bottom:8px">${esc(whereUsed(id))}</p>${hist}
     <canvas id="demo" width="300" height="300" style="width:200px;height:200px;background:var(--iron);border-radius:12px" role="img" aria-label="${esc(m.name)} demonstration"></canvas>
     <ul class="cues">${m.cues.map((c) => `<li>${esc(c)}</li>`).join("")}</ul>
     <p class="capnote warn">⚠ ${esc(m.cap)}</p>
@@ -2146,14 +2218,22 @@ function moveSheet(id) {
 }
 
 /* ── rest timer ── */
-let tEnd = null, tInt = null;
+let tEnd = null, tInt = null, actx = null, wake = null, beeped = false;
 const timerBtn = $("#timer");
+// iOS only plays sound from an AudioContext created or resumed inside a tap: every set chip does that
+function unlockAudio() { try { const AC = window.AudioContext || window.webkitAudioContext; if (!actx && AC) actx = new AC(); if (actx && actx.state === "suspended") actx.resume(); } catch (e) {} }
+function beep() { try { if (!actx) return; const t0 = actx.currentTime; for (const k of [0, 0.25]) { const o = actx.createOscillator(), g = actx.createGain(); o.frequency.value = 880; g.gain.value = 0.25; o.connect(g); g.connect(actx.destination); o.start(t0 + k); o.stop(t0 + k + 0.15); } } catch (e) {} }
+async function holdWake() { try { if (navigator.wakeLock && !wake) { wake = await navigator.wakeLock.request("screen"); wake.addEventListener("release", () => { wake = null; }); } } catch (e) {} }
+function dropWake() { try { if (wake) wake.release(); } catch (e) {} wake = null; }
+// always derived from tEnd, so a phone that slept shows the right time when it wakes
 function tickTimer() {
   if (!tEnd) return;
-  const left = Math.max(0, Math.round((tEnd - Date.now()) / 1000));
-  timerBtn.textContent = `⏱ ${Math.floor(left / 60)}:${String(left % 60).padStart(2, "0")}`;
-  if (left <= 0) { clearInterval(tInt); tEnd = null; timerBtn.classList.remove("run"); timerBtn.textContent = "⏱ done!"; if (navigator.vibrate) navigator.vibrate([160, 90, 160]); setTimeout(() => { if (!tEnd) timerBtn.textContent = "⏱ rest"; }, 20000); }
+  const left = Math.round((tEnd - Date.now()) / 1000), a = Math.abs(left), mmss = `${Math.floor(a / 60)}:${String(a % 60).padStart(2, "0")}`;
+  if (left > 0) { timerBtn.textContent = `⏱ ${mmss}`; return; }
+  timerBtn.textContent = `⏱ +${mmss}`; timerBtn.classList.add("over"); // counts up until the next set or Stop
+  if (!beeped) { beeped = true; beep(); if (navigator.vibrate) navigator.vibrate([160, 90, 160]); }
 }
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && tEnd) { holdWake(); tickTimer(); } });
 timerBtn.addEventListener("click", () => {
   openSheet(`<button class="closex" onclick="closeSheet()">×</button><h2>Rest Timer</h2>
     <p class="note">Mains 3–5 min · compounds 2–3 · isolations 1–2</p>
@@ -2161,8 +2241,14 @@ timerBtn.addEventListener("click", () => {
       ${[90, 120, 180, 240, 300].map((s) => `<button class="btn ghost" onclick="startTimer(${s})">${s / 60} min</button>`).join("")}
       <button class="btn danger" onclick="stopTimer()">Stop</button></div>`);
 });
-window.startTimer = (s) => { tEnd = Date.now() + s * 1000; clearInterval(tInt); tInt = setInterval(tickTimer, 500); timerBtn.classList.add("run"); tickTimer(); closeSheet(); };
-window.stopTimer = () => { clearInterval(tInt); tEnd = null; timerBtn.classList.remove("run"); timerBtn.textContent = "⏱ rest"; closeSheet(); };
+window.startTimer = (s) => {
+  unlockAudio(); tEnd = Date.now() + s * 1000; beeped = false; clearInterval(tInt); tInt = setInterval(tickTimer, 500);
+  timerBtn.classList.add("run"); timerBtn.classList.remove("over"); holdWake(); tickTimer();
+  if ($("#modal").classList.contains("open") && /Rest Timer/.test($("#sheet").textContent)) closeSheet();
+};
+window.stopTimer = () => { clearInterval(tInt); tEnd = null; timerBtn.classList.remove("run", "over"); timerBtn.textContent = "⏱ rest"; dropWake(); closeSheet(); };
+// rest after a logged set: main lifts 3 min, paused / OHP / tracked 2.5, accessories 90 s, primers and fillers none
+const restFor = (b) => /^(FILLER|PRIMER)/.test(b.cap || "") ? 0 : (b.type === "single" || b.type === "backoff") && E.LIFTS.includes(b.lift) ? 180 : ["single", "backoff", "paused", "ohp"].includes(b.type) ? 150 : 90;
 
 /* ── TODAY ── */
 function blockRx(b) {
@@ -2221,9 +2307,16 @@ function renderToday() {
   });
   if (planned) inner += `<div class="pline"><div class="pbar"><i style="width:${Math.round((doneN / planned) * 100)}%"></i></div><span>${doneN}/${planned}${doneN >= planned ? " 🏁" : ""}</span></div>`;
 
-  blocks.forEach((b, i) => {
+  const LOGT = ["single", "backoff", "paused", "ohp", "accessory"];
+  const lastLogIdx = blocks.reduce((k, x, j) => (LOGT.includes(x.type) && !/^(FILLER|PRIMER)/.test(x.cap || "") ? j : k), -1);
+  blocks.forEach((b0, i) => {
+    let b = b0;
     const bkey = (ready === "R" ? "r" : "b") + i;
     const sets = (log.sets && log.sets[bkey]) || [];
+    // LOG-7: a swap for today logs under its own key; the planned exercise's rung never sees it
+    const swap = b.type === "accessory" && b.pkey && (log.swap || {})[b.pkey];
+    if (swap) { const k = E.altKey(b.pkey, swap), hx = (hctx.index[k] || []).filter((e) => e.t < viewDate);
+      b = { ...b, name: swap + " (swap)", pkey: k, w: hx.length ? hx[hx.length - 1].w : b.w, prog: "swap", note: `Swapped for ${b0.name} today: its own log, so ${b0.name}'s rung stays put. ${hx.length ? "Last time " + hx[hx.length - 1].w + "." : "First time: set the weight with the edit sheet."}` }; }
     if (b.type === "warmup") {
       inner += `<div class="card"><div class="eyebrow">${esc(b.name)}</div>
         <div class="wu">${b.rows.map((r) => {
@@ -2246,23 +2339,28 @@ function renderToday() {
           <p class="note">USPA loads kilograms. Hand in the kg numbers. The opener is rounded down on purpose.</p>`; }
       inner += `</div>`; return;
     }
-    const isSingle = b.type === "single";
-    const done = sets.length >= (isSingle ? 1 : b.sets);
+    const isSingle = b.type === "single", planned = isSingle ? 1 : b.sets, nShown = Math.max(planned, sets.length);
+    const done = sets.length >= planned;
+    const cap = ["single", "backoff", "paused", "ohp"].includes(b.type) ? E.capNum(b.rpe) : "null", inc = b.inc || (b.db ? 2.5 : 5);
+    // LOG-2: after an edited set, the next chip logs what he actually lifted
+    const lastEd = [...sets].reverse().find((s) => s.ed), nw = lastEd ? lastEd.w : b.w, nr = lastEd ? lastEd.r : (b.repN ?? b.reps);
+    const offPlan = !!lastEd && (nw !== b.w || String(nr) !== String(b.repN ?? b.reps));
+    const tap = (si) => `hitSet('${dk}','${bkey}',${nw},${nr},'${esc(b.pkey || "")}',${cap},${i === lastLogIdx && si >= planned - 1 ? 0 : restFor(b)})`;
     inner += `<div class="card ${isSingle ? "single" : ""} ${done ? "done" : ""}">
       <div class="cardhead"><div>
         <div class="eyebrow ${isSingle ? "sig" : ""}">${esc(b.name)}${b.top ? " · range top → weight bumps next wave" : ""}</div>
         <div class="rx">${isSingle ? `<b>${b.w === 0 ? "BW" : b.added ? "+" + b.w : b.w}</b> <small>× ${esc(String(b.reps ?? 1))} · cap RPE ${esc(String(b.rpe))}</small>` : `${blockRx(b)} <small>@ RPE ${esc(String(b.rpe))}</small>`}</div>
         ${b.note ? `<div class="capnote warn">${esc(b.note)}</div>` : ""}
-        ${b.prog === "held" ? `<div class="capnote warn">⏸ Holding — your logs haven't cleared the top reps at this weight yet</div>` : b.prog === "ahead" ? `<div class="capnote" style="color:var(--go)">▲ Advanced off your logs</div>` : b.type === "accessory" && b.prog == null ? `<div class="capnote">Estimate — no history yet. If this is easy, add weight and log what you actually did.</div>` : ""}
-      </div>${b.moveId ? `<button class="ibtn" onclick="moveSheet('${b.moveId}')" aria-label="How to">?</button>` : ""}</div>
-      <div class="setrow">${Array.from({ length: isSingle ? 1 : b.sets }, (_, si) =>
+        ${b.prog === "swap" ? "" : b.prog === "held" ? `<div class="capnote warn">⏸ Holding — your logs haven't cleared the top reps at this weight yet</div>` : b.prog === "ahead" ? `<div class="capnote" style="color:var(--go)">▲ Advanced off your logs</div>` : b.type === "accessory" && b.prog == null ? `<div class="capnote">Estimate — no history yet. If this is easy, add weight and log what you actually did.</div>` : ""}
+      </div><span class="hdrbtns">${E.ALT[b0.pkey] && b0.type === "accessory" ? `<button class="ibtn" onclick="swapSheet('${dk}','${b0.pkey}')" aria-label="Swap exercise">⇄</button>` : ""}${b.moveId ? `<button class="ibtn" onclick="moveSheet('${b.moveId}','${esc(b.pkey || "")}')" aria-label="How to">?</button>` : ""}</span></div>
+      <div class="setrow">${Array.from({ length: nShown }, (_, si) =>
         si < sets.length
-          ? `<button class="chip hit" onclick="editSet('${dk}','${bkey}',${si})">${sets[si].w === 0 ? "BW" : esc(String(sets[si].w))}×${esc(String(sets[si].r))}${sets[si].rpe != null ? "@" + esc(String(sets[si].rpe)) : ""}${sets[si].rate ? " · " + esc(E.RATE_LABEL[sets[si].rate] || "") : ""}</button>`
-          : `<button class="chip ${b.lastHard && si === b.sets - 1 ? "hard" : ""}" onclick="hitSet('${dk}','${bkey}',${b.w},${b.repN ?? b.reps},'${esc(b.pkey || "")}',${["single", "backoff", "paused", "ohp"].includes(b.type) ? E.capNum(b.rpe) : "null"})" aria-label="Log set ${si + 1}${b.lastHard && si === b.sets - 1 ? ` — take this one to RPE 9 to 10${b.lp ? ", then 3 to 5 lengthened partials" : ""}` : ""}">×${esc(String(b.reps))}${b.lastHard && si === b.sets - 1 ? `<small>→9–10${b.lp ? " +LP" : ""}</small>` : ""}</button>`).join("")}
-        ${sets.length >= (isSingle ? 1 : b.sets) ? `<button class="chip add" onclick="hitSet('${dk}','${bkey}',${b.w},${b.repN ?? b.reps},'${esc(b.pkey || "")}',${["single", "backoff", "paused", "ohp"].includes(b.type) ? E.capNum(b.rpe) : "null"})">＋</button>` : ""}
+          ? `<button class="chip hit${si >= planned ? " extra" : ""}" onclick="editSet('${dk}','${bkey}',${si},${inc},${cap === "null" ? 8 : cap})">${sets[si].w === 0 ? "BW" : esc(String(sets[si].w))}×${esc(String(sets[si].r))}${sets[si].rpe != null ? "@" + esc(String(sets[si].rpe)) : ""}${si === sets.length - 1 && sets[si].rate ? " · " + esc(E.RATE_LABEL[sets[si].rate] || "") : ""}</button>`
+          : `<button class="chip${b.lastHard && si === planned - 1 ? " hard" : ""}${offPlan ? " off" : ""}" onclick="${tap(si)}" aria-label="Log set ${si + 1}${b.lastHard && si === planned - 1 ? ` — take this one to RPE 9 to 10${b.lp ? ", then 3 to 5 lengthened partials" : ""}` : ""}">${offPlan ? esc(nw + "×" + nr) : "×" + esc(String(b.reps))}${b.lastHard && si === planned - 1 ? `<small>→9–10${b.lp ? " +LP" : ""}</small>` : ""}</button>`).join("")}
+        ${done ? `<button class="chip add" onclick="${tap(planned)}" aria-label="Add a set">＋</button>` : ""}
       </div>${done && b.pkey && b.w > 0 ? (() => { const cur = sets[sets.length - 1].rate;
         return `<div class="seg rate" role="group" aria-label="How did the last set feel">${["E", "O", "H"].map((r) => `<button class="${r === "E" ? "g" : r === "O" ? "y" : "r"} ${cur === r ? "on" : ""}" onclick="rateSet('${dk}','${bkey}','${r}')">${E.RATE_LABEL[r]}</button>`).join("")}</div>
-          ${cur ? "" : `<p class="note" style="margin-top:2px">${isSingle ? "Rate the single: it sets today's back-offs and the gate." : "Rate the last set: it sets next time's load."}</p>`}`; })() : ""}</div>`;
+          ${cur ? "" : `<p class="note" style="margin-top:2px">${isSingle ? (E.LIFTS.includes(b.lift) ? "Rate the single: it sets today's back-offs and the gate." : loc.wave >= 4 ? "Rate the top set: it sets today's back-offs." : "Rate the top set.") : "Rate the last set: it sets next time's load."}</p>`}`; })() : ""}</div>`;
   });
 
   { const age = backupAgeDays(), hasLogs = Object.keys(S.logs).length > 0;
@@ -2284,7 +2382,20 @@ function renderToday() {
 }
 window.chartTap = (el) => { const cap = el.closest(".chartwrap") && el.closest(".chartwrap").querySelector(".chartcap"); if (cap) cap.textContent = el.dataset.t; };
 window.shiftDay = (n) => { viewDate += n * E.MS_DAY; render(); };
-window.addFood = (dk, id) => { const x = NUTRI.byId(id); if (!x) return; (S.food[dk] = S.food[dk] || []).push({ id, name: x.name, kcal: x.kcal, p: x.p }); save(); closeSheet(); render(); };
+window.swapSheet = (dk, pkey) => {
+  const cur = ((S.logs[dk] || {}).swap || {})[pkey] || "";
+  openSheet(`<button class="closex" onclick="closeSheet()">×</button><h2>Swap for today</h2>
+    <p class="note">Same muscle, same stretch (judgment). A swap logs under its own name, so the planned exercise's rung stays where it is.</p>
+    <div class="rowbtns">${["", ...E.ALT[pkey]].map((n) => `<button class="btn ${cur === n ? "" : "ghost"}" onclick="setSwap('${dk}','${pkey}','${esc(n)}')">${n ? esc(n) : "Planned exercise"}</button>`).join("")}</div>`);
+};
+window.setSwap = (dk, pkey, name) => {
+  S.logs[dk] = S.logs[dk] || {}; const sw = (S.logs[dk].swap = S.logs[dk].swap || {});
+  if (name) sw[pkey] = name; else delete sw[pkey];
+  if (!Object.keys(sw).length) delete S.logs[dk].swap;
+  save(); closeSheet(); render();
+};
+window.openDay = (dk) => { viewDate = Date.parse(dk); goTab("today"); };
+window.addFood = (dk, id) => { dk = liveDk(dk); const x = NUTRI.byId(id); if (!x) return; (S.food[dk] = S.food[dk] || []).push({ id, name: x.name, kcal: x.kcal, p: x.p }); save(); closeSheet(); render(); };
 window.addFoodManual = (dk) => { const n = $("#fn").value.trim() || "Food", k = +$("#fk").value, p = +$("#fp").value || 0; if (!Number.isFinite(k) || k <= 0) return; (S.food[dk] = S.food[dk] || []).push({ id: "manual", name: n, kcal: Math.round(k), p: Math.round(p) }); save(); closeSheet(); render(); };
 window.delFood = (dk, i) => { if (!S.food[dk]) return; S.food[dk].splice(i, 1); if (!S.food[dk].length) delete S.food[dk]; save(); render(); };
 window.setNutriMode = (m) => { if (!NUTRI.MODES[m]) return; S.nutri.mode = m; S.nutri.since = keyOf(todayUTC()); save(); render(); };
@@ -2345,21 +2456,25 @@ window.primerSheet = () => {
     <div class="eyebrow" style="margin-top:12px">The shirt</div><p class="note">${esc(P.day.shirt)}</p>
     <div class="eyebrow" style="margin-top:12px">The day after</div><p class="note">${esc(P.next)}</p>`);
 };
-window.setBW = (dk, v) => { if (v === "") delete S.bw[dk]; else S.bw[dk] = +v; save(); };
+window.setBW = (dk, v) => { dk = liveDk(dk); if (v === "") delete S.bw[dk]; else S.bw[dk] = +v; save(); };
 window.setLog = (dk, k, v) => {
+  dk = liveDk(dk);
   S.logs[dk] = S.logs[dk] || {};
   if (k === "sleep") { const n = +v; if (v === "" || !Number.isFinite(n)) delete S.logs[dk].sleep; else S.logs[dk].sleep = n; }
   else S.logs[dk][k] = v;
   save();
 };
 window.setReady = (dk, r) => { S.logs[dk] = S.logs[dk] || {}; S.logs[dk].r = r; save(); render(); };
-window.hitSet = (dk, bkey, w, reps, pk, cap) => {
+window.hitSet = (dk, bkey, w, reps, pk, cap, rest) => {
+  unlockAudio();
+  if (rollDay() && dk !== keyOf(viewDate)) return; // the page was yesterday's: show today, log nothing
   S.logs[dk] = S.logs[dk] || {}; S.logs[dk].sets = S.logs[dk].sets || {};
   const arr = (S.logs[dk].sets[bkey] = S.logs[dk].sets[bkey] || []);
   const st = { w, r: reps, rpe: null };
   if (pk) st.k = pk;
   if (Number.isFinite(cap)) st.cap = cap; // the RPE cap shown when the set was logged (Yellow single = 7)
   arr.push(st); save(); render();
+  if (rest > 0) startTimer(rest);
 };
 // Rule B: one tap on the last set. Tapping the current rating again clears it.
 window.rateSet = (dk, bkey, r) => {
@@ -2367,20 +2482,22 @@ window.rateSet = (dk, bkey, r) => {
   const st = arr[arr.length - 1]; st.rate = st.rate === r ? undefined : r; if (!st.rate) delete st.rate;
   save(); render();
 };
-window.editSet = (dk, bkey, si) => {
+window.editSet = (dk, bkey, si, inc = 5, cap = 8) => {
   const st = S.logs[dk].sets[bkey][si];
   openSheet(`<button class="closex" onclick="closeSheet()">×</button><h2>Edit set</h2>
-    <div class="editrow"><span class="lbl">Weight</span><button class="stepbtn" onclick="stepEV('ew',-5)">−</button><input type="number" step="2.5" id="ew" inputmode="decimal" value="${esc(String(st.w))}"><button class="stepbtn" onclick="stepEV('ew',5)">＋</button></div>
+    <div class="editrow"><span class="lbl">Weight</span><button class="stepbtn" onclick="stepEV('ew',-${inc})">−</button><input type="number" step="${inc}" id="ew" inputmode="decimal" value="${esc(String(st.w))}"><button class="stepbtn" onclick="stepEV('ew',${inc})">＋</button></div>
     <div class="editrow"><span class="lbl">Reps</span><button class="stepbtn" onclick="stepEV('er',-1)">−</button><input type="number" id="er" inputmode="numeric" value="${esc(String(st.r))}"><button class="stepbtn" onclick="stepEV('er',1)">＋</button></div>
-    <div class="editrow"><span class="lbl">RPE</span><button class="stepbtn" onclick="stepEV('erpe',-0.5)">−</button><input type="number" step="0.5" id="erpe" inputmode="decimal" placeholder="—" value="${st.rpe ?? ""}"><button class="stepbtn" onclick="stepEV('erpe',0.5)">＋</button></div>
+    <div class="editrow"><span class="lbl">RPE</span><button class="stepbtn" onclick="stepEV('erpe',-0.5,${cap})">−</button><input type="number" step="0.5" id="erpe" inputmode="decimal" placeholder="—" value="${st.rpe ?? ""}"><button class="stepbtn" onclick="stepEV('erpe',0.5,${cap})">＋</button></div>
     <div class="rowbtns">
       <button class="btn" onclick="saveSet('${dk}','${bkey}',${si})">Save set</button>
       <button class="btn danger" onclick="delSet('${dk}','${bkey}',${si})">Delete</button></div>`);
 };
-window.stepEV = (id, d) => { const el = $("#" + id); const n = (+el.value || 0) + d; el.value = Math.max(0, Math.round(n * 2) / 2); };
+window.stepEV = (id, d, start) => { const el = $("#" + id); if (el.value === "" && start != null) { el.value = start; return; } const n = (+el.value || 0) + d; el.value = Math.max(0, Math.round(n * 4) / 4); };
 window.saveSet = (dk, bkey, si) => {
   const st = S.logs[dk].sets[bkey][si];
-  st.w = +$("#ew").value || 0; st.r = +$("#er").value || 0;
+  const w = +$("#ew").value || 0, r = +$("#er").value || 0;
+  if (w !== st.w || r !== st.r) st.ed = true; // the next chip of this block now carries what was lifted
+  st.w = w; st.r = r;
   st.rpe = $("#erpe").value === "" ? null : +$("#erpe").value;
   save(); closeSheet(); render();
 };
@@ -2398,7 +2515,7 @@ function renderRoad() {
   let h = `<div class="card single"><div class="eyebrow sig">The Goal — 315/405/495 · 16" arms · 200 @ 15%</div><div class="summit">
     ${E.LIFTS.map((L) => { const [s0, g] = GOALS[L]; const pct = Math.max(0, Math.min(100, Math.round(((cbNow[L] - s0) / (g - s0)) * 100))); return `<div class="srow"><span>${E.LIFT_NAME[L]}</span><div class="sbar"><i style="width:${pct}%"></i></div><span class="sval">${cbNow[L]} / ${g}</span></div>`; }).join("")}
     ${["inc", "chin", "dip", "rdl"].map((id) => {
-        const T = E.TRACKED[id], v = E.trackedCB(id, Math.max(1, Math.min(now.wave || 1, 19)), GX());
+        const T = E.TRACKED[id], v = E.trackedCB(id, Math.max(1, Math.min(now.wave || 1, 19)), GX(), { index: histIndex(), offsetWeeks: off });
         const p = Math.max(0, Math.min(100, Math.round(((v - T.start) / (T.goal - T.start)) * 100)));
         const lbl = { inc: "Incline", chin: "Chin-up", dip: "Dip", rdl: "RDL" }[id];
         const f = (x) => (T.added ? "+" + x : x);
@@ -2618,30 +2735,28 @@ function renderTrends() {
   const band = [];
   // lo = net pace incl. annual trim blocks · hi = gain-phase pace (+0.25/wk)
   for (let wk = 0; wk <= 210; wk += 2) band.push({ x: E.WAVE1_MONDAY + wk * 7 * E.MS_DAY, lo: Math.round((182 + 0.085 * wk) * 10) / 10, hi: Math.round((182 + 0.25 * wk) * 10) / 10 });
-  // only the lift itself counts: squat day also has a 470 lb leg press
-  const MAIN_K = (L) => new Set([L + "-single", L + "-back", L + "-light"]);
+  // only the lift itself counts (squat day also has a 470 lb leg press); light, Red and deload days never do
+  const TREND = { sq: ["Squat"], bn: ["Bench"], dl: ["Deadlift"], inc: ["Incline", "incbb"], chin: ["Chin-up", "chin"], dip: ["Dip", "dip"], rdl: ["RDL", "rdl"] };
+  const keysOf = (L) => new Set(E.LIFTS.includes(L) ? [L + "-single", L + "-back"] : [TREND[L][1] + "-top", TREND[L][1] + "-back"]);
   const off0 = S.settings.offsetWeeks || 0;
-  const liftSets = (L) => {
-    const out = [], keys = MAIN_K(L);
+  const liftDays = (L) => {
+    const out = [], keys = keysOf(L);
     for (const [dk, log] of Object.entries(S.logs).filter(([k]) => DK_RE.test(k)).sort()) {
-      if (!log.sets) continue;
-      const t = Date.parse(dk), loc = E.whereIs(t, off0);
-      const cap = loc.week === 1 ? 7 : loc.week === 2 ? 7.5 : 8;
-      for (const arr of Object.values(log.sets)) for (const st of arr) if (st && keys.has(st.k) && st.w > 0 && st.r >= 1) out.push({ dk, t, st, cap, wave: loc.wave });
+      if (!log.sets || log.r === "R") continue;
+      const t = Date.parse(dk), loc = E.whereIs(t, off0), sets = [];
+      for (const arr of Object.values(log.sets)) for (const st of arr) if (st && keys.has(st.k) && st.w > 0 && st.r >= 1) sets.push(st);
+      if (sets.length) out.push({ t, dk, sets, week: loc.week, wave: loc.wave });
     }
     return out;
   };
-  const tops = [], e1s = [], baseLine = [];
-  { const byDay = new Map();
-    for (const x of liftSets(trendLift)) {
-      const d = byDay.get(x.t) || { best: 0, e: 0, wave: x.wave };
-      d.best = Math.max(d.best, x.st.w); d.e = Math.max(d.e, E.e1rm(x.st, x.cap) || 0); byDay.set(x.t, d);
-    }
-    for (const [t, d] of [...byDay].sort((p, q) => p[0] - q[0])) {
-      if (d.e) e1s.push({ x: t, y: d.e });
-      tops.push({ x: t, y: d.best });
-      if (d.wave >= 1 && d.wave <= 60) baseLine.push({ x: t, y: E.cbFor(d.wave, GX())[trendLift] });
-    } }
+  const liftSets = (L) => liftDays(L).flatMap((d) => d.sets.map((st) => ({ dk: d.dk, t: d.t, st })));
+  const tops = [], e1s = [], baseLine = [], added = !!(E.TRACKED[trendLift] && E.TRACKED[trendLift].added), hctx0 = { index: histIndex(), offsetWeeks: off0 };
+  for (const d of liftDays(trendLift)) {
+    const e = added ? null : E.dayE1RM(d.sets, { week: d.week, cap: { 1: 7, 2: 7.5, 3: 8 }[d.week] });
+    if (e) e1s.push({ x: d.t, y: e }); else if (added && d.week !== 4) e1s.push({ x: d.t, y: Math.max(...d.sets.map((s) => s.w)) });
+    tops.push({ x: d.t, y: Math.max(...d.sets.map((s) => s.w)) });
+    if (d.wave >= 1 && d.wave <= 60) baseLine.push({ x: d.t, y: E.LIFTS.includes(trendLift) ? E.cbFor(d.wave, GX())[trendLift] : E.trackedCB(trendLift, d.wave, GX(), hctx0) });
+  }
   const prs = E.LIFTS.map((L) => {
     let best = null;
     for (const x of liftSets(L)) if (!best || x.st.w > best.w) best = { w: x.st.w, dk: x.dk };
@@ -2698,10 +2813,10 @@ function renderTrends() {
       ${wkAvg.length ? `<div class="tablewrap" style="margin-top:10px"><table><tr><th>Week of</th><th>Avg</th><th>Δ</th><th>Call</th></tr>${wkAvg.map((r) => `<tr><td>${r.wk}</td><td>${r.avg}</td><td>${r.d === null ? "—" : (r.d > 0 ? "+" : "") + r.d}</td><td class="note">${r.call}</td></tr>`).join("")}</table></div>` : ""}
       <p class="note" style="margin-top:8px">Gain mode: 3,050 cal · P 190 · +0.25 lb/wk. Trim only at ~18% BF (6 weeks at most, stop at 15%). Goal: <b style="color:var(--chalk)">200 @ 15%</b> ≈ 170 lb lean.</p></div>
     <div class="card"><div class="eyebrow sig">Strength</div>
-      <div class="seg">${E.LIFTS.map((L) => `<button class="y ${trendLift === L ? "on" : ""}" onclick="trendLift='${L}';render()">${E.LIFT_NAME[L]}</button>`).join("")}</div>
-      <div class="chartwrap">${svgChart(e1s, { line2: baseLine, unit: " lb est. max", extraY: tops.map((p) => p.y), empty: "Log and rate your " + E.LIFT_NAME[trendLift].toLowerCase() + " single to start this chart." })}</div>
+      <div class="seg" style="flex-wrap:wrap">${Object.keys(TREND).map((L) => `<button class="y ${trendLift === L ? "on" : ""}" onclick="trendLift='${L}';render()">${TREND[L][0]}</button>`).join("")}</div>
+      <div class="chartwrap">${svgChart(e1s, { line2: baseLine, unit: added ? " lb added" : " lb est. max", extraY: tops.map((p) => p.y), empty: "Log and rate your " + TREND[trendLift][0].toLowerCase() + " top set to start this chart." })}</div>
       <div class="legend"><span><span class="k" style="background:#e9e7e1"></span>estimated max that day</span><span><span class="k" style="background:#8b919c"></span>cycle base (dashed)</span></div>
-      <p class="note" style="margin-top:6px">Rated singles are read through the RPE chart; unrated sets use Epley up to 10 reps. Rate the single and the estimate gets honest. Singles that land on target put the estimate at about 97–100% of the base; that is the plan working. A clear drop below that is what makes the gate say repeat.</p></div>
+      <p class="note" style="margin-top:6px">A rated single or top set is read through the RPE chart; otherwise back-offs are read at the RPE they were capped at (reps to failure, up to 10 reps). Deload weeks, Red days and light sets are left out. Chin-up and dip show the added load. Singles that land on target put the estimate at about 95–100% of the base; a clear drop below that is what makes the gate say repeat.</p></div>
     <div class="card"><div class="eyebrow">All-time bests (logged)</div>
       ${prs.map((p) => `<div class="lset"><span>${E.LIFT_NAME[p.L]}</span><span class="x" style="color:var(--chalk);font-weight:700">${p.best ? esc(String(p.best.w)) + " · " + esc(p.best.dk) : "—"}</span></div>`).join("")}
       <p class="note" style="margin-top:6px">Competition lifts only (singles and back-offs). North Star 315 / 405 / 495 · bases now ${(() => { const c = E.cbFor(Math.max(1, Math.min(E.whereIs(todayUTC(), off0).wave || 1, 19)), GX()); return c.bn + " / " + c.sq + " / " + c.dl; })()}.</p></div>`;
@@ -2735,7 +2850,7 @@ function renderMore() {
   const logged = Object.keys(S.logs).filter((k) => DK_RE.test(k) && S.logs[k].sets && Object.keys(S.logs[k].sets).length).sort().reverse();
   $("#view").innerHTML = `
     <div class="card"><div class="eyebrow sig">History</div>
-      ${logged.length ? logged.slice(0, 40).map((dk) => { const loc = E.whereIs(Date.parse(dk), S.settings.offsetWeeks || 0); return `<div class="lset"><span>${esc(dk)} · W${loc.wave}·wk${loc.week}·d${loc.day}${S.logs[dk].r ? " · " + esc(S.logs[dk].r) : ""}</span><button class="x" onclick="delDay('${esc(dk)}')">✕</button></div>`; }).join("") : `<p class="note">No sessions logged yet. They'll pile up here.</p>`}</div>
+      ${logged.length ? logged.slice(0, 40).map((dk) => { const loc = E.whereIs(Date.parse(dk), S.settings.offsetWeeks || 0); return `<div class="lset"><button class="linkbtn" onclick="openDay('${esc(dk)}')">${esc(dk)} · W${loc.wave}·wk${loc.week}·d${loc.day}${S.logs[dk].r ? " · " + esc(S.logs[dk].r) : ""}</button><button class="x" onclick="delDay('${esc(dk)}')">✕</button></div>`; }).join("") : `<p class="note">No sessions logged yet. They'll pile up here.</p>`}</div>
     <div class="card"><div class="eyebrow sig">Weekend specialization</div>
       <p class="note">Sat = frame overload · Sun = optional detail. Focus: <b style="color:var(--chalk)">${esc(E.FRAME_LABEL[S.spec.framePrimary])}</b> + <b style="color:var(--chalk)">${esc(E.DETAIL_LABEL[S.spec.detail])}</b>.</p>
       <div class="rowbtns"><button class="btn" onclick="specSheet()">⚙ Configure</button><button class="btn ghost" onclick="ledgerSheet()">📒 Ledger</button><button class="btn ghost" onclick="playbookSheet()">🍽 Playbook</button><button class="btn ghost" onclick="primerSheet()">🔥 Ultimate Pump</button></div></div>

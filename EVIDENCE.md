@@ -23,6 +23,8 @@ Sources were cite-checked against PubMed or the journal page on 2026-09-25. The 
 | %1RM for a single at each RPE (`RPE_PCT_1`: 7 = 89.2%, 8 = 92.2%, 9 = 95.5%, 10 = 100%) | Partly | RTS (Tuchscherer) coaching chart | This is a coaching chart, not a study. It is used because the RIR scale above is validated. |
 | Autoregulation (Rules A and C: loads follow how the sets felt) | Evidence | Helms 2018, *Front Physiol* 9:247 · Graham & Cleather 2021, *J Strength Cond Res* 35(9):2451 · Larsen 2021, *PeerJ* 9:e10663 (systematic review) | RPE-based or RIR-based loading matched or beat fixed percentages for strength. Helms 2018 found a small edge that was not significant. |
 | Rule A/C clamp at ±5% or one increment | Judgment | — | This stops one bad day, or one good one, from moving a load more than a normal wave step. |
+| Tracked lifts (Wave 4 on): a rated incline or RDL top set scales that day's back-offs through reps to failure (±5%); a rated chin-up or dip top set moves its back-offs one 5 lb step | Partly | RTS chart (above) · Rule A/C clamp (above) | Truth part: the rating did nothing although the card said it set the back-offs. %1RM by reps to failure is the RTS chart's RPE-10 column (8 reps at RPE 7.5 = 72.3%), a coaching chart. Added-load lifts move by a step because a percentage of the added weight means nothing. |
+| Strength chart: a rated single or top set through the RPE chart, otherwise back-offs through reps to failure at their capped RPE; deload weeks, Red days and light sets left out | Partly | RTS chart (above) | Truth part: deload triples and Red-day 3×3s made the chart crash 25–30% every fourth week, and the chart's own note says a drop is what makes the gate say repeat. |
 | Rule D gate cut-offs: at or under the cap = clean, about RPE 8.5 = small, about RPE 9 = repeat, worse = reset | Judgment | v7 gate rule, applied through the RPE chart | It compares the single's e1RM with the e1RM the plan assumed at its cap. |
 | **Not adopted:** "clean only if the week-3 single is RPE 7" | Judgment | — | That rule assumes the base equals the e1RM. This program's base is submaximal, and its week-3 single is planned at RPE 8, so the program's own model is the yardstick. |
 | Unset future gates assume the small step (+2.5 bench, +5 squat and deadlift per wave) | Partly | Latella 2024, *Sports Med* 54(3):753 · Latella 2020, *J Strength Cond Res* 34(9):2412 | Competitive lifters gain about 7.5–12.5% in their first year, about 10% a year for men on average. The small step is about 13%/yr on bench, at the upper end. It is about 17–22%/yr on squat and deadlift, above the average. That part is a judgment: his squat and deadlift are low for his bench, and the rated gates correct the projection every wave. |
@@ -39,6 +41,13 @@ Sources were cite-checked against PubMed or the journal page on 2026-09-25. The 
 | Wednesday's no-pause squat growth sets: 72.3% of the week's planned e1RM (8 reps at about RPE 7.5) from Wave 4 | Partly | RTS chart (above) | They used the paused bar and ran near RPE 6 under a 7.5–8 label. |
 | Deload warm-ups stop under the light triple (no indicator or bridge single) from Wave 4 | Truth | — | The deload warmed up to singles at 78–81% of base before a 65% triple. |
 | Peak taper: volume near zero, intensity held, last heavy touch 4 days out, then rest | Evidence | Travis 2020, *Sports* 8(9):125 | Cut volume 30–70% (30–50% looks best) and keep intensity at 85% or more over a 1–2 week step taper. The review does not fix the day of the last heavy session, so 4 days out is a judgment. |
+
+## Logging
+
+| Plan element | Label | Source | What it supports |
+|---|---|---|---|
+| Rest timer starts itself after each logged set: 3 min after a main-lift set, 2.5 min after paused, OHP and tracked sets, 90 s after accessories, none after primers and fillers; it beeps at zero and counts the overrun | Judgment | Singer 2024 (below) | Resting more than 60 s helped hypertrophy a little; the longer main-lift rests are a strength-practice judgment. The beep needs a tap-created AudioContext on iOS; vibrate is not implemented in iOS Safari. |
+| A swap logs under its own key ("planned~swap"), so it never moves the planned exercise's rung | Judgment | — | The swap list keeps the same muscle and length bias; it is a convenience, not a claim that the swap is equivalent. |
 
 ## Hypertrophy: exercise selection and dose
 

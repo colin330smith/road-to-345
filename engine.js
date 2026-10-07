@@ -149,8 +149,7 @@ const PCT = {
 // 225 in nine incline steps: wave 11 on clean gates, wave 19 on the small-step default.
 // Did the lifter clear a standard for this exercise during a given wave?
 // null = no data (caller falls back to the schedule) · true = advance · false = hold.
-function clearedInWave(pkey, wave, minW, minReps, minSets) {
-  const ctx = HISTCTX;
+function clearedInWave(pkey, wave, minW, minReps, minSets, ctx = HISTCTX) {
   if (!ctx || !ctx.index) return null;
   const hist = ctx.index[pkey];
   if (!hist || !hist.length) return null;
@@ -198,12 +197,12 @@ const ARM_START = 13, ARM_GOAL = 16;
 
 // Log-adaptive base: a past wave advances only if its week-3 top set was cleared.
 // Unlogged waves track the anchor lift's gate, so casual use still progresses.
-function trackedCB(id, wave, gates) {
+function trackedCB(id, wave, gates, ctx = HISTCTX) {
   const T = TRACKED[id];
   let cb = T.start;
   for (let w = 1; w < wave; w++) {
     const target = R5(cb * T.top[2][0]);
-    const cleared = clearedInWave(T.key + "-top", w, target, T.top[2][1], 1);
+    const cleared = clearedInWave(T.key + "-top", w, target, T.top[2][1], 1, ctx);
     if (cleared === null) {
       // follow the anchor's gate, clamped to one step either way. An explicit base
       // (calibration or test) is a re-measurement of the anchor, not progress, so it
@@ -997,6 +996,35 @@ function e1rm(st, cap) {
   return st.r <= 10 ? Math.round(st.w * (1 + st.r / 30)) : null;
 }
 
+// one day of one lift for the strength chart. A rated single (or tracked top set) goes through the RPE
+// table; otherwise back-off sets go through reps to failure at their capped RPE (stored cap, else the
+// week's plan). Red days, deload weeks and light sets never count.
+function dayE1RM(sets, opts = {}) {
+  if (opts.red || opts.week === 4) return null;
+  const s = (sets || []).filter((x) => x && x.w > 0 && x.r >= 1 && !/-(light|red)$/.test(x.k || ""));
+  const isTop = (x) => /-(single|top)$/.test(x.k || ""), capOf = (x, d) => (Number.isFinite(x.cap) ? x.cap : d);
+  const top = [...s].reverse().find((x) => isTop(x) && rated(x));
+  if (top) return Math.round(top.w / pctReps(top.r, effRPE(top, capOf(top, opts.cap || 8))));
+  const backs = s.filter((x) => /-back$/.test(x.k || "") && x.r <= 10);
+  const wkRpe = { 1: 6.5, 2: 7, 3: 7.5 }[opts.week] || 7;
+  if (backs.length) return Math.round(Math.max(...backs.map((x) => x.w / pctReps(x.r, Number.isFinite(x.rpe) ? x.rpe : capOf(x, wkRpe)))));
+  const u = s.find(isTop);
+  return u ? Math.round(u.w / pctReps(u.r, capOf(u, opts.cap || 8))) : null;
+}
+// LOG-7: swaps for a busy gym, same muscle and length bias (judgment). A swapped exercise logs under
+// "<pkey>~<slug>", so it never moves the planned exercise's rung.
+const ALT = {
+  rowhi: ["Seated Cable Row (wide grip)", "T-Bar Row (chest pad, wide grip)"],
+  rowtue: ["Seated Cable Row (close grip)", "Single-Arm DB Row"],
+  legpress: ["Hack Squat", "Pendulum Squat"],
+  hamMon: ["Lying Leg Curl"], seatcurl3: ["Lying Leg Curl"],
+  preacher: ["DB Preacher Curl"],
+  ohtue: ["DB Overhead Extension"], ohthu: ["DB Overhead Extension"],
+  latwed: ["DB Lateral Raise"], lattue: ["Cable Lateral Raise"],
+  lowhigh: ["Incline DB Fly"],
+  revpec: ["Cable Rear-Delt Fly"], facepull: ["Band Face Pull"],
+};
+const altKey = (pkey, name) => pkey + "~" + pkeyOf(name);
 // yellow transform: single cap RPE 7, back-off −5% (or −1 set), 2 sets/accessory with nothing past
 // RPE 8 (no failure set, no partials), skip cardio. sessionFor applies it when histCtx.ready === "Y".
 function yellowW(block) {
@@ -1035,6 +1063,13 @@ function redSession(wave, day, gates) {
 const RPE_PCT_1 = { 6: 0.863, 6.5: 0.878, 7: 0.892, 7.5: 0.907, 8: 0.922, 8.5: 0.939, 9: 0.955, 9.5: 0.978, 10: 1 };
 const pctAt = (rpe) => RPE_PCT_1[Math.max(6, Math.min(10, Math.round(rpe * 2) / 2))];
 const capNum = (rpe) => { const m = String(rpe).match(/\d+(\.\d+)?/); return m ? +m[0] : 8; };
+// %1RM by reps to failure (reps done + reps in reserve): the RTS chart's RPE-10 column, interpolated.
+// 8 reps at RPE 7.5 = 10.5 to failure = 72.3%.
+const RTS_N = { 1: 1, 2: 0.955, 3: 0.922, 4: 0.892, 5: 0.863, 6: 0.837, 7: 0.811, 8: 0.786, 9: 0.762, 10: 0.739, 11: 0.707, 12: 0.68 };
+function pctReps(r, rpe) {
+  const n = Math.max(1, Math.min(12, r + 10 - (Number.isFinite(rpe) ? rpe : 10))), lo = Math.floor(n), hi = Math.ceil(n);
+  return lo === hi ? RTS_N[lo] : RTS_N[lo] + (RTS_N[hi] - RTS_N[lo]) * (n - lo);
+}
 // Rule B: a one-tap rating on the last set. Easy = ~1.5 RPE under the target,
 // On target = the target, Hard = ~1 over it.
 const RATE = { E: -1.5, O: 0, H: 1 };
@@ -1077,6 +1112,19 @@ function autoregulate(blocks, wave, week, day, ctx) {
         const w = R5(b.w * f);
         if (w === b.w) return { ...b, auto: { rule: "A", f } };
         return { ...b, w, planned: b.w, auto: { rule: "A", f }, note: `Auto: single ${e.w} @ RPE ${effRPE(e, capNum(sgl.rpe))} → back-offs ${w > b.w ? "up" : "down"} to ${w} (plan ${b.w})` };
+      }
+    }
+    // Rule A for the tracked lifts (Wave 4+): today's rated top set scales today's back-offs, clamped
+    // to ±5% (incline, RDL: through reps to failure); the chin-up and dip (added load) move one step.
+    if (b.type === "backoff" && TRACKED[b.lift] && wave >= 4) {
+      const top = blocks.find((x) => x.type === "single" && x.lift === b.lift);
+      const e = top ? ratedOn(ix, top.pkey, today) : null;
+      if (e) {
+        const T = TRACKED[b.lift], cap = capNum(top.rpe), r = effRPE(e, cap);
+        const w = T.added ? Math.max(0, b.w + (r <= cap - 1 ? T.step : r >= cap + 1 ? -T.step : 0))
+          : R5(b.w * Math.max(0.95, Math.min(1.05, (e.w / pctReps(e.r || top.reps, r)) / (top.w / pctReps(top.reps, cap)))));
+        if (w === b.w) return { ...b, auto: { rule: "A" } };
+        return { ...b, w, planned: b.w, auto: { rule: "A" }, note: `Auto: top set ${T.added ? "+" : ""}${e.w} × ${e.r} @ RPE ${r} → back-offs ${w > b.w ? "up" : "down"} to ${T.added ? "+" : ""}${w} (plan ${T.added ? "+" : ""}${b.w})` };
       }
     }
     // Rule C: the next exposure follows the last rating (within 14 days)
@@ -1137,6 +1185,6 @@ function withAutoGates(gates, ctx, upTo = 19) {
   return g;
 }
 
-const ENGINE = { kgDown, kgNear, attemptsKg, e1rm, LB_PER_KG, defaultGate, RPE_PCT_1, pctAt, RATE, RATE_LABEL, singleFactor, autoregulate, autoGate, withAutoGates, sessionDayUTC, GATE_CUTS, postTestBase, CALIBRATION, PROJ_DEFAULT, cbChain, etaWave, explicitCB, TRACKED, trackedCB, trackedFor, ARM_START, ARM_GOAL, clearedInWave, inclineCB, inclineFor, INCLINE_START, INCLINE_GOAL, pkeyOf, accStateLogged, R5, R25, START, LIFTS, LIFT_NAME, gateDelta, cbFor, cycleOf, macroOf, CYCLE_NAME, waveStartUTC, whereIs, NOTES, mainTables, ohpFor, ACC, accState, accFor, sessionFor, testAttempts, yellowW, yellowFor, redSession, WAVE1_MONDAY, MS_DAY, capNum, effRPE, targetsOf, peakEstimate, applyTestEntry, migrateTestMax, lbFloor, COMMANDS, PEAK_CAP,
+const ENGINE = { kgDown, kgNear, attemptsKg, e1rm, LB_PER_KG, defaultGate, RPE_PCT_1, pctAt, RATE, RATE_LABEL, singleFactor, autoregulate, autoGate, withAutoGates, sessionDayUTC, GATE_CUTS, postTestBase, CALIBRATION, PROJ_DEFAULT, cbChain, etaWave, explicitCB, TRACKED, trackedCB, trackedFor, ARM_START, ARM_GOAL, clearedInWave, inclineCB, inclineFor, INCLINE_START, INCLINE_GOAL, pkeyOf, accStateLogged, R5, R25, START, LIFTS, LIFT_NAME, gateDelta, cbFor, cycleOf, macroOf, CYCLE_NAME, waveStartUTC, whereIs, NOTES, mainTables, ohpFor, ACC, accState, accFor, sessionFor, testAttempts, yellowW, yellowFor, redSession, RTS_N, pctReps, dayE1RM, ALT, altKey, WAVE1_MONDAY, MS_DAY, capNum, effRPE, targetsOf, peakEstimate, applyTestEntry, migrateTestMax, lbFloor, COMMANDS, PEAK_CAP,
   FRAME_OPTS, FRAME_LABEL, DETAIL_OPTS, DETAIL_LABEL, DEFAULT_SPEC, isDefaultSpec, saturdaySession, sundaySession, sundayPlanned };
 if (typeof module !== "undefined") module.exports = ENGINE;

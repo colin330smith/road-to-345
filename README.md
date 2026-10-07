@@ -118,7 +118,7 @@ Everything is `localStorage` under the key `r345.v1`, on the device running the 
 
 ```js
 {
-  logs:     { "2026-07-20": { r: "G", sleep: 7.5, note: "", sets: { b1: [{w,r,rpe,k,rate}] } } },  // rate: "E"|"O"|"H" on the last set
+  logs:     { "2026-07-20": { r: "G", sleep: 7.5, note: "", swap: { rowhi: "Seated Cable Row (wide grip)" }, sets: { b1: [{w,r,rpe,k,rate,cap,ed}] } } },  // rate: "E"|"O"|"H" on the last set; cap = the RPE cap shown; ed = edited off-plan
   bw:       { "2026-07-20": 182 },
   gates:    { 2: { sq: "clean", bn: "repeat" }, 7: { cb: { bn: 265 } } },  // cb = 96% of a test max
   testMax:  { 6: { sq: { target: 365, made: 370 } } },  // target drives attempts; made (test day on) sets the next base at 96%

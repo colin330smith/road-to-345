@@ -274,6 +274,86 @@ T["data: a stalled network still opens the cached app; force update offline chan
   await ctx.close(); srv.close();
 };
 
+// ── B5 nutrition ──
+const dkSeq = (from, n, f) => { const o = {}; for (let i = 0; i < n; i++) o[new Date(Date.parse(from) + i * 86400000).toISOString().slice(0, 10)] = f(i); return o; };
+const TRIMSEED = { ...BASE, nutri: { mode: "trim", since: "2026-09-17" }, bw: dkSeq("2026-08-20", 39, (i) => 189 + (i % 3) * 0.4 - (i > 28 ? (i - 28) * 0.1 : 0)), meas: { "2026-08-20": { wa: 33, sh: 47 }, "2026-09-16": { wa: 34, sh: 47.25 } } };
+T["nutri: tapping the active mode changes nothing; ending a phase asks first"] = async (b) => {
+  const { ctx, page, errors } = await open(b, { time: "2026-09-27T07:05:00", state: TRIMSEED });
+  await page.evaluate(() => goTab("trends"));
+  ok(await page.$eval('#view .btn[aria-pressed="true"]', (e) => e.disabled && /TRIM/.test(e.textContent)), "the active TRIM button is not a button");
+  await page.evaluate(() => setNutriMode("trim"));
+  const S1 = await getS(page);
+  ok(S1.nutri.since === "2026-09-17" && /Trim ends 2026-10-29/.test(await page.$eval("#view", (e) => e.innerText)), "TRIM again keeps the phase: " + JSON.stringify(S1.nutri));
+  await page.click('#view .btn.ghost:text-matches("GAIN")');
+  ok(errors.some((e) => /End the TRIM phase that started 2026-09-17/.test(e)), "GAIN asks before ending the trim");
+  eq((await getS(page)).nutri, { mode: "gain", since: "2026-09-27", adj: 0 }, "after confirming, the gain phase starts today");
+  await page.fill("#nsince", "2026-09-20"); await page.$eval("#nsince", (e) => e.dispatchEvent(new Event("change")));
+  eq((await getS(page)).nutri.since, "2026-09-20", "the phase start can be corrected");
+  await ctx.close();
+};
+T["nutri: Trends gives one instruction, and the pace band sits on the data"] = async (b) => {
+  const { ctx, page } = await open(b, { time: "2026-09-27T07:05:00", state: TRIMSEED });
+  await page.evaluate(() => goTab("trends"));
+  const txt = await page.$eval("#view", (e) => e.innerText);
+  ok(!/\+150|Drop 150|drop 150/.test(txt), "no +150 / Drop 150 on a trim screen: " + (txt.match(/.{0,40}(\+150|[Dd]rop 150).{0,40}/) || [""])[0]);
+  const r = await page.evaluate(() => {
+    const svg = [...document.querySelectorAll("#view svg")].find((s) => s.querySelector('path[fill="rgba(255,178,36,.10)"]'));
+    if (!svg) return null;
+    const ys = svg.querySelector('path[fill="rgba(255,178,36,.10)"]').getAttribute("d").match(/,(-?[\d.]+)/g).map((x) => +x.slice(1));
+    const dy = [...svg.querySelectorAll("circle:not(.hit)")].map((c) => +c.getAttribute("cy"));
+    return { b: [Math.min(...ys), Math.max(...ys)], d: [Math.min(...dy), Math.max(...dy)] };
+  });
+  ok(r && r.b[0] <= r.d[1] && r.b[1] >= r.d[0], "the band's y-range overlaps the weigh-ins: " + JSON.stringify(r));
+  ok(/trim band \(0\.5–1% of bodyweight a week\)/.test(txt), "the legend reads from the pace table");
+  await ctx.close();
+};
+T["nutri: Apply moves the target the advice names"] = async (b) => {
+  const food = dkSeq("2026-09-20", 7, () => [{ id: "manual", name: "day", kcal: 2700, p: 200 }]);
+  const state = { ...BASE, nutri: { mode: "trim", since: "2026-09-17" }, bw: dkSeq("2026-09-17", 11, (i) => 192 - 0.35 * i), food };
+  const { ctx, page } = await open(b, { time: "2026-09-27T07:05:00", state });
+  await page.evaluate(() => goTab("trends"));
+  ok(/overshoot/.test(await page.$eval("#view", (e) => e.innerText)), "2,700 a day against 2,500 is the overshoot");
+  await page.click('#view .btn:text("Apply +200 kcal")');
+  const t2 = await page.$eval("#view", (e) => e.innerText);
+  ok(/✅ On target/.test(t2) && (await getS(page)).nutri.adj === 200, "after Apply +200 the 2,700 average is on target");
+  ok(!/Apply \+200/.test(t2) && /give it a week/.test(t2), "Apply waits a week before offering the next change");
+  await page.evaluate(() => goTab("today"));
+  ok(/\/ 2700/.test(await page.$eval("#view", (e) => e.innerText)), "Today's fuel bar reads / 2700");
+  await ctx.close();
+};
+T["nutri: logging only the arm never re-saves the waist"] = async (b) => {
+  const state = { ...TRIMSEED, nutri: { mode: "gain", since: "2026-09-01" } };
+  const { ctx, page } = await open(b, { time: "2026-09-27T07:05:00", state });
+  await page.evaluate(() => goTab("trends"));
+  eq(await page.$eval("#mw", (e) => [e.value, e.placeholder]), ["", "34"], "the waist input is empty, the last waist is its placeholder");
+  await page.fill("#ma", "14.75"); await page.click('#view .btn:text("Log")');
+  eq((await getS(page)).meas["2026-09-27"], { ar: 14.75 }, "only the arm is stored for today");
+  await ctx.close();
+};
+T["nutri: the food sheet lists the weekly items when gaining, never when trimming"] = async (b) => {
+  for (const mode of ["gain", "trim"]) {
+    const { ctx, page } = await open(b, { time: "2026-09-27T07:05:00", state: { ...BASE, nutri: { mode, since: "2026-09-01" } } });
+    await page.evaluate(() => foodSheet("2026-09-27"));
+    const t = await page.$eval("#sheet", (e) => e.innerText);
+    if (mode === "gain") ok(/Once a week/i.test(t) && /French fries/.test(t) && /Knife & Fork Ribs/.test(t) && /Shrimp Louie/.test(t), "gain sheet: fries, ribs and the Louie are one tap");
+    else ok(!/French fries/.test(t) && !/Knife & Fork Ribs/.test(t) && !/Once a week/i.test(t), "trim sheet: no fries, no Tier C");
+    await ctx.close();
+  }
+};
+T["nutri: no trim on unknown sleep or into Cycles 5-6"] = async (b) => {
+  const meas = { "2026-09-01": { wa: 33 }, "2026-10-01": { wa: 34 } };
+  let { ctx, page } = await open(b, { time: "2026-10-06T07:05:00", state: { ...BASE, nutri: { mode: "gain", since: "2026-09-01" }, bw: dkSeq("2026-09-01", 36, () => 190), meas } });
+  await page.evaluate(() => goTab("trends"));
+  let t = await page.$eval("#view", (e) => e.innerText);
+  ok(/LOG SLEEP FIRST/.test(t) && !/Start the trim/.test(t), "waist +1 with no sleep logged: log sleep first, no Start button");
+  await ctx.close();
+  ({ ctx, page } = await open(b, { time: "2026-11-16T07:05:00", state: { ...BASE, nutri: { mode: "gain", since: "2026-09-01" }, bw: dkSeq("2026-09-01", 77, () => 190), meas: { ...meas, "2026-11-15": { wa: 34 } }, logs: dkSeq("2026-11-10", 7, () => ({ sleep: 8 })) } }));
+  await page.evaluate(() => goTab("trends"));
+  t = await page.$eval("#view", (e) => e.innerText);
+  ok(/NO TRIM IN CYCLES 5–6/.test(t) && !/Start the trim/.test(t), "waist +1 in Wave 5: no trim, no Start button");
+  await ctx.close();
+};
+
 (async () => {
   const browser = await pw.chromium.launch();
   const only = process.argv[2];

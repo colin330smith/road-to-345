@@ -1000,6 +1000,13 @@ function meetAlign(meetDk, shifts, todayMs, lastLoggedMs) {
   }
   return { weeks, wave: w, segments: segments.map(({ from, weeks: n }) => ({ from, weeks: n })) };
 }
+// NUT-5: the plan's no-trim windows (Cycles 5-6, Intensification and Peak): from the Intensification
+// Monday to the peak's test Friday, on the shifted schedule. Pure.
+function noTrimWindows(off) {
+  const dk = (t) => new Date(t).toISOString().slice(0, 10), out = [];
+  for (let w = 5; w <= 19; w += 6) out.push({ from: dk(waveStartUTC(w, off || 0)), to: dk(sessionDayUTC(w + 1, 4, 5, off || 0)), label: `Wave ${w} (${CYCLE_NAME[cycleOf(w)]})`, after: `the Wave ${w + 1} test` });
+  return out;
+}
 // DATA-2: clean a stored state or a backup to the shapes the app reads. Whatever cannot be read is
 // dropped and counted, so a malformed file can never blank the app. {ok:false} = not a backup at all.
 function sanitizeState(d) {
@@ -1285,6 +1292,6 @@ function withAutoGates(gates, ctx, upTo = 19) {
   return g;
 }
 
-const ENGINE = { kgDown, kgNear, attemptsKg, e1rm, LB_PER_KG, defaultGate, RPE_PCT_1, pctAt, RATE, RATE_LABEL, singleFactor, autoregulate, autoGate, withAutoGates, sessionDayUTC, GATE_CUTS, postTestBase, CALIBRATION, PROJ_DEFAULT, cbChain, etaWave, explicitCB, TRACKED, trackedCB, trackedFor, ARM_START, ARM_GOAL, clearedInWave, inclineCB, inclineFor, INCLINE_START, INCLINE_GOAL, pkeyOf, accStateLogged, R5, R25, START, LIFTS, LIFT_NAME, gateDelta, cbFor, cycleOf, macroOf, CYCLE_NAME, waveStartUTC, whereIs, NOTES, mainTables, ohpFor, ACC, accState, accFor, sessionFor, testAttempts, yellowW, yellowFor, redSession, offsetAt, segsOf, planDateUTC, ratedAt, meetAlign, sanitizeState, migrateSetKeys, RTS_N, pctReps, dayE1RM, ALT, altKey, WAVE1_MONDAY, MS_DAY, capNum, effRPE, targetsOf, peakEstimate, applyTestEntry, migrateTestMax, lbFloor, COMMANDS, PEAK_CAP,
+const ENGINE = { kgDown, kgNear, attemptsKg, e1rm, LB_PER_KG, defaultGate, RPE_PCT_1, pctAt, RATE, RATE_LABEL, singleFactor, autoregulate, autoGate, withAutoGates, sessionDayUTC, GATE_CUTS, postTestBase, CALIBRATION, PROJ_DEFAULT, cbChain, etaWave, explicitCB, TRACKED, trackedCB, trackedFor, ARM_START, ARM_GOAL, clearedInWave, inclineCB, inclineFor, INCLINE_START, INCLINE_GOAL, pkeyOf, accStateLogged, R5, R25, START, LIFTS, LIFT_NAME, gateDelta, cbFor, cycleOf, macroOf, CYCLE_NAME, waveStartUTC, whereIs, NOTES, mainTables, ohpFor, ACC, accState, accFor, sessionFor, testAttempts, yellowW, yellowFor, redSession, offsetAt, segsOf, planDateUTC, ratedAt, meetAlign, sanitizeState, migrateSetKeys, noTrimWindows, RTS_N, pctReps, dayE1RM, ALT, altKey, WAVE1_MONDAY, MS_DAY, capNum, effRPE, targetsOf, peakEstimate, applyTestEntry, migrateTestMax, lbFloor, COMMANDS, PEAK_CAP,
   FRAME_OPTS, FRAME_LABEL, DETAIL_OPTS, DETAIL_LABEL, DEFAULT_SPEC, isDefaultSpec, saturdaySession, sundaySession, sundayPlanned };
 if (typeof module !== "undefined") module.exports = ENGINE;

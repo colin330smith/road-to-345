@@ -3,20 +3,10 @@ Companion to 💪 Powerlifting + Juicy Arms v7 · synced to the wave calendar + 
 REVISED 2026-09-07. The goal is 200 lb @ 15% body fat while hitting 315 bench / 405 squat / 495 deadlift. Everything below serves that. Hillstone Winter Park is now built in — most of your meals happen there.
 
 ━━━━━━━━━━━━━━━━━━
-🚨 RIGHT NOW — SEP 7 → SEP 17
+🚨 RIGHT NOW
 ━━━━━━━━━━━━━━━━━━
 
-192 lb on Sep 7, up from 182 on Aug 16. Ten pounds in three weeks.
-Roughly half is water, glycogen and gut content from the calorie jump — that leaves on its own. The other ~5 lb is tissue, mostly fat. Estimate: ~18%, which is the trim trigger.
-
-DO NOT CUT YET. Three things:
-1. Back to 3,050 today. Not lower. A cut now burns through water you're about to lose anyway and costs the start of Wave 3.
-2. Weigh DAILY for 10 days — same time, after the bathroom, before food. Log every one in Trends.
-3. Measure your waist at the navel TODAY and log it. Bodyweight up + waist flat = building. Bodyweight up + waist up = the overshoot.
-
-SEP 17 DECISION:
-• Scale ≤ 188 and waist within ½" of August → keep gaining at 3,050. It was mostly water.
-• Scale 189+ or waist up 1"+ → TRIM MODE (below) for 4 weeks. Ends at the Wave 3 gate on Oct 11. Stop at 15%. Resume gaining.
+The app's Trends tab runs the decision rule every day: the weekly rate is a line through every weigh-in since this phase began (10 days and 8 weigh-ins before it reads), the waist is compared with its value when the phase began, the sleep gate needs 3+ logged nights, and no trim starts or runs in Cycles 5–6. Follow its call. This note holds the plan; the app holds the numbers.
 During a trim, any lift that stalls gets "repeat" at the gate. Training does not change either way.
 
 ━━━━━━━━━━━━━━━━━━
@@ -33,7 +23,7 @@ During a trim, any lift that stalls gets "repeat" at the gate. Training does not
 200 lb @ 15% = 170 lb lean · FFMI ~25.5
 THE GAP: +16 lb of lean mass. Body fat has to come back DOWN 3 points on the way, then hold.
 
-This is still a GAINING project. The overshoot cost you one 4-week trim, not the plan.
+This is still a GAINING project. The September overshoot cost one short trim, not the plan.
 
 WHY THE TWO GOALS FEED EACH OTHER:
 At 200 lb, 3/4/5 is 1.57× / 2.02× / 2.47× bodyweight — strong regional lifter.
@@ -62,16 +52,18 @@ About 13 lb of scale weight per year, roughly 5–6 lb of it lean.
 
 TRIM MODE — only when body fat hits ~18%:
 2,500 cal · Protein 200 g · Fat 70 g · Carbs ~260 g
-Rate: −1 lb/week (~0.5% of bodyweight; faster than 1% a week costs muscle — Garthe 2011).
+Rate: −1 lb/week (~0.5% of bodyweight). Faster than about 1% a week risks more muscle loss (Garthe 2011: ~0.7%/wk kept more lean mass than ~1.0%/wk; the 1% line is a judgment). The 0.5–1% band is the contest-prep recommendation (Helms 2014 JISSN).
 SIX WEEKS AT MOST. Ends early when the waist is down 1" from the trim's start, or the 7-day average is down 6 lb. Resume gaining immediately.
-Sleep gate: don't START a trim while sleep averages under 7 h. A deficit on short sleep takes the loss from muscle (Nedeltcheva 2010).
+Sleep gate: don't START a trim until sleep is logged 3+ nights this week, averages 7 h+, and no night was under 6 h. A deficit on short sleep takes the loss from muscle (Nedeltcheva 2010).
 Pre-lift stays whey + banana on trim days. Cut carbs elsewhere.
-NEVER during Cycles 5–6.
+NEVER during Cycles 5–6 (Intensification and Peak). The app won't start a trim that can't run three weeks before Intensification, and it ends a running trim the day before it.
 
 ADJUSTMENT RULES (check Sundays) — all on 7-DAY AVERAGES, measured from where this phase started:
 • Gaining >0.5 lb/wk since the phase began → −150 cal (that's fat, not muscle)
 • Flat (<0.1 lb/wk) → +150 cal
-• Waist +1" since the phase began → start a trim (if sleep averages 7 h+)
+• Trimming faster than 1% a week → +200 cal
+• Waist +1" since the phase began → start a trim (sleep gate above; never into Cycles 5–6)
+• Applying a change: tap Apply in Trends; it moves the day's target (±400 at most). Give it a week on the scale before the next one.
 • Waist flat while bodyweight rises → perfect, keep going
 The app's Trends tab runs this rule for you.
 
@@ -101,12 +93,12 @@ Work a LUNCH shift? Swap Meal 2 and the shift meal. Everything else stays.
 🥗 A TRIM DAY (same clock, 2,500)
 ━━━━━━━━━━━━━━━━━━
 
-6:10 PRE (~120 · 25P): whey in water, no banana
+6:10 PRE (~220 · 25P): whey + banana — keep the carbs before a 7 AM lift
 8:45 MEAL 1 (~600 · 50P): 4 whole eggs + ½ cup oats in water + berries, no honey
 12:30 MEAL 2 (~600 · 50P): 1 cup rice + 7 oz chicken thigh + veg, no oil
 4:30 MEAL 3 (~350 · 40P): Greek yogurt + whey + ½ cup berries
 9:30 SHIFT MEAL (~600–700 · 50P): Hillstone Tier A TRIM list, below
-≈ 2,350–2,450 · ≈ 215 g protein
+≈ 2,370–2,470 · ≈ 215 g protein
 
 OFF-SHIFT NIGHT — trim plates:
 • Salmon plate: 6 oz fillet + 1 cup rice + veg ...... ~600 · 40P
@@ -284,7 +276,9 @@ THE PROTOCOL
 • Stop at 10%. That is a FLOOR, not a target. Efron at 5% for Baywatch said it wrecked his sleep and his head — that is a photoshoot, not a life.
 • Then three weeks back up to maintenance, +200 a week. Do not rebound-bulk.
 
-THE PREVIEW: the spring-2027 mini-cut to ~183 @ 12% is the same look at a lighter weight. You will have seen it once before you do it for real.
+THE PREVIEW: any trim before then (six weeks at most, outside Cycles 5–6) shows the same look at a lighter weight. There is no diet into the 2027 meet: at ~190–195 lb you are inside the 90 kg class (198.4 lb) without cutting (USPA Technical Rules 2025v1, 1.3.1).
+
+THE SHREDDED BACK is this phase's job. The back block builds the muscle under the fat; back work does not burn the fat over it (Ramirez-Campillo 2022), so the detail arrives with whole-body leanness. Judge it by a monthly rear relaxed and rear lat-spread photo (same light, same distance) next to the waist, not by one body-fat reading: tape, BIA and DXA all carry several points of individual error.
 
 ━━━━━━━━━━━━━━━━━━
 🚨 NON-NEGOTIABLES
@@ -294,7 +288,7 @@ THE PREVIEW: the spring-2027 mini-cut to ~183 @ 12% is the same look at a lighte
 ✅ Creatine 5 g daily, forever
 ✅ Weigh-in 4+ mornings/week — WEEKLY AVERAGE is the number (daily for the next 10 days)
 ✅ 7.5–9 hr sleep — this is the actual bottleneck on lean gain
-❌ No bulking past 18%. That's when a trim block starts, not a debate. (Sep 2026: this happened. It's fine. Four weeks.)
+❌ No bulking past 18%. That's when a trim block starts, not a debate. (Sep 2026: this happened. It's fine. Six weeks at most.)
 ❌ No long cuts. 6 weeks maximum, then back to building.
 ❌ No abandoning the surplus because you feel soft in week 3. Soft in a gain phase is normal. Ten pounds in three weeks is not.
 
@@ -302,7 +296,7 @@ THE PREVIEW: the spring-2027 mini-cut to ~183 @ 12% is the same look at a lighte
 📊 THE FOUR NUMBERS
 ━━━━━━━━━━━━━━━━━━
 
-Monthly, same conditions:
+Monthly, same conditions (plus photos: front relaxed, rear relaxed, rear lat spread — same light, same distance):
 1. BODYWEIGHT weekly average — should climb ~1 lb/month
 2. WAIST at navel — should stay nearly FLAT while #1 climbs. This is the whole game.
 3. SHOULDER girth at widest — should climb faster than waist

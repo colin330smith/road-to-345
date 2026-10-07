@@ -7,6 +7,15 @@ const MODES = {
 // Six weeks is the cap, not the target: the end conditions usually come first.
 const TRIM_WEEKS = 6;
 const TRIM_DONE = { waist: -1, lb: 6 };
+// One pace table drives the decision rule, the weekly table and the chart band (NUT-3).
+// Gain: lb a week. Trim: fraction of bodyweight a week (Helms 2014 JISSN: 0.5-1%; the 1% flag is a judgment).
+const PACE = { flat: 0.1, target: 0.25, fast: 0.5, trimSlow: 0.005, trimFast: 0.01 };
+// The rate is a least-squares line through every weigh-in of the phase (NUT-1); it needs this much data.
+const RATE_MIN = { n: 8, days: 10 };
+// Applied calorie adjustments stay within +/-400 of the mode's target (NUT-7, judgment).
+const ADJ_CAP = 400;
+// A trim shorter than three weeks is not worth starting (NUT-5, judgment).
+const TRIM_MIN_DAYS = 21;
 
 // Hillstone Winter Park. ESTIMATES built from the menu's own descriptions and normal
 // restaurant portions — Hillstone publishes no nutrition data. Choose by these; the
@@ -20,7 +29,7 @@ const HILLSTONE = [
   { id: "ahisal",   tier: "A", name: "Seared Ahi Tuna Salad (lunch)",                kcal: 600,  p: 45, gain: true, trim: true },
   { id: "gcs",      tier: "A", name: "Grilled Chicken Salad, peanut sauce on side",  kcal: 600,  p: 55, gain: true, trim: true, note: "With the sauce ~750" },
   { id: "kale",     tier: "A", name: "Emerald Kale & Chicken Salad",                 kcal: 700,  p: 50, gain: true, trim: true },
-  { id: "louie",    tier: "A", name: "Shrimp Louie (lunch)",                         kcal: 550,  p: 40, trim: true },
+  { id: "louie",    tier: "A", name: "Shrimp Louie (lunch)",                         kcal: 550,  p: 40, gain: true, trim: true },
   { id: "shrimp",   tier: "A", name: "Chilled Jumbo Shrimp (add-on)",                kcal: 250,  p: 40, gain: true, trim: true, addon: true, note: "When a meal is short on protein" },
   { id: "dip",      tier: "B", name: "French Dip + wild rice salad",                 kcal: 1050, p: 60, gain: true, note: "Fries version ~1,300. Once a week" },
   { id: "ribeye",   tier: "B", name: "Hawaiian Ribeye, fries → green veg",      kcal: 1050, p: 70, gain: true, note: "Fries version ~1,400. Once a week" },
@@ -29,10 +38,12 @@ const HILLSTONE = [
   { id: "crab",     tier: "B", name: "Jumbo Lump Crab Cakes + slaw",                 kcal: 700,  p: 40, gain: true },
   { id: "trout",    tier: "B", name: "Ruby Red Trout",                               kcal: 850,  p: 50, gain: true },
   { id: "tartare",  tier: "B", name: "Ahi Tuna Tartare",                             kcal: 500,  p: 35, gain: true, trim: true, note: "Starter-sized — pair with shrimp" },
-  { id: "ribs",     tier: "C", name: "Knife & Fork Ribs + fries + slaw",             kcal: 1500, p: 60, note: "Once a week, gaining days only" },
-  { id: "dings",    tier: "C", name: "Ding's Crispy Chicken Sandwich",               kcal: 1100, p: 45 },
-  { id: "fishsand", tier: "C", name: "Gulf Coast Fish Sandwich",                     kcal: 900,  p: 40 },
-  { id: "snapper",  tier: "C", name: "Pan-Fried Snapper + slaw",                     kcal: 800,  p: 45 },
+  { id: "ribs",     tier: "C", name: "Knife & Fork Ribs + fries + slaw",             kcal: 1500, p: 60, weekly: true, note: "Once a week, gaining days only" },
+  { id: "dings",    tier: "C", name: "Ding's Crispy Chicken Sandwich",               kcal: 1100, p: 45, weekly: true },
+  { id: "fishsand", tier: "C", name: "Gulf Coast Fish Sandwich",                     kcal: 900,  p: 40, weekly: true },
+  { id: "snapper",  tier: "C", name: "Pan-Fried Snapper + slaw",                     kcal: 800,  p: 45, weekly: true },
+  { id: "dipF",     tier: "C", name: "French Dip + fries",                           kcal: 1300, p: 60, weekly: true, note: "The fries version. Once a week" },
+  { id: "ribeyeF",  tier: "C", name: "Hawaiian Ribeye + fries",                      kcal: 1400, p: 70, weekly: true, note: "The fries version. Once a week" },
   { id: "spindip",  tier: "D", name: "Spinach & Artichoke Dip",                      kcal: 1200, p: 20 },
   { id: "queso",    tier: "D", name: "Jalapeño Queso",                          kcal: 800,  p: 15 },
   { id: "veggie",   tier: "D", name: "House-Made Veggie Burger",                     kcal: 900,  p: 25, note: "All the calories, none of the protein" },
@@ -51,7 +62,7 @@ const SIDES = [
   { id: "corn",      name: "Creamed corn",              kcal: 350, p: 5 },
   { id: "colcannon", name: "Potatoes colcannon",        kcal: 350, p: 5, gain: true },
   { id: "sprouts",   name: "Brussels sprouts w/ aioli", kcal: 350, p: 6 },
-  { id: "fries",     name: "French fries (beef tallow)", kcal: 500, p: 6, note: "Once a week, squat or deadlift day, never on a trim day" },
+  { id: "fries",     name: "French fries (beef tallow)", kcal: 500, p: 6, weekly: true, note: "Once a week, squat or deadlift day, never on a trim day" },
 ];
 // The home meals, portioned to the day. Shift meal comes from Hillstone.
 const HOME = [
@@ -101,7 +112,8 @@ const PHASES = [
   { id: "ck", name: "The CK cut", target: "~190 lb @ 11% \u00b7 same 170 lb lean", short: "~190 @ 11%", by: "10 weeks after Wave 45", mode: "trim", kcal: 2300, weeks: 10, floorBF: 10,
     gate: "Starts only once 200 @ 15% is real on the tape \u2014 waist and weekly average, not a good morning.",
     protein: [215, 230],
-    note: "\u22121 lb/wk, protein 215\u2013230 g (Helms 2014: 2.3\u20133.1 g per kg of lean mass), heavy lifting held with back-offs cut ~20%. A refeed day is allowed when hunger bites: it helps you stick to the cut, it does not save muscle (ICECAP). Stop at 10%: that is a floor, not a target. Then three weeks back up to maintenance." },
+    note: "\u22121 lb/wk, protein 215\u2013230 g (Helms 2014: 2.3\u20133.1 g per kg of lean mass), heavy lifting held with back-offs cut ~20%. A refeed day is allowed when hunger bites: it helps you stick to the cut, it does not save muscle (ICECAP). Stop at 10%: that is a floor, not a target. Then three weeks back up to maintenance.",
+    back: "The shredded back is this phase's job. Back work builds the muscle under the fat; it does not burn the fat over it (Ramirez-Campillo 2022), so the detail arrives with whole-body leanness. Judge it by a monthly rear relaxed and rear lat-spread photo (same light, same distance) next to the waist, not by a body-fat reading." },
 ];
 // Ultimate Pump Mode (the date-night primer). Not a training block: a 36-hour fullness + posture protocol.
 // A big session the night before flattens you; the pump is a 45-minute thing timed
@@ -170,7 +182,25 @@ const SUPPS = [
 ];
 const ALL = () => [...HILLSTONE, ...SIDES, ...HOME];
 const byId = (id) => ALL().find((x) => x.id === id) || null;
-const targets = (mode) => MODES[mode] || MODES.gain;
+// a mode's targets, moved by an applied adjustment (kcal; carbs carry it at 4 kcal/g)
+function targets(mode, adj) {
+  const m = MODES[mode] || MODES.gain, a = Math.max(-ADJ_CAP, Math.min(ADJ_CAP, Math.round(+adj || 0)));
+  return { ...m, kcal: m.kcal + a, c: m.c + Math.round(a / 4), adj: a };
+}
+// NUT-9: the food sheet's groups for a mode. Gaining adds the once-a-week items; trimming never shows them.
+function menuFor(mode) {
+  const m = mode === "trim" ? "trim" : "gain", homeOK = (x) => x.mode === m || x.mode === "any";
+  return [
+    { title: "Home meals", items: HOME.filter((x) => homeOK(x) && !x.grp) },
+    { title: "Home \u2014 breakfast alternatives (swap for meal 1)", items: HOME.filter((x) => homeOK(x) && x.grp === "bfast") },
+    { title: "Home \u2014 off-shift dinner plates", items: HOME.filter((x) => homeOK(x) && x.grp === "plate") },
+    { title: "Home \u2014 build your own", items: HOME.filter((x) => homeOK(x) && x.grp === "addon") },
+    { title: `Hillstone \u2014 Tier A (${m})`, items: HILLSTONE.filter((x) => x.tier === "A" && x[m]) },
+    { title: "Hillstone \u2014 Tier B (fries swapped)", items: m === "gain" ? HILLSTONE.filter((x) => x.tier === "B" && x.gain) : [] },
+    { title: "Sides & add-ons", items: SIDES.filter((x) => x[m] && !x.weekly) },
+    { title: "Once a week \u2014 gaining days only", items: m === "gain" ? [...HILLSTONE, ...SIDES].filter((x) => x.weekly) : [] },
+  ].filter((g) => g.items.length);
+}
 function dayTotals(entries) {
   let kcal = 0, p = 0;
   for (const e of entries || []) { kcal += +e.kcal || 0; p += +e.p || 0; }
@@ -197,42 +227,94 @@ function avgIn(map, fromDk, toDk, min) {
   return v.length >= (min || 3) ? +(v.reduce((a, b) => a + b, 0) / v.length).toFixed(1) : null;
 }
 const addDays = (dk, n) => msDk(dkMs(dk) + n * 86400000);
+// NUT-1: least-squares line through every reading in [fromDk, toDk]. slope is lb a day; at(dk) the fitted value.
+function fitIn(map, fromDk, toDk) {
+  const pts = Object.keys(map || {}).filter((k) => DK.test(k) && k >= fromDk && k <= toDk && Number.isFinite(+map[k])).sort()
+    .map((k) => [(dkMs(k) - dkMs(fromDk)) / 86400000, +map[k]]);
+  const n = pts.length;
+  if (n < 2) return { n, days: 0, slope: null, at: () => null };
+  const mx = pts.reduce((a, q) => a + q[0], 0) / n, my = pts.reduce((a, q) => a + q[1], 0) / n;
+  let sxx = 0, sxy = 0;
+  for (const [x, y] of pts) { sxx += (x - mx) * (x - mx); sxy += (x - mx) * (y - my); }
+  const slope = sxx > 0 ? sxy / sxx : null;
+  return { n, days: pts[n - 1][0] - pts[0][0], slope, at: (dk) => (slope == null ? null : my + slope * ((dkMs(dk) - dkMs(fromDk)) / 86400000 - mx)) };
+}
+// the first 7-day window from `since` with 3+ readings (scanning forward), when there is no valid fit
+function firstWindow(map, since, today) {
+  for (let d = since; d <= today; d = addDays(d, 1)) { const v = avgIn(map, d, addDays(d, 6)); if (v != null) return v; }
+  return null;
+}
+// NUT-5: when a trim that starts on `since` must end: six weeks, or the day before the next no-trim window
+function trimEndInfo(since, weeks, blocked) {
+  const cap = msDk(dkMs(since) + (weeks || TRIM_WEEKS) * 7 * 86400000);
+  const win = (blocked || []).filter((b) => b && b.from > since && addDays(b.from, -1) < cap).sort((a, b) => (a.from < b.from ? -1 : 1))[0];
+  return win ? { end: addDays(win.from, -1), win } : { end: cap, win: null };
+}
+// the plain-language call for one week's change in the 7-day average (NUT-3). Descriptive only:
+// calorie advice comes from decision() alone.
+function weekCall(d, mode, avg) {
+  if (d == null || !Number.isFinite(d)) return "";
+  if (mode === "trim") {
+    if (d >= 0) return "not losing";
+    return avg && -d > avg * PACE.trimFast ? "faster than 1%" : `losing ${(-d).toFixed(1)} (on plan)`;
+  }
+  return d < PACE.flat ? "flat" : d > PACE.fast ? "fast" : "on pace";
+}
 function decision(bw, meas, opts) {
   const o = Object.assign({ mode: "gain" }, opts || {});
   const bk = Object.keys(bw || {}).filter((k) => DK.test(k) && Number.isFinite(+bw[k])).sort();
   const today = o.today || bk[bk.length - 1];
   const since = o.since && DK.test(o.since) ? o.since : bk[0];
-  const out = { mode: null, avg: null, start: null, dW: null, rate: null, weeks: null, sleep: null, gate: null, days: bk.length };
+  const out = { mode: null, avg: null, start: null, dW: null, rate: null, weeks: null, sleep: null, minSleep: null, gate: null, kcal: 0, n: 0, end: null, days: bk.length };
   if (!today || !since) return { ...out, reason: "Log the scale for 3+ days first." };
   out.avg = avgIn(bw, addDays(today, -6), today);
-  out.start = avgIn(bw, since, addDays(since, 6));
+  // NUT-1: the rate is the least-squares slope of every weigh-in this phase; the start is the fitted
+  // value on the phase's first day (else the first 7-day window with 3+ readings)
+  const fit = fitIn(bw, since, today), fitOK = fit.slope != null && fit.n >= RATE_MIN.n && fit.days >= RATE_MIN.days;
+  out.n = fit.n;
+  out.start = fitOK ? +fit.at(since).toFixed(1) : firstWindow(bw, since, today);
   out.weeks = +((dkMs(today) - dkMs(since)) / (7 * 86400000)).toFixed(1);
   const mk = Object.keys(meas || {}).filter((k) => DK.test(k) && meas[k] && Number.isFinite(meas[k].wa)).sort();
   const base = [...mk].reverse().find((k) => k <= since) || mk.find((k) => k > since);
   const cur = mk[mk.length - 1];
   out.dW = base && cur && cur !== base ? +(meas[cur].wa - meas[base].wa).toFixed(2) : null;
+  // NUT-4: the sleep gate needs 3+ logged nights this week; any night under 6 h counts as short sleep
   out.sleep = avgIn(o.sleep, addDays(today, -6), today);
-  const shortSleep = out.sleep != null && out.sleep < 7;
+  const nights = Object.keys(o.sleep || {}).filter((k) => DK.test(k) && k >= addDays(today, -6) && k <= today && Number.isFinite(+o.sleep[k])).map((k) => +o.sleep[k]);
+  out.minSleep = nights.length ? Math.min(...nights) : null;
+  const shortSleep = out.sleep != null && (out.sleep < 7 || out.minSleep < 6);
+  const sleepTxt = () => (out.sleep < 7 ? `sleep is averaging ${out.sleep} h` : `one night this week was ${out.minSleep} h`);
   if (out.avg == null) return { ...out, reason: "Log the scale 3+ mornings this week: the 7-day average is the number." };
   const wTxt = out.dW == null ? "waist not re-measured this phase" : `waist ${out.dW >= 0 ? "+" : ""}${out.dW}" since the phase began`;
-  if (out.start != null && out.weeks >= 1) out.rate = +((out.avg - out.start) / out.weeks).toFixed(2);
+  if (fitOK) out.rate = +(fit.slope * 7).toFixed(2);
+  const rateTxt = `The rate needs 10 days and 8 weigh-ins this phase (you have ${fit.n}).`;
   if (o.mode === "trim") {
-    if (out.weeks >= TRIM_WEEKS) return { ...out, mode: "gain", reason: `Six weeks is the cap. Back to gaining. (${wTxt})` };
+    const { end, win } = trimEndInfo(since, TRIM_WEEKS, o.blocked);
+    out.end = end;
+    if (today >= end) return { ...out, mode: "gain", reason: win ? `${win.label} starts ${win.from}: back to gaining. No trims in Cycles 5\u20136. (${wTxt})` : `Six weeks is the cap. Back to gaining. (${wTxt})` };
     if (out.dW != null && out.dW <= TRIM_DONE.waist) return { ...out, mode: "gain", reason: `${wTxt}: the trim did its job. Back to gaining.` };
     if (out.start != null && out.start - out.avg >= TRIM_DONE.lb) return { ...out, mode: "gain", reason: `7-day average ${out.avg}, down ${(out.start - out.avg).toFixed(1)} from ${out.start}. Done. Back to gaining.` };
-    const fast = out.rate != null && -out.rate > out.avg * 0.01;
+    const fast = out.rate != null && -out.rate > out.avg * PACE.trimFast;
+    if (fast) out.kcal = 200;
     return { ...out, mode: "trim", gate: shortSleep ? "sleep" : null,
-      reason: `7-day average ${out.avg}${out.start != null ? ` vs ${out.start} at the start` : ""} · ${wTxt}. Keep trimming.${fast ? " Losing faster than 1% a week: add 200 kcal (the slower rate keeps more muscle, Garthe 2011)." : ""}${shortSleep ? ` Sleep is averaging ${out.sleep} h: under 7, the loss comes out of muscle. Fix sleep or end the trim early.` : ""}` };
+      reason: `7-day average ${out.avg}${out.start != null ? ` vs ${out.start} at the start` : ""}${out.rate != null ? `, ${out.rate} lb/wk` : ""} · ${wTxt}. Keep trimming.${out.rate == null ? " " + rateTxt : ""}${fast ? " Losing faster than 1% a week: add 200 kcal (a slower loss kept more lean mass, Garthe 2011)." : ""}${shortSleep ? ` ${sleepTxt()[0].toUpperCase() + sleepTxt().slice(1)}: on short sleep the loss comes out of muscle. Fix sleep or end the trim early.` : ""}` };
   }
   // gaining
   if (out.dW != null && out.dW >= 1) {
-    if (shortSleep) return { ...out, mode: "gain", gate: "sleep", reason: `${wTxt} says trim, but sleep is averaging ${out.sleep} h. A deficit on short sleep takes the loss from muscle. Get to 7 h+ first, then start the trim.` };
-    return { ...out, mode: "trim", reason: `${wTxt}: that is tissue, not water. Six-week trim.` };
+    // NUT-5: never into Intensification or Peak; NUT-4: never on unknown or short sleep
+    const hit = (o.blocked || []).find((b) => b && b.from <= addDays(today, TRIM_MIN_DAYS) && b.to >= today);
+    if (hit) return { ...out, mode: "gain", gate: "cycle", reason: `${wTxt}: a trim is due, but it would run into ${hit.label} from ${hit.from}. No trims in Cycles 5\u20136: start it after ${hit.after} (${hit.to}).` };
+    if (out.sleep == null) return { ...out, mode: "gain", gate: "sleep-unknown", reason: `${wTxt}: a trim is due, but sleep isn't logged. Log last night's sleep 3+ mornings this week to clear the sleep gate.` };
+    if (shortSleep) return { ...out, mode: "gain", gate: "sleep", reason: `${wTxt} says trim, but ${sleepTxt()}. A deficit on short sleep takes the loss from muscle. Get to 7 h+ every night first, then start the trim.` };
+    out.end = trimEndInfo(today, TRIM_WEEKS, o.blocked).end;
+    return { ...out, mode: "trim", reason: `${wTxt}: that is tissue, not water. Trim until ${out.end} at the latest.` };
   }
-  if (out.rate == null) return { ...out, mode: "gain", reason: `7-day average ${out.avg} · ${wTxt}. The rate needs a full week of this phase. Keep gaining.` };
-  const adj = out.rate > 0.5 ? " Gaining faster than 0.5 lb a week: drop 150 kcal, that extra is fat." : out.rate < 0.1 ? " Flat: add 150 kcal." : " On pace.";
+  if (out.rate == null) return { ...out, mode: "gain", reason: `7-day average ${out.avg} · ${wTxt}. ${rateTxt} Keep gaining.` };
+  out.kcal = out.rate > PACE.fast ? -150 : out.rate < PACE.flat ? 150 : 0;
+  const adj = out.kcal < 0 ? " Gaining faster than 0.5 lb a week: drop 150 kcal, that extra is fat." : out.kcal > 0 ? " Flat: add 150 kcal." : " On pace.";
   return { ...out, mode: "gain", reason: `7-day average ${out.avg}, ${out.rate >= 0 ? "+" : ""}${out.rate} lb/wk since the phase began · ${wTxt}.${adj}` };
 }
-const trimEnd = (sinceDk, weeks) => msDk(dkMs(sinceDk) + (weeks || TRIM_WEEKS) * 7 * 86400000);
-const NUTRI = { CERT, SUPPS, TRIM_DONE, avgIn, MODES, TRIM_WEEKS, PHASES, PRIMER, primerStage, primerLoads, roundLoad, HILLSTONE, SIDES, HOME, byId, targets, dayTotals, weekStats, decision, trimEnd };
+const trimEnd = (sinceDk, weeks, blocked) => trimEndInfo(sinceDk, weeks, blocked).end;
+const NUTRI = { CERT, SUPPS, TRIM_DONE, avgIn, MODES, TRIM_WEEKS, PHASES, PRIMER, primerStage, primerLoads, roundLoad, HILLSTONE, SIDES, HOME, byId, targets, dayTotals, weekStats, decision, trimEnd,
+  PACE, RATE_MIN, ADJ_CAP, TRIM_MIN_DAYS, fitIn, weekCall, menuFor };
 if (typeof module !== "undefined") module.exports = NUTRI;

@@ -776,6 +776,13 @@ console.log("\n── frame requirements ──");
   ok(N.HILLSTONE.some((x) => x.id === "ahi" && x.trim && x.kcal <= 600), "nutri: ahi ponzu is the trim anchor");
   eq(N.targets("gain").kcal, 3050, "nutri: gain 3,050"); eq(N.targets("trim").kcal, 2500, "nutri: trim 2,500");
   eq(N.targets("nope").kcal, 3050, "nutri: unknown mode falls back to gain");
+  // NUT-9: the food sheet's groups: gaining lists the once-a-week items, trimming never does
+  const menuIds = (m) => N.menuFor(m).flatMap((g) => g.items.map((x) => x.id));
+  ok(["fries", "ribs", "dings", "fishsand", "snapper", "louie", "dipF", "ribeyeF"].every((id) => menuIds("gain").includes(id)), "menu: gaining lists fries, Tier C, the fries versions and the Louie");
+  ok(!menuIds("trim").includes("fries") && N.HILLSTONE.filter((x) => "CD".includes(x.tier)).every((x) => !menuIds("trim").includes(x.id)), "menu: trimming lists no fries and no Tier C or D");
+  ok(N.HILLSTONE.filter((x) => x.tier === "D").every((x) => !menuIds("gain").includes(x.id)), "menu: Tier D is never listed");
+  ok(["gain", "trim"].every((m) => new Set(menuIds(m)).size === menuIds(m).length), "menu: no item is listed twice");
+  ok(N.HILLSTONE.filter((x) => x.weekly).every((x) => x.tier === "C"), "menu: the once-a-week Hillstone items are Tier C");
   const sum = (mode) => N.HOME.filter((x) => x.mode === mode && !x.grp).reduce((s, x) => s + x.kcal, 0); // base meals only — plates replace the shift meal
   ok(sum("gain") + 950 >= 3000 && sum("gain") + 950 <= 3200, `nutri: gaining day with the rotisserie lands ~3,050 (${sum("gain") + 950})`);
   ok(sum("trim") + 550 >= 2150 && sum("trim") + 700 <= 2550, `nutri: trim day with a trim anchor lands 2,200-2,500 (${sum("trim") + 550}-${sum("trim") + 700})`);
@@ -795,26 +802,87 @@ console.log("\n── frame requirements ──");
   eq(N.decision(bwSlow, waistFlat, G).mode, "gain", "decision: slow gain + flat waist = keep gaining");
   ok(/On pace/.test(N.decision(bwSlow, waistFlat, G).reason), "decision: ~0.3 lb/wk is on pace");
   ok(N.decision(bwFast, waistFlat, G).mode === "gain" && /drop 150/.test(N.decision(bwFast, waistFlat, G).reason), "decision: fast gain alone = trim the surplus, not a trim phase");
-  eq(N.decision(bwSlow, waistUp, G).mode, "trim", "decision: waist +1 since the phase began = trim");
+  const rested = series(15, 7, () => 7.5);
+  eq(N.decision(bwSlow, waistUp, { ...G, sleep: rested }).mode, "trim", "decision: waist +1 since the phase began, sleep 7 h+ = trim");
   const sleepy = series(15, 7, () => 6.2);
   const gated = N.decision(bwSlow, waistUp, { ...G, sleep: sleepy });
   ok(gated.mode === "gain" && gated.gate === "sleep", "decision: sleep under 7 h blocks starting a trim (Nedeltcheva 2010)");
+  // NUT-4: unknown sleep never starts a trim; one night under 6 h blocks it too
+  for (const [sl, lbl] of [[{}, "no sleep logged"], [series(19, 2, () => 5), "two nights at 5 h"]]) {
+    const d = N.decision(bwSlow, waistUp, { ...G, sleep: sl });
+    ok(d.mode === "gain" && d.gate === "sleep-unknown" && /sleep isn't logged/.test(d.reason), `decision: ${lbl} = log sleep first, no trim`);
+  }
+  eq(N.decision(bwSlow, waistUp, { ...G, sleep: series(19, 3, (i) => [8, 8, 5.5][i]) }).gate, "sleep", "decision: one 5.5 h night among three blocks the trim");
   eq(N.decision({}, waistFlat, G).mode, null, "decision: no scale data = no call");
   eq(N.decision(bwSlow, {}, G).mode, "gain", "decision: waist unlogged does not block a keep-gaining call");
   eq(N.decision(bwSlow, waistFlat, G).avg, N.avgIn(bwSlow, "2026-09-15", "2026-09-21"), "decision: the 7-day average is what it uses");
-  eq(N.decision(bwSlow, waistFlat, G).start, N.avgIn(bwSlow, "2026-09-01", "2026-09-07"), "decision: measured against the phase-start week, not a fixed number");
+  eq(N.decision(bwSlow, waistFlat, G).start, 188, "decision: measured from the fitted weight on the phase's first day, not a fixed number");
+  // NUT-1: the rate is the least-squares slope of every weigh-in this phase (daily, +/-0.4 lb alternating noise)
+  const noisy = (r, from) => (i) => from + (r / 7) * i + (i % 2 ? -0.4 : 0.4);
+  const dayDk = (i) => new Date(Date.UTC(2026, 8, 1 + i)).toISOString().slice(0, 10);
+  for (const r of [0.25, 0.55, 0.75, -2.0, -2.5]) {
+    const bw = series(1, 43, noisy(r, r > 0 ? 188 : 192)), mode = r > 0 ? "gain" : "trim";
+    let worst = 0;
+    for (let i = 14; i <= 42; i++) { const d = N.decision(bw, {}, { mode, since: "2026-09-01", today: dayDk(i) }); worst = Math.max(worst, d.rate == null ? 99 : Math.abs(d.rate - r)); }
+    ok(worst <= 0.08, `rate: true ${r} lb/wk is read within 0.08 from day 14 on (worst ${worst.toFixed(3)})`);
+  }
+  { const bw = series(1, 43, noisy(0.25, 188));
+    const says = [...Array(43).keys()].map((i) => N.decision(bw, {}, { mode: "gain", since: "2026-09-01", today: dayDk(i) }).reason);
+    ok(says.every((x) => !/Flat/.test(x)), "rate: a true +0.25 lb/wk never reads 'Flat'");
+    ok(/rate needs 10 days and 8 weigh-ins this phase \(you have 5\)/.test(says[4]), "rate: before 10 days and 8 weigh-ins the app says what it needs"); }
+  ok(/drop 150/.test(N.decision(series(1, 43, noisy(0.75, 188)), {}, { mode: "gain", since: "2026-09-01", today: dayDk(14) }).reason), "rate: a true +0.75 says drop 150 by day 14");
+  ok(/faster than 1%/.test(N.decision(series(1, 43, noisy(-2.0, 192)), {}, { mode: "trim", since: "2026-09-01", today: dayDk(14) }).reason), "rate: a trim at -2.0 lb/wk from 192 is flagged faster than 1% by day 14");
+  { // a sparse first week (2 weigh-ins) still gives a rate and an exit
+    const sp = {}; for (let i = 0; i <= 42; i++) if (i >= 7 || i === 0 || i === 4) sp[dayDk(i)] = 192 - (2.0 / 7) * i;
+    const d14 = N.decision(sp, {}, { mode: "trim", since: "2026-09-01", today: dayDk(14) });
+    ok(d14.rate != null && Math.abs(d14.rate + 2.0) <= 0.08 && d14.start === 192, `rate: a sparse first week still gives a rate (${d14.rate}) and a start (${d14.start})`);
+    const d28 = N.decision(sp, {}, { mode: "trim", since: "2026-09-01", today: dayDk(28) });
+    ok(d28.mode === "gain" && /Done/.test(d28.reason), "trim: a 7-lb drop on the 7-day average ends the trim: " + d28.reason); }
   // trim end conditions
   const T = { mode: "trim", since: "2026-09-01" };
   const bwCut = series(1, 50, (i) => 192 - i * 0.15);
   eq(N.decision(bwCut, {}, { ...T, today: "2026-09-21" }).mode, "trim", "trim: week 3, still going");
-  eq(N.decision(bwCut, {}, { ...T, today: "2026-10-13" }).mode, "gain", "trim: down 6 lb on the 7-day average = done");
+  ok(/Six weeks is the cap/.test(N.decision(bwCut, {}, { ...T, today: "2026-10-13" }).reason), "trim: six weeks is the cap (a slow trim never reaches -6 lb)");
   eq(N.decision(series(1, 50, () => 192), {}, { ...T, today: "2026-10-13" }).mode, "gain", "trim: six weeks is the cap");
   eq(N.decision(bwCut, { "2026-08-31": { wa: 34 }, "2026-09-18": { wa: 33 } }, { ...T, today: "2026-09-21" }).mode, "gain", "trim: waist down 1 inch = done");
-  ok(/1% a week/.test(N.decision(series(1, 30, (i) => 192 - i * 0.4), {}, { ...T, today: "2026-09-21" }).reason), "trim: faster than 1%/wk is flagged (Garthe 2011)");
+  ok(/1% a week/.test(N.decision(series(1, 30, (i) => 192 - i * 0.4), {}, { ...T, today: "2026-09-14" }).reason), "trim: faster than 1%/wk is flagged (Garthe 2011)");
+  // NUT-5: no trim starts into Cycles 5-6; a running trim ends the day before Wave 5
+  const BL = E.noTrimWindows(0);
+  eq(BL[0], { from: "2026-11-09", to: "2027-01-01", label: "Wave 5 (Intensification)", after: "the Wave 6 test" }, "no-trim window: the Wave 5 Monday to the Wave 6 test Friday");
+  eq(BL.map((b) => b.from), ["2026-11-09", "2027-04-26", "2027-10-11"], "no-trim windows: Waves 5-6, 11-12, 17-18");
+  const flat190 = series(1, 90, () => 190), nights = (from) => series(from, 7, () => 8);
+  const atNov16 = N.decision(flat190, { "2026-09-01": { wa: 33 }, "2026-11-15": { wa: 34 } }, { mode: "gain", since: "2026-09-01", today: "2026-11-16", sleep: nights(71), blocked: BL });
+  ok(atNov16.mode === "gain" && atNov16.gate === "cycle" && /Wave 5 \(Intensification\)/.test(atNov16.reason) && /after the Wave 6 test \(2027-01-01\)/.test(atNov16.reason), "no-trim: waist +1 on Nov 16 (Wave 5) = no trim: " + atNov16.reason);
+  const atOct6 = N.decision(flat190, { "2026-09-01": { wa: 33 }, "2026-10-05": { wa: 34 } }, { mode: "gain", since: "2026-09-01", today: "2026-10-06", sleep: nights(30), blocked: BL });
+  ok(atOct6.mode === "trim" && atOct6.end === "2026-11-08", `no-trim: a trim may start Oct 6, capped to end Nov 8 (${atOct6.mode}, ${atOct6.end})`);
+  eq(N.trimEnd("2026-10-06", 6, BL), "2026-11-08", "no-trim: trimEnd stops the day before Wave 5");
+  eq(N.trimEnd("2026-09-17", 6, BL), "2026-10-29", "no-trim: a trim that ends before Wave 5 keeps its six weeks");
+  eq(N.decision(flat190, { "2026-09-01": { wa: 33 }, "2026-10-19": { wa: 34 } }, { mode: "gain", since: "2026-09-01", today: "2026-10-20", sleep: nights(44), blocked: BL }).gate, "cycle", "no-trim: a trim that could not run three weeks before Wave 5 does not start (Oct 20)");
+  ok(N.decision(flat190, {}, { mode: "trim", since: "2026-10-06", today: "2026-11-07", blocked: BL }).mode === "trim" && /Wave 5 \(Intensification\) starts 2026-11-09/.test(N.decision(flat190, {}, { mode: "trim", since: "2026-10-06", today: "2026-11-09", blocked: BL }).reason), "no-trim: a trim since Oct 6 runs to Nov 7 and returns to gaining as Wave 5 starts");
+  // NUT-7: the stated adjustment can be applied; targets carry it
+  eq(N.targets("gain", 150).kcal, 3200, "targets: an applied +150 makes gain 3,200");
+  eq([N.targets("trim", 200).kcal, N.targets("trim", 200).c], [2700, 310], "targets: +200 in trim = 2,700 kcal, the carbs carry it (+50 g)");
+  eq([N.targets("gain", 900).kcal, N.targets("trim", -900).kcal], [3450, 2100], "targets: an adjustment is capped at +/-400");
+  eq([N.decision(bwFast, waistFlat, G).kcal, N.decision(bwSlow, waistFlat, G).kcal, N.decision(series(1, 21, () => 188), waistFlat, G).kcal], [-150, 0, 150], "decision: the advice carries its kcal (fast -150, on pace 0, flat +150)");
+  eq(N.decision(series(1, 30, (i) => 192 - i * 0.4), {}, { ...T, today: "2026-09-14" }).kcal, 200, "decision: a trim losing faster than 1% proposes +200");
+  // NUT-3: the weekly call describes; only the decision rule gives calorie advice
+  eq([N.weekCall(0.6, "gain"), N.weekCall(0.05, "gain"), N.weekCall(0.3, "gain"), N.weekCall(0.2, "trim"), N.weekCall(-0.8, "trim", 190), N.weekCall(-2.5, "trim", 190)], ["fast", "flat", "on pace", "not losing", "losing 0.8 (on plan)", "faster than 1%"], "weekCall: descriptive calls by mode");
+  ok([-3, -1, -0.5, 0, 0.05, 0.2, 0.6, 1].every((d) => ["gain", "trim"].every((m) => !/cal|\+1\d0|−1\d0|-1\d0/.test(N.weekCall(d, m, 190)))), "weekCall: never gives calorie advice");
+  eq(N.PACE, { flat: 0.1, target: 0.25, fast: 0.5, trimSlow: 0.005, trimFast: 0.01 }, "pace table: one source for the rule, the table and the band");
   eq(N.TRIM_WEEKS, 6, "trim is six weeks at most");
   eq(N.trimEnd("2026-09-17"), "2026-10-29", "nutri: 6-week trim from Sep 17 ends Oct 29");
   // pre-lift carbs stay in the trim
   ok(/banana/i.test(N.byId("preT").name), "trim pre-lift is whey + banana");
+  { // NUT-6: the nutrition note carries the current rules, and the trim day adds up
+    const note = require("fs").readFileSync(__dirname + "/notes/nutrition.txt", "utf8");
+    ok(!/Four weeks|for 4 weeks|4-week trim|Oct 11|\u2264 188|189\+|mini-cut to ~183/.test(note), "nutrition note: no retired trim rules (4 weeks, Oct 11, 188/189, the spring mini-cut)");
+    const trimDay = note.slice(note.indexOf("A TRIM DAY"), note.indexOf("BREAKFAST \u2014 POST-LIFT"));
+    ok(/6:10 PRE[^\n]*banana/.test(trimDay) && !/no banana/.test(trimDay), "nutrition note: the trim-day pre-lift keeps the banana");
+    const parts = [...trimDay.matchAll(/\(~([\d,]+)(?:\u2013([\d,]+))? \u00b7/g)].map((m) => [+m[1].replace(",", ""), +(m[2] || m[1]).replace(",", "")]);
+    const tot = trimDay.match(/\u2248 ([\d,]+)\u2013([\d,]+) \u00b7/);
+    eq([parts.reduce((a, x) => a + x[0], 0), parts.reduce((a, x) => a + x[1], 0)], [+tot[1].replace(",", ""), +tot[2].replace(",", "")], "nutrition note: the trim-day total is the sum of its meals");
+    ok(/Cycles 5\u20136/.test(note) && /no night was under 6 h/.test(note) && /Six weeks at most/.test(note), "nutrition note: no trims in Cycles 5-6, the sleep gate's short-night rule, six weeks at most");
+  }
   // supplements: certified, dosed by the evidence
   ok(/NSF Certified for Sport/.test(N.CERT) && /Informed Sport/.test(N.CERT), "every supplement must be NSF Certified for Sport or Informed Sport");
   const caf = N.SUPPS.find((x) => x.name === "Caffeine");

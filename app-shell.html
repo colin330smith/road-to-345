@@ -206,6 +206,7 @@ function crisp(cv) {
    imported backups) is escaped via esc() before touching markup, and
    imports are shape-validated. */
 const KEY = "r345.v1";
+function todayUTC0() { const n = new Date(); return Date.UTC(n.getFullYear(), n.getMonth(), n.getDate()); }
 const DK_RE = /^\d{4}-\d{2}-\d{2}$/;
 let S;
 try { S = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { S = {}; }
@@ -214,6 +215,7 @@ S.settings = S.settings || { offsetWeeks: 0 };
 S.spec = S.spec || { ...E.DEFAULT_SPEC };
 if (!S.v32) { S.spec.sundayOn = false; S.v32 = 1; } // v32: Sunday is rest by default (stored specs predate it)
 S.ledger = S.ledger || {};
+if (!S.v62tm) { const m = E.migrateTestMax(S.testMax, S.gates, todayUTC0(), (S.settings && S.settings.offsetWeeks) || 0); S.testMax = m.testMax; S.gates = m.gates; S.v62tm = 1; try { localStorage.setItem("r345.v1", JSON.stringify(S)); } catch (e) {} }
 const save = () => { _gx = null; try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} };
 // effective gates: what the lifter set, plus Rule D (rated singles) wherever he has not
 let _gx = null;
@@ -226,7 +228,7 @@ function histIndex() {
     const t = Date.parse(dk);
     for (const arr of Object.values(log.sets)) for (const st of arr) {
       if (!st || !st.k) continue;
-      (ix[st.k] = ix[st.k] || []).push({ t, w: +st.w || 0, r: +st.r || 0, rpe: Number.isFinite(st.rpe) ? st.rpe : null, rate: st.rate || null });
+      (ix[st.k] = ix[st.k] || []).push({ t, w: +st.w || 0, r: +st.r || 0, rpe: Number.isFinite(st.rpe) ? st.rpe : null, rate: st.rate || null, cap: Number.isFinite(st.cap) ? st.cap : null });
     }
   }
   return ix;
@@ -242,19 +244,19 @@ let tab = "today";
 /* ── movement library ── */
 const MOVES = {
   sq:{name:"Competition Squat",grp:"Main Lifts",arch:"squat",yt:"low bar squat technique powerlifting",
-    cues:["Big 360° brace before every rep","Same walkout every time: two steps, set, breathe","Competition depth — hip crease below the knee","Drive mid-foot; knees track the toes"],
+    cues:["Big 360° brace before every rep","Same walkout every time: two steps, set, breathe","Competition depth — hip crease below the knee","Drive mid-foot; knees track the toes","Meet commands: stand still for SQUAT, hold the lockout until RACK"],
     cap:"Singles & back-offs stop at RPE 8. No grinders, ever."},
   bn:{name:"Competition Bench",grp:"Main Lifts",arch:"bench",yt:"competition bench press setup pause",
-    cues:["Shoulder blades pinched and down, feet planted","Touch → 1-sec pause → press, every rep","Bar path: low chest to over the shoulders","Wrists stacked over elbows"],
+    cues:["Shoulder blades pinched and down, feet planted","Touch → 1-sec pause → press, every rep","Bar path: low chest to over the shoulders","Wrists stacked over elbows","Meet commands: START (arms locked), PRESS (bar still on the chest), RACK. Never move before the call"],
     cap:"Singles & back-offs stop at RPE 8."},
   dl:{name:"Competition Deadlift",grp:"Main Lifts",arch:"hinge",yt:"conventional deadlift setup technique",
-    cues:["Reset and re-brace EVERY rep — no touch-and-go","Pull the slack out before the bar breaks","Push the floor away; bar drags the thighs","Lockout is hips through, not lean-back"],
+    cues:["Reset and re-brace EVERY rep — no touch-and-go","Pull the slack out before the bar breaks","Push the floor away; bar drags the thighs","Lockout is hips through, not lean-back","Meet command: hold the lockout until DOWN, then lower with both hands"],
     cap:"Singles & back-offs stop at RPE 8."},
   ps:{name:"Paused Squat",grp:"Main Lifts",arch:"squat",yt:"paused squat 2 second",
     cues:["2-sec motionless pause in the hole","Stay braced and upright through the pause","Dead stop then drive — no sink-and-heave","Never becomes a second heavy squat day"],
     cap:"Capped at its listed RPE (6–7). Usually 60–72% of CB."},
   pb:{name:"Paused Bench",grp:"Main Lifts",arch:"bench",yt:"paused bench press competition",
-    cues:["Pause like a meet ref is watching","Identical pause length every rep","Keep tension — don't relax onto the chest"],
+    cues:["Pause like a meet ref is watching","Identical pause length every rep","Keep tension — don't relax onto the chest","Hold until a partner says PRESS, and have him vary the count"],
     cap:"Capped at listed RPE. Usually 62–75% of CB."},
   ohp:{name:"Overhead Press",grp:"Main Lifts",arch:"ohp",yt:"overhead press technique strict",
     cues:["Squeeze glutes, ribs down — no excessive lean-back","Bar finishes over the ears","3×6 → add reps to 3×8 clean → +5 lb → back to 3×6"],
@@ -465,10 +467,9 @@ function renderToday() {
 
   if (loc.day === 6 || loc.day === 7) inner += `<div class="rowbtns" style="margin:-2px 0 6px"><button class="btn ghost" onclick="specSheet()">⚙ Specialize · ${esc(E.FRAME_LABEL[S.spec.framePrimary])}</button></div>`;
 
-  const hctx = { index: histIndex(), offsetWeeks: off };
+  const hctx = { index: histIndex(), offsetWeeks: off, testMax: S.testMax, ready };
   let blocks = E.sessionFor(loc.wave, loc.week, loc.day, GX(), S.spec, hctx);
   if (ready === "R") blocks = E.redSession(loc.wave, loc.day, GX());
-  else if (ready === "Y") blocks = blocks.map(E.yellowW).filter(Boolean);
 
   let planned = 0, doneN = 0;
   { const stage = NUTRI.primerStage(S.primer.date, dk);
@@ -507,6 +508,7 @@ function renderToday() {
     if (b.type === "test") {
       inner += `<div class="card single"><div class="eyebrow sig">${esc(b.name)}</div><p class="note">${esc(b.note || "")}</p>`;
       if (b.attempts) { const kg = E.attemptsKg(b.attempts);
+        if (b.est) inner += `<p class="note">${E.LIFTS.map((L) => { const s = b.est.src[L]; return `${E.LIFT_NAME[L]}: est. max ${Math.round(b.est.est[L])} lb ${s ? `(Wk${s.week} single ${s.w} @ RPE ${s.rpe})` : "(plan: no rated peak single yet)"}`; }).join(" · ")}. A target you typed on the Road sheet wins.</p>`;
         inner += `<div class="tablewrap"><table><tr><th></th><th>Opener</th><th>2nd</th><th>3rd</th></tr>${E.LIFTS.map((L) => `<tr><td>${E.LIFT_NAME[L]}</td><td><b>${kg[L].a1} kg</b><br><small class="note">${b.attempts[L].a1} lb</small></td><td><b>${kg[L].a2} kg</b><br><small class="note">${b.attempts[L].a2} lb</small></td><td><b>${kg[L].a3} kg</b><br><small class="note">${b.attempts[L].a3} lb · ${esc(b.attempts[L].a3note)}</small></td></tr>`).join("")}</table></div>
           <p class="note">USPA loads kilograms. Hand in the kg numbers. The opener is rounded down on purpose.</p>`; }
       inner += `</div>`; return;
@@ -523,8 +525,8 @@ function renderToday() {
       <div class="setrow">${Array.from({ length: isSingle ? 1 : b.sets }, (_, si) =>
         si < sets.length
           ? `<button class="chip hit" onclick="editSet('${dk}','${bkey}',${si})">${sets[si].w === 0 ? "BW" : esc(String(sets[si].w))}×${esc(String(sets[si].r))}${sets[si].rpe != null ? "@" + esc(String(sets[si].rpe)) : ""}${sets[si].rate ? " · " + esc(E.RATE_LABEL[sets[si].rate] || "") : ""}</button>`
-          : `<button class="chip ${b.lastHard && si === b.sets - 1 ? "hard" : ""}" onclick="hitSet('${dk}','${bkey}',${b.w},${b.repN ?? b.reps},'${esc(b.pkey || "")}')" aria-label="Log set ${si + 1}${b.lastHard && si === b.sets - 1 ? ` — take this one to RPE 9 to 10${b.lp ? ", then 3 to 5 lengthened partials" : ""}` : ""}">×${esc(String(b.reps))}${b.lastHard && si === b.sets - 1 ? `<small>→9–10${b.lp ? " +LP" : ""}</small>` : ""}</button>`).join("")}
-        ${sets.length >= (isSingle ? 1 : b.sets) ? `<button class="chip add" onclick="hitSet('${dk}','${bkey}',${b.w},${b.repN ?? b.reps},'${esc(b.pkey || "")}')">＋</button>` : ""}
+          : `<button class="chip ${b.lastHard && si === b.sets - 1 ? "hard" : ""}" onclick="hitSet('${dk}','${bkey}',${b.w},${b.repN ?? b.reps},'${esc(b.pkey || "")}',${["single", "backoff", "paused", "ohp"].includes(b.type) ? E.capNum(b.rpe) : "null"})" aria-label="Log set ${si + 1}${b.lastHard && si === b.sets - 1 ? ` — take this one to RPE 9 to 10${b.lp ? ", then 3 to 5 lengthened partials" : ""}` : ""}">×${esc(String(b.reps))}${b.lastHard && si === b.sets - 1 ? `<small>→9–10${b.lp ? " +LP" : ""}</small>` : ""}</button>`).join("")}
+        ${sets.length >= (isSingle ? 1 : b.sets) ? `<button class="chip add" onclick="hitSet('${dk}','${bkey}',${b.w},${b.repN ?? b.reps},'${esc(b.pkey || "")}',${["single", "backoff", "paused", "ohp"].includes(b.type) ? E.capNum(b.rpe) : "null"})">＋</button>` : ""}
       </div>${done && b.pkey && b.w > 0 ? (() => { const cur = sets[sets.length - 1].rate;
         return `<div class="seg rate" role="group" aria-label="How did the last set feel">${["E", "O", "H"].map((r) => `<button class="${r === "E" ? "g" : r === "O" ? "y" : "r"} ${cur === r ? "on" : ""}" onclick="rateSet('${dk}','${bkey}','${r}')">${E.RATE_LABEL[r]}</button>`).join("")}</div>
           ${cur ? "" : `<p class="note" style="margin-top:2px">${isSingle ? "Rate the single: it sets today's back-offs and the gate." : "Rate the last set: it sets next time's load."}</p>`}`; })() : ""}</div>`;
@@ -618,11 +620,12 @@ window.setLog = (dk, k, v) => {
   save();
 };
 window.setReady = (dk, r) => { S.logs[dk] = S.logs[dk] || {}; S.logs[dk].r = r; save(); render(); };
-window.hitSet = (dk, bkey, w, reps, pk) => {
+window.hitSet = (dk, bkey, w, reps, pk, cap) => {
   S.logs[dk] = S.logs[dk] || {}; S.logs[dk].sets = S.logs[dk].sets || {};
   const arr = (S.logs[dk].sets[bkey] = S.logs[dk].sets[bkey] || []);
   const st = { w, r: reps, rpe: null };
   if (pk) st.k = pk;
+  if (Number.isFinite(cap)) st.cap = cap; // the RPE cap shown when the set was logged (Yellow single = 7)
   arr.push(st); save(); render();
 };
 // Rule B: one tap on the last set. Tapping the current rating again clears it.
@@ -702,7 +705,7 @@ function renderRoad() {
       return `<tr><td>${E.LIFT_NAME[L]}</td><td>${cbNow[L]}</td><td>${E.cbFor(19, GX())[L]}</td><td>${GOAL[L]}</td><td>${eta ? "Wave " + eta + " · " + fmtShort(E.waveStartUTC(eta, off)) + " " + new Date(E.waveStartUTC(eta, off)).getUTCFullYear() : "beyond Wave 80"}</td></tr>`; }).join("");
     h += `<div class="card" style="border-color:#2c5c42"><div class="eyebrow" style="color:var(--go)">Where the pace lands you</div>
     <div class="tablewrap"><table><tr><th>Lift</th><th>Now</th><th>Wave 19</th><th>Goal</th><th>Base reaches goal</th></tr>${rows}</table></div>
-    <p class="note" style="margin-top:8px">Computed, not promised: your set gates, then the small step for every gate still ahead. Clean gates pull these dates in; repeats push them out. A base is ~96% of a true max, so the meet total runs a little ahead of this table.</p>
+    <p class="note" style="margin-top:8px">Computed, not promised: your set gates, then the small step for every gate still ahead. Clean gates pull these dates in; repeats push them out. Singles that land on target put your estimated max at about 0.95–1.0 × base; the peak's rated singles set the test targets.</p>
     <p class="note">Gaining is the strength plan: at 200 lb, 3/4/5 is 1.57× / 2.02× / 2.47× bodyweight. At 180 it would be 1.75× / 2.25× / 2.75×.</p></div>`; }
   $("#view").innerHTML = h;
 }
@@ -722,13 +725,15 @@ window.waveSheet = (w) => {
     h += `<tr><td>Paused SQ</td>${[0,1,2].map((i) => `<td>${t.ps[i]}</td>`).join("")}<td>${t.ps[3]}</td></tr>
           <tr><td>Paused BN</td>${[0,1,2].map((i) => `<td>${t.pb[i]}</td>`).join("")}<td>${t.pb[3]}</td></tr></table></div>`;
   } else {
-    const tm = S.testMax[w] || {};
-    const att = E.testAttempts(cb, tm), attKg = E.attemptsKg(att);
-    h += `<p class="capnote warn">Peak wave: Wk1 single@8 + 3×3 · Wk2 single@8–8.5 + 3×2 · Wk3 opener practice · Wk4 taper + TEST Friday.</p>
+    const row = S.testMax[w] || {}, ent = (L) => (row[L] && typeof row[L] === "object" ? row[L] : { target: row[L] });
+    const pe = E.peakEstimate(w, GX(), { index: histIndex(), offsetWeeks: off }, 4);
+    const att = E.testAttempts(cb, E.targetsOf(S.testMax, w), pe.est), attKg = E.attemptsKg(att);
+    const canMade = todayUTC() >= E.sessionDayUTC(w, 4, 5, off);
+    h += `<p class="capnote warn">Peak wave: Wk1 single@8 + 3×3 · Wk2 single@8–8.5 + 3×2 · Wk3 the opener you will hand in · Wk4 taper + TEST Friday.</p>
       <div class="eyebrow" style="margin-top:10px">Test-day attempts</div>
-      <div class="tablewrap"><table><tr><th>Lift</th><th>Target / made (edit)</th><th>Opener</th><th>2nd</th><th>3rd</th></tr>
-      ${E.LIFTS.map((L) => `<tr><td>${E.LIFT_NAME[L]}</td><td><input type="number" step="5" value="${tm[L] || att[L].max}" onchange="setTM(${w},'${L}',this.value)"></td><td>${attKg[L].a1} kg<br><small class="note">${att[L].a1}</small></td><td>${attKg[L].a2} kg<br><small class="note">${att[L].a2}</small></td><td>${attKg[L].a3} kg<br><small class="note">${att[L].a3}</small></td></tr>`).join("")}</table></div>
-      <p class="note">Target and made lifts are in lb; attempts show the kg you hand in (USPA loads kg, 2.5 kg steps). Opener ~91%, 2nd ~95.5%, 3rd = target. After the test, enter your best MADE lift: the next wave's base becomes 96% of it.</p>`;
+      <div class="tablewrap"><table><tr><th>Lift</th><th>Target</th><th>Made</th><th>Opener</th><th>2nd</th><th>3rd</th></tr>
+      ${E.LIFTS.map((L) => `<tr><td>${E.LIFT_NAME[L]}<br><small class="note">est. ${Math.round(pe.est[L])}</small></td><td><input type="number" step="5" data-f="target" placeholder="${att[L].max}" value="${ent(L).target ?? ""}" onchange="setTestEntry(${w},'${L}','target',this.value)"></td><td><input type="number" step="5" data-f="made" ${canMade ? "" : "disabled"} placeholder="${canMade ? "lb" : "test day"}" value="${ent(L).made ?? ""}" onchange="setTestEntry(${w},'${L}','made',this.value)"></td><td>${attKg[L].a1} kg<br><small class="note">${att[L].a1}</small></td><td>${attKg[L].a2} kg<br><small class="note">${att[L].a2}</small></td><td>${attKg[L].a3} kg<br><small class="note">${att[L].a3}</small></td></tr>`).join("")}</table></div>
+      <p class="note">Lb in, kg out (USPA loads kg, 2.5 kg steps; the opener rounds down). Empty target = your estimated max × 1.02 (from this wave's rated singles; a taper allowance, judgment). Opener ~91%, 2nd ~95.5%, 3rd = target. MADE opens on test day: the next wave's base becomes 96% of it. Clear a box to undo it.</p>`;
   }
   if (w < 19) h += gateEditor(w + 1);
   openSheet(h);
@@ -738,6 +743,8 @@ function gateEditor(intoWave) {
   return `<hr class="divider"><div class="eyebrow sig">Gate into Wave ${intoWave}</div>
     <p class="note">Per lift: Wk3 single ≤RPE 8 + back-offs in cap + technique stable + 3 normal weeks = clean. Rate your singles and the app proposes the gate (Rule D); a gate you tap here always wins.</p>
     ${E.LIFTS.map((L) => { const cur = g[L] || E.defaultGate(intoWave), a = auto[L], pinned = E.explicitCB(intoWave, GX(), L) != null;
+      const madeE = (S.testMax[intoWave - 1] || {})[L], made = madeE && typeof madeE === "object" ? madeE.made : null;
+      if (pinned && made != null) return `<div style="margin:8px 0"><b style="font-size:13px">${E.LIFT_NAME[L]}</b><div class="note">Base set from your made ${made} (96%): ${E.cbFor(intoWave, GX())[L]}. Clear Made to use the gate buttons.</div></div>`;
       return `<div style="margin:8px 0"><b style="font-size:13px">${E.LIFT_NAME[L]}</b>
       ${pinned ? `<div class="note">Base set directly: ${E.cbFor(intoWave, GX())[L]}.</div>` : ""}
       ${a && !set[L] ? `<div class="note">Auto from the Wk${a.week} single ${a.w} @ RPE ${a.rpe}: ${esc(a.result)} (${Math.round(a.ratio * 100)}% of the planned e1RM).</div>` : !set[L] && !pinned ? `<div class="note">Not set: ${intoWave > 3 ? "the projection assumes the small step" : "assumed clean"}.</div>` : ""}
@@ -746,11 +753,10 @@ function gateEditor(intoWave) {
         ${set[L] ? `<button class="btn ghost" onclick="setGate(${intoWave},'${L}',null)">auto</button>` : ""}</div></div>`; }).join("")}`;
 }
 window.setGate = (w, L, o) => { S.gates[w] = S.gates[w] || {}; if (o) S.gates[w][L] = o; else delete S.gates[w][L]; save(); waveSheet(w - 1); };
-window.setTM = (w, L, v) => {
-  if (!Number.isFinite(+v) || +v <= 0) return;
-  S.testMax[w] = S.testMax[w] || {}; S.testMax[w][L] = +v;
-  S.gates[w + 1] = S.gates[w + 1] || {}; S.gates[w + 1].cb = S.gates[w + 1].cb || {};
-  S.gates[w + 1].cb[L] = E.postTestBase(+v); save(); waveSheet(w);
+window.setTestEntry = (w, L, field, v) => {
+  const r = E.applyTestEntry(S.testMax, S.gates, w, L, field, v, todayUTC(), S.settings.offsetWeeks || 0);
+  if (r.refused) { alert(r.refused === "before the test" ? "Made lifts open on test day." : "That is not a weight."); waveSheet(w); return; }
+  S.testMax = r.testMax; S.gates = r.gates; save(); waveSheet(w);
 };
 window.gateSheet = (w) => waveSheet(w - 1);
 

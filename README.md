@@ -63,7 +63,9 @@ Pure logic, no DOM. Exported as `ENGINE`; works under Node (`require`) and in th
 - Main lifts stop at **RPE 8**. Week 3 trims accessory sets, week 4 is a deload, cycle 6 drops specialization entirely.
 - Waves 1–2 output must equal the printed notes.
 - Every evidence claim in the app has a test and a row in EVIDENCE.md.
-- Yellow mode = −5% on back-offs, 2 sets per accessory. Red = 3×3 @ 60%.
+- Yellow mode (engine, `histCtx.ready === "Y"`) = single capped at RPE 7 (from Wave 4 at the load that is RPE 7), −5% on back-offs, 2 sets per accessory with nothing past RPE 8. Red = 3×3 @ 60%, logged under `<lift>-red` and never fed to Rule C.
+- Meet day: every peak single and the test card use the targets typed on the Road sheet; with none, the target is the estimated max × 1.02. Week 3 of a peak practises the kilogram opener. From Wave 4 the Specificity and peak singles carry the USPA commands.
+- `node ui-test.js` (after `python3 build.py`) drives the built app in headless Chromium; it needs a global Playwright and skips without one.
 
 ---
 
@@ -119,7 +121,7 @@ Everything is `localStorage` under the key `r345.v1`, on the device running the 
   logs:     { "2026-07-20": { r: "G", sleep: 7.5, note: "", sets: { b1: [{w,r,rpe,k,rate}] } } },  // rate: "E"|"O"|"H" on the last set
   bw:       { "2026-07-20": 182 },
   gates:    { 2: { sq: "clean", bn: "repeat" }, 7: { cb: { bn: 265 } } },  // cb = 96% of a test max
-  testMax:  { 6: { sq: 365 } },
+  testMax:  { 6: { sq: { target: 365, made: 370 } } },  // target drives attempts; made (test day on) sets the next base at 96%
   spec:     { framePrimary: "arms", frameSecondary: "latwidth", detail: "triceps", sundayOn: true },
   ledger:   {},
   settings: { offsetWeeks: 0 }

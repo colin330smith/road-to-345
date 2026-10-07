@@ -29,8 +29,15 @@ Sources were cite-checked against PubMed or the journal page on 2026-09-25. The 
 | Tracked lifts move at most one step a wave with their anchor; a calibration moves them zero | Judgment | — | A re-measured anchor says nothing about the tracked lift's own strength. |
 | Chin-up anchored to bench, not deadlift | Judgment | — | An upper-body pull follows the upper-body gate. |
 | Test attempts .91 / .955 / target | Evidence | Travis 2021, *Percept Mot Skills* 128(1):507 · Howells 2022, *J Sports Med Phys Fitness* 62(4):476 | Elite lifters opened at about 91% of their third attempt and took their second at about 96%. Openers averaged 92% of the day's best. A third attempt of 100% of target comes from coaching practice. |
-| Meet attempts shown in kilograms, 2.5 kg steps; opener rounded down | Partly | USPA Technical Rules 2025 | USPA meets load in kilograms. The 2.5 kg step is the usual minimum jump outside record attempts; confirm it against the rulebook before meet day. Rounding the opener down is a judgment: it has to go on a bad day. |
-| Post-test base = 96% of the best lift made | Judgment | — | This is the inverse of the default target (base × 1.04), so the next build starts from submaximal work. |
+| Meet attempts shown in kilograms, 2.5 kg steps; opener rounded down | Truth | USPA Technical Rules 2025v1, rules 6.1.1 and 6.3.3 (checked 2026-10-07 at uspa.net/rulebook) | Attempts are declared and announced in kilograms; the bar is always a multiple of 2.5 kg and attempts rise by at least 2.5 kg (records excepted). Rounding the opener down is a judgment: it has to go on a bad day. |
+| Default test target = the estimated max × 1.02; the estimate comes from the peak wave's latest rated single (the plan's own week-2 e1RM if none is rated); a typed target always wins | Judgment | RTS chart (above) · Travis 2021 (above) | The old default (base × 1.04) disagreed with the app's own model: on-plan peak singles put the e1RM at about 0.98–0.99 × base, so the third asked for a ~5% PR and the opener sat near RPE 9. The 2% is a taper allowance, not a measured number. |
+| Week-3 peak single = the kilogram opener he will hand in, loaded at or under it in pounds | Truth | — | The old "opener practice" was 10–20 lb under the real opener, and the deadlift opener was heavier than any pull in the peak. |
+| Post-test base = 96% of the best lift made | Judgment | — | The next build starts about 4% under the made max, from submaximal work. A target never sets a base; only a made lift on or after test day does. |
+| Competition commands practised from Wave 4: squat SQUAT / RACK, bench START / PRESS / RACK, deadlift DOWN, on the Specificity and Peak singles, the paused bench and the test card | Truth | USPA Technical Rules 2025v1, rules 4.1.5, 4.1.8, 4.3.7, 4.3.10, 4.3.11, 4.5.5 | Moving before a command is a red light (4.4.1, 4.6.7). The program said "competition-strict singles" but never practised the calls. |
+| A Yellow single shows the load that is RPE 7 (load × %1RM at 7 ÷ %1RM at the cap) and its rating is read at cap 7 | Partly | RTS chart (above) | Truth part: a Hard rating on a cap-7 Yellow single was read against the Green cap (as RPE 9), which turned an on-plan day into a "repeat" gate, and Rule A then stacked on Yellow's −5%. The load conversion uses the coaching chart. |
+| Red-day sets and the deload's paused squat, paused bench and OHP never move the next load | Truth | — | A 60% triple rated Easy raised the next week's back-offs 5%; an Easy week-3 rating raised the deload. |
+| Wednesday's no-pause squat growth sets: 72.3% of the week's planned e1RM (8 reps at about RPE 7.5) from Wave 4 | Partly | RTS chart (above) | They used the paused bar and ran near RPE 6 under a 7.5–8 label. |
+| Deload warm-ups stop under the light triple (no indicator or bridge single) from Wave 4 | Truth | — | The deload warmed up to singles at 78–81% of base before a 65% triple. |
 | Peak taper: volume near zero, intensity held, last heavy touch 4 days out, then rest | Evidence | Travis 2020, *Sports* 8(9):125 | Cut volume 30–70% (30–50% looks best) and keep intensity at 85% or more over a 1–2 week step taper. The review does not fix the day of the last heavy session, so 4 days out is a judgment. |
 
 ## Hypertrophy: exercise selection and dose
@@ -138,7 +145,7 @@ Direct sets a week, Weeks 1–2, before → after: upper traps 1 → 6, rear del
 1. Rule D cut-offs, and the choice of the program's own model over "clean only at RPE 7".
 2. Rule A/C ±5% and one-increment clamps; the 14-day window for Rule C.
 3. Small-step projection default. It is above Latella's average for squat and deadlift, and gates correct it every wave.
-4. Post-test base 96%; default test target base × 1.04; the taper's last heavy touch 4 days out.
+4. Post-test base 96%; default test target = estimated max × 1.02 (taper allowance); the taper's last heavy touch 4 days out.
 5. Tracked-lift clamp; chin-up anchored to bench.
 6. Exact weekly set counts and caps, including the arm block's 11 curl and 15 triceps sets and the RPE 7 ramp; the upper-back block's 6 trap, 9 rear-delt and 13 side-delt sets, its seeds, the per-head reading of the one-failure-set rule and the Wave 4+ budget; face pull rep steps.
 7. Six-week trim cap and its end conditions; the 1%/wk flag; phase-relative 7-day decision rule; whey + banana before a trim lift.

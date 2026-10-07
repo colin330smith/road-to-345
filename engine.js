@@ -672,8 +672,12 @@ function isDefaultSpec(spec) {
 // the printed indicator (225 / 165 / 315), capped by the Wave 1 ratio to the base
 // (225/315, 165/225, 315/405) so a calibrated or reset base never puts the bridge under it
 const IND_PCT = { sq: 0.714, bn: 0.733, dl: 0.778 }, IND_FIXED = { sq: 225, bn: 165, dl: 315 };
-function warmups(lift, wave, gates) {
+function warmups(lift, wave, gates, week) {
   const { t, cb } = mainTables(wave, gates);
+  // Wave 4+ deload: ramp only to the light triple. No indicator or bridge single heavier than the work.
+  if (week === 4 && wave >= 4 && t[lift] && t[lift].l)
+    return { sq: [["Bar", 10], [95, 5], [135, 5], [185, 3]], bn: [["Bar", 15], [95, 8], [135, 5], [155, 3]], dl: [[135, 5], [225, 3], [275, 2]] }[lift]
+      .filter((r) => typeof r[0] !== "number" || r[0] < t[lift].l);
   const br = t.bridge ? t.bridge[lift] : null;
   const ind = Math.min(IND_FIXED[lift], R5(cb[lift] * IND_PCT[lift]));
   const ramp = {
@@ -702,8 +706,17 @@ function pushPrimers(push, ids, wave, week) {
 // returns ordered blocks for wave/week/day (1=Mon…5=Fri)
 function sessionFor(wave, week, day, gates, spec, histCtx) {
   HISTCTX = histCtx || null;
-  try { return autoregulate(sessionForInner(wave, week, day, gates, spec), wave, week, day, histCtx); }
-  finally { HISTCTX = null; }
+  try {
+    let blocks = sessionForInner(wave, week, day, gates, spec, histCtx);
+    // Yellow (histCtx.ready === "Y"). From Wave 4 the day turns Yellow BEFORE autoregulation, so Rule A
+    // reads the logged single against the Yellow single it was (cap 7), not the Green one; Waves 1-3
+    // keep the order they ran in (autoregulate, then Yellow).
+    const yellow = !!(histCtx && histCtx.ready === "Y");
+    if (yellow && wave >= 4) blocks = yellowFor(blocks, wave);
+    blocks = autoregulate(blocks, wave, week, day, histCtx);
+    if (yellow && wave < 4) blocks = yellowFor(blocks, wave);
+    return blocks;
+  } finally { HISTCTX = null; }
 }
 // Week 2 targets the TOP of every weekend rep range, as accFor does on weekdays.
 // The rung only advances when the top is reached, and one-tap logging records
@@ -712,7 +725,7 @@ function topWeek(blocks, week) {
   if (week !== 2) return blocks;
   return blocks.map((b) => (b && b.spec && b.repHi && b.repHi !== b.repN ? { ...b, repN: b.repHi, reps: String(b.repHi) } : b));
 }
-function sessionForInner(wave, week, day, gates, spec) {
+function sessionForInner(wave, week, day, gates, spec, opts) {
   spec = spec || DEFAULT_SPEC;
   const cycEarly = cycleOf(wave);
   // ── Saturday (day 6): frame-specialization overload ──
@@ -736,14 +749,16 @@ function sessionForInner(wave, week, day, gates, spec) {
   const push = (b) => blocks.push(b);
   const xfer = transfersActive(wave, week, spec); // volume transfers fund Sunday
 
-  if (cyc === 6) return peakSession(wave, week, day, cb, gates);
+  if (cyc === 6) return peakSession(wave, week, day, cb, gates, opts);
 
   if (dayLift) {
-    push({ type: "warmup", name: LIFT_NAME[dayLift] + " warm-up", rows: warmups(dayLift, wave, gates) });
+    push({ type: "warmup", name: LIFT_NAME[dayLift] + " warm-up", rows: warmups(dayLift, wave, gates, week) });
     if (day === 2 && cyc !== 6) pushPrimers(push, ["bander", "pullapart"], wave, week); // 60-90 s, before the bar touches your chest
     if (week < 4) {
       const cap = cyc === 5 ? RPE_CAP_C5[week] : RPE_CAP[week];
-      push({ type: "single", lift: dayLift, name: LIFT_NAME[dayLift] + " — top single", w: t[dayLift].s[wk], reps: 1, sets: 1, rpe: cap, moveId: dayLift, pkey: dayLift + "-single" });
+      const single = { type: "single", lift: dayLift, name: LIFT_NAME[dayLift] + " — top single", w: t[dayLift].s[wk], reps: 1, sets: 1, rpe: cap, moveId: dayLift, pkey: dayLift + "-single" };
+      if (cyc === 4 && wave >= 4) single.note = COMMANDS[dayLift]; // Specificity: competition-strict singles
+      push(single);
       const [bw, br_, bs] = t[dayLift].b[wk];
       push({ type: "backoff", lift: dayLift, name: LIFT_NAME[dayLift] + " — back-offs", w: bw, reps: br_, sets: bs, rpe: week === 3 ? "7.5–8" : week === 2 ? "7–7.5" : "6.5–7", moveId: dayLift, pkey: dayLift + "-back" });
     } else {
@@ -754,11 +769,14 @@ function sessionForInner(wave, week, day, gates, spec) {
     push({ type: "warmup", name: "Paused squat warm-up", rows: WARM_PS });
     const scheme = week === 4 ? [5, 2] : [[5, 4], [4, 4], [3, 4]][wk];
     const psW = t.ps[wk] ?? t.ps[3];
-    if (week === 4) push({ type: "paused", lift: "sq", name: "Paused Squat (2-sec pause)", w: psW, reps: scheme[0], sets: scheme[1], rpe: "5–6", moveId: "ps", pkey: "ps" });
+    if (week === 4) push({ type: "paused", lift: "sq", name: "Paused Squat (2-sec pause)", w: psW, reps: scheme[0], sets: scheme[1], rpe: "5–6", moveId: "ps", pkey: "ps", ...(wave >= 4 ? { light: true } : {}) });
     else {
       const hyp = Math.floor(scheme[1] / 2);
       push({ type: "paused", lift: "sq", name: "Paused Squat (2-sec pause)", w: psW, reps: scheme[0], sets: scheme[1] - hyp, rpe: ["6", "6.5", "7"][wk], moveId: "ps", pkey: "ps", note: "Specificity work: perfect bottom position, nothing heroic" });
-      push({ type: "paused", lift: "sq", name: "Squat — hypertrophy back-offs (no pause)", w: psW, reps: 8, sets: hyp, rpe: "7.5–8", moveId: "sq", pkey: "psh", hyp: true, note: "Same bar, no pause, 6–8 reps. This is the growth set the paused work was never doing" });
+      if (wave >= 4) { // 8 reps @ RPE 7.5 = 72.3% of the week's planned e1RM (RTS chart); the paused bar ran ~RPE 6
+        const e1 = t.sq.s[wk] / pctAt(capNum(cyc === 5 ? RPE_CAP_C5[week] : RPE_CAP[week]));
+        push({ type: "paused", lift: "sq", name: "Squat — hypertrophy back-offs (no pause)", w: R5(e1 * 0.723), reps: 8, sets: hyp, rpe: "7.5–8", moveId: "sq", pkey: "psh", hyp: true, note: "Add weight after the paused sets: 8 reps, about 2 in reserve. This is the growth set the paused work was never doing" });
+      } else push({ type: "paused", lift: "sq", name: "Squat — hypertrophy back-offs (no pause)", w: psW, reps: 8, sets: hyp, rpe: "7.5–8", moveId: "sq", pkey: "psh", hyp: true, note: "Same bar, no pause, 6–8 reps. This is the growth set the paused work was never doing" });
     }
   }
   if (day === 4) {
@@ -766,10 +784,10 @@ function sessionForInner(wave, week, day, gates, spec) {
     pushPrimers(push, ["bander"], wave, week); // Thursday is the heaviest shoulder day: cuff primer first
     const scheme = week === 4 ? [5, 3] : [[6, 4], [5, 5], [4, 5]][wk];
     const pbW = t.pb[wk] ?? t.pb[3];
-    if (week === 4) push({ type: "paused", lift: "bn", name: "Paused Bench (1–2 sec pause)", w: pbW, reps: scheme[0], sets: scheme[1], rpe: "5–6", moveId: "pb", pkey: "pb" });
+    if (week === 4) push({ type: "paused", lift: "bn", name: "Paused Bench (1–2 sec pause)", w: pbW, reps: scheme[0], sets: scheme[1], rpe: "5–6", moveId: "pb", pkey: "pb", ...(wave >= 4 ? { light: true } : {}) });
     else {
       const hyp = Math.floor(scheme[1] / 2);
-      push({ type: "paused", lift: "bn", name: "Paused Bench (1–2 sec pause)", w: pbW, reps: scheme[0], sets: scheme[1] - hyp, rpe: ["6.5–7", "7", "7–7.5"][wk], moveId: "pb", pkey: "pb", note: "Specificity work: crisp pause, chest tight" });
+      push({ type: "paused", lift: "bn", name: "Paused Bench (1–2 sec pause)", w: pbW, reps: scheme[0], sets: scheme[1] - hyp, rpe: ["6.5–7", "7", "7–7.5"][wk], moveId: "pb", pkey: "pb", note: wave >= 4 ? "Specificity work: crisp pause, chest tight. Hold the pause until a partner says PRESS, and have him vary the count (alone: a full second after the bar is still)" : "Specificity work: crisp pause, chest tight" });
       // UPPER CHEST (Wave 4+): the growth sets move to a 30° incline. Incline-only training
       // grew the clavicular pec clearly more than flat (Chaves 2020); the paused sets above
       // keep the competition bench practice.
@@ -777,7 +795,7 @@ function sessionForInner(wave, week, day, gates, spec) {
       else push({ type: "paused", lift: "bn", name: "Bench — hypertrophy back-offs (no pause)", w: pbW, reps: 8, sets: hyp, rpe: "7.5–8", moveId: "bn", pkey: "pbh", hyp: true, note: "Same bar, touch-and-go, 6–8 reps. The chest and triceps growth set" });
     }
     const o = ohpFor(wave, gates)[week - 1];
-    push({ type: "ohp", name: "Overhead Press", w: o[0], reps: o[1], sets: o[2], rpe: week === 4 ? "5–6" : "7–8", note: "Add reps to 3×8 clean → +5 lb → back to 3×6", moveId: "ohp", pkey: "ohp" });
+    push({ type: "ohp", name: "Overhead Press", w: o[0], reps: o[1], sets: o[2], rpe: week === 4 ? "5–6" : "7–8", note: "Add reps to 3×8 clean → +5 lb → back to 3×6", moveId: "ohp", pkey: "ohp", ...(week === 4 && wave >= 4 ? { light: true } : {}) });
   }
   // Thursday sheds its delt/triceps isolation → migrated into Saturday's specialization (THU_DROP)
   if (day === 2 && cyc !== 6) for (const b of trackedFor("inc", wave, week, gates)) push(b);
@@ -818,28 +836,30 @@ function sessionForInner(wave, week, day, gates, spec) {
 }
 
 // Cycle 6 (waves 6, 12, 18): the peak
-function peakSession(wave, week, day, cb, gates) {
+function peakSession(wave, week, day, cb, gates, opts) {
   const blocks = [];
   const dayLift = { 1: "sq", 2: "bn", 5: "dl" }[day];
   const push = (b) => blocks.push(b);
+  const ctx = opts && opts.index ? opts : null, entered = targetsOf((opts || {}).testMax, wave);
   if (week === 4) {
     // Travis 2020: volume down 30-50%+, intensity held (>=85%), last heavy work
     // several days out, then rest. Mon = the last heavy touch (4 days out).
-    const att = testAttempts(cb);
-    if (day === 1) push({ type: "test", name: "TAPER \u2014 last heavy touch, then rest", note: `Squat opener ${att.sq.a1} \u00d7 1, then bench opener ${att.bn.a1} \u00d7 1. Crisp, nothing more. Intensity stays up, volume goes to almost nothing. Deadlift's last heavy pull was last Friday. Test is Friday.` });
+    const pe = peakEstimate(wave, gates, ctx, 4), att = testAttempts(cb, entered, pe.est), kg = attemptsKg(att);
+    if (day === 1) push({ type: "test", name: "TAPER \u2014 last heavy touch, then rest", note: `Squat opener ${kg.sq.a1} kg (${lbFloor(kg.sq.a1)} lb) \u00d7 1, then bench opener ${kg.bn.a1} kg (${lbFloor(kg.bn.a1)} lb) \u00d7 1. Crisp, nothing more. Intensity stays up, volume goes to almost nothing. Deadlift's last heavy pull was last Friday. Test is Friday.` });
     if (day === 2) push({ type: "test", name: "TAPER \u2014 optional light bench", note: `2\u20133 crisp doubles at ${R5(cb.bn * 0.75)}, only if it reliably helps you. Otherwise rest. Test is Friday.` });
     if (day === 3 || day === 4) push({ type: "test", name: "TAPER \u2014 full rest", note: "Walk, eat, sleep. Nothing heavier than a warm-up. Test is Friday." });
     if (day === 5) {
-      push({ type: "test", name: "TEST DAY — 1st/2nd/3rd attempts", note: "Squat → Bench → Deadlift. Safeties + spotters. No misses.", attempts: att });
+      push({ type: "test", name: "TEST DAY — 1st/2nd/3rd attempts", note: "Squat → Bench → Deadlift. Safeties + spotters. No misses. " + COMMANDS.sq + " " + COMMANDS.bn + " " + COMMANDS.dl, attempts: att, est: pe });
     }
     return blocks;
   }
   if (dayLift) {
-    push({ type: "warmup", name: LIFT_NAME[dayLift] + " warm-up", rows: warmups(dayLift, wave, gates) });
+    push({ type: "warmup", name: LIFT_NAME[dayLift] + " warm-up", rows: warmups(dayLift, wave, gates, week) });
     if (day === 2) pushPrimers(push, ["bander", "pullapart"], wave, week); // primers go before pressing in a peak too
-    const sp = [0.89, 0.91, 0.905][week - 1];
-    const cap = ["8", "8–8.5", "8–8.5 · opener practice"][week - 1];
-    push({ type: "single", lift: dayLift, name: LIFT_NAME[dayLift] + " — " + (week === 3 ? "opener" : "top single"), w: R5(cb[dayLift] * sp), reps: 1, sets: 1, rpe: cap, moveId: dayLift, pkey: dayLift + "-single" });
+    if (week === 3) { // opener practice = the opener he will hand in, in kg, loaded at or under it in lb
+      const pe = peakEstimate(wave, gates, ctx, 3), kg = attemptsKg(testAttempts(cb, entered, pe.est))[dayLift].a1;
+      push({ type: "single", lift: dayLift, name: `${LIFT_NAME[dayLift]} \u2014 opener ${kg} kg`, w: lbFloor(kg), reps: 1, sets: 1, rpe: PEAK_CAP[2], moveId: dayLift, pkey: dayLift + "-single", note: COMMANDS[dayLift], kg });
+    } else push({ type: "single", lift: dayLift, name: LIFT_NAME[dayLift] + " \u2014 top single", w: R5(cb[dayLift] * PEAK_SP[week - 1]), reps: 1, sets: 1, rpe: PEAK_CAP[week - 1], moveId: dayLift, pkey: dayLift + "-single", note: COMMANDS[dayLift] });
     const back = week === 1 ? [R5(cb[dayLift] * 0.77), 3, 3, "7"] : week === 2 ? [R5(cb[dayLift] * 0.79), 2, 3, "7–7.5"] : [R5(cb[dayLift] * 0.70), 2, 2, "easy"];
     push({ type: "backoff", lift: dayLift, name: LIFT_NAME[dayLift] + " — back-offs", w: back[0], reps: back[1], sets: back[2], rpe: back[3], moveId: dayLift, pkey: dayLift + "-back" });
   }
@@ -865,15 +885,47 @@ function peakSession(wave, week, day, cb, gates) {
   return blocks;
 }
 
-// Attempts off the target max: opener ~91% (a weight made on the worst day),
-// second ~95.5%, third = the target. Default target = base x 1.04 (a base is ~96%
-// of a true max, the inverse of postTestBase). Judgment call; see EVIDENCE.md.
-function testAttempts(cb, entered = {}) {
+// USPA Technical Rules 2025v1: 4.1.5/4.1.8 squat, 4.3.7/4.3.10/4.3.11 bench, 4.5.5 deadlift.
+const COMMANDS = {
+  sq: "Meet commands: walk out, stand still, wait for SQUAT; hold the lockout until RACK.",
+  bn: "Meet commands: arms locked and still, wait for START; bar motionless on the chest until PRESS; hold the lockout until RACK. Never move before the call.",
+  dl: "Meet commands: hold the lockout, standing tall, until DOWN; then lower it under control with both hands.",
+};
+// peak singles: weeks 1-2 of a peak wave (week 3 is the kg opener)
+const PEAK_SP = [0.89, 0.91], PEAK_CAP = ["8", "8–8.5", "7–8 · the weight you hand in"];
+// a kg load shown in lb, rounded DOWN to a 2.5 lb step so the bar never passes the kg weight
+const lbFloor = (kg) => Math.floor(kg * LB_PER_KG / 2.5 + 1e-9) * 2.5;
+// the targets the lifter typed for a peak wave: {L: lb}. Takes {target, made} entries and legacy numbers.
+function targetsOf(testMax, wave) {
+  const row = (testMax || {})[wave] || {}, out = {};
+  for (const L of LIFTS) { const v = row[L], n = v && typeof v === "object" ? v.target : v; if (Number.isFinite(+n) && +n > 0) out[L] = +n; }
+  return out;
+}
+// estimated max for a test: the latest rated single of the peak wave before `beforeWeek` (week 3, 2,
+// then 1); unrated -> the plan's own e1RM of the week-2 single at its cap (RPE 8).
+function peakEstimate(wave, gates, ctx, beforeWeek = 4) {
+  const cb = cbFor(wave, gates), est = {}, src = {}, dayOf = { sq: 1, bn: 2, dl: 5 };
+  for (const L of LIFTS) {
+    for (let wk = Math.min(3, beforeWeek - 1); wk >= 1 && est[L] == null; wk--) {
+      const e = ctx && ctx.index ? ratedOn(ctx.index, L + "-single", sessionDayUTC(wave, wk, dayOf[L], ctx.offsetWeeks || 0)) : null;
+      if (!e) continue;
+      const cap = capNum(PEAK_CAP[wk - 1]);
+      est[L] = e1rm(e, cap); src[L] = { week: wk, w: e.w, rpe: effRPE(e, cap) };
+    }
+    if (est[L] == null) { est[L] = Math.round(R5(cb[L] * PEAK_SP[1]) / pctAt(8)); src[L] = null; }
+  }
+  return { est, src };
+}
+// Attempts off the target: opener ~91% (a weight made on the worst day), second ~95.5%, third =
+// the target (Travis 2021). Default target = the estimated max x 1.02, a taper allowance (judgment);
+// an entered target always wins. EVIDENCE.md: "Test day".
+function testAttempts(cb, entered = {}, est = {}) {
   const out = {};
   for (const L of LIFTS) {
-    const tm = entered[L] || R5(cb[L] * 1.04);
+    const e = Number.isFinite(est[L]) ? est[L] : R5(cb[L] * PEAK_SP[1]) / pctAt(8);
+    const tm = entered[L] || R5(e * 1.02);
     out[L] = {
-      max: tm,
+      max: tm, est: Math.round(e),
       a1: R5(tm * 0.91),
       a2: R5(tm * 0.955),
       a3: tm,
@@ -885,6 +937,48 @@ function testAttempts(cb, entered = {}) {
 // the next wave's base after a test: 96% of the best made lift, so the next
 // build starts from submaximal work instead of from a peaked max
 const postTestBase = (max) => R5(max * 0.96);
+// Test-day entries (MEET-2). TARGET drives the attempts only. MADE is accepted from the test Friday on
+// and sets the next wave's base at 96% of it. Clearing a field deletes it (and a made lift's pin).
+// Pure: returns new objects; a refused entry returns the inputs unchanged with `refused`.
+function applyTestEntry(testMax, gates, w, L, field, value, todayMs, off) {
+  const v = value === "" || value == null ? null : +value;
+  if (v != null && !(Number.isFinite(v) && v > 0)) return { testMax, gates, refused: "not a number" };
+  if (field === "made" && v != null && todayMs < sessionDayUTC(w, 4, 5, off || 0)) return { testMax, gates, refused: "before the test" };
+  const tm = JSON.parse(JSON.stringify(testMax || {})), g = JSON.parse(JSON.stringify(gates || {}));
+  const row = (tm[w] = tm[w] || {});
+  let cur = row[L]; cur = cur != null && typeof cur !== "object" ? { target: +cur } : { ...(cur || {}) };
+  if (v == null) delete cur[field]; else cur[field] = v;
+  if (Object.keys(cur).length) row[L] = cur; else delete row[L];
+  if (!Object.keys(row).length) delete tm[w];
+  if (field === "made") {
+    const gw = (g[w + 1] = g[w + 1] || {});
+    gw.cb = gw.cb || {};
+    if (v == null) delete gw.cb[L]; else gw.cb[L] = postTestBase(v);
+    if (!Object.keys(gw.cb).length) delete gw.cb;
+    if (!Object.keys(gw).length) delete g[w + 1];
+  }
+  return { testMax: tm, gates: g };
+}
+// one-time migration of the old single "Target / made" box: a number typed before the test date was a
+// target, and the base pin it wrote (96% of it) is removed; one typed on or after the test day stays a
+// made lift. Pure, like applyTestEntry.
+function migrateTestMax(testMax, gates, todayMs, off) {
+  const tm = JSON.parse(JSON.stringify(testMax || {})), g = JSON.parse(JSON.stringify(gates || {}));
+  for (const w of Object.keys(tm).map(Number)) {
+    if (!(w >= 1) || cycleOf(w) !== 6) continue;
+    const before = todayMs < sessionDayUTC(w, 4, 5, off || 0);
+    for (const L of LIFTS) {
+      const v = tm[w][L];
+      if (v == null || typeof v === "object") continue;
+      const pin = g[w + 1] && g[w + 1].cb ? g[w + 1].cb[L] : null;
+      if (before) { tm[w][L] = { target: +v }; if (pin === postTestBase(+v)) delete g[w + 1].cb[L]; }
+      else tm[w][L] = pin === postTestBase(+v) ? { made: +v } : { target: +v };
+    }
+    if (g[w + 1] && g[w + 1].cb && !Object.keys(g[w + 1].cb).length) delete g[w + 1].cb;
+    if (g[w + 1] && !Object.keys(g[w + 1]).length) delete g[w + 1];
+  }
+  return { testMax: tm, gates: g };
+}
 // USPA meets load in kilograms, in 2.5 kg steps. The opener rounds DOWN (it must
 // go on the worst day); the 2nd and 3rd round to the nearest plate.
 const LB_PER_KG = 2.20462;
@@ -903,13 +997,23 @@ function e1rm(st, cap) {
   return st.r <= 10 ? Math.round(st.w * (1 + st.r / 30)) : null;
 }
 
-// yellow transform: applied by UI — single cap RPE 7, back-off −5% (or −1 set), 2 sets/accessory, skip cardio
+// yellow transform: single cap RPE 7, back-off −5% (or −1 set), 2 sets/accessory with nothing past
+// RPE 8 (no failure set, no partials), skip cardio. sessionFor applies it when histCtx.ready === "Y".
 function yellowW(block) {
   if (block.type === "single") return { ...block, rpe: 7, note: "Yellow: cap @ RPE 7" };
   if (block.type === "backoff" || block.type === "paused") return { ...block, w: R5(block.w * 0.95), note: "Yellow: −5% (or keep weight, −1 set)" };
-  if (block.type === "accessory" || block.type === "ohp") return { ...block, sets: Math.min(block.sets, 2), rpe: "≤8", note: "Yellow: 2 sets cap" };
+  if (block.type === "accessory" || block.type === "ohp") return { ...block, sets: Math.min(block.sets, 2), rpe: "≤8", lastHard: false, lp: false, note: "Yellow: 2 sets cap, nothing past RPE 8" };
   if (block.type === "conditioning") return null;
   return block;
+}
+// a whole Yellow day. From Wave 4 the main-lift single is also lightened to what the planned load
+// would be at RPE 7 (load x %1RM@7 / %1RM@cap), so "cap 7" and the number on the card agree.
+function yellowFor(blocks, wave) {
+  return blocks.map((b) => {
+    const y = yellowW(b);
+    if (y && b.type === "single" && wave >= 4 && LIFTS.includes(b.lift)) y.w = R5(b.w * pctAt(7) / pctAt(capNum(b.rpe)));
+    return y;
+  }).filter(Boolean);
 }
 function redSession(wave, day, gates) {
   if (day === 6) return [{ type: "spechead", name: "RED — skip specialization", note: "Frame work is optional physique volume (priority 5–6). On a Red day it's the first thing to cut. Rest, eat, sleep." }];
@@ -919,7 +1023,7 @@ function redSession(wave, day, gates) {
   const reds = t.red || [R5(cbFor(wave, gates).sq * 0.6), R5(cbFor(wave, gates).bn * 0.6), R5(cbFor(wave, gates).dl * 0.6)];
   const map = { sq: reds[0], bn: reds[1], dl: reds[2] };
   const blocks = [];
-  if (dayLift) blocks.push({ type: "backoff", lift: dayLift, name: LIFT_NAME[dayLift] + " — RED day 3×3", w: map[dayLift], reps: 3, sets: 3, rpe: "≤6", moveId: dayLift, pkey: dayLift + "-back", note: "Skip the single. 1–2 easy accessories. Out in 30–45 min." });
+  if (dayLift) blocks.push({ type: "backoff", lift: dayLift, name: LIFT_NAME[dayLift] + " — RED day 3×3", w: map[dayLift], reps: 3, sets: 3, rpe: "≤6", moveId: dayLift, pkey: dayLift + "-red", light: true, note: "Skip the single. 1–2 easy accessories. Out in 30–45 min." });
   else blocks.push({ type: "test", name: "RED day — main lift 3×3 @ 60% only", note: "Sq " + map.sq + " · Bn " + map.bn + " · DL " + map.dl + " · pain/illness → rest instead" });
   return blocks;
 }
@@ -937,7 +1041,8 @@ const RATE = { E: -1.5, O: 0, H: 1 };
 const RATE_LABEL = { E: "Easy", O: "On target", H: "Hard" };
 function effRPE(e, cap) {
   if (e && Number.isFinite(e.rpe)) return e.rpe;
-  if (e && RATE[e.rate] != null) return cap + RATE[e.rate];
+  // a set logged with its own cap (a Yellow single is cap 7) is rated against that cap, not the plan's
+  if (e && RATE[e.rate] != null) return (Number.isFinite(e.cap) ? e.cap : cap) + RATE[e.rate];
   return null;
 }
 const rated = (e) => !!e && (Number.isFinite(e.rpe) || RATE[e.rate] != null);
@@ -1032,6 +1137,6 @@ function withAutoGates(gates, ctx, upTo = 19) {
   return g;
 }
 
-const ENGINE = { kgDown, kgNear, attemptsKg, e1rm, LB_PER_KG, defaultGate, RPE_PCT_1, pctAt, RATE, RATE_LABEL, singleFactor, autoregulate, autoGate, withAutoGates, sessionDayUTC, GATE_CUTS, postTestBase, CALIBRATION, PROJ_DEFAULT, cbChain, etaWave, explicitCB, TRACKED, trackedCB, trackedFor, ARM_START, ARM_GOAL, clearedInWave, inclineCB, inclineFor, INCLINE_START, INCLINE_GOAL, pkeyOf, accStateLogged, R5, R25, START, LIFTS, LIFT_NAME, gateDelta, cbFor, cycleOf, macroOf, CYCLE_NAME, waveStartUTC, whereIs, NOTES, mainTables, ohpFor, ACC, accState, accFor, sessionFor, testAttempts, yellowW, redSession, WAVE1_MONDAY, MS_DAY,
+const ENGINE = { kgDown, kgNear, attemptsKg, e1rm, LB_PER_KG, defaultGate, RPE_PCT_1, pctAt, RATE, RATE_LABEL, singleFactor, autoregulate, autoGate, withAutoGates, sessionDayUTC, GATE_CUTS, postTestBase, CALIBRATION, PROJ_DEFAULT, cbChain, etaWave, explicitCB, TRACKED, trackedCB, trackedFor, ARM_START, ARM_GOAL, clearedInWave, inclineCB, inclineFor, INCLINE_START, INCLINE_GOAL, pkeyOf, accStateLogged, R5, R25, START, LIFTS, LIFT_NAME, gateDelta, cbFor, cycleOf, macroOf, CYCLE_NAME, waveStartUTC, whereIs, NOTES, mainTables, ohpFor, ACC, accState, accFor, sessionFor, testAttempts, yellowW, yellowFor, redSession, WAVE1_MONDAY, MS_DAY, capNum, effRPE, targetsOf, peakEstimate, applyTestEntry, migrateTestMax, lbFloor, COMMANDS, PEAK_CAP,
   FRAME_OPTS, FRAME_LABEL, DETAIL_OPTS, DETAIL_LABEL, DEFAULT_SPEC, isDefaultSpec, saturdaySession, sundaySession, sundayPlanned };
 if (typeof module !== "undefined") module.exports = ENGINE;

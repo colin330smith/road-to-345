@@ -48,7 +48,8 @@ def line(b):
     w = "BW" if b.get("w") == 0 else f"+{b['w']}" if b.get("added") else b.get("w")
     tail = " · per hand" if b.get("db") else ""
     hard = ("  ← last set RPE 9–10" + (", then 3–5 lengthened partials" if b.get("lp") else "")) if b.get("lastHard") else "  (filler — superset into rests)" if str(b.get("cap") or "").startswith("FILLER") else "  (primer — before the first press, warm-up effort)" if str(b.get("cap") or "").startswith("PRIMER") else ""
-    return f"  {b['name']}: {w} × {b['reps']} × {b['sets']} @ RPE {b['rpe']}{tail}{hard}"
+    cue = f"\n    {b['note']}" if b["type"] == "single" and b.get("note") and "Meet commands" in b["note"] else ""
+    return f"  {b['name']}: {w} × {b['reps']} × {b['sets']} @ RPE {b['rpe']}{tail}{hard}{cue}"
 
 
 def render_day(blocks):

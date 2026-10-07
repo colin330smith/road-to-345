@@ -147,10 +147,12 @@ ok(E.ohpFor(7)[0][0] >= 105 && E.ohpFor(7)[0][0] <= 125, "ohp w7 sane");
 
 // ── test day ──
 const att = E.testAttempts({ sq: 365, bn: 250, dl: 455 });
-ok(att.sq.a1 < att.sq.a2 && att.sq.a2 < att.sq.a3 && att.sq.a3 === E.R5(365 * 1.04), "attempts ordered, 3rd = target");
-eq([att.sq.a1, att.sq.a2, att.sq.a3], [E.R5(380 * 0.91), E.R5(380 * 0.955), 380], "attempts: .91 / .955 / target");
+const est365 = E.R5(365 * 0.91) / E.pctAt(8); // no rated single: the plan's own e1RM of the week-2 peak single
+ok(att.sq.a1 < att.sq.a2 && att.sq.a2 < att.sq.a3 && att.sq.a3 === E.R5(est365 * 1.02), "attempts ordered, 3rd = target (estimated max x 1.02 by default)");
+eq([att.sq.a1, att.sq.a2, att.sq.a3], [E.R5(365 * 0.91), E.R5(365 * 0.955), 365], "attempts: .91 / .955 / target");
+eq(E.testAttempts({ sq: 365, bn: 250, dl: 455 }, { sq: 380 }).sq.a3, 380, "an entered target always wins");
 eq(E.postTestBase(300), 290, "post-test base = 96% of the made max");
-eq(E.postTestBase(E.R5(250 * 1.04)), 250, "a test that hits the projected max returns the same base");
+eq(E.postTestBase(260), 250, "post-test base: a 260 made lift gives a 250 base");
 
 // ── yellow/red ──
 const yb = E.yellowW({ type: "backoff", w: 245, reps: 4, sets: 5 });
@@ -1331,6 +1333,109 @@ eq(E.sessionFor(2, 1, 1, {}, E.DEFAULT_SPEC).find((b) => b.type === "warmup").ro
   ok(h && h.w > 0 && h.w < E.trackedCB("inc", 4, {}) && h.rpe === "7.5–8", `upper chest: Thursday growth sets are 30° incline at ${h && h.w}`);
   ok(thu.some((b) => /Paused Bench/.test(b.name || "")), "upper chest: Thursday keeps the paused competition bench");
   ok(!E.sessionFor(3, 1, 4, {}, E.DEFAULT_SPEC).some((b) => b.pkey === "incbbh"), "upper chest: Waves 1-3 unchanged");
+}
+
+// ═══ meet day: targets, the e1RM-based default, the real kg opener, commands (EVIDENCE.md "Test day") ═══
+{
+  const day = (wv, wk, d) => E.sessionDayUTC(wv, wk, d, 0);
+  // MEET-1: the Today TEST card and the taper Monday use the targets he typed (Road already did)
+  const tm = { 6: { sq: 300, bn: 250, dl: 385 } }, cx = { index: {}, offsetWeeks: 0, testMax: tm };
+  const fri = E.sessionFor(6, 4, 5, {}, E.DEFAULT_SPEC, cx).find((b) => b.attempts);
+  eq([fri.attempts.sq.a3, fri.attempts.bn.a1, fri.attempts.dl.a3], [300, E.R5(250 * 0.91), 385], "meet: the TEST card uses the entered targets");
+  eq(E.sessionFor(6, 4, 5, {}, E.DEFAULT_SPEC, { index: {}, offsetWeeks: 0, testMax: { 6: { sq: { target: 300 } } } }).find((b) => b.attempts).attempts.sq.a3, 300, "meet: {target} entries work like legacy numbers");
+  ok(/Squat opener 122\.5 kg \(270 lb\)/.test(E.sessionFor(6, 4, 1, {}, E.DEFAULT_SPEC, cx)[0].note), "meet: the taper Monday opener is the kg opener of the entered target (275 lb -> 122.5 kg)");
+  // MEET-3: the default target is the estimated max x 1.02; openers about RPE 8
+  for (const w of [6, 12, 18]) {
+    const pe = E.peakEstimate(w, {}, null, 4), att = E.testAttempts(E.cbFor(w), {}, pe.est), kg = E.attemptsKg(att);
+    for (const L of E.LIFTS) {
+      const r3 = att[L].a3 / pe.est[L], r1 = kg[L].a1 * E.LB_PER_KG / pe.est[L];
+      ok(r3 >= 1.0 && r3 <= 1.03, `meet W${w} ${L}: 3rd attempt ${att[L].a3} is ${r3.toFixed(3)} x the estimated max`);
+      ok(r1 <= 0.94, `meet W${w} ${L}: kg opener is ${r1.toFixed(3)} x the estimated max (about RPE 8 or lighter)`);
+    }
+  }
+  const wk2 = (rate) => ({ index: { "sq-single": [{ t: day(6, 2, 1), w: E.R5(E.cbFor(6).sq * 0.91), r: 1, rate }] }, offsetWeeks: 0 });
+  const a3 = (rate) => E.sessionFor(6, 4, 5, {}, E.DEFAULT_SPEC, wk2(rate)).find((b) => b.attempts).attempts.sq.a3;
+  ok(a3("H") < a3("O") && a3("E") > a3("O"), `meet: a Hard week-2 single lowers the target, an Easy one raises it (${a3("H")} / ${a3("O")} / ${a3("E")})`);
+  eq(E.sessionFor(6, 4, 5, {}, E.DEFAULT_SPEC, { ...wk2("E"), testMax: tm }).find((b) => b.attempts).attempts.sq.a3, 300, "meet: an entered target beats the estimate");
+  // MEET-4: week 3 practises the opener he will hand in, in kg, loaded at or under it
+  for (const w of [6, 12, 18]) for (const ctx of [null, { index: {}, offsetWeeks: 0, testMax: { [w]: { sq: 300, bn: 250, dl: 385 } } }]) {
+    const pe = E.peakEstimate(w, {}, ctx, 3), att = E.testAttempts(E.cbFor(w), E.targetsOf(ctx && ctx.testMax, w), pe.est), kg = E.attemptsKg(att);
+    for (const [L, d] of [["sq", 1], ["bn", 2], ["dl", 5]]) {
+      const s = E.sessionFor(w, 3, d, {}, E.DEFAULT_SPEC, ctx || undefined).find((b) => b.type === "single");
+      ok(Math.abs(s.w - kg[L].a1 * E.LB_PER_KG) <= 2.5 && s.w <= kg[L].a1 * E.LB_PER_KG + 1e-9 && s.kg === kg[L].a1, `meet W${w}${ctx ? " (targets)" : ""} ${L}: week-3 opener ${s.w} lb = ${kg[L].a1} kg rounded down`);
+    }
+    const testDl = E.attemptsKg(E.testAttempts(E.cbFor(w), E.targetsOf(ctx && ctx.testMax, w), E.peakEstimate(w, {}, ctx, 4).est)).dl.a1 * E.LB_PER_KG;
+    const pulls = [1, 2, 3].map((wk) => E.sessionFor(w, wk, 5, {}, E.DEFAULT_SPEC, ctx || undefined).find((b) => b.type === "single").w);
+    ok(Math.max(...pulls) >= testDl - 2.5, `meet W${w}${ctx ? " (targets)" : ""}: the heaviest peak pull (${Math.max(...pulls)}) is within 2.5 lb of the test opener (${testDl.toFixed(1)})`);
+  }
+  // MEET-2: a target never moves a base; a made lift does, only from the test Friday, and clearing it unpins
+  const before = E.applyTestEntry({}, {}, 6, "bn", "target", 260, Date.UTC(2026, 9, 6), 0);
+  ok(!before.refused && JSON.stringify(before.gates) === "{}" && before.testMax[6].bn.target === 260, "meet: typing a target writes no base");
+  eq(E.applyTestEntry({}, {}, 6, "bn", "made", 260, Date.UTC(2026, 9, 6), 0).refused, "before the test", "meet: a made lift before the test date is refused");
+  const made = E.applyTestEntry(before.testMax, before.gates, 6, "bn", "made", 260, Date.UTC(2027, 0, 1), 0);
+  eq([made.gates[7].cb.bn, E.cbFor(7, made.gates).bn], [250, 250], "meet: a made 260 on test day sets the Wave 7 base to 250");
+  const cleared = E.applyTestEntry(made.testMax, made.gates, 6, "bn", "made", "", Date.UTC(2027, 0, 2), 0);
+  ok(!cleared.gates[7] && cleared.testMax[6].bn.target === 260 && E.cbFor(7, cleared.gates).bn === E.cbFor(7, {}).bn, "meet: clearing the made lift restores the gate-driven base and keeps the target");
+  const mig = E.migrateTestMax({ 6: { bn: 260 } }, { 7: { cb: { bn: 250 } } }, Date.UTC(2026, 9, 6), 0);
+  ok(mig.testMax[6].bn.target === 260 && !mig.gates[7], "meet: a legacy pre-test entry becomes a target and its base pin is removed");
+  const mig2 = E.migrateTestMax({ 6: { bn: 260 } }, { 7: { cb: { bn: 250 } } }, Date.UTC(2027, 0, 5), 0);
+  ok(mig2.testMax[6].bn.made === 260 && mig2.gates[7].cb.bn === 250, "meet: a legacy entry after the test with its pin stays a made lift");
+  // MEET-5: USPA commands on Specificity and peak singles, the test day and the paused bench
+  for (let w = 4; w <= 19; w++) {
+    const c = E.cycleOf(w);
+    for (const wk of [1, 2, 3]) {
+      const s = (d) => E.sessionFor(w, wk, d, {}, E.DEFAULT_SPEC).find((b) => b.type === "single" && E.LIFTS.includes(b.lift));
+      if (c === 4 || c === 6) ok(/START.*PRESS.*RACK/.test(s(2).note || "") && /SQUAT.*RACK/.test(s(1).note || "") && /DOWN/.test(s(5).note || ""), `meet: W${w} wk${wk} singles carry the USPA commands`);
+      else ok(!/START/.test(s(2).note || ""), `meet: W${w} wk${wk} (cycle ${c}) singles carry no command cue`);
+      if (c !== 6) ok(/PRESS/.test(E.sessionFor(w, wk, 4, {}, E.DEFAULT_SPEC).find((b) => b.pkey === "pb").note), `meet: W${w} wk${wk} paused bench waits for PRESS`);
+    }
+  }
+  const testNote = E.sessionFor(6, 4, 5, {}, E.DEFAULT_SPEC).find((b) => b.attempts).note;
+  ok(/SQUAT/.test(testNote) && /START/.test(testNote) && /PRESS/.test(testNote) && /RACK/.test(testNote) && /DOWN/.test(testNote), "meet: the test-day card lists every command");
+  ok(!/PRESS/.test(E.sessionFor(3, 1, 4, {}, E.DEFAULT_SPEC).find((b) => b.pkey === "pb").note), "meet: Waves 1-3 paused bench text unchanged");
+}
+
+// ═══ main-lift days: Yellow, Red, deload, Wednesday growth sets, deload warm-ups ═══
+{
+  const day = (wv, wk, d) => E.sessionDayUTC(wv, wk, d, 0);
+  const cx = (ix, ready) => ({ index: ix, offsetWeeks: 0, ready });
+  // ENG-2: a Yellow single is cap 7, at the load that is RPE 7, and its rating is read at cap 7
+  const plan = E.sessionFor(4, 3, 1, {}, E.DEFAULT_SPEC), pS = plan.find((b) => b.type === "single"), pB = plan.find((b) => b.type === "backoff" && b.lift === "sq");
+  const y = E.sessionFor(4, 3, 1, {}, E.DEFAULT_SPEC, cx({}, "Y")), yS = y.find((b) => b.type === "single");
+  eq([yS.w, yS.rpe, y.find((b) => b.type === "backoff" && b.lift === "sq").w], [E.R5(pS.w * E.pctAt(7) / E.pctAt(8)), 7, E.R5(pB.w * 0.95)], "Yellow: single 270 @ cap 8 becomes 260 @ cap 7; back-offs -5%");
+  const ixO = { "sq-single": [{ t: day(4, 3, 1), w: yS.w, r: 1, rate: "O", cap: 7 }] };
+  eq(E.sessionFor(4, 3, 1, {}, E.DEFAULT_SPEC, cx(ixO, "Y")).find((b) => b.type === "backoff" && b.lift === "sq").w, E.R5(pB.w * 0.95), "Yellow: an on-target Yellow single leaves the Yellow back-offs (no Rule A cut on top)");
+  eq(E.autoGate(4, {}, cx(ixO)).sq.result, "clean", "Yellow: an on-target Yellow single gates clean");
+  eq(E.autoGate(4, {}, cx({ "sq-single": [{ t: day(4, 3, 1), w: 270, r: 1, rate: "H", cap: 7 }] })).sq.result, "clean", "Yellow: Hard at cap 7 reads RPE 8, not 9 (270 @ 8 = the plan)");
+  eq(E.autoGate(4, {}, cx({ "sq-single": [{ t: day(4, 3, 1), w: 270, r: 1, rate: "H" }] })).sq.result, "repeat", "Green: Hard at cap 8 still reads RPE 9");
+  eq(E.effRPE({ rate: "H", cap: 7 }, 8), 8, "a stored cap wins over the plan's cap");
+  ok(E.sessionFor(3, 3, 1, {}, E.DEFAULT_SPEC, cx({}, "Y")).find((b) => b.type === "single").w === 270, "Yellow: Wave 3 history keeps its single load");
+  // ENG-3: Yellow accessories never carry the failure marker or partials
+  let leak = 0;
+  for (let w = 3; w <= 19; w++) for (const wk of [1, 2]) for (let d = 1; d <= 7; d++) for (const b of E.yellowFor(E.sessionFor(w, wk, d, {}, E.DEFAULT_SPEC), w)) if (b.lastHard || b.lp) leak++;
+  eq(leak, 0, "Yellow: no accessory keeps a failure set or partials");
+  // ENG-6: Red sets log under their own key and move nothing; deload paused/OHP are light from Wave 4
+  const red = E.redSession(4, 5, {})[0];
+  ok(red.pkey === "dl-red" && red.light, "Red: the 3x3 logs under dl-red, light");
+  const after = E.sessionFor(4, 3, 5, {}, E.DEFAULT_SPEC, cx({ "dl-red": [{ t: day(4, 2, 5), w: red.w, r: 3, rate: "E" }] })).find((b) => b.pkey === "dl-back");
+  ok(after.w === E.sessionFor(4, 3, 5, {}, E.DEFAULT_SPEC).find((b) => b.pkey === "dl-back").w && !after.auto, "Red: an Easy Red day does not raise the next back-offs");
+  for (const [d, k] of [[3, "ps"], [4, "pb"], [4, "ohp"]]) {
+    ok(E.sessionFor(4, 4, d, {}, E.DEFAULT_SPEC).find((b) => b.pkey === k).light, `deload: week-4 ${k} is light from Wave 4`);
+    const nx = E.sessionFor(4, 4, d, {}, E.DEFAULT_SPEC, cx({ [k]: [{ t: day(4, 3, d), w: 100, r: 5, rate: "E" }] })).find((b) => b.pkey === k);
+    eq(nx.w, E.sessionFor(4, 4, d, {}, E.DEFAULT_SPEC).find((b) => b.pkey === k).w, `deload: an Easy week-3 ${k} does not raise the deload load`);
+  }
+  // ENG-10: Wednesday squat growth sets at ~RPE 7.5 for 8 (72.3% of the week's planned e1RM)
+  for (let w = 4; w <= 19; w++) if (E.cycleOf(w) !== 6) for (const wk of [1, 2, 3]) {
+    const s = E.sessionFor(w, wk, 3, {}, E.DEFAULT_SPEC), h = s.find((b) => b.pkey === "psh");
+    const cap = E.cycleOf(w) === 5 ? { 1: 7.5, 2: 8, 3: 8 }[wk] : { 1: 7, 2: 7.5, 3: 8 }[wk], e1 = E.mainTables(w, {}).t.sq.s[wk - 1] / E.pctAt(cap);
+    ok(h.w / e1 >= 0.70 && h.w / e1 <= 0.745, `Wed W${w} wk${wk}: growth sets ${h.w} = ${(h.w / e1).toFixed(3)} x e1RM`);
+  }
+  // ENG-12: deload warm-ups never climb past the light triple
+  for (let w = 4; w <= 19; w++) if (E.cycleOf(w) !== 6) for (const [L, d] of [["sq", 1], ["bn", 2], ["dl", 5]]) {
+    const s = E.sessionFor(w, 4, d, {}, E.DEFAULT_SPEC), light = s.find((b) => b.pkey === L + "-light").w;
+    const nums = s.find((b) => b.type === "warmup").rows.map((r) => r[0]).filter((x) => typeof x === "number");
+    ok(nums.every((x) => x < light) && !s.find((b) => b.type === "warmup").rows.some((r) => /indicator|bridge/.test(String(r[1]))), `deload W${w} ${L}: warm-ups stay under the ${light} triple`);
+  }
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

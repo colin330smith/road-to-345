@@ -405,6 +405,60 @@ T["model 2: logging waist + neck gives a body-fat trend; the photo day stamps"] 
   await ctx.close();
 };
 
+// ── Model 2 app: the Now card, the Body map, the guided measure day ──
+T["now: the Now card walks primers, ramp and single; the rating's preview is the back-off the engine prescribes"] = async (b) => {
+  const { ctx, page, errors } = await open(b, { time: "2026-10-13T07:05:00", state: { ...BASE, seen: { m2: 1 } } });
+  const nowText = () => page.$eval(".card.now", (e) => e.innerText);
+  ok(/Bench day/i.test(await nowText()) && /Band External Rotation/i.test(await nowText()), "Tuesday opens on the day brief and the first primer");
+  for (let i = 0; i < 4; i++) await page.click(".nowcta");
+  ok(/Warm-up · 1 of 6/i.test(await nowText()), "after the primers, the warm-up ramp");
+  for (let i = 0; i < 6; i++) await page.click(".nowcta");
+  ok(/220/.test(await nowText()) && /START/.test(await nowText()), "after the ramp, the 220 single with the meet commands");
+  await page.click(".nowcta");
+  const easy = await page.$eval(".nowrate .g small", (e) => +e.textContent.match(/\d+/)[0]);
+  await page.click(".nowrate .g");
+  await page.evaluate(() => nowSkip());
+  const big = await page.$eval(".card.now .nowbig", (e) => +e.textContent.match(/\d+/)[0]);
+  eq(big, easy, "the back-off weight the Easy button promised is the one the engine now prescribes");
+  const s = await getS(page), single = s.logs["2026-10-13"].sets["bn-single"];
+  ok(single && single[0].w === 220 && single[0].rate === "E", "the single is logged under its exercise key with the rating");
+  eq(s.logs["2026-10-13"].wu, 6, "the warm-up rows are counted");
+  ok(/Bench — top single/i.test(await page.$eval("#view", (e) => e.innerText)), "the card list below still shows every block");
+  ok(!errors.length, "no page errors " + errors.join(" | "));
+  await ctx.close();
+};
+T["body: the map is the engine's week; tapping a muscle shows where its sets come from"] = async (b) => {
+  const { ctx, page, errors } = await open(b, { time: "2026-10-13T07:05:00", state: { ...BASE, seen: { m2: 1 } } });
+  await page.evaluate(() => goTab("moves"));
+  ok((await page.$$("#view .mus[data-m]")).length > 30, "front and back figures with tappable muscles");
+  await page.evaluate(() => document.querySelector('.mus[data-m="upperchest"]').dispatchEvent(new MouseEvent("click", { bubbles: true })));
+  const want = await page.evaluate(() => { const loc = E.whereIs(todayUTC(), SHIFT()); const wk = []; for (let d = 1; d <= 7; d++) wk.push(...E.sessionFor(loc.wave, loc.week, d, GX(), S.spec)); return GOALS.muscleSets(wk).upperchest; });
+  const t = await page.$eval("#view", (e) => e.innerText);
+  ok(/Upper chest/i.test(await page.$eval(".mhead h2", (e) => e.textContent)) && t.includes(String(want)), `upper chest selected, ${want} sets this week as goals.js counts them`);
+  ok(/Tue · Incline Bench/.test(t), "its sources list Tuesday's incline");
+  await page.evaluate(() => { bodyMode = "today"; render(); });
+  ok(/Today · Tue/i.test(await page.$eval("#view", (e) => e.innerText)), "the Today view");
+  await page.evaluate(() => { bodyView = "moves"; render(); });
+  ok((await page.$$("#view .moverow")).length > 10, "Moves is still one tap away");
+  ok(!errors.length, "no page errors " + errors.join(" | "));
+  await ctx.close();
+};
+T["measure: the guided measure day saves weight and tape, and Road draws the frame"] = async (b) => {
+  const { ctx, page, errors } = await open(b, { time: "2026-10-17T07:05:00", state: { ...BASE, seen: { m2: 1 } } });
+  await page.evaluate(() => goTab("road"));
+  ok(/Add waist, shoulders and flexed arm/.test(await page.$eval("#view", (e) => e.innerText)), "no tape yet: the frame card names what it needs");
+  await page.evaluate(() => { measureSheet(); for (const v of ["190.2", "34", "15.5", "13.25", "47", "9"]) { for (const k of v) mdKey(k); mdNext(false); } });
+  const s = await getS(page);
+  eq([s.bw["2026-10-17"], s.meas["2026-10-17"]], [190.2, { wa: 34, nk: 15.5, ar: 13.25, sh: 47 }], "saved under today; a 9-inch chest is rejected as a slipped digit");
+  ok(/17\.2%/.test(await page.$eval("#sheet", (e) => e.innerText)), "the read: 17.2% by the Navy equation");
+  await page.evaluate(() => closeSheet());
+  ok(!!(await page.$("#framecard svg.frame")), "Road now draws the frame");
+  await page.evaluate(() => frameSlide(100));
+  ok(/16\.00"/.test(await page.$eval("#frametrio", (e) => e.innerText)) && /1\.50/.test(await page.$eval("#frametrio", (e) => e.innerText)), "slid to the goal: 16\" arms and 1.50");
+  ok(!errors.length, "no page errors " + errors.join(" | "));
+  await ctx.close();
+};
+
 (async () => {
   const browser = await pw.chromium.launch();
   const only = process.argv[2];

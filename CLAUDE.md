@@ -8,3 +8,5 @@
 - Apple Notes / Calendar sync (`sync.py` push, `push_cal.py`, osascript) runs only on the Mac. In the cloud, regenerate `out/` with `python3 sync.py notes|cal N` and leave the push for the Mac.
 - The program is **Model 2** from Wave 4. Waves 1–3 are history: history-hash tests in test.js prove they never change. Gate new prescriptions with `from: 4` (or later).
 - Goal tracking lives in `goals.js` (pure, spliced at `/*==GOALS==*/`): every goal has a metric, a protocol, a required pace and a measured trend; verdicts only past the noise band.
+- Anatomy lives in `anatomy.js` (pure, spliced at `/*==ANAT==*/`, MIT notice must stay). Weekly sets per muscle come from `GOALS.muscleSets` on the engine's own week; never hardcode set counts in the UI.
+- The Now card on Today reads the same `prep` rows as the set chips and logs only through `hitSet` / `rateSet`; keep it that way so the two can never disagree.

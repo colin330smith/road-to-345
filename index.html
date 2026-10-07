@@ -251,6 +251,21 @@
   .tile.pr{background:linear-gradient(135deg,#3b2c0a,#1e1a10);border:1px solid #6b5518}
   .brief{margin-top:2px}
   .note.sig,b.sig{color:var(--signal)}
+  .frame{width:100%;max-width:330px;height:auto;display:block;margin:4px auto 0}
+  input[type=range]{width:100%;accent-color:var(--signal);margin:6px 0 0;padding:0;border:0;background:none}
+  .ends{display:flex;justify-content:space-between;font-size:10.5px;color:var(--ash);letter-spacing:.06em;text-transform:uppercase}
+  .ends .sig{color:var(--signal)}
+  .trio{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}
+  .trio div{background:var(--plate2);border-radius:10px;padding:8px 9px}
+  .trio b{display:block;font-family:var(--disp);font-size:24px;line-height:1;margin-top:3px;font-variant-numeric:tabular-nums}
+  .trio small{font-size:10.5px;color:#5d636e}
+  .mprog{display:flex;gap:5px;margin:4px 0 10px}.mprog i{flex:1;height:4px;border-radius:3px;background:var(--steel)}.mprog i.d{background:var(--signal)}
+  .mdval{display:grid;justify-items:center;gap:4px;background:radial-gradient(130% 90% at 90% 0%,#3a2a0b 0%,var(--plate2) 60%);border:1px solid #5c4613;border-radius:14px;padding:14px 10px}
+  .mdval b{font-family:var(--disp);font-size:68px;line-height:.95;font-variant-numeric:tabular-nums}.mdval b small{font-size:26px;color:var(--ash);margin-left:4px}
+  .mdval b.ghosty{color:#5d636e}
+  .keys{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+  .keys button{min-height:52px;border-radius:12px;background:var(--plate2);font-family:var(--disp);font-size:24px;font-weight:700}
+  .keys button:active{background:var(--steel)}
   .seg2{display:grid;grid-template-columns:1fr 1fr;gap:3px;background:var(--plate);border:1px solid var(--steel);border-radius:11px;padding:3px;margin:8px 0 4px}
   .seg2 button{min-height:38px;border-radius:8px;font-family:var(--disp);text-transform:uppercase;letter-spacing:.08em;font-size:13px;color:var(--ash)}
   .seg2 button[aria-selected="true"]{background:var(--plate2);color:var(--chalk);box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
@@ -2794,6 +2809,8 @@ const MODEL2 = {
     ["Data safety", "Imports checked before they replace anything, a recovery screen, dated schedule shifts that never move past logs."],
     ["Nutrition", "Accurate weekly rate, no trims in Cycles 5–6, a sleep gate that needs logged sleep, adjustments that move the targets."],
     ["Goal tracking", "Each goal shows the pace it needs vs the pace you have, and the lever to pull when you fall behind."],
+    ["Now card", "Today walks you set by set: primers, the warm-up ramp with plates, the single with meet commands, a rating that shows the back-offs it sets, a rest ring, the rep ladder, then what the session built."],
+    ["Body map", "A real anatomy map of this week's sets per muscle, your goal muscles in gold; tap one to see every set that feeds it. Road draws your frame inside the goal frame from your tape."],
   ],
 };
 
@@ -3199,7 +3216,7 @@ function renderToday() {
   // Model 2: the monthly measure-and-photo day (weekends, or any day once a week overdue)
   { const d = GOALS.due(S.meas, S.photos || {}, keyOf(todayUTC())), late = (x) => x == null || x >= 35;
     if (viewDate === todayUTC() && (d.measure || d.photos) && (loc.day >= 6 || (d.measure && late(d.measDays)) || (d.photos && late(d.photoDays))))
-      inner += `<div class="card single"><div class="eyebrow sig">📏 Measure &amp; photo day</div><p class="note">Every 4 weeks, morning, before food: waist, neck, flexed arm, shoulders, chest, then the six photos. This is how the goal tracker tells real progress from tape noise.</p><div class="rowbtns">${d.measure ? `<button class="btn" onclick="goTab('trends')">Log measurements</button>` : ""}${d.photos ? `<button class="btn ghost" onclick="photoSheet()">Photo checklist</button>` : ""}</div></div>`; }
+      inner += `<div class="card single"><div class="eyebrow sig">📏 Measure &amp; photo day</div><p class="note">Every 4 weeks, morning, before food: waist, neck, flexed arm, shoulders, chest, then the six photos. This is how the goal tracker tells real progress from tape noise.</p><div class="rowbtns">${d.measure ? `<button class="btn" onclick="measureSheet()">Start measure day</button>` : ""}${d.photos ? `<button class="btn ghost" onclick="photoSheet()">Photo checklist</button>` : ""}</div></div>`; }
   if (loc.day === 7 && loc.week === 4 && loc.wave < 19) inner += `<div class="card single"><div class="eyebrow sig">⚠ Gate day — end of Wave ${loc.wave}</div><p class="note">Review the wave, then set each lift's gate for Wave ${loc.wave + 1}.</p><div class="rowbtns"><button class="btn" onclick="gateSheet(${loc.wave + 1})">Set the Wave ${loc.wave + 1} gate</button></div></div>`;
   if ((loc.day === 6 || loc.day === 7) && loc.week === 4) inner += `<div class="card"><div class="eyebrow sig">Weak-point ledger</div><p class="note">End of a training block — log this cycle's anchor lift + note whether the target or another muscle failed first. Photos + measurements every 4 weeks drive the 8-week decision.</p><div class="rowbtns"><button class="btn ghost" onclick="ledgerSheet()">Open ledger</button></div></div>`;
 
@@ -3381,7 +3398,7 @@ function goalTrackerCard() {
   return `<div class="card single"><div class="eyebrow sig">Goal tracker · Model 2</div>
     <p class="note">${rep.monthsLeft} months to Phase 1's end (Wave 45). Each goal: the pace it needs against the pace your own readings show. A verdict appears only once the data can tell it from tape noise.</p>
     ${due.measure || due.photos ? `<div class="capnote warn" style="margin-top:6px">${due.measure ? `📏 Measure day${due.measDays != null ? ` (last full set ${due.measDays} days ago)` : ""}` : ""}${due.measure && due.photos ? " · " : ""}${due.photos ? `📸 Photo day${due.photoDays != null ? ` (last ${due.photoDays} days ago)` : ""}` : ""}</div>
-      <div class="rowbtns">${due.measure ? `<button class="btn" onclick="goTab('trends')">Log measurements</button>` : ""}${due.photos ? `<button class="btn ghost" onclick="photoSheet()">Photo checklist</button>` : ""}</div>` : ""}
+      <div class="rowbtns">${due.measure ? `<button class="btn" onclick="measureSheet()">Start measure day</button>` : ""}${due.photos ? `<button class="btn ghost" onclick="photoSheet()">Photo checklist</button>` : ""}</div>` : ""}
     ${rep.goals.map((g) => `<div class="grow"><div class="gh"><b>${esc(g.label)}</b><span class="gstat ${g.status}">${GSTAT[g.status] || g.status}</span></div>
       <div class="gv">${esc(g.now)} → ${esc(g.target)}</div>
       <div class="note">${esc(g.metric)}${g.detail ? ` · ${esc(g.detail)}` : ""}${fmtPace(g) ? `<br>${fmtPace(g)}` : ""}</div>
@@ -3389,6 +3406,121 @@ function goalTrackerCard() {
       ${g.note ? `<div class="note" style="margin-top:2px">${esc(g.note)}</div>` : ""}</div>`).join("")}
     <p class="note" style="margin-top:8px">Model 2 weekly plan (Wave ${inp.regionWave}): curls ${r.curls} · triceps ${r.triceps} · upper chest ${r.upperChest} · traps ${r.traps} · rear delts ${r.rearDelts} · side delts ${r.sideDelts} · rows ${r.rows} sets.${inp.adherence != null ? ` Last 4 weeks: ${inp.adherence}% of planned sets logged.` : ""}</p></div>`;
 }
+// ── your frame vs the build: a silhouette scaled from his own tape, the goal frame as a gold halo.
+// Shoulder and arm widths scale with the measurements and the waist is held, so the halo is
+// exactly what is left to build. A drawing from ratios, not a body scan, and it says so.
+const measLast = (f) => { const mk = Object.keys(S.meas || {}).filter((k) => DK_RE.test(k) && S.meas[k] && Number.isFinite(S.meas[k][f])).sort(); return mk.length ? S.meas[mk[mk.length - 1]][f] : null; };
+let frameT = 0;
+function framePaths(p) {
+  const sw = (p.sh / 47) * 50, ww = (p.wa / 34) * 25, aw = (p.arm / 13.25) * 18, cx = 100, f = (n) => n.toFixed(1), X = (o) => f(cx - o);
+  const torso = `M${cx} 50 L${X(8)} 50 L${X(9)} 60 Q${X(sw * 0.55)} 62 ${X(sw - 10)} 70 L${X(sw - 12)} 104 Q${X(sw - 13)} 116 ${X(sw - 15)} 124 Q${X(ww + 3)} 160 ${X(ww)} 186 Q${X(ww - 1)} 204 ${X(ww + 4)} 224 L${X(ww + 4)} 236 L${cx} 236 Z`;
+  const dx = cx - sw + 5, delt = `M${f(dx - 12)} 88 a12 18 0 1 0 24 0 a12 18 0 1 0 -24 0Z`;
+  const c = (y) => cx - sw + 4 - (y - 100) * 0.1;
+  const arm = `M${f(c(98) - aw * 0.42)} 98 Q${f(c(124) - aw * 0.6)} 124 ${f(c(150) - aw * 0.4)} 150 Q${f(c(164) - aw * 0.48)} 164 ${f(c(204) - aw * 0.22)} 204 L${f(c(204) + aw * 0.22)} 204 Q${f(c(166) + aw * 0.42)} 166 ${f(c(150) + aw * 0.34)} 150 Q${f(c(124) + aw * 0.52)} 124 ${f(c(98) + aw * 0.42)} 98Z`;
+  return [torso, arm, delt].map((d) => `<path d="${d}"/><path d="${d}" transform="translate(200 0) scale(-1 1)"/>`).join("");
+}
+function frameParts() {
+  const sh = measLast("sh"), wa = measLast("wa"), ar = measLast("ar"), nk = measLast("nk");
+  if (!(sh && wa && ar)) return null;
+  const goal = { sh: 1.5 * wa, wa, arm: GOALS.TARGETS && GOALS.TARGETS.arm ? GOALS.TARGETS.arm : 16 };
+  const t = frameT, cur = { sh: sh + (Math.max(goal.sh, sh) - sh) * t, wa, arm: ar + (Math.max(goal.arm, ar) - ar) * t };
+  const bf = nk ? GOALS.navyBF(wa, nk, S.settings.heightIn || GOALS.HEIGHT_IN) : null;
+  const svg = `<svg class="frame" viewBox="10 14 180 224" role="img" aria-label="Your frame inside the goal frame">
+      <defs><linearGradient id="ffill" gradientUnits="userSpaceOnUse" x1="0" y1="40" x2="0" y2="236"><stop offset="0" stop-color="#465066"/><stop offset="1" stop-color="#1b1f27"/></linearGradient>
+      <linearGradient id="fhalo" gradientUnits="userSpaceOnUse" x1="0" y1="40" x2="0" y2="236"><stop offset="0" stop-color="#ffb224" stop-opacity=".55"/><stop offset="1" stop-color="#ffb224" stop-opacity=".08"/></linearGradient></defs>
+      <g fill="url(#fhalo)">${framePaths(goal)}</g><g fill="url(#ffill)">${framePaths(cur)}</g><ellipse cx="100" cy="33" rx="12" ry="15.5" fill="#2f3542"/></svg>`;
+  const trio = `<div class="trio"><div><span class="eyebrow">Arm</span><b>${cur.arm.toFixed(2)}"</b><small>goal 16"</small></div><div><span class="eyebrow">Shldr ÷ waist</span><b>${(cur.sh / wa).toFixed(2)}</b><small>goal 1.50</small></div><div><span class="eyebrow">Body fat</span><b>${bf != null ? bf.toFixed(1) + "%" : "—"}</b><small>${bf != null ? "tape · goal 15%" : "add neck"}</small></div></div>`;
+  return { svg, trio };
+}
+function frameCard() {
+  const p = frameParts();
+  if (!p) { const miss = [["wa", "waist"], ["sh", "shoulders"], ["ar", "flexed arm"]].filter(([f]) => !measLast(f)).map(([, n]) => n);
+    return `<div class="card single"><div class="eyebrow sig">Your frame → the build</div><p class="note">Add ${miss.join(", ").replace(/, ([^,]*)$/, " and $1")} and the app draws your frame inside the goal frame: 200 lb at 15%, 16" arms, shoulders 1.5 × waist.</p><div class="rowbtns"><button class="btn" onclick="measureSheet()">📏 Measure</button></div></div>`; }
+  return `<div class="card single" id="framecard"><div class="eyebrow sig">Your frame → the build</div>
+    <div id="framesvg">${p.svg}</div>
+    <input type="range" min="0" max="100" value="${Math.round(frameT * 100)}" oninput="frameSlide(this.value)" aria-label="Now to goal">
+    <div class="ends"><span>Now</span><span class="sig">Gold rim = left to build</span><span>Goal</span></div>
+    <div id="frametrio">${p.trio}</div>
+    <p class="note" style="margin-top:8px">Drawn from your latest tape (shoulders, waist, flexed arm), not a photo: shoulder and arm widths scale with the numbers, the waist is held. The photos every 4 weeks judge the upper chest and back.</p>
+    <div class="rowbtns"><button class="btn ghost" onclick="measureSheet()">📏 Update measurements</button></div></div>`;
+}
+// slide without rebuilding the card, so the thumb keeps the slider
+window.frameSlide = (v) => { frameT = v / 100; const p = frameParts(); if (!p) return; $("#framesvg").innerHTML = p.svg; $("#frametrio").innerHTML = p.trio; };
+// ── the road to 315 / 405 / 495 as % of goal, from the engine's bases (cbFor, his gates) ──
+function projectionCard() {
+  const off = SHIFT(), loc = E.whereIs(todayUTC(), off), w0 = Math.max(1, Math.min(loc.wave || 1, 45)), goal = { sq: 405, bn: 315, dl: 495 };
+  const eta = {}; for (const L of E.LIFTS) eta[L] = E.etaWave(L, goal[L], GX());
+  const wEnd = Math.min(45, Math.max(w0 + 6, ...E.LIFTS.map((L) => (eta[L] || 45) + 1)));
+  const W = []; for (let w = w0; w <= wEnd; w++) W.push(w);
+  const pct = (w, L) => E.cbFor(w, GX())[L] / goal[L];
+  const lo = Math.max(0.5, Math.floor(Math.min(...E.LIFTS.map((L) => pct(w0, L))) * 20) / 20 - 0.05);
+  const X = (j) => 30 + (j / Math.max(1, W.length - 1)) * 296, Y = (v) => 122 - ((Math.min(v, 1.06) - lo) / (1.06 - lo)) * 110;
+  const COL = { sq: "#7f93ad", bn: "#ffb224", dl: "#e9e7e1" };
+  const line = (L) => `<path d="${W.map((w, j) => (j ? "L" : "M") + X(j).toFixed(1) + " " + Y(pct(w, L)).toFixed(1)).join(" ")}" stroke="${COL[L]}" stroke-width="2.2" fill="none"/>`;
+  const meetW = S.settings.meetDate ? E.whereIs(Date.parse(S.settings.meetDate), off).wave : null;
+  const mj = meetW && meetW >= w0 && meetW <= wEnd ? W.indexOf(meetW) : -1;
+  const ym = (w) => new Date(E.waveStartUTC(w, off)).toLocaleDateString("en-US", { month: "short", year: "numeric", timeZone: "UTC" });
+  const cb = E.cbFor(w0, GX());
+  return `<div class="card"><div class="eyebrow sig">Road to 315 · 405 · 495</div>
+    <div class="chartwrap"><svg viewBox="0 0 340 146" role="img" aria-label="Projected bases as a percent of goal">
+      <line x1="30" x2="326" y1="${Y(1)}" y2="${Y(1)}" stroke="#e9e7e1" stroke-opacity=".45" stroke-dasharray="4 4"/>
+      <text x="26" y="${Y(1) + 3}" text-anchor="end" fill="#8b919c" font-size="9">100%</text><text x="26" y="${Y(lo + 0.05) + 3}" text-anchor="end" fill="#5d636e" font-size="9">${Math.round((lo + 0.05) * 100)}%</text>
+      ${mj >= 0 ? `<line x1="${X(mj)}" x2="${X(mj)}" y1="8" y2="124" stroke="#ffb224" stroke-opacity=".5"/><text x="${X(mj) + 4}" y="16" fill="#ffb224" font-size="9">Meet · W${meetW}</text>` : ""}
+      ${E.LIFTS.map(line).join("")}
+      <text x="30" y="140" fill="#5d636e" font-size="9">${ym(w0)}</text><text x="326" y="140" text-anchor="end" fill="#5d636e" font-size="9">${ym(wEnd)}</text>
+    </svg></div>
+    <div class="legend">${E.LIFTS.map((L) => `<span><span class="k" style="background:${COL[L]}"></span>${E.LIFT_NAME[L]} ${cb[L]}→${goal[L]}${eta[L] ? ` · W${eta[L]} ${ym(eta[L])}` : ""}</span>`).join("")}</div>
+    <p class="note" style="margin-top:6px">Training bases from the engine with your gates. Every rated single moves these lines.${mj < 0 ? " Set the meet date on its card to mark it here." : ""}</p></div>`;
+}
+// ── measure day: one number per screen, a keypad, last time beside it, then the read ──
+const MD_STEPS = [
+  { k: "bw", lo: 80, hi: 400, n: "Body weight", u: "lb", how: "Morning, after the bathroom, before food. Same scale every time." },
+  { k: "wa", lo: 20, hi: 70, n: "Waist · navel", u: "in", how: "Relaxed, at the end of a normal breath out. Tape level and snug, not pressing." },
+  { k: "nk", lo: 10, hi: 25, n: "Neck", u: "in", how: "Just below the Adam's apple, tape sloping slightly down to the front." },
+  { k: "ar", lo: 8, hi: 25, n: "Right arm · flexed", u: "in", how: "Cold, before training. Across the biceps peak, flexed hard, level all round. A tape varies about ¼\" between honest readings." },
+  { k: "sh", lo: 30, hi: 75, n: "Shoulders", u: "in", how: "Around the widest point of the delts, arms relaxed at your sides." },
+  { k: "ch", lo: 25, hi: 70, n: "Chest", u: "in", how: "At the nipple line, arms down, normal breath. Optional: skip if alone." },
+];
+let md = null;
+const mdPrev = (k) => (k === "bw" ? (() => { const ks = Object.keys(S.bw || {}).filter((x) => DK_RE.test(x)).sort(); return ks.length ? S.bw[ks[ks.length - 1]] : null; })() : measLast(k));
+window.measureSheet = () => { md = { i: 0, entry: "", vals: {} }; mdRender(); };
+function mdRender() {
+  if (md.done) {
+    const v = md.vals, wa = v.wa ?? measLast("wa"), nk = v.nk ?? measLast("nk"), h = S.settings.heightIn || GOALS.HEIGHT_IN;
+    const bf = wa && nk ? GOALS.navyBF(wa, nk, h) : null, bw = v.bw ?? mdPrev("bw"), ar = v.ar ?? measLast("ar"), sh = v.sh ?? measLast("sh");
+    openSheet(`<button class="closex" onclick="closeSheet()">×</button><h2>Today's read</h2>
+      <div class="tiles"><div class="tile pr"><span class="eyebrow sig">Body fat · tape</span><b>${bf != null ? bf.toFixed(1) + "%" : "—"}</b><span class="note">goal 15%</span></div>
+        <div class="tile"><span class="eyebrow">Lean mass</span><b>${bf != null && bw ? (bw * (1 - bf / 100)).toFixed(1) : "—"}</b><span class="note">lb · goal 170</span></div>
+        <div class="tile"><span class="eyebrow">Arm</span><b>${ar ? ar + '"' : "—"}</b><span class="note">${ar ? (16 - ar).toFixed(2) + '" to go' : ""}</span></div>
+        <div class="tile"><span class="eyebrow">Shldr ÷ waist</span><b>${sh && wa ? (sh / wa).toFixed(2) : "—"}</b><span class="note">goal 1.50</span></div></div>
+      <p class="note" style="margin-top:10px">Navy equation (Hodgdon &amp; Beckett 1984) at your height. A trend, not a truth: one DXA scan sets the offset. Saved to today; the goal tracker and your frame use it now.</p>
+      <div class="rowbtns"><button class="btn" onclick="closeSheet();goTab('road')">See your frame</button><button class="btn ghost" onclick="closeSheet();photoSheet()">📸 Photos next</button></div>`);
+    return;
+  }
+  const st = MD_STEPS[md.i], prev = mdPrev(st.k), val = md.entry || (prev != null ? String(prev) : "—");
+  const diff = md.entry && prev != null ? +md.entry - prev : null;
+  openSheet(`<button class="closex" onclick="closeSheet()">×</button><h2>📏 Measure day · ${md.i + 1} of ${MD_STEPS.length}</h2>
+    <div class="mprog">${MD_STEPS.map((_, j) => `<i class="${j <= md.i ? "d" : ""}"></i>`).join("")}</div>
+    <div class="mdval"><span class="eyebrow sig">${esc(st.n)}</span><b class="${md.entry ? "" : "ghosty"}">${esc(val)}<small>${st.u}</small></b>
+      <span class="note">${prev != null ? `Last time <b style="color:var(--chalk)">${prev}</b>${diff != null && Number.isFinite(diff) ? ` · <b style="color:${diff >= 0 ? "var(--go)" : "var(--stop)"}">${diff >= 0 ? "+" : ""}${diff.toFixed(2)}</b>` : ""}` : "First reading"}</span></div>
+    <p class="note" style="text-align:center;margin:4px 0 10px">${esc(st.how)}</p>
+    <div class="keys">${["1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "0", "⌫"].map((x) => `<button onclick="mdKey('${x}')">${x}</button>`).join("")}</div>
+    <div class="row2"><button class="btn ghost" onclick="mdNext(true)">Skip</button><button class="btn" onclick="mdNext(false)">${md.i < MD_STEPS.length - 1 ? "Next" : "Save"}</button></div>`);
+}
+window.mdKey = (x) => { let v = md.entry; v = x === "⌫" ? v.slice(0, -1) : x === "." && v.includes(".") ? v : (v + x).slice(0, 6); md.entry = v; mdRender(); };
+window.mdNext = (skip) => {
+  const st = MD_STEPS[md.i], v = parseFloat(md.entry);
+  // plausible ranges only: a slipped digit never lands in the log
+  const ok = v >= st.lo && v <= st.hi;
+  if (!skip && Number.isFinite(v) && ok) md.vals[st.k] = v;
+  md.entry = "";
+  if (md.i < MD_STEPS.length - 1) { md.i++; mdRender(); return; }
+  const k = keyOf(todayUTC());
+  if (md.vals.bw) S.bw[k] = md.vals.bw;
+  const m = {}; for (const f of ["wa", "nk", "ar", "sh", "ch"]) if (Number.isFinite(md.vals[f])) m[f] = md.vals[f];
+  if (Object.keys(m).length) S.meas[k] = { ...(S.meas[k] || {}), ...m };
+  save(); md.done = true; render(); mdRender();
+};
 window.photoSheet = () => {
   const last = Object.keys(S.photos || {}).filter((k) => DK_RE.test(k)).sort().pop();
   openSheet(`<button class="closex" onclick="closeSheet()">×</button><h2>📸 Photo day</h2>
@@ -3433,7 +3565,7 @@ function renderRoad() {
     ${(() => { const p2 = NUTRI.PHASES[1]; return `<div class="srow" style="border-top:1px solid var(--steel);padding-top:8px;margin-top:4px"><span>Phase 2</span><span></span><span class="sval">${esc(p2.short)}</span></div>
     <p class="note" style="margin-top:2px"><b style="color:var(--chalk)">${esc(p2.name)}</b> \u2014 ${esc(p2.by)}. ${esc(p2.gate)} Same lean mass, ${p2.weeks} weeks, floor ${p2.floorBF}%. The Calvin Klein Wahlberg with 25 more pounds of muscle than the ad.</p>`; })()}</div>
   <p class="note">19 waves · 4 macros. Wave 3 runs from your measured bases. Projections re-compute from your gate results; a future gate you have not set assumes the small step (+2.5 bench, +5 squat and deadlift): near Latella's average for bench, above it for squat and deadlift. Your rated gates correct it.</p>`;
-  h += goalTrackerCard();
+  h += frameCard() + projectionCard() + goalTrackerCard();
   if (S.settings.meetDate) { const m = Date.parse(S.settings.meetDate), wk = Math.ceil((m - todayUTC()) / (7 * E.MS_DAY));
     const peak = [6, 12, 18].find((k) => { const f = E.sessionDayUTC(k, 4, 5, off); return m >= f && m - f < 3 * E.MS_DAY; });
     h += `<div class="card single"><div class="eyebrow sig">Meet ${esc(fmt(m))} · ${wk > 0 ? wk + " weeks out" : "done"}</div><p class="note">${peak ? `Peak = the Wave ${peak} test (${fmt(E.sessionDayUTC(peak, 4, 5, off))}).` : "No peak lines up with it yet: re-enter the date in More → Settings to line one up."}</p></div>`; }
@@ -3784,7 +3916,7 @@ function renderTrends() {
     ${(() => { const bf = GOALS.bfSeries(S.meas, S.settings.heightIn), ln = GOALS.leanSeries(S.meas, S.bw, S.settings.heightIn), b = bf.points[bf.points.length - 1], l = ln.points[ln.points.length - 1];
         return b ? `<div class="statline" style="margin-top:8px"><span class="note">Body fat (${bf.calibratedBy ? `tape, calibrated by DXA ${esc(bf.calibratedBy)}` : "tape estimate, ±3–4 points"})</span> <b style="font-size:20px;font-variant-numeric:tabular-nums">${b.v}%</b>${l ? ` <span class="note">· lean ≈ ${l.v} lb</span>` : ""}</div>` : `<p class="note" style="margin-top:6px">Log waist and neck together to get a body-fat trend (US Navy tape equation).</p>`; })()}
     <details class="proto"><summary>How to measure (every 4 weeks, morning, before food)</summary><ul class="cues">${Object.entries(GOALS.PROTOCOL).map(([, v]) => `<li>${esc(v)}</li>`).join("")}</ul></details>
-    <div class="rowbtns"><button class="btn ghost" onclick="photoSheet()">📸 Photo checklist</button></div>
+    <div class="rowbtns"><button class="btn" onclick="measureSheet()">📏 Guided measure day</button><button class="btn ghost" onclick="photoSheet()">📸 Photo checklist</button></div>
     ${ratio ? `<div class="statline" style="margin-top:8px"><span class="note">Shoulder ÷ waist</span> <b style="font-size:20px;font-variant-numeric:tabular-nums">${ratio.toFixed(2)}</b> <span class="note">· 1.4 athletic · 1.5 strong V · 1.6 elite</span></div>` : ""}
     <p class="note" style="margin-top:8px">${esc(verdict)}</p>
     ${mk.length ? `<div class="tablewrap" style="margin-top:8px"><table><tr><th>Date</th><th>Waist</th><th>Shoulders</th><th>Arm</th><th>Ratio</th></tr>${mk.slice(-6).reverse().map((k) => { const m = S.meas[k]; return `<tr><td>${esc(k)}</td><td>${m.wa || "—"}</td><td>${m.sh || "—"}</td><td>${m.ar || "—"}</td><td>${m.sh && m.wa ? (m.sh / m.wa).toFixed(2) : "—"}</td></tr>`; }).join("")}</table></div>` : `<p class="note">Nothing logged. Measure cold, first thing — waist at the navel, shoulders at the widest point, arm at the peak. Flexed or cold, pick one and never switch: consistency matters more than which. Monthly.</p>`}
@@ -4003,7 +4135,7 @@ render();
 </script>
 
 <script>
-window.BUILD = "r345-v62";
+window.BUILD = "r345-v63";
 if ("serviceWorker" in navigator) addEventListener("load", async () => {
   try {
     const reg = await navigator.serviceWorker.register("./sw.js");

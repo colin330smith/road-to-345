@@ -298,6 +298,8 @@ const MODEL2 = {
     ["Data safety", "Imports checked before they replace anything, a recovery screen, dated schedule shifts that never move past logs."],
     ["Nutrition", "Accurate weekly rate, no trims in Cycles 5–6, a sleep gate that needs logged sleep, adjustments that move the targets."],
     ["Goal tracking", "Each goal shows the pace it needs vs the pace you have, and the lever to pull when you fall behind."],
+    ["Now card", "Today walks you set by set: primers, the warm-up ramp with plates, the single with meet commands, a rating that shows the back-offs it sets, a rest ring, the rep ladder, then what the session built."],
+    ["Body map", "A real anatomy map of this week's sets per muscle, your goal muscles in gold; tap one to see every set that feeds it. Road draws your frame inside the goal frame from your tape."],
   ],
 };
 

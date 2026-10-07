@@ -191,6 +191,10 @@ Each goal gets a metric, a measuring protocol, the pace it needs to reach its ta
 | Targets: 170 lb lean, 15%, 200 lb, 16" flexed arm, shoulder ÷ waist 1.5, ~11% for back detail | Judgment | — | His stated goals. 1.5 is the app's "strong V" line; ~11% follows the Phase 2 plan. |
 | Photos every 4 weeks for upper chest, upper back, 3D shoulders and back detail | Judgment | — | No validated tape measure exists for these regions; standardized photos compared over months are the practical yardstick. |
 | Adherence = logged sets / planned sets, last 4 weeks | Judgment | — | The first lever when a goal falls behind: a plan not done cannot be judged. |
+| Body map: weekly sets per muscle, direct sets 1, a compound's secondary muscles 0.5 | Partly | Pelland 2026 (above) | Fractional counting fit the hypertrophy data best. Which muscles each exercise trains is anatomy; the exact rule table in `goals.js` (MUSCLE_RULES) is judgment, and every exercise in Waves 4–19 is tested to credit at least one muscle. |
+| Body map zones: maintain under 5, build 5–10, growth 10–20, high 20+ sets a week | Judgment | Pelland 2026 (above) | The paper shows gains rising with sets and flattening, with no proven ceiling. The zone labels and colour steps are presentation. |
+| Your frame vs the goal: a silhouette scaled from shoulders, waist and flexed arm | Judgment | — | A drawing from ratios, not a body scan. Shoulder and arm widths scale with the tape and the waist is held; the goal frame is 16" and shoulders 1.5 × waist. The photos judge what a tape cannot. |
+| The Now card's rating preview | Evidence | Zourdos 2016 (above) | It runs the engine's own `singleFactor` (RPE chart, ±5% clamp), so the number on the button is the back-off the engine prescribes after the tap. A UI test checks they match. |
 
 ## Judgment calls, in one list
 

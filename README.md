@@ -34,7 +34,8 @@ Four source files splice into two deliverables. **Never edit the deliverables** 
 | `engine.js` | All programming logic — waves, cycle bases, gates, session building, progression | ✅ |
 | `fig.js` | IK-rigged stick-figure movement demos (canvas) | ✅ |
 | `nutrition.js` | Fuel: modes, the decision rule, menus, supplements | ✅ |
-| `goals.js` | **Model 2** goal tracking: Navy body-fat trend (DXA-calibratable), lean mass, flexed arm, shoulder ÷ waist, required vs measured pace, photo day | ✅ |
+| `goals.js` | **Model 2** goal tracking: Navy body-fat trend (DXA-calibratable), lean mass, flexed arm, shoulder ÷ waist, required vs measured pace, photo day; `muscleSets` for the Body map | ✅ |
+| `anatomy.js` | Front and back anatomy paths (react-native-body-highlighter, MIT, notice kept in the file) regrouped into the goal muscles, plus the SVG renderer for the Body map and the Now card | ✅ |
 | `app-shell.html` | UI, styling, state, rendering. Holds the `/*==ENGINE==*/`, `/*==FIGS==*/`, `/*==NUTRI==*/` and `/*==GOALS==*/` markers | ✅ |
 | `ui-test.js` | Playwright UI tests against the built app (fake clock) | ✅ |
 | `test.js` | Test suite | ✅ |

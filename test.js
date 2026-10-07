@@ -1700,6 +1700,19 @@ eq(E.sessionFor(2, 1, 1, {}, E.DEFAULT_SPEC).find((b) => b.type === "warmup").ro
   // photos survive the import sanitizer; junk does not
   const san = E.sanitizeState({ logs: {}, photos: { "2026-10-01": 1, "bad": 1, "2026-10-02": "x" } });
   eq(san.state.photos, { "2026-10-01": 1 }, "sanitize: photo days kept, junk dropped");
+  // physique map: weekly sets per muscle, direct 1, compound secondaries 0.5
+  eq(G.muscleSets([{ type: "backoff", name: "Bench — back-offs", sets: 5 }]), { ...Object.fromEntries(Object.keys(G.MUSCLES).map((k) => [k, 0])), chest: 5, upperchest: 2.5, frontdelt: 2.5, triceps: 2.5 }, "muscles: flat bench credits chest 1, upper chest / front delt / triceps 0.5");
+  eq([G.muscleRule("Seated Leg Curl"), G.muscleRule("Cable / DB Wrist Curl"), G.muscleRule("Incline DB Curl"), G.muscleRule("Cable Y-Shrug (arms 30° out)"), G.muscleRule("Prone Y-Raise"), G.muscleRule("High-Elbow Chest-Supported Row")],
+    [{ hams: 1 }, { forearms: 1 }, { biceps: 1 }, { traps: 1 }, { midtraps: 1, reardelt: 0.5 }, { midtraps: 1, reardelt: 0.5, lats: 0.5, biceps: 0.5 }], "muscles: the first matching rule wins (leg curl, wrist curl, incline curl, Y-shrug, prone Y, high-elbow row)");
+  for (let w = 4; w <= 19; w++) for (const wk of [1, 2, 3, 4]) {
+    const week = []; for (let d = 1; d <= 7; d++) week.push(...E.sessionFor(w, wk, d, {}, E.DEFAULT_SPEC));
+    const miss = week.filter((b) => ["accessory", "single", "backoff", "paused", "ohp"].includes(b.type) && b.sets && !Object.keys(G.muscleRule(b.name)).length && !/Band External Rotation|Band Pull-Apart|Stomach Vacuum|Neck/i.test(b.name));
+    ok(!miss.length, `muscles: every trained exercise in w${w} wk${wk} credits a muscle${miss.length ? " — missing " + miss.map((b) => b.name).join(", ") : ""}`);
+  }
+  { const week = []; for (let d = 1; d <= 7; d++) week.push(...E.sessionFor(4, 1, d, {}, E.DEFAULT_SPEC));
+    const m = G.muscleSets(week), pri = Object.keys(G.MUSCLES).filter((k) => G.MUSCLES[k].pri);
+    ok(pri.filter((k) => k !== "traps" && k !== "midtraps").every((k) => m[k] >= 10), `muscles: Wave 4 puts 10+ weekly sets on every goal muscle but the traps (${pri.map((k) => k + " " + m[k]).join(", ")})`);
+    ok(m.upperchest > m.chest, `muscles: Wave 4 upper chest (${m.upperchest}) out-doses mid chest (${m.chest})`); }
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

@@ -138,6 +138,69 @@ function weekRegions(blocks) {
   return out;
 }
 
+// The physique map: weekly sets per muscle. Direct work counts 1; a compound's secondary
+// muscles count half (the fractional counting that fit best in Pelland 2026). First matching rule wins.
+// Which muscles a movement trains is anatomy; the half-credit split is a judgment call.
+const MUSCLES = {
+  upperchest: { n: "Upper chest", goal: "Upper chest", pri: true },
+  chest: { n: "Mid chest", goal: "3/4/5" },
+  frontdelt: { n: "Front delts", goal: "Support" },
+  sidedelt: { n: "Side delts", goal: "3D shoulders", pri: true },
+  reardelt: { n: "Rear delts", goal: "3D shoulders", pri: true },
+  traps: { n: "Upper traps", goal: "Upper back", pri: true },
+  midtraps: { n: "Mid back", goal: "Upper back", pri: true },
+  lats: { n: "Lats", goal: "Shredded back", pri: true },
+  biceps: { n: "Biceps", goal: "16\" arms", pri: true },
+  triceps: { n: "Triceps", goal: "16\" arms", pri: true },
+  forearms: { n: "Forearms", goal: "16\" arms", pri: true },
+  abs: { n: "Abs", goal: "Support" },
+  erectors: { n: "Lower back", goal: "3/4/5" },
+  quads: { n: "Quads", goal: "3/4/5" },
+  hams: { n: "Hamstrings", goal: "3/4/5" },
+  glutes: { n: "Glutes", goal: "3/4/5" },
+  calves: { n: "Calves", goal: "Support" },
+};
+const MUSCLE_RULES = [
+  [/Band External Rotation|Band Pull-Apart|Stomach Vacuum|Neck/i, {}],
+  [/Calf Raise/i, { calves: 1 }],
+  [/^(Paused )?Squat/i, { quads: 1, glutes: 0.5 }],
+  [/Leg Press/i, { quads: 1, glutes: 0.5 }],
+  [/Leg Extension/i, { quads: 1 }],
+  [/Leg Curl/i, { hams: 1 }],
+  [/^Deadlift/i, { erectors: 1, hams: 0.5, glutes: 0.5, traps: 0.5, forearms: 0.5 }],
+  [/^RDL/i, { hams: 1, glutes: 0.5, erectors: 0.5 }],
+  [/Leg Raise|Ab Wheel|Crunch|Plank/i, { abs: 1 }],
+  [/Low-to-High|Fly/i, { upperchest: 1, chest: 0.5 }],
+  [/Incline (Bench|DB Press)/i, { upperchest: 1, chest: 0.5, frontdelt: 0.5, triceps: 0.5 }],
+  [/Bench/i, { chest: 1, upperchest: 0.5, frontdelt: 0.5, triceps: 0.5 }],
+  [/Overhead Press/i, { frontdelt: 1, sidedelt: 0.5, triceps: 0.5 }],
+  [/Dip/i, { triceps: 1, chest: 0.5, frontdelt: 0.5 }],
+  [/Shrug/i, { traps: 1 }],
+  [/Farmer/i, { forearms: 1, traps: 0.5 }],
+  [/Hammer Curl|Reverse Cable Curl|Reverse Curl/i, { forearms: 1, biceps: 0.5 }],
+  [/Wrist/i, { forearms: 1 }],
+  [/Curl/i, { biceps: 1 }],
+  [/Extension|Pushdown|Triceps/i, { triceps: 1 }],
+  [/Prone Y-Raise/i, { midtraps: 1, reardelt: 0.5 }],
+  [/Lateral Raise|Y-Raise/i, { sidedelt: 1 }],
+  [/Rear-Delt|Reverse[- ]Pec/i, { reardelt: 1 }],
+  [/Face Pull/i, { reardelt: 1, midtraps: 0.5 }],
+  [/High-Elbow/i, { midtraps: 1, reardelt: 0.5, lats: 0.5, biceps: 0.5 }],
+  [/Row/i, { lats: 1, midtraps: 0.5, reardelt: 0.5, biceps: 0.5 }],
+  [/Chin-Up|Pull-Up|Pulldown/i, { lats: 1, biceps: 0.5 }],
+];
+const muscleRule = (name) => { const r = MUSCLE_RULES.find(([re]) => re.test(name || "")); return r ? r[1] : {}; };
+// blocks: any list of session blocks (a day or a whole week); unknown names credit nothing
+function muscleSets(blocks) {
+  const out = {};
+  for (const k of Object.keys(MUSCLES)) out[k] = 0;
+  for (const b of blocks || []) {
+    if (!b || !["accessory", "single", "backoff", "paused", "ohp"].includes(b.type) || !b.sets) continue;
+    for (const [m, c] of Object.entries(muscleRule(b.name))) out[m] += b.sets * c;
+  }
+  return out;
+}
+
 // adherence: days = [{planned, logged}] for the window; sets logged / sets planned
 function adherence(days) {
   let p = 0, l = 0;
@@ -238,5 +301,5 @@ const MODEL2 = {
   ],
 };
 
-const GOALS = { HEIGHT_IN, TARGETS, NOISE, MONTH, navyBF, series, bfSeries, bw7, leanSeries, trend, band, judge, REGION, REGION_LABEL, weekRegions, adherence, POSES, PROTOCOL, due, report, MODEL2 };
+const GOALS = { HEIGHT_IN, TARGETS, NOISE, MONTH, navyBF, series, bfSeries, bw7, leanSeries, trend, band, judge, REGION, REGION_LABEL, weekRegions, MUSCLES, MUSCLE_RULES, muscleRule, muscleSets, adherence, POSES, PROTOCOL, due, report, MODEL2 };
 if (typeof module !== "undefined") module.exports = GOALS;

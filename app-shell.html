@@ -184,6 +184,89 @@
   .chip:active,.btn:active,.tab:active{transform:scale(.96)}
   .wavecard.past{opacity:.55}
   .done .eyebrow::after{content:" ✓";color:var(--go)}
+  .card.now{background:radial-gradient(130% 90% at 92% 0%,#3a2a0b 0%,var(--plate) 58%);border-color:#5c4613;padding:13px 14px 14px;margin-top:10px}
+  .card.now.hardset{border-color:#6b2b25}
+  .nowtop{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+  .card.now .pbar{margin:7px 0 2px;height:3px}
+  .nowrow{display:flex;gap:10px;align-items:flex-start}
+  .nowex{font-family:var(--disp);font-weight:700;text-transform:uppercase;letter-spacing:.04em;font-size:20px;line-height:1.1;margin-top:10px}
+  .nowbig{font-family:var(--disp);font-weight:800;font-size:76px;line-height:.9;margin-top:6px;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+  .nowbig small{font-size:28px;color:var(--ash);font-weight:700;letter-spacing:0}
+  .nowfig{display:grid;grid-template-columns:1fr 1fr;gap:2px;width:96px;flex:none;margin-top:8px}
+  .nowfig svg{width:100%;height:auto;display:block}
+  .nowcue{margin-top:10px;font-size:14px;line-height:1.45;border-left:2px solid var(--signal);padding-left:10px}
+  .nowcta{display:block;width:100%;margin-top:14px;min-height:60px;border-radius:14px;background:var(--signal);color:#1b1405;font-family:var(--disp);font-weight:800;font-size:22px;letter-spacing:.06em;text-transform:uppercase}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+  .row2 .btn{min-height:44px;text-align:center}
+  .stp{display:grid;grid-template-columns:42px 1fr 42px;align-items:center;border:1px solid var(--steel);border-radius:11px;min-height:46px;overflow:hidden}
+  .stp button{height:100%;font-size:20px;font-weight:700;color:var(--ash)}.stp button:active{background:var(--plate2)}
+  .stp span{text-align:center;font-size:12.5px;color:var(--ash)}.stp b{font-family:var(--disp);font-size:18px;color:var(--chalk)}
+  .dots{display:flex;gap:5px;margin-top:10px}
+  .dots i{width:22px;height:6px;border-radius:3px;background:var(--steel)}
+  .dots i.d{background:var(--go)}.dots i.c{background:var(--signal)}.dots i.h{box-shadow:inset 0 0 0 1.5px var(--stop)}
+  .plates{display:flex;align-items:center;gap:3px;margin-top:12px;min-height:56px}
+  .pl{display:grid;place-items:center;border-radius:4px;font-size:9.5px;font-weight:700;color:#0b0c0e}
+  .p45{width:19px;height:56px;background:#d83b33;color:#fff}.p35{width:17px;height:50px;background:#e6c13a}.p25{width:15px;height:44px;background:#3d8b55;color:#fff}
+  .p10{width:12px;height:34px;background:#e9e5dc}.p5{width:10px;height:28px;background:#3c6ec4}.p2{width:8px;height:22px;background:#9aa0aa}
+  .sleeve{width:30px;height:10px;background:#7b818c;border-radius:2px}
+  .pltxt{font-size:11.5px;color:var(--ash);margin-left:10px;line-height:1.35;font-variant-numeric:tabular-nums}
+  .cmds{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-top:10px}
+  .cmds span{font-family:var(--disp);font-weight:700;font-size:13px;letter-spacing:.12em;text-align:center;padding:7px 0;border-radius:8px;background:var(--plate2);color:var(--ash)}
+  .cmds span:nth-child(2){color:var(--signal)}
+  .ladder{display:flex;gap:4px;margin-top:10px;align-items:center;flex-wrap:wrap}
+  .ladder span{font-weight:700;font-size:12px;padding:5px 9px;border-radius:7px;background:var(--plate2);color:#5d636e;font-variant-numeric:tabular-nums}
+  .ladder span.c{background:var(--signal);color:#1b1405}.ladder span.n{color:var(--chalk);border:1px dashed var(--steel)}
+  .ladder em{font-style:normal;font-size:12px;color:var(--ash);margin-left:4px}
+  .flag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;border-radius:6px;padding:3px 8px;background:#2a210c;color:var(--signal);border:1px solid #6b5518;margin-top:8px}
+  .ramp{display:flex;align-items:flex-end;gap:5px;height:104px;margin-top:12px}
+  .ramp div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;height:100%}
+  .ramp i{width:100%;border-radius:6px 6px 3px 3px;background:var(--plate2);border:1px solid var(--steel)}
+  .ramp .d i{background:#1c3a29;border-color:#2c5c42}.ramp .c i{background:var(--signal);border-color:var(--signal)}
+  .ramp .t i{background:repeating-linear-gradient(135deg,#3d2c0b 0 5px,#2a210c 5px 10px);border:1px dashed var(--signal)}
+  .ramp span{font-size:10.5px;color:var(--ash);white-space:nowrap;font-variant-numeric:tabular-nums}.ramp .c span{color:var(--signal)}
+  .nowrate{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:12px}
+  .nowrate button{min-height:70px;border-radius:13px;border:1px solid var(--steel);font-family:var(--disp);font-weight:700;font-size:16px;letter-spacing:.06em;text-transform:uppercase;display:grid;place-items:center;line-height:1.1}
+  .nowrate button small{display:block;font-family:var(--body);font-size:11.5px;letter-spacing:0;text-transform:none;color:var(--ash);margin-top:3px;font-weight:600}
+  .nowrate .g{color:var(--go);border-color:#2c5c42;background:rgba(70,176,115,.1)}.nowrate .y{color:var(--signal);border-color:#6b5518;background:rgba(255,178,36,.08)}.nowrate .r{color:var(--stop);border-color:#6b2b25;background:rgba(228,87,75,.08)}
+  .nowrest{position:relative;display:grid;place-items:center;margin:6px 0 4px}
+  .rring{width:190px;height:190px}.rring .tr{fill:none;stroke:var(--steel);stroke-width:9}.rring .tf{fill:none;stroke:var(--signal);stroke-width:9;stroke-linecap:round}
+  .rnum{position:absolute;text-align:center}.rnum b{display:block;font-family:var(--disp);font-size:54px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}.rnum small{font-size:11px;color:var(--ash);letter-spacing:.1em;text-transform:uppercase}
+  .tiles{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+  .tile{background:var(--plate2);border-radius:12px;padding:10px 11px}.tile b{display:block;font-family:var(--disp);font-size:32px;line-height:1;margin-top:4px;font-variant-numeric:tabular-nums}
+  .tile.pr{background:linear-gradient(135deg,#3b2c0a,#1e1a10);border:1px solid #6b5518}
+  .brief{margin-top:2px}
+  .note.sig,b.sig{color:var(--signal)}
+  .seg2{display:grid;grid-template-columns:1fr 1fr;gap:3px;background:var(--plate);border:1px solid var(--steel);border-radius:11px;padding:3px;margin:8px 0 4px}
+  .seg2 button{min-height:38px;border-radius:8px;font-family:var(--disp);text-transform:uppercase;letter-spacing:.08em;font-size:13px;color:var(--ash)}
+  .seg2 button[aria-selected="true"]{background:var(--plate2);color:var(--chalk);box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
+  .seg2.sm button{min-height:34px;font-size:12px}
+  .bodycard{background:radial-gradient(90% 60% at 50% 30%,#1f232c 0%,var(--plate) 70%);padding:8px 6px 10px}
+  .bodies{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 4px}
+  .bodies svg{width:100%;height:auto;display:block}
+  .mus{cursor:pointer;transition:filter .15s}
+  .mus.sel{stroke:#fff6e0;stroke-width:6;filter:brightness(1.18)}
+  .figcap{display:grid;grid-template-columns:1fr 1fr;text-align:center;font-family:var(--disp);text-transform:uppercase;letter-spacing:.14em;font-size:10.5px;color:#5d636e;margin-top:2px}
+  .keyrow{display:grid;grid-template-columns:92px 1fr;gap:8px;align-items:center;padding:0 10px;margin-top:6px;font-size:11.5px;color:var(--ash)}
+  .keyrow i{height:7px;border-radius:4px}
+  .keyrow b{display:flex;justify-content:space-between;font-weight:400;font-size:10.5px;color:#5d636e}
+  .mhead{display:flex;justify-content:space-between;align-items:flex-end;gap:10px}
+  .mhead h2{font-family:var(--disp);text-transform:uppercase;letter-spacing:.05em;font-size:24px;line-height:1}
+  .dose{text-align:right;flex:none}.dose b{display:block;font-family:var(--disp);font-size:38px;line-height:.9;font-variant-numeric:tabular-nums}.dose small{font-size:11px;color:var(--ash)}
+  .gauge{position:relative;display:flex;gap:3px;margin-top:12px;height:10px}
+  .gauge i{height:100%;border-radius:3px;background:var(--plate2)}.gauge i.gz{background:#3d2f0e;box-shadow:inset 0 0 0 1px #6b5518}
+  .gauge u{position:absolute;top:-5px;width:4px;height:20px;margin-left:-2px;border-radius:2px;background:var(--chalk);box-shadow:0 0 0 2px var(--plate)}
+  .gl{display:flex;font-size:10.5px;color:#5d636e;margin-top:5px;white-space:nowrap}.gl .sig{color:var(--signal)}
+  .msrc{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+  .msrc span{font-size:12px;border:1px solid var(--steel);border-radius:7px;padding:4px 8px;color:var(--ash);background:var(--plate2)}
+  .msrc span.on{color:var(--signal);border-color:#6b5518}
+  .mtoday{margin-top:8px;font-size:13px;color:var(--ash)}
+  .rank{display:grid;gap:4px;margin-top:6px}
+  .rank button{display:grid;grid-template-columns:92px 1fr 36px;gap:8px;align-items:center;text-align:left;font-size:13px;color:var(--ash);min-height:34px}
+  .rank button[aria-pressed="true"]{color:var(--signal)}
+  .rank b{font-family:var(--disp);font-size:16px;color:var(--chalk);text-align:right;font-variant-numeric:tabular-nums}
+  .rbar{position:relative;height:8px;border-radius:4px;background:var(--plate2)}
+  .rbar i{position:absolute;inset:0 auto 0 0;border-radius:4px;background:linear-gradient(90deg,#8a6a1c,var(--signal))}
+  .rbar u{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--chalk);opacity:.5}
   @media (prefers-reduced-motion:reduce){ *{animation:none!important;transition:none!important} }
 </style>
 
@@ -410,6 +493,7 @@ const MOVES = {
 /*==FIGS==*/
 /*==NUTRI==*/
 /*==GOALS==*/
+/*==ANAT==*/
 let animId = null;
 const REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
 function drawFrame(cv, arch, k, opts) { paintScene(cv, arch, k, opts); }
@@ -457,7 +541,7 @@ function moveSheet(id, pkey) {
 }
 
 /* ── rest timer ── */
-let tEnd = null, tInt = null, actx = null, wake = null, beeped = false;
+let tEnd = null, tTot = 0, tInt = null, actx = null, wake = null, beeped = false;
 const timerBtn = $("#timer");
 // iOS only plays sound from an AudioContext created or resumed inside a tap: every set chip does that
 function unlockAudio() { try { const AC = window.AudioContext || window.webkitAudioContext; if (!actx && AC) actx = new AC(); if (actx && actx.state === "suspended") actx.resume(); } catch (e) {} }
@@ -468,9 +552,19 @@ function dropWake() { try { if (wake) wake.release(); } catch (e) {} wake = null
 function tickTimer() {
   if (!tEnd) return;
   const left = Math.round((tEnd - Date.now()) / 1000), a = Math.abs(left), mmss = `${Math.floor(a / 60)}:${String(a % 60).padStart(2, "0")}`;
-  if (left > 0) { timerBtn.textContent = `⏱ ${mmss}`; return; }
+  if (left > 0) {
+    timerBtn.textContent = `⏱ ${mmss}`;
+    // the Now card's ring and digits update in place, so a tap on Skip never lands on a rebuilt button
+    const rg = document.getElementById("nowring"), nt = document.getElementById("nowt");
+    if (rg && tTot) { const c = 2 * Math.PI * 82; rg.setAttribute("stroke-dasharray", `${Math.max(0, (tEnd - Date.now()) / tTot) * c} ${c}`); }
+    if (nt) nt.textContent = mmss;
+    return;
+  }
   timerBtn.textContent = `⏱ +${mmss}`; timerBtn.classList.add("over"); // counts up until the next set or Stop
-  if (!beeped) { beeped = true; beep(); if (navigator.vibrate) navigator.vibrate([160, 90, 160]); }
+  if (!beeped) { beeped = true; beep(); if (navigator.vibrate) navigator.vibrate([160, 90, 160]);
+    // rest is over: the Now card moves on to the next set (unless he is typing)
+    const ae = document.activeElement;
+    if (document.getElementById("nowring") && !(ae && /INPUT|TEXTAREA|SELECT/.test(ae.tagName))) render(); }
 }
 document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && tEnd) { holdWake(); tickTimer(); } });
 timerBtn.addEventListener("click", () => {
@@ -481,7 +575,7 @@ timerBtn.addEventListener("click", () => {
       <button class="btn danger" onclick="stopTimer()">Stop</button></div>`);
 });
 window.startTimer = (s) => {
-  unlockAudio(); tEnd = Date.now() + s * 1000; beeped = false; clearInterval(tInt); tInt = setInterval(tickTimer, 500);
+  unlockAudio(); tEnd = Date.now() + s * 1000; tTot = s * 1000; beeped = false; clearInterval(tInt); tInt = setInterval(tickTimer, 500);
   timerBtn.classList.add("run"); timerBtn.classList.remove("over"); holdWake(); tickTimer();
   if ($("#modal").classList.contains("open") && /Rest Timer/.test($("#sheet").textContent)) closeSheet();
 };
@@ -495,6 +589,134 @@ function blockRx(b) {
   const w = b.w === 0 ? (/Band/.test(b.name) ? "Band" : "BW") : b.added ? "+" + b.w : b.w;
   return `${w} <small>×</small> ${b.reps} <small>× ${b.sets}${b.db ? " · per hand" : ""}</small>`;
 }
+/* ── NOW: the guided card at the top of Today. One set, one action. It reads the same rows as the
+   set chips below (prep in renderToday) and logs through hitSet / rateSet, so both always agree. ── */
+let nowAdj = null; // { bkey, w, r }: a weight or rep change for the next set, before it is logged
+const skipRate = new Set();
+const DAYTITLE = ["", "Squat day", "Bench day", "Paused squat + arms", "Paused bench + press", "Deadlift day", "Frame day", "Optional arms"];
+const isBarbell = (b) => !b.db && !b.added && (E.LIFTS.includes(b.lift) || /Incline Bench|RDL|Overhead Press/.test(b.name));
+const PLC = { 45: "p45", 35: "p35", 25: "p25", 10: "p10", 5: "p5", 2.5: "p2" };
+const platesTxt = (w) => { let s = (w - 45) / 2; const o = []; for (const p of [45, 35, 25, 10, 5, 2.5]) while (s >= p - 1e-9) { o.push(p); s -= p; } return s > 1e-6 ? "" : o.join(" · "); };
+function platesHTML(w) {
+  if (w === 45) return `<p class="note" style="margin-top:8px">Empty bar</p>`;
+  if (!(w > 45)) return "";
+  let s = (w - 45) / 2; const o = [];
+  for (const p of [45, 35, 25, 10, 5, 2.5]) while (s >= p - 1e-9) { o.push(p); s -= p; }
+  if (s > 1e-6) return "";
+  return `<div class="plates" aria-label="Plates per side: ${o.join(", ")}"><span class="sleeve"></span>${o.map((x) => `<span class="pl ${PLC[x]}">${x >= 25 ? x : ""}</span>`).join("")}<span class="pltxt">${o.join(" · ")}<br>per side · 45 bar</span></div>`;
+}
+const MIN_PER_SET = { single: 4, backoff: 3.5, paused: 3.5, ohp: 3, accessory: 1.75 };
+const minsLeft = (rows, wuLeft) => Math.round(rows.reduce((m, r) => r.log ? m + Math.max(0, r.planned - r.sets.length) * (/^(FILLER|PRIMER)/.test(r.b.cap || "") ? 0.5 : MIN_PER_SET[r.b.type] || 2) : m, 0) + (wuLeft ? 6 : 0));
+// the muscles a movement trains, lit on a small front + back figure
+function miniFig(lit) {
+  const f = (id) => (lit[id] >= 1 ? "#ffb224" : lit[id] ? "#93701f" : "#252a33");
+  return `<div class="nowfig" aria-hidden="true">${ANATOMY.anatSVG("front", f, { mini: true })}${ANATOMY.anatSVG("back", f, { mini: true })}</div>`;
+}
+const ringSVG = (f, id) => { const r = 82, c = 2 * Math.PI * r; return `<svg class="rring" viewBox="0 0 200 200" aria-hidden="true"><circle class="tr" cx="100" cy="100" r="${r}"/><circle class="tf" ${id ? `id="${id}"` : ""} cx="100" cy="100" r="${r}" stroke-dasharray="${Math.max(0, Math.min(1, f)) * c} ${c}" transform="rotate(-90 100 100)"/></svg>`; };
+const mmss = (sec) => { const a = Math.max(0, Math.round(sec)); return `${Math.floor(a / 60)}:${String(a % 60).padStart(2, "0")}`; };
+function nowCard({ dk, loc, blocks, rows, log, ready }) {
+  const L = rows.filter((r) => r.log);
+  if (!L.length) return "";
+  const done = L.reduce((n, r) => n + Math.min(r.planned, r.sets.length), 0), planned = L.reduce((n, r) => n + r.planned, 0);
+  const next = L.find((r) => r.sets.length < r.planned);
+  const wuB = blocks.find((b) => b.type === "warmup"), wu = log.wu || 0;
+  const head = (extra = "") => `<div class="nowtop"><span class="eyebrow sig">${extra || `Now · ${done} of ${planned} sets`}</span>${next ? `<span class="note">~${minsLeft(rows, wuB && wu < wuB.rows.length)} min left</span>` : ""}</div><div class="pbar"><i style="width:${Math.round((done / planned) * 100)}%"></i></div>`;
+  // 1. a rated single sets the back-offs that follow it: ask before moving on
+  const rj = rows.findIndex((r, j) => r.log && r.isSingle && r.sets.length && r.b.pkey && r.b.w > 0 && !r.sets[r.sets.length - 1].rate && !skipRate.has(r.bkey)
+    && rows[j + 1] && rows[j + 1].log && rows[j + 1].b.type === "backoff" && !rows[j + 1].sets.length);
+  if (rj >= 0) {
+    const r = rows[rj], last = r.sets[r.sets.length - 1], nb = rows[rj + 1].b;
+    const prev = (k) => { const f = E.singleFactor(r.b.w, r.cap, { ...last, rate: k }); return f ? (nb.db ? E.R25(nb.w * f) : E.R5(nb.w * f)) : nb.w; };
+    return `<div class="card now">${head("Just logged")}
+      <div class="nowex">${esc(r.b.name)}</div><div class="nowbig">${last.w}<small> × ${last.r}</small></div>
+      <p class="nowcue">How did it feel? Your answer sets the ${nb.sets} back-offs.</p>
+      <div class="nowrate">${["E", "O", "H"].map((k) => `<button class="${k === "E" ? "g" : k === "O" ? "y" : "r"}" onclick="rateSet('${dk}','${r.bkey}','${k}')">${E.RATE_LABEL[k]}<small>→ ${prev(k)} × ${esc(String(nb.reps))}</small></button>`).join("")}</div>
+      <p class="note" style="margin-top:8px">Easy reads as about RPE ${Math.max(6, r.cap - 1.5)}, Hard as RPE ${r.cap + 1}, through the RPE chart (Zourdos 2016). Back-offs move at most 5%.</p>
+      <div class="rowbtns"><button class="btn ghost" onclick="nowSkipRate('${r.bkey}')">Rate later</button></div></div>`;
+  }
+  // 2. resting: the ring drains, the next set waits underneath
+  if (tEnd && tEnd > Date.now() && next) {
+    const left = (tEnd - Date.now()) / 1000, f = tTot ? left / (tTot / 1000) : 1;
+    return `<div class="card now">${head("Rest")}
+      <div class="nowrest">${ringSVG(f, "nowring")}<div class="rnum"><b id="nowt">${mmss(left)}</b><small>of ${mmss(tTot / 1000)}</small></div></div>
+      <p class="note" style="text-align:center">Up next · <b style="color:var(--chalk)">${esc(next.b.name)}</b></p>
+      <div class="nowbig" style="text-align:center;font-size:44px">${next.nw === 0 ? (/Band/.test(next.b.name) ? "Band" : "BW") : next.nw}<small> × ${esc(String(next.nr))}</small></div>
+      <p class="note" style="text-align:center">set ${next.sets.length + 1} of ${next.planned}${isBarbell(next.b) && next.nw > 45 ? " · " + esc(platesTxt(next.nw)) + " a side" : ""}</p>
+      <div class="row2"><button class="btn ghost" onclick="nowPlus()">+30 s</button><button class="btn ghost" onclick="nowSkip()">Skip rest</button></div></div>`;
+  }
+  // 3. all done: what the session added
+  if (!next) {
+    const top = L.find((r) => r.isSingle && E.LIFTS.includes(r.b.lift) && r.sets.length);
+    const est = top ? E.e1rm(top.sets[top.sets.length - 1], top.cap) : null;
+    let vol = 0; for (const r of L) for (const x of r.sets) if (x.w > 0 && x.r > 0) vol += x.w * x.r;
+    const ms = GOALS.muscleSets(blocks), pri = Object.keys(GOALS.MUSCLES).filter((k) => GOALS.MUSCLES[k].pri && ms[k] > 0).sort((a, b) => ms[b] - ms[a]);
+    const cool = blocks.find((b) => b.type === "cooldown");
+    return `<div class="card now">${head("Session complete 🏁")}
+      <div class="nowex" style="font-size:26px">${esc(DAYTITLE[loc.day] || "Session")} done</div>
+      <div class="tiles">${est ? `<div class="tile pr"><span class="eyebrow sig">Est. ${esc(E.LIFT_NAME[top.b.lift].toLowerCase())} max</span><b>${est}</b><span class="note">${top.sets[top.sets.length - 1].w} × 1${top.sets[top.sets.length - 1].rate ? " · " + esc(E.RATE_LABEL[top.sets[top.sets.length - 1].rate]) : ""}</span></div>` : ""}
+        <div class="tile"><span class="eyebrow">Volume</span><b>${vol.toLocaleString("en-US")}</b><span class="note">lb moved</span></div></div>
+      ${pri.length ? `<div class="eyebrow" style="margin-top:10px">Built toward your frame today</div><div class="msrc">${pri.map((k) => `<span class="on">${esc(GOALS.MUSCLES[k].n)} +${fmtSets(ms[k])}</span>`).join("")}</div>` : ""}
+      ${cool ? `<p class="note" style="margin-top:8px"><b style="color:var(--chalk)">Cooldown.</b> ${esc(cool.note || "")}</p>` : ""}
+      <p class="note" style="margin-top:6px">Protein within the hour, 7 h+ in bed tonight.</p></div>`;
+  }
+  // 4. the warm-up ramp before the first single
+  const first = L[0];
+  if (wuB && wu < wuB.rows.length && next.isSingle && !next.sets.length && next === L.find((x) => x.isSingle)) {
+    const row = wuB.rows[wu], w = row[0] === "Bar" ? 45 : row[0], lab = String(row[1]), topW = next.nw || 1;
+    const tag = lab.includes("indicator") ? `<span class="flag">🎥 Film this one · bar speed check</span>` : lab.includes("bridge") ? `<span class="flag">Bridge single · last step before ${topW}</span>` : "";
+    return `<div class="card now">${head(`Warm-up · ${wu + 1} of ${wuB.rows.length}`)}
+      ${!done && wu === 0 ? briefHTML(loc, blocks, ready) : ""}
+      <div class="nowex">${esc(wuB.name)}</div><div class="nowbig">${row[0]}<small> × ${esc(lab.split(" ")[0])}</small></div>
+      ${platesHTML(w)}${tag}
+      <div class="ramp" aria-label="Warm-up ramp">${wuB.rows.map((x, j) => { const ww = x[0] === "Bar" ? 45 : x[0]; return `<div class="${j < wu ? "d" : j === wu ? "c" : ""}"><i style="height:${Math.max(8, (ww / topW) * 78)}px"></i><span>${x[0]}</span></div>`; }).join("")}<div class="t"><i style="height:78px"></i><span>${topW}</span></div></div>
+      <button class="nowcta" onclick="wuHit('${dk}')">✓ ${row[0]} × ${esc(lab.split(" ")[0])}</button>
+      <div class="rowbtns" style="justify-content:center"><button class="btn ghost" onclick="wuSkip('${dk}',${wuB.rows.length})">Skip warm-ups</button></div></div>`;
+  }
+  // 5. the next set
+  const r = next, b = r.b, adj = nowAdj && nowAdj.bkey === r.bkey ? nowAdj : null;
+  const W = adj ? adj.w : r.nw, R = adj ? adj.r : r.nr, si = r.sets.length, lastHard = b.lastHard && si === r.planned - 1;
+  const def = b.type === "accessory" && b.pkey ? E.ACC.find((a) => a.id === b.pkey) : null, steps = def && def.steps && def.steps.length > 1 ? def.steps : null;
+  const k = steps ? steps.indexOf(+b.reps) : -1;
+  const ladder = k >= 0 ? `<div class="ladder">${steps.map((s, j) => `<span class="${j === k ? "c" : j === k + 1 ? "n" : ""}">${s}</span>`).join("")}<em>${k === steps.length - 1 ? `2 sets of ${steps[k]} → weight goes up next time` : `2 sets of ${steps[k]} → ${steps[k + 1]} reps next time`}</em></div>` : "";
+  const lit = GOALS.muscleRule(b.name), goal = Object.keys(lit).filter((m) => lit[m] >= 1 && GOALS.MUSCLES[m] && GOALS.MUSCLES[m].pri).map((m) => GOALS.MUSCLES[m].n);
+  const mv = b.moveId && MOVES[b.moveId], cue = mv && mv.cues && mv.cues[0];
+  const wTxt = W === 0 ? (/Band/.test(b.name) ? "Band" : "BW") : b.added ? "+" + W : W;
+  const step = b.inc || (b.db ? 2.5 : 5);
+  return `<div class="card now${lastHard ? " hardset" : ""}">${head()}
+    ${!done && !wu && first === r ? briefHTML(loc, blocks, ready) : ""}
+    <div class="nowrow"><div style="flex:1;min-width:0"><div class="nowex">${esc(b.name)}</div>
+      <div class="nowbig">${wTxt}<small> × ${esc(String(R))}</small></div></div>${Object.keys(lit).length ? miniFig(lit) : ""}</div>
+    <div class="dots" aria-label="Set ${si + 1} of ${r.planned}">${Array.from({ length: r.planned }, (_, j) => `<i class="${j < si ? "d" : j === si ? "c" : ""}${b.lastHard && j === r.planned - 1 ? " h" : ""}"></i>`).join("")}</div>
+    <p class="note" style="margin-top:6px">Set <b style="color:var(--chalk)">${si + 1} of ${r.planned}</b> · ${r.isSingle ? "cap" : "target"} RPE <b style="color:var(--chalk)">${esc(String(b.rpe))}</b>${b.db ? " · per hand" : ""}${lastHard ? ` · <b style="color:var(--stop)">last set → RPE 9–10${b.lp ? " + partials" : ""}</b>` : ""}${goal.length ? ` · builds <b class="sig">${esc(goal.join(", "))}</b>` : ""}</p>
+    ${r.offPlan ? `<p class="note sig">Carrying what you logged last set.</p>` : ""}
+    ${isBarbell(b) ? platesHTML(W) : ""}${r.isSingle && b.reps === 1 && E.LIFTS.includes(b.lift) ? `<div class="cmds"><span>START</span><span>${b.lift === "bn" ? "PRESS" : b.lift === "sq" ? "SQUAT" : "LIFT"}</span><span>RACK</span></div>` : ""}${ladder}
+    ${cue ? `<p class="nowcue">${esc(cue)}</p>` : ""}
+    <button class="nowcta" onclick="nowLog('${dk}','${r.bkey}',${W},${R},'${esc(b.pkey || "")}',${r.cap},${r.rest(si)},${W !== r.nw || String(R) !== String(r.nr)})">✓ Log ${wTxt} × ${esc(String(R))}</button>
+    <div class="row2"${r.nw === 0 ? ' style="grid-template-columns:1fr"' : ""}>${r.nw === 0 ? "" : `<div class="stp"><button onclick="nowStep('${r.bkey}',${r.nw},${JSON.stringify(String(r.nr))},'w',-${step})" aria-label="Less weight">−</button><span><b>${wTxt}</b> lb</span><button onclick="nowStep('${r.bkey}',${r.nw},${JSON.stringify(String(r.nr))},'w',${step})" aria-label="More weight">+</button></div>`}
+      <div class="stp"><button onclick="nowStep('${r.bkey}',${r.nw},${JSON.stringify(String(r.nr))},'r',-1)" aria-label="One rep fewer">−</button><span><b>${esc(String(R))}</b> reps</span><button onclick="nowStep('${r.bkey}',${r.nw},${JSON.stringify(String(r.nr))},'r',1)" aria-label="One rep more">+</button></div></div></div>`;
+}
+// the day at a glance, shown once, before the first set
+function briefHTML(loc, blocks, ready) {
+  const ms = GOALS.muscleSets(blocks), pri = Object.keys(GOALS.MUSCLES).filter((k) => GOALS.MUSCLES[k].pri && ms[k] >= 1).sort((a, b) => ms[b] - ms[a]).slice(0, 6);
+  return `<div class="brief"><div class="nowex" style="font-size:24px;margin-top:2px">${esc(DAYTITLE[loc.day] || "Today")}${ready !== "G" ? ` <span class="pill">${ready === "Y" ? "Yellow" : "Red"}</span>` : ""}</div>
+    ${pri.length ? `<div class="msrc">${pri.map((k) => `<span class="on">${esc(GOALS.MUSCLES[k].n)} +${fmtSets(ms[k])}</span>`).join("")}</div>` : ""}</div>`;
+}
+window.nowLog = (dk, bkey, w, r, pk, cap, rest, changed) => {
+  nowAdj = null; hitSet(dk, bkey, w, r, pk, cap, rest);
+  // a changed set carries forward, exactly as an edited chip does (LOG-2)
+  if (changed) { const a = ((S.logs[dk] || {}).sets || {})[bkey]; if (a && a.length) { a[a.length - 1].ed = true; save(); render(); } }
+};
+window.nowStep = (bkey, w0, r0, what, d) => {
+  const cur = nowAdj && nowAdj.bkey === bkey ? nowAdj : { bkey, w: w0, r: /^\d+$/.test(r0) ? +r0 : r0 };
+  if (what === "w") cur.w = Math.max(0, Math.round((cur.w + d) * 4) / 4);
+  else if (typeof cur.r === "number") cur.r = Math.max(0, cur.r + d);
+  nowAdj = cur; render();
+};
+window.nowSkipRate = (bkey) => { skipRate.add(bkey); render(); };
+window.nowPlus = () => { if (tEnd) { tEnd += 30000; tTot += 30000; tickTimer(); render(); } };
+window.nowSkip = () => { stopTimer(); render(); };
+window.wuHit = (dk) => { unlockAudio(); S.logs[dk] = S.logs[dk] || {}; S.logs[dk].wu = (S.logs[dk].wu || 0) + 1; save(); render(); };
+window.wuSkip = (dk, n) => { S.logs[dk] = S.logs[dk] || {}; S.logs[dk].wu = n; save(); render(); };
 function renderToday() {
   const off = SHIFT();
   const loc = E.whereIs(viewDate, off);
@@ -548,11 +770,12 @@ function renderToday() {
     planned += n;
     doneN += Math.min(n, setsOf(b, i).length);
   });
-  if (planned) inner += `<div class="pline"><div class="pbar"><i style="width:${Math.round((doneN / planned) * 100)}%"></i></div><span>${doneN}/${planned}${doneN >= planned ? " 🏁" : ""}</span></div>`;
+  if (planned && viewDate !== todayUTC()) inner += `<div class="pline"><div class="pbar"><i style="width:${Math.round((doneN / planned) * 100)}%"></i></div><span>${doneN}/${planned}${doneN >= planned ? " 🏁" : ""}</span></div>`;
 
   const LOGT = ["single", "backoff", "paused", "ohp", "accessory"];
   const lastLogIdx = blocks.reduce((k, x, j) => (LOGT.includes(x.type) && !/^(FILLER|PRIMER)/.test(x.cap || "") ? j : k), -1);
-  blocks.forEach((b0, i) => {
+  // one source for a block's key, sets and next-set numbers: the Now card and the set chips both read it
+  const prep = (b0, i) => {
     let b = b0;
     // LOG-7: a swap for today logs under its own key; the planned exercise's rung never sees it
     const swap = b.type === "accessory" && b.pkey && (log.swap || {})[b.pkey];
@@ -561,6 +784,19 @@ function renderToday() {
     const legacy = b.pkey && !(log.sets || {})[skeyOf(b, i)] && setsOf(b, i).length;
     const bkey = legacy ? (ready === "R" ? "r" : "b") + i : skeyOf(b, i); // edits of an old position-keyed set stay where it lives
     const sets = setsOf(b, i);
+    if (!LOGT.includes(b.type)) return { b, b0, i, bkey, sets };
+    const isSingle = b.type === "single", planned = isSingle ? 1 : b.sets;
+    const cap = ["single", "backoff", "paused", "ohp"].includes(b.type) ? E.capNum(b.rpe) : "null", inc = b.inc || (b.db ? 2.5 : 5);
+    // LOG-2: after an edited set, the next chip logs what he actually lifted
+    const lastEd = [...sets].reverse().find((s) => s.ed), nw = lastEd ? lastEd.w : b.w, nr = lastEd ? lastEd.r : (b.repN ?? b.reps);
+    const offPlan = !!lastEd && (nw !== b.w || String(nr) !== String(b.repN ?? b.reps));
+    const rest = (si) => (i === lastLogIdx && si >= planned - 1 ? 0 : restFor(b));
+    return { b, b0, i, bkey, sets, isSingle, planned, cap, inc, nw, nr, offPlan, rest, log: true };
+  };
+  const rows = blocks.map(prep);
+  if (viewDate === todayUTC()) inner += nowCard({ dk, loc, blocks, rows, log, ready });
+  blocks.forEach((b0, i) => {
+    const { b, bkey, sets } = rows[i];
     if (b.type === "warmup") {
       inner += `<div class="card"><div class="eyebrow">${esc(b.name)}</div>
         <div class="wu">${b.rows.map((r) => {
@@ -583,13 +819,9 @@ function renderToday() {
           <p class="note">USPA loads kilograms. Hand in the kg numbers. The opener is rounded down on purpose.</p>`; }
       inner += `</div>`; return;
     }
-    const isSingle = b.type === "single", planned = isSingle ? 1 : b.sets, nShown = Math.max(planned, sets.length);
+    const { isSingle, planned, cap, inc, nw, nr, offPlan } = rows[i], nShown = Math.max(planned, sets.length);
     const done = sets.length >= planned;
-    const cap = ["single", "backoff", "paused", "ohp"].includes(b.type) ? E.capNum(b.rpe) : "null", inc = b.inc || (b.db ? 2.5 : 5);
-    // LOG-2: after an edited set, the next chip logs what he actually lifted
-    const lastEd = [...sets].reverse().find((s) => s.ed), nw = lastEd ? lastEd.w : b.w, nr = lastEd ? lastEd.r : (b.repN ?? b.reps);
-    const offPlan = !!lastEd && (nw !== b.w || String(nr) !== String(b.repN ?? b.reps));
-    const tap = (si) => `hitSet('${dk}','${bkey}',${nw},${nr},'${esc(b.pkey || "")}',${cap},${i === lastLogIdx && si >= planned - 1 ? 0 : restFor(b)})`;
+    const tap = (si) => `hitSet('${dk}','${bkey}',${nw},${nr},'${esc(b.pkey || "")}',${cap},${rows[i].rest(si)})`;
     inner += `<div class="card ${isSingle ? "single" : ""} ${done ? "done" : ""}">
       <div class="cardhead"><div>
         <div class="eyebrow ${isSingle ? "sig" : ""}">${esc(b.name)}${b.top ? " · range top → weight bumps next wave" : ""}</div>
@@ -996,13 +1228,74 @@ window.addLedger = () => {
 window.delLedger = (k) => { delete S.ledger[k]; save(); ledgerSheet(); };
 
 /* ── MOVES ── */
-function renderMoves() {
+/* ── BODY: the physique map (anatomy.js + GOALS.muscleSets on the engine's own week) ── */
+let bodyView = "map", bodyMode = "week", bodySel = "sidedelt";
+const MGOLD = ["#5a4515", "#93701f", "#c9921f", "#ffb224"], MCOOL = ["#262c37", "#344050", "#4b5c73", "#6f84a1"];
+const mTier = (n) => (n >= 15 ? 3 : n >= 10 ? 2 : n >= 5 ? 1 : 0);
+const DAYN = ["", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+const fmtSets = (n) => (Math.round(n * 2) / 2).toString();
+// the week the map shows: this week's sessions as the engine prescribes them (Red days included)
+function bodyWeek(loc) {
+  const days = [];
+  for (let d = 1; d <= 7; d++) {
+    const dk = keyOf(E.sessionDayUTC(loc.wave, loc.week, d, SHIFT())), r = (S.logs[dk] || {}).r;
+    days.push({ d, blocks: r === "R" ? E.redSession(loc.wave, d, GX()) : E.sessionFor(loc.wave, loc.week, d, GX(), S.spec) });
+  }
+  return days;
+}
+function renderBody() {
+  const seg = `<div class="seg2" role="tablist"><button role="tab" aria-selected="${bodyView === "map"}" onclick="bodyView='map';render()">Map</button><button role="tab" aria-selected="${bodyView === "moves"}" onclick="bodyView='moves';render()">Moves</button></div>`;
+  if (bodyView === "moves") return renderMoves(seg);
+  const loc = E.whereIs(todayUTC(), SHIFT());
+  if (loc.pre || loc.wave > 19) { $("#view").innerHTML = seg + `<div class="card"><p class="note">The map starts with Wave 1.</p></div>`; return; }
+  const days = bodyWeek(loc), week = GOALS.muscleSets(days.flatMap((x) => x.blocks));
+  const tday = days.find((x) => x.d === loc.day) || { blocks: [] }, today = GOALS.muscleSets(tday.blocks);
+  const isWeek = bodyMode === "week", M = GOALS.MUSCLES;
+  const fill = isWeek ? (id) => (M[id] && M[id].pri ? MGOLD : MCOOL)[mTier(week[id] || 0)]
+    : (id) => (today[id] ? MGOLD[today[id] >= 6 ? 3 : today[id] >= 3 ? 2 : 1] : "#252a33");
+  const title = (id) => (M[id] ? `${M[id].n}: ${fmtSets(isWeek ? week[id] : today[id] || 0)} sets` : "");
+  const m = M[bodySel], n = week[bodySel] || 0;
+  // where the sets come from: every block this week that credits the muscle, by day
+  const src = [], direct = { n: 0 }, half = { n: 0 };
+  for (const x of days) for (const b of x.blocks) {
+    const c = ["accessory", "single", "backoff", "paused", "ohp"].includes(b.type) && b.sets ? GOALS.muscleRule(b.name)[bodySel] : 0;
+    if (!c) continue;
+    (c >= 1 ? direct : half).n += b.sets * c;
+    src.push({ d: x.d, name: b.name, sets: b.sets, c, today: x.d === loc.day });
+  }
+  const zone = n >= 20 ? "high" : n >= 10 ? "growth" : n >= 5 ? "build" : "maintain";
+  const G = (v) => `${(Math.min(v, 30) / 30) * 100}%`;
+  const tsrc = src.filter((s) => s.today);
+  const pri = Object.keys(M).filter((k) => M[k].pri).sort((a, b) => week[b] - week[a]);
+  $("#view").innerHTML = seg + `
+    <div class="seg2 sm" role="tablist"><button role="tab" aria-selected="${isWeek}" onclick="bodyMode='week';render()">This week</button><button role="tab" aria-selected="${!isWeek}" onclick="bodyMode='today';render()">Today · ${DAYN[loc.day]}</button></div>
+    <div class="card bodycard" onclick="bodyTap(event)">
+      <div class="bodies">${GOALS_FIG("front", fill, title)}${GOALS_FIG("back", fill, title)}</div>
+      <div class="figcap"><span>Front</span><span>Back</span></div>
+      ${isWeek ? `<div class="keyrow"><span>Goal muscles</span><i style="background:linear-gradient(90deg,${MGOLD.join(",")})"></i></div>
+        <div class="keyrow"><span>Support</span><i style="background:linear-gradient(90deg,${MCOOL.join(",")})"></i></div>
+        <div class="keyrow"><span></span><b><span>0</span><span>5</span><span>10</span><span>15+ sets</span></b></div>`
+      : `<p class="note" style="text-align:center;margin-top:4px">Lit = trained today · brighter = more sets</p>`}
+      <p class="note" style="text-align:center;margin-top:2px">Tap a muscle</p></div>
+    <div class="card"><div class="eyebrow ${m.pri ? "sig" : ""}">${m.pri ? "Your goal · " : ""}${esc(m.goal)}</div>
+      <div class="mhead"><h2>${esc(m.n)}</h2><div class="dose"><b>${fmtSets(n)}</b><small>sets this week</small></div></div>
+      <div class="gauge" aria-label="${fmtSets(n)} weekly sets"><i style="width:${G(5)}"></i><i style="width:${G(5)}"></i><i class="gz" style="width:${G(10)}"></i><i style="flex:1"></i><u style="left:${G(n)}"></u></div>
+      <div class="gl"><span style="width:${G(5)}">maintain</span><span style="width:${G(5)}">build</span><span class="sig" style="width:${G(10)}">growth 10–20</span><span>high</span></div>
+      <p class="note" style="margin-top:9px"><b style="color:var(--chalk)">${fmtSets(direct.n)} direct${half.n ? ` + ${fmtSets(half.n)} from compounds at half` : ""}.</b> More weekly sets, more growth, with diminishing returns and no proven ceiling (Pelland 2026). The zone labels are judgment.</p>
+      ${src.length ? `<div class="msrc">${src.map((s) => `<span class="${s.today ? "on" : ""}">${DAYN[s.d]} · ${esc(s.name.replace(/ \((Mon|Tue)\)$/, ""))} ${s.sets}${s.c < 1 ? " × ½" : ""}</span>`).join("")}</div>` : `<p class="note">Nothing in this week's plan trains it.</p>`}
+      ${tsrc.length ? `<div class="mtoday"><b class="sig">Today</b> +${fmtSets(today[bodySel])} · ${tsrc.map((s) => esc(s.name)).join(" · ")}</div>` : ""}</div>
+    <div class="card"><div class="eyebrow">Goal muscles · sets this week · tick = 10</div>
+      <div class="rank">${pri.map((k) => `<button aria-pressed="${k === bodySel}" onclick="bodySel='${k}';render()"><span>${esc(M[k].n)}</span><span class="rbar"><i style="width:${G(week[k])}"></i><u style="left:${G(10)}"></u></span><b>${fmtSets(week[k])}</b></button>`).join("")}</div></div>`;
+}
+const GOALS_FIG = (side, fill, title) => ANATOMY.anatSVG(side, fill, { sel: bodySel, title });
+window.bodyTap = (e) => { const p = e.target.closest("[data-m]"); if (!p || !GOALS.MUSCLES[p.dataset.m]) return; bodySel = p.dataset.m; render(); };
+function renderMoves(seg = "") {
   const groups = {}; const seen = new Set();
   for (const [id, m] of Object.entries(MOVES)) {
     const sig = m.name + m.grp; if (seen.has(sig)) continue; seen.add(sig);
     (groups[m.grp] = groups[m.grp] || []).push([id, m]);
   }
-  let h = `<p class="note" style="margin-top:8px">Tap a movement for the demo, cues, and its RPE cap.</p>`;
+  let h = seg + `<p class="note" style="margin-top:8px">Tap a movement for the demo, cues, and its RPE cap.</p>`;
   for (const grp of ["Main Lifts", "Press & Pull", "Shoulders", "Arms & Delts", "Legs", "Trunk & Grip", "Core", "Posture"]) {
     h += `<div class="grp">${grp}</div>`;
     for (const [id, m] of groups[grp] || []) {
@@ -1314,11 +1607,11 @@ $("#rulesbtn").addEventListener("click", () => openSheet(`<button class="closex"
 
 /* ── router ── */
 const CYCLE_DESC = { 1: "Learn accurate RPEs — add nothing", 2: "Same wave, more weight — add nothing", 3: "Accessory payoff · optional +2 sets, ONE lagging area", 4: "Competition-strict singles · reliable beats heavy", 5: "Singles climb, back-offs become doubles & triples", 6: "Peak: openers → taper → TEST Friday" };
-const TABS = [["today", "Today"], ["road", "Road"], ["moves", "Moves"], ["trends", "Trends"], ["more", "More"]];
+const TABS = [["today", "Today"], ["road", "Road"], ["moves", "Body"], ["trends", "Trends"], ["more", "More"]];
 const ICONS = {
   today: '<svg viewBox="0 0 24 24"><rect x="4" y="5.5" width="16" height="14.5" rx="2.5"/><path d="M4 10h16M8.5 3.5v3M15.5 3.5v3"/><circle cx="12" cy="15" r="1.7" fill="currentColor" stroke="none"/></svg>',
   road: '<svg viewBox="0 0 24 24"><path d="M5 20.5c7 0 3.5-6.5 7.5-8.5s5.5-3.5 5.5-8.5"/><circle cx="18" cy="3.5" r="1.4" fill="currentColor" stroke="none"/><circle cx="5" cy="20.5" r="1.4" fill="currentColor" stroke="none"/></svg>',
-  moves: '<svg viewBox="0 0 24 24"><circle cx="12" cy="4.8" r="2.1"/><path d="M12 7.5v6.2M12 9.2l-5.2 2.3M12 9.2l5.2-1.2M12 13.7l-3.6 6.8M12 13.7l3.6 6.8"/></svg>',
+  moves: '<svg viewBox="0 0 24 24"><circle cx="12" cy="4.2" r="2.1"/><path d="M6 8.2c2.2 1.1 9.8 1.1 12 0M8.6 8.9l.9 6.1M15.4 8.9l-.9 6.1M9.5 15l-.8 6M14.5 15l.8 6M9.5 15h5"/></svg>',
   trends: '<svg viewBox="0 0 24 24"><path d="M4 19.5h16"/><path d="M5 15l4.5-5 3.5 3 5.5-7"/><circle cx="18.5" cy="6" r="1.5" fill="currentColor" stroke="none"/></svg>',
   more: '<svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="1.6" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><circle cx="18" cy="12" r="1.6" fill="currentColor" stroke="none"/></svg>',
 };
@@ -1350,7 +1643,7 @@ function renderInner() {
   $("#ctxline").innerHTML = loc.pre ? "Wave 1 begins " + fmt(E.waveStartUTC(1, off))
     : loc.wave > 19 ? "Beyond Wave 19 — ask for the next map"
     : `${loc.wave < E.MODEL2_FROM ? "Model 1 · " : ""}Wave ${loc.wave} · Week ${loc.week} · ${E.CYCLE_NAME[E.cycleOf(loc.wave)]} · CB <b>${E.cbFor(loc.wave, GX()).bn}/${E.cbFor(loc.wave, GX()).sq}/${E.cbFor(loc.wave, GX()).dl}</b>`;
-  ({ today: renderToday, road: renderRoad, moves: renderMoves, trends: renderTrends, more: renderMore })[tab]();
+  ({ today: renderToday, road: renderRoad, moves: renderBody, trends: renderTrends, more: renderMore })[tab]();
 }
 window.closeSheet = closeSheet; window.moveSheet = moveSheet;
 render();

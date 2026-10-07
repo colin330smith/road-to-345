@@ -5,7 +5,8 @@ Build Road to 3/4/5.
 Splices the two logic modules into the UI shell and writes both deliverables:
 
     engine.js  ─┐
-    fig.js     ─┼─►  app-shell.html  ──►  road-to-345.html   (standalone / artifact)
+    fig.js     ─┤
+    nutrition.js, goals.js, anatomy.js ─┼─►  app-shell.html  ──►  road-to-345.html   (standalone / artifact)
                 │                    └─►  index.html          (PWA, adds <head> + SW)
                 ┘
 
@@ -27,6 +28,7 @@ ENGINE = ROOT / "engine.js"
 FIGS = ROOT / "fig.js"
 NUTRI = ROOT / "nutrition.js"
 GOALSJS = ROOT / "goals.js"
+ANATJS = ROOT / "anatomy.js"
 OUT_STANDALONE = ROOT / "road-to-345.html"
 OUT_PWA = ROOT / "index.html"
 SW = ROOT / "sw.js"
@@ -86,7 +88,7 @@ def write(p, s):
 
 def build():
     shell = read(SHELL)
-    for marker, src in (("/*==ENGINE==*/", ENGINE), ("/*==FIGS==*/", FIGS), ("/*==NUTRI==*/", NUTRI), ("/*==GOALS==*/", GOALSJS)):
+    for marker, src in (("/*==ENGINE==*/", ENGINE), ("/*==FIGS==*/", FIGS), ("/*==NUTRI==*/", NUTRI), ("/*==GOALS==*/", GOALSJS), ("/*==ANAT==*/", ANATJS)):
         if marker not in shell:
             sys.exit(f"ERROR: {marker} missing from app-shell.html — cannot splice {src.name}")
         shell = shell.replace(marker, read(src), 1)

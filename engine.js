@@ -1056,6 +1056,7 @@ function sanitizeState(d) {
     }
     if (L.sleep != null && !num(L.sleep)) { delete L.sleep; dropped++; }
     if (L.swap != null && !obj(L.swap)) { delete L.swap; dropped++; }
+    if (L.wu != null && !(num(L.wu) && L.wu >= 0)) { delete L.wu; dropped++; } // warm-up rows ticked off on the Now card
     out.logs[k] = L;
   }
   const keep = (field, ok) => { if (d[field] == null) return; if (!obj(d[field])) { delete out[field]; dropped++; return; } out[field] = {}; for (const [k, v] of Object.entries(d[field])) { if (ok(k, v)) out[field][k] = v; else dropped++; } };

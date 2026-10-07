@@ -190,6 +190,90 @@ T["log: last sessions in the how-to, history rows open their day, tracked lifts 
   await ctx.close();
 };
 
+// ── B4 data safety ──
+const SEED11 = (() => { const logs = {}; ["2026-09-14", "2026-09-15", "2026-09-16", "2026-09-17", "2026-09-18", "2026-09-21", "2026-09-22", "2026-09-23", "2026-09-24", "2026-09-25", "2026-09-28"].forEach((dk, i) => { logs[dk] = { sets: { "sq-back": [{ w: 200 + i, r: 5, k: "sq-back" }] } }; }); return logs; })();
+T["data: a malformed import changes nothing and never blanks the app"] = async (b) => {
+  for (const bad of ['{"logs":{"2026-09-24":null,"2026-09-23":{"sets":{}}}}', '{"logs":{"2026-09-24":{"sets":{"b1":5}}}}', "not json"]) {
+    const { ctx, page, errors } = await open(b, { time: "2026-10-06T07:05:00", state: { ...BASE, logs: SEED11 } });
+    await page.evaluate(() => { goTab("more"); importSheet(); });
+    await page.fill("#imp", bad); await page.click('#sheet .btn:text("Import")');
+    const S = await getS(page);
+    // a sanitized partial file asks first; the dialog handler accepts, so it may replace: the app must still render
+    for (const tab of ["today", "road", "trends", "more"]) { await page.evaluate((t) => goTab(t), tab); ok((await page.$$("#view .card")).length > 0, `after importing ${bad.slice(0, 30)}: ${tab} renders`); }
+    ok(!errors.some((e) => /TypeError/.test(e)), "no TypeError: " + errors.join(" | "));
+    if (bad === "not json") eq(Object.keys(S.logs).length, 11, "a non-JSON paste keeps all 11 days");
+    await ctx.close();
+  }
+};
+T["data: an import asks first and can be undone"] = async (b) => {
+  const { ctx, page, errors } = await open(b, { time: "2026-10-06T07:05:00", state: { ...BASE, logs: SEED11 } });
+  await page.evaluate(() => { goTab("more"); importSheet(); });
+  await page.fill("#imp", JSON.stringify({ ...BASE, logs: { "2026-09-01": { sets: { "sq-back": [{ w: 190, r: 5, k: "sq-back" }] } } } }));
+  await page.click('#sheet .btn:text("Import")');
+  ok(errors.some((e) => /Replace 11 logged days with 1/.test(e)), "the import asks before replacing 11 days");
+  eq(Object.keys((await getS(page)).logs).length, 1, "after confirming, the file's 1 day is loaded");
+  await page.evaluate(() => goTab("more"));
+  await Promise.all([page.waitForNavigation(), page.click('#view .btn:text("Undo last import")')]);
+  eq(Object.keys((await getS(page)).logs).length, 11, "Undo last import brings the 11 days back");
+  await ctx.close();
+};
+T["data: Repeat a week shifts only the future; the meet date lines up a peak"] = async (b) => {
+  const { ctx, page } = await open(b, { time: "2026-10-06T07:05:00", state: { ...BASE, logs: SEED11 } });
+  const hist0 = await page.evaluate(() => { goTab("more"); return [...document.querySelectorAll("#view .linkbtn")].map((e) => e.textContent); });
+  await page.click('#view .btn:text("Repeat a week from next Monday")');
+  const S1 = await getS(page);
+  eq(S1.settings.shifts, [{ from: "2026-10-12", weeks: 1 }], "the shift starts next Monday");
+  eq(await page.evaluate(() => [...document.querySelectorAll("#view .linkbtn")].map((e) => e.textContent)), hist0, "History labels do not move");
+  await page.click('#view .btn:text("Undo last shift")');
+  eq((await getS(page)).settings.shifts, [], "Undo last shift removes it");
+  await page.fill("#meetdate", "2027-07-10"); await page.$eval("#meetdate", (e) => e.dispatchEvent(new Event("change")));
+  const S2 = await getS(page);
+  ok(S2.settings.meetDate === "2027-07-10" && S2.settings.shifts.length === 3, "the meet date adds three week-2 repeats: " + JSON.stringify(S2.settings.shifts));
+  eq(await page.evaluate(() => new Date(E.sessionDayUTC(12, 4, 5, SHIFT())).toISOString().slice(0, 10)), "2027-07-09", "the Wave 12 test moves to Fri Jul 9");
+  await page.evaluate(() => goTab("road"));
+  ok(/Peak = the Wave 12 test/.test(await page.$eval("#view", (e) => e.innerText)), "the Road tab shows the meet card");
+  await ctx.close();
+};
+T["data: a spec change never moves a logged set onto another exercise"] = async (b) => {
+  const { ctx, page } = await open(b, { time: "2026-10-17T07:05:00", state: BASE });
+  for (const k of [0, 1, 2]) await (await chip(page, /incline db curl/, k)).click();
+  for (const k of [0, 1]) await (await chip(page, /bayesian cable curl/, k)).click();
+  const keys = Object.keys((await getS(page)).logs["2026-10-17"].sets).sort();
+  eq(keys, ["bayesian-cable-curl", "incline-db-curl"], "sets are stored under the exercise keys");
+  await page.evaluate(() => { setSpec("framePrimary", "shoulders"); closeSheet(); render(); });
+  const hits = await page.$$eval("#view .chip.hit", (els) => els.length);
+  eq(hits, 0, "after switching to Shoulder width no other exercise shows the curls' sets");
+  await ctx.close();
+};
+T["data: a stalled network still opens the cached app; force update offline changes nothing"] = async (b) => {
+  const http = require("http"), fs = require("fs");
+  let stall = false; const held = [];
+  const srv = http.createServer((req, res) => {
+    const p = decodeURIComponent(req.url.split("?")[0]); const f = path.join(__dirname, p === "/" ? "index.html" : p);
+    if (stall && /\/(index\.html)?$/.test(p)) { held.push(res); return; } // accept, never answer
+    if (!fs.existsSync(f)) { res.writeHead(404); res.end(); return; }
+    res.writeHead(200, { "Content-Type": /\.js$/.test(f) ? "text/javascript" : /\.html$/.test(f) ? "text/html" : /\.json|webmanifest$/.test(f) ? "application/json" : "application/octet-stream", "Cache-Control": "no-cache" });
+    res.end(fs.readFileSync(f));
+  });
+  await new Promise((r) => srv.listen(0, r));
+  const url = `http://localhost:${srv.address().port}/index.html`;
+  const ctx = await b.newContext({ viewport: { width: 390, height: 844 } });
+  const page = await ctx.newPage();
+  await page.goto(url); await page.evaluate(() => navigator.serviceWorker.ready); await page.reload(); await page.waitForSelector("#view .card");
+  stall = true;
+  const p2 = await ctx.newPage(); const t0 = Date.now();
+  await p2.goto(url, { waitUntil: "domcontentloaded", timeout: 10000 }).catch(() => {});
+  const shown = await p2.waitForSelector("#view .card", { timeout: 4000 }).then(() => true, () => false);
+  ok(shown && Date.now() - t0 < 4000, `a stalled network shows the cached app in ${Date.now() - t0} ms`);
+  stall = false; held.forEach((r) => r.destroy());
+  await ctx.setOffline(true);
+  const msgs = []; p2.on("dialog", async (d) => { msgs.push(d.message()); await d.accept(); });
+  const before = p2.url();
+  await p2.evaluate(() => forceUpdate());
+  ok(msgs.some((m) => /needs a connection/.test(m)) && p2.url() === before && (await p2.evaluate(async () => (await caches.keys()).length)) > 0, "offline force update keeps the worker and caches: " + msgs.join(" | "));
+  await ctx.close(); srv.close();
+};
+
 (async () => {
   const browser = await pw.chromium.launch();
   const only = process.argv[2];

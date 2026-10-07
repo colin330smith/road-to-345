@@ -66,6 +66,8 @@ Pure logic, no DOM. Exported as `ENGINE`; works under Node (`require`) and in th
 - Yellow mode (engine, `histCtx.ready === "Y"`) = single capped at RPE 7 (from Wave 4 at the load that is RPE 7), −5% on back-offs, 2 sets per accessory with nothing past RPE 8. Red = 3×3 @ 60%, logged under `<lift>-red` and never fed to Rule C.
 - Meet day: every peak single and the test card use the targets typed on the Road sheet; with none, the target is the estimated max × 1.02. Week 3 of a peak practises the kilogram opener. From Wave 4 the Specificity and peak singles carry the USPA commands.
 - `node ui-test.js` (after `python3 build.py`) drives the built app in headless Chromium; it needs a global Playwright and skips without one.
+- Schedule shifts are dated (`settings.shifts`): a shift starts after the last logged day and never relabels history. Every date goes through `waveStartUTC` / `sessionDayUTC` / `whereIs` with `SHIFT()`; never add weeks to a date by hand.
+- Every state that reaches the app goes through `sanitizeState` + `normalize` (load and import). Sets are stored under the exercise key (`skeyOf`), so two blocks of one session must never share a key (`setSpec` refuses a secondary frame equal to the primary).
 
 ---
 
@@ -118,17 +120,19 @@ Everything is `localStorage` under the key `r345.v1`, on the device running the 
 
 ```js
 {
-  logs:     { "2026-07-20": { r: "G", sleep: 7.5, note: "", swap: { rowhi: "Seated Cable Row (wide grip)" }, sets: { b1: [{w,r,rpe,k,rate,cap,ed}] } } },  // rate: "E"|"O"|"H" on the last set; cap = the RPE cap shown; ed = edited off-plan
+  logs:     { "2026-07-20": { r: "G", sleep: 7.5, note: "", swap: { rowhi: "Seated Cable Row (wide grip)" }, sets: { "sq-back": [{w,r,rpe,k,rate,cap,ed}], "r:sq-red": [] } } },  // keyed by exercise key ("r:" on a Red day); rate: "E"|"O"|"H" on the last set; cap = the RPE cap shown; ed = edited off-plan
   bw:       { "2026-07-20": 182 },
   gates:    { 2: { sq: "clean", bn: "repeat" }, 7: { cb: { bn: 265 } } },  // cb = 96% of a test max
   testMax:  { 6: { sq: { target: 365, made: 370 } } },  // target drives attempts; made (test day on) sets the next base at 96%
   spec:     { framePrimary: "arms", frameSecondary: "latwidth", detail: "triceps", sundayOn: true },
   ledger:   {},
-  settings: { offsetWeeks: 0 }
+  settings: { shifts: [{ from: "2026-12-14", weeks: 1 }], meetDate: "2027-07-10" }   // dated shifts; the old offsetWeeks migrates to one segment from Wave 1
 }
 ```
 
-No backend. **More → Data → Back up now** opens the share sheet (save to iCloud Drive / Files); import takes the file or pasted text. Today shows a reminder when the last backup is 7+ days old (`lastBackup`).
+`r345.v1.prev` holds the state from before the last import (More → Data → Undo last import).
+
+No backend. **More → Data → Back up now** opens the share sheet (save to iCloud Drive / Files); import takes the file or pasted text, says how many days it replaces, skips unreadable entries and can be undone. Today shows a reminder when the last backup is 7+ days old (`lastBackup`).
 
 ---
 

@@ -49,6 +49,17 @@ Sources were cite-checked against PubMed or the journal page on 2026-09-25. The 
 | Rest timer starts itself after each logged set: 3 min after a main-lift set, 2.5 min after paused, OHP and tracked sets, 90 s after accessories, none after primers and fillers; it beeps at zero and counts the overrun | Judgment | Singer 2024 (below) | Resting more than 60 s helped hypertrophy a little; the longer main-lift rests are a strength-practice judgment. The beep needs a tap-created AudioContext on iOS; vibrate is not implemented in iOS Safari. |
 | A swap logs under its own key ("planned~swap"), so it never moves the planned exercise's rung | Judgment | — | The swap list keeps the same muscle and length bias; it is a convenience, not a claim that the swap is equivalent. |
 
+## Data and schedule
+
+| Plan element | Label | Source | What it supports |
+|---|---|---|---|
+| Schedule shifts are dated segments ("Repeat a week from next Monday"): the week before the segment replays, later dates move, and nothing logged before it changes wave or week; an old number becomes one segment from Wave 1 | Truth | — | The old global "Schedule shift (weeks)" moved every date, history included: a 1-week shift relabelled every logged day, so the gates, the log-driven rungs and History read old sessions as other weeks. |
+| A meet date lines up the nearest peak's test Friday by repeating week 2 of the waves before it (one extra week per wave, newest waves first, never a peak wave, never a logged week) | Judgment | — | Week 2 is a loading week, so the extra time is training, not a second deload. Which week repeats is a programming choice with no study behind it. |
+| Every stored state and every import is cleaned to the shapes the app reads; an import asks before replacing logged days, keeps an undo copy, and a screen that cannot render shows a recovery card instead of a blank app | Truth | — | A backup with one null day or a non-array set list threw on every render: the app went blank and the only way out was erasing the data. |
+| Sets are stored under the exercise key, not the block's position | Truth | — | Changing the weekend focus or a reordered day put past sets on another exercise (position "b3" pointed at a new block), and the log-driven rungs read them. |
+| The app page waits 1.5 s for the network, then opens from the cache | Truth | — | A stalled gym connection (connected, no answer) left the page blank until the request timed out, because the page was network-first with no time limit. |
+| Force update runs only after the server answers | Truth | — | Offline, it unregistered the worker and deleted the caches, leaving a phone with no app until it was online again. |
+
 ## Hypertrophy: exercise selection and dose
 
 | Plan element | Label | Source | What it supports |

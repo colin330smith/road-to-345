@@ -212,17 +212,28 @@ const KEY = "r345.v1";
 function todayUTC0() { const n = new Date(); return Date.UTC(n.getFullYear(), n.getMonth(), n.getDate()); }
 const DK_RE = /^\d{4}-\d{2}-\d{2}$/;
 let S;
-try { S = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { S = {}; }
-S.logs = S.logs || {}; S.gates = S.gates || {}; S.bw = S.bw || {}; S.testMax = S.testMax || {}; S.meas = S.meas || {}; S.food = S.food || {}; S.nutri = S.nutri || { mode: "gain", since: null }; S.primer = S.primer || {};
-S.settings = S.settings || { offsetWeeks: 0 };
-S.spec = S.spec || { ...E.DEFAULT_SPEC };
-if (!S.v32) { S.spec.sundayOn = false; S.v32 = 1; } // v32: Sunday is rest by default (stored specs predate it)
-S.ledger = S.ledger || {};
-if (!S.v62tm) { const m = E.migrateTestMax(S.testMax, S.gates, todayUTC0(), (S.settings && S.settings.offsetWeeks) || 0); S.testMax = m.testMax; S.gates = m.gates; S.v62tm = 1; try { localStorage.setItem("r345.v1", JSON.stringify(S)); } catch (e) {} }
+// every state that reaches the app goes through the engine's sanitizeState (DATA-2) and these defaults
+function normalize(d) {
+  d.logs = d.logs || {}; d.gates = d.gates || {}; d.bw = d.bw || {}; d.testMax = d.testMax || {}; d.meas = d.meas || {}; d.food = d.food || {}; d.nutri = d.nutri || { mode: "gain", since: null }; d.primer = d.primer || {};
+  d.settings = d.settings || {}; d.spec = d.spec || { ...E.DEFAULT_SPEC }; d.ledger = d.ledger || {};
+  if (d.spec.frameSecondary === d.spec.framePrimary) d.spec.frameSecondary = "none";
+  if (!d.v32) { d.spec.sundayOn = false; d.v32 = 1; } // v32: Sunday is rest by default (stored specs predate it)
+  // DATA-1: the old global shift moved every date; it becomes one segment from Wave 1, so nothing moves now
+  if (!Array.isArray(d.settings.shifts)) { const n = +d.settings.offsetWeeks || 0; d.settings.shifts = n ? [{ from: "2026-07-20", weeks: n }] : []; delete d.settings.offsetWeeks; }
+  if (!d.v62keys) { d.logs = E.migrateSetKeys(d.logs); d.v62keys = 1; } // DATA-5: sets live under their exercise key
+  if (!d.v62tm) { const m = E.migrateTestMax(d.testMax, d.gates, todayUTC0(), d.settings.shifts); d.testMax = m.testMax; d.gates = m.gates; d.v62tm = 1; } // MEET-2
+  return d;
+}
+{ let raw = null; try { raw = JSON.parse(localStorage.getItem(KEY)); } catch (e) {}
+  const san = E.sanitizeState(raw && typeof raw === "object" && !Array.isArray(raw) ? { logs: {}, ...raw } : { logs: {} });
+  S = normalize(san.ok ? san.state : { logs: {} });
+  try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+// the schedule's dated shifts (DATA-1)
+const SHIFT = () => S.settings.shifts || [];
 const save = () => { _gx = null; try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} };
 // effective gates: what the lifter set, plus Rule D (rated singles) wherever he has not
 let _gx = null;
-const GX = () => _gx || (_gx = E.withAutoGates(S.gates, { index: histIndex(), offsetWeeks: (S.settings && S.settings.offsetWeeks) || 0 }));
+const GX = () => _gx || (_gx = E.withAutoGates(S.gates, { index: histIndex(), shifts: SHIFT() }));
 // exercise history for log-driven progression: pkey -> [{t,w,r}]
 function histIndex() {
   const ix = {};
@@ -476,7 +487,7 @@ function blockRx(b) {
   return `${w} <small>×</small> ${b.reps} <small>× ${b.sets}${b.db ? " · per hand" : ""}</small>`;
 }
 function renderToday() {
-  const off = S.settings.offsetWeeks || 0;
+  const off = SHIFT();
   const loc = E.whereIs(viewDate, off);
   const dk = keyOf(viewDate);
   const log = S.logs[dk] || {};
@@ -490,7 +501,7 @@ function renderToday() {
       <label>Sleep <input type="number" step="0.5" inputmode="decimal" value="${Number.isFinite(log.sleep) ? log.sleep : ""}" onchange="setLog('${dk}','sleep',this.value)"> hr</label>
     </div>`;
 
-  if (loc.pre) { $("#view").innerHTML = inner + `<div class="card single"><div class="eyebrow sig">Countdown</div><div class="rx">Wave 1 starts <small>Mon Jul 20 · 7:00 AM</small></div>
+  if (loc.pre) { $("#view").innerHTML = inner + `<div class="card single"><div class="eyebrow sig">Countdown</div><div class="rx">Wave 1 starts <small>${fmt(E.waveStartUTC(1, off))} · 7:00 AM</small></div>
       <div class="wu" style="margin-top:9px"><span>☐ waist + neck tape</span><span>☐ photos ×3</span><span>☐ first weigh-in</span><span>☐ creatine started</span></div>
       <p class="note" style="margin-top:8px">Full baseline steps live in the 🍚 nutrition note. Day 1 is Squat: 265 × 1 @ cap 7.</p></div>`; return; }
   if (loc.wave > 19) { $("#view").innerHTML = inner + `<div class="card"><div class="eyebrow sig">Beyond the map</div><p class="note">Wave 19 was the summit on this chart. Ask Claude to extend the road.</p></div>`; return; }
@@ -505,7 +516,7 @@ function renderToday() {
 
   if (loc.day === 6 || loc.day === 7) inner += `<div class="rowbtns" style="margin:-2px 0 6px"><button class="btn ghost" onclick="specSheet()">⚙ Specialize · ${esc(E.FRAME_LABEL[S.spec.framePrimary])}</button></div>`;
 
-  const hctx = { index: histIndex(), offsetWeeks: off, testMax: S.testMax, ready };
+  const hctx = { index: histIndex(), shifts: off, today: viewDate, testMax: S.testMax, ready, meetDate: S.settings.meetDate };
   let blocks = E.sessionFor(loc.wave, loc.week, loc.day, GX(), S.spec, hctx);
   if (ready === "R") blocks = E.redSession(loc.wave, loc.day, GX());
 
@@ -518,11 +529,15 @@ function renderToday() {
           ? `<p class="note"><b style="color:var(--chalk)">${esc(P.eve.title)}.</b> ${esc(P.eve.rule)}</p><ul class="note" style="margin:6px 0 0 18px;padding:0">${P.eve.items.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>`
           : `<p class="note"><b style="color:var(--chalk)">Morning.</b> ${esc(P.day.morning)}</p><p class="note"><b style="color:var(--chalk)">Fuel.</b> ${P.day.fuel.map(esc).join(" \u00b7 ")}</p><p class="note"><b style="color:var(--chalk)">${esc(P.pump.title)}.</b> Open the primer for the session.</p>`}
         <div class="rowbtns"><button class="btn ghost" onclick="primerSheet()">Open the primer</button></div></div>`; } }
+  // DATA-5: a block's sets live under its exercise key ("r:" on a Red day); old days stored by position
+  // ("b3") are read only for sets that carry no key at all
+  const skeyOf = (b, i) => (b.pkey ? (ready === "R" ? "r:" : "") + b.pkey : (ready === "R" ? "r" : "b") + i);
+  const setsOf = (b, i) => { const st = log.sets || {}, k = skeyOf(b, i); return st[k] || (b.pkey ? (st[(ready === "R" ? "r" : "b") + i] || []).filter((x) => !x.k) : []); };
   blocks.forEach((b, i) => {
     if (!["single", "backoff", "paused", "ohp", "accessory"].includes(b.type)) return;
     const n = b.type === "single" ? 1 : b.sets;
     planned += n;
-    doneN += Math.min(n, ((log.sets || {})[(ready === "R" ? "r" : "b") + i] || []).length);
+    doneN += Math.min(n, setsOf(b, i).length);
   });
   if (planned) inner += `<div class="pline"><div class="pbar"><i style="width:${Math.round((doneN / planned) * 100)}%"></i></div><span>${doneN}/${planned}${doneN >= planned ? " 🏁" : ""}</span></div>`;
 
@@ -530,12 +545,13 @@ function renderToday() {
   const lastLogIdx = blocks.reduce((k, x, j) => (LOGT.includes(x.type) && !/^(FILLER|PRIMER)/.test(x.cap || "") ? j : k), -1);
   blocks.forEach((b0, i) => {
     let b = b0;
-    const bkey = (ready === "R" ? "r" : "b") + i;
-    const sets = (log.sets && log.sets[bkey]) || [];
     // LOG-7: a swap for today logs under its own key; the planned exercise's rung never sees it
     const swap = b.type === "accessory" && b.pkey && (log.swap || {})[b.pkey];
     if (swap) { const k = E.altKey(b.pkey, swap), hx = (hctx.index[k] || []).filter((e) => e.t < viewDate);
       b = { ...b, name: swap + " (swap)", pkey: k, w: hx.length ? hx[hx.length - 1].w : b.w, prog: "swap", note: `Swapped for ${b0.name} today: its own log, so ${b0.name}'s rung stays put. ${hx.length ? "Last time " + hx[hx.length - 1].w + "." : "First time: set the weight with the edit sheet."}` }; }
+    const legacy = b.pkey && !(log.sets || {})[skeyOf(b, i)] && setsOf(b, i).length;
+    const bkey = legacy ? (ready === "R" ? "r" : "b") + i : skeyOf(b, i); // edits of an old position-keyed set stay where it lives
+    const sets = setsOf(b, i);
     if (b.type === "warmup") {
       inner += `<div class="card"><div class="eyebrow">${esc(b.name)}</div>
         <div class="wu">${b.rows.map((r) => {
@@ -666,7 +682,7 @@ window.primerSheet = () => {
     <div class="eyebrow" style="margin-top:12px">${esc(P.day.title)} — morning</div><p class="note">${esc(P.day.morning)}</p>
     <div class="eyebrow" style="margin-top:12px">${esc(P.day.title)} — fuel</div>${li(P.day.fuel)}
     <div class="eyebrow" style="margin-top:12px">${esc(P.pump.title)}</div><p class="note">${esc(P.pump.rule)}</p>
-    ${(() => { const loc = E.whereIs(todayUTC(), S.settings.offsetWeeks || 0); const wk = Math.min(Math.max(loc.week || 1, 1), 3), wv = Math.max(loc.wave || 1, 1);
+    ${(() => { const loc = E.whereIs(todayUTC(), SHIFT()); const wk = Math.min(Math.max(loc.week || 1, 1), 3), wv = Math.max(loc.wave || 1, 1);
         const findW = (nm) => { const re = new RegExp(nm, "i"); for (let d = 1; d <= 7; d++) for (const b of E.sessionFor(wv, wk, d, GX(), S.spec)) if (re.test(b.name || "") && Number.isFinite(b.w) && b.w > 0) return b.w; return null; };
         return NUTRI.primerLoads(findW).map((x) => `<div class="frow"><span class="fn">${esc(x.k)} \u00b7 ${esc(x.name)}<small>${esc(x.why)}</small></span><span class="fv"><b>${esc(x.disp)}</b>${x.sr ? ` \u00b7 ${esc(x.sr)}` : ""}</span></div>`).join("")
           + `<p class="note" style="margin-top:6px">Weights are ~75\u201385% of this week\u2019s working loads and move with them. Pump reps, not PRs.</p>`; })()}
@@ -724,7 +740,7 @@ window.delSet = (dk, bkey, si) => { S.logs[dk].sets[bkey].splice(si, 1); save();
 
 /* ── ROADMAP ── */
 function renderRoad() {
-  const off = S.settings.offsetWeeks || 0;
+  const off = SHIFT();
   const now = E.whereIs(todayUTC(), off);
   const cbNow = E.cbFor(Math.max(1, Math.min(now.wave || 1, 19)), GX());
   const GOALS = { bn: [225, 315], sq: [315, 405], dl: [405, 495] };
@@ -734,7 +750,7 @@ function renderRoad() {
   let h = `<div class="card single"><div class="eyebrow sig">The Goal — 315/405/495 · 16" arms · 200 @ 15%</div><div class="summit">
     ${E.LIFTS.map((L) => { const [s0, g] = GOALS[L]; const pct = Math.max(0, Math.min(100, Math.round(((cbNow[L] - s0) / (g - s0)) * 100))); return `<div class="srow"><span>${E.LIFT_NAME[L]}</span><div class="sbar"><i style="width:${pct}%"></i></div><span class="sval">${cbNow[L]} / ${g}</span></div>`; }).join("")}
     ${["inc", "chin", "dip", "rdl"].map((id) => {
-        const T = E.TRACKED[id], v = E.trackedCB(id, Math.max(1, Math.min(now.wave || 1, 19)), GX(), { index: histIndex(), offsetWeeks: off });
+        const T = E.TRACKED[id], v = E.trackedCB(id, Math.max(1, Math.min(now.wave || 1, 19)), GX(), { index: histIndex(), shifts: off });
         const p = Math.max(0, Math.min(100, Math.round(((v - T.start) / (T.goal - T.start)) * 100)));
         const lbl = { inc: "Incline", chin: "Chin-up", dip: "Dip", rdl: "RDL" }[id];
         const f = (x) => (T.added ? "+" + x : x);
@@ -749,6 +765,9 @@ function renderRoad() {
     ${(() => { const p2 = NUTRI.PHASES[1]; return `<div class="srow" style="border-top:1px solid var(--steel);padding-top:8px;margin-top:4px"><span>Phase 2</span><span></span><span class="sval">${esc(p2.short)}</span></div>
     <p class="note" style="margin-top:2px"><b style="color:var(--chalk)">${esc(p2.name)}</b> \u2014 ${esc(p2.by)}. ${esc(p2.gate)} Same lean mass, ${p2.weeks} weeks, floor ${p2.floorBF}%. The Calvin Klein Wahlberg with 25 more pounds of muscle than the ad.</p>`; })()}</div>
   <p class="note">19 waves · 4 macros. Wave 3 runs from your measured bases. Projections re-compute from your gate results; a future gate you have not set assumes the small step (+2.5 bench, +5 squat and deadlift), the honest pace past the novice years.</p>`;
+  if (S.settings.meetDate) { const m = Date.parse(S.settings.meetDate), wk = Math.ceil((m - todayUTC()) / (7 * E.MS_DAY));
+    const peak = [6, 12, 18].find((k) => { const f = E.sessionDayUTC(k, 4, 5, off); return m >= f && m - f < 3 * E.MS_DAY; });
+    h += `<div class="card single"><div class="eyebrow sig">Meet ${esc(fmt(m))} · ${wk > 0 ? wk + " weeks out" : "done"}</div><p class="note">${peak ? `Peak = the Wave ${peak} test (${fmt(E.sessionDayUTC(peak, 4, 5, off))}).` : "No peak lines up with it yet: re-enter the date in More → Settings to line one up."}</p></div>`; }
   for (let w = 1; w <= 19; w++) {
     const cb = E.cbFor(w, GX());
     const cyc = E.cycleOf(w);
@@ -780,7 +799,7 @@ function renderRoad() {
 }
 window.waveSheet = (w) => {
   const { cb, cyc, t } = E.mainTables(w, GX());
-  const off = S.settings.offsetWeeks || 0;
+  const off = SHIFT();
   let h = `<button class="closex" onclick="closeSheet()">×</button>
     <h2>Wave ${w} · ${E.CYCLE_NAME[cyc]}</h2>
     <p class="note">${fmt(E.waveStartUTC(w, off))} start · CB ${cb.bn} / ${cb.sq} / ${cb.dl}</p>
@@ -795,7 +814,7 @@ window.waveSheet = (w) => {
           <tr><td>Paused BN</td>${[0,1,2].map((i) => `<td>${t.pb[i]}</td>`).join("")}<td>${t.pb[3]}</td></tr></table></div>`;
   } else {
     const row = S.testMax[w] || {}, ent = (L) => (row[L] && typeof row[L] === "object" ? row[L] : { target: row[L] });
-    const pe = E.peakEstimate(w, GX(), { index: histIndex(), offsetWeeks: off }, 4);
+    const pe = E.peakEstimate(w, GX(), { index: histIndex(), shifts: off }, 4);
     const att = E.testAttempts(cb, E.targetsOf(S.testMax, w), pe.est), attKg = E.attemptsKg(att);
     const canMade = todayUTC() >= E.sessionDayUTC(w, 4, 5, off);
     h += `<p class="capnote warn">Peak wave: Wk1 single@8 + 3×3 · Wk2 single@8–8.5 + 3×2 · Wk3 the opener you will hand in · Wk4 taper + TEST Friday.</p>
@@ -823,7 +842,7 @@ function gateEditor(intoWave) {
 }
 window.setGate = (w, L, o) => { S.gates[w] = S.gates[w] || {}; if (o) S.gates[w][L] = o; else delete S.gates[w][L]; save(); waveSheet(w - 1); };
 window.setTestEntry = (w, L, field, v) => {
-  const r = E.applyTestEntry(S.testMax, S.gates, w, L, field, v, todayUTC(), S.settings.offsetWeeks || 0);
+  const r = E.applyTestEntry(S.testMax, S.gates, w, L, field, v, todayUTC(), SHIFT());
   if (r.refused) { alert(r.refused === "before the test" ? "Made lifts open on test day." : "That is not a weight."); waveSheet(w); return; }
   S.testMax = r.testMax; S.gates = r.gates; save(); waveSheet(w);
 };
@@ -842,7 +861,7 @@ window.specSheet = () => {
     <div class="eyebrow sig" style="margin-top:12px">Primary frame — Saturday overload</div>
     <div class="rowbtns">${optRow("framePrimary", sp.framePrimary, E.FRAME_OPTS, E.FRAME_LABEL)}</div>
     <div class="eyebrow sig" style="margin-top:12px">Secondary frame — 1 slot, 2 sets</div>
-    <div class="rowbtns">${optRow("frameSecondary", sp.frameSecondary, [...E.FRAME_OPTS, "none"], E.FRAME_LABEL)}</div>
+    <div class="rowbtns">${optRow("frameSecondary", sp.frameSecondary, [...E.FRAME_OPTS.filter((o) => o !== sp.framePrimary), "none"], E.FRAME_LABEL)}</div>
     <p class="note">Skipped automatically on weeks triceps is your detail focus.</p>
     <div class="eyebrow sig" style="margin-top:12px">Detail weak point — Sunday</div>
     <div class="rowbtns">${optRow("detail", sp.detail, E.DETAIL_OPTS, E.DETAIL_LABEL)}</div>
@@ -861,6 +880,7 @@ window.specSheet = () => {
     <p class="note">Default block for the exaggerated-taper look: shoulder width + lat width + triceps/forearm. Change only from photos.</p>`);
 };
 window.setSpec = (field, val) => {
+  if (field === "frameSecondary" && val === S.spec.framePrimary) return; // one exercise key per session (DATA-5)
   S.spec[field] = val;
   if (field === "framePrimary" && S.spec.frameSecondary === val) S.spec.frameSecondary = "none";
   save(); specSheet(); if (tab === "today") render();
@@ -957,7 +977,7 @@ function renderTrends() {
   // only the lift itself counts (squat day also has a 470 lb leg press); light, Red and deload days never do
   const TREND = { sq: ["Squat"], bn: ["Bench"], dl: ["Deadlift"], inc: ["Incline", "incbb"], chin: ["Chin-up", "chin"], dip: ["Dip", "dip"], rdl: ["RDL", "rdl"] };
   const keysOf = (L) => new Set(E.LIFTS.includes(L) ? [L + "-single", L + "-back"] : [TREND[L][1] + "-top", TREND[L][1] + "-back"]);
-  const off0 = S.settings.offsetWeeks || 0;
+  const off0 = SHIFT();
   const liftDays = (L) => {
     const out = [], keys = keysOf(L);
     for (const [dk, log] of Object.entries(S.logs).filter(([k]) => DK_RE.test(k)).sort()) {
@@ -969,7 +989,7 @@ function renderTrends() {
     return out;
   };
   const liftSets = (L) => liftDays(L).flatMap((d) => d.sets.map((st) => ({ dk: d.dk, t: d.t, st })));
-  const tops = [], e1s = [], baseLine = [], added = !!(E.TRACKED[trendLift] && E.TRACKED[trendLift].added), hctx0 = { index: histIndex(), offsetWeeks: off0 };
+  const tops = [], e1s = [], baseLine = [], added = !!(E.TRACKED[trendLift] && E.TRACKED[trendLift].added), hctx0 = { index: histIndex(), shifts: off0 };
   for (const d of liftDays(trendLift)) {
     const e = added ? null : E.dayE1RM(d.sets, { week: d.week, cap: { 1: 7, 2: 7.5, 3: 8 }[d.week] });
     if (e) e1s.push({ x: d.t, y: e }); else if (added && d.week !== 4) e1s.push({ x: d.t, y: Math.max(...d.sets.map((s) => s.w)) });
@@ -1060,7 +1080,11 @@ function weeklyAverages(n) {
 
 /* ── MORE ── */
 async function forceUpdate() {
-  // logs live in localStorage and are untouched; this only drops the worker + caches
+  // logs live in localStorage and are untouched; this only drops the worker + caches, and only after the
+  // server answered: offline, the cached app is the only app there is
+  if (!navigator.onLine) return alert("Force update needs a connection — the app you have still works offline.");
+  try { const r = await fetch("./index.html?u=" + Date.now(), { cache: "no-store" }); if (!r.ok) throw 0; }
+  catch (e) { return alert("Could not reach the server — nothing changed."); }
   try { if ("serviceWorker" in navigator) for (const r of await navigator.serviceWorker.getRegistrations()) await r.unregister(); } catch (e) {}
   try { if (window.caches) for (const k of await caches.keys()) await caches.delete(k); } catch (e) {}
   location.replace(location.pathname + "?u=" + Date.now());
@@ -1069,22 +1093,46 @@ function renderMore() {
   const logged = Object.keys(S.logs).filter((k) => DK_RE.test(k) && S.logs[k].sets && Object.keys(S.logs[k].sets).length).sort().reverse();
   $("#view").innerHTML = `
     <div class="card"><div class="eyebrow sig">History</div>
-      ${logged.length ? logged.slice(0, 40).map((dk) => { const loc = E.whereIs(Date.parse(dk), S.settings.offsetWeeks || 0); return `<div class="lset"><button class="linkbtn" onclick="openDay('${esc(dk)}')">${esc(dk)} · W${loc.wave}·wk${loc.week}·d${loc.day}${S.logs[dk].r ? " · " + esc(S.logs[dk].r) : ""}</button><button class="x" onclick="delDay('${esc(dk)}')">✕</button></div>`; }).join("") : `<p class="note">No sessions logged yet. They'll pile up here.</p>`}</div>
+      ${logged.length ? logged.slice(0, 40).map((dk) => { const loc = E.whereIs(Date.parse(dk), SHIFT()); return `<div class="lset"><button class="linkbtn" onclick="openDay('${esc(dk)}')">${esc(dk)} · W${loc.wave}·wk${loc.week}·d${loc.day}${S.logs[dk].r ? " · " + esc(S.logs[dk].r) : ""}</button><button class="x" onclick="delDay('${esc(dk)}')">✕</button></div>`; }).join("") : `<p class="note">No sessions logged yet. They'll pile up here.</p>`}</div>
     <div class="card"><div class="eyebrow sig">Weekend specialization</div>
       <p class="note">Sat = frame overload · Sun = optional detail. Focus: <b style="color:var(--chalk)">${esc(E.FRAME_LABEL[S.spec.framePrimary])}</b> + <b style="color:var(--chalk)">${esc(E.DETAIL_LABEL[S.spec.detail])}</b>.</p>
       <div class="rowbtns"><button class="btn" onclick="specSheet()">⚙ Configure</button><button class="btn ghost" onclick="ledgerSheet()">📒 Ledger</button><button class="btn ghost" onclick="playbookSheet()">🍽 Playbook</button><button class="btn ghost" onclick="primerSheet()">🔥 Ultimate Pump</button></div></div>
     <div class="card"><div class="eyebrow sig">Data</div>
       <p class="note">Logs live on THIS phone only. Back up weekly: the share sheet saves the file to iCloud Drive or Files. ${backupAgeDays() == null ? "<b style=\"color:var(--signal)\">No backup yet.</b>" : `Last backup ${esc(S.lastBackup)} (${backupAgeDays()} days ago).`}</p>
       <div class="rowbtns"><button class="btn" onclick="exportData()">Back up now</button>
-      <button class="btn ghost" onclick="importSheet()">Import</button></div></div>
+      <button class="btn ghost" onclick="importSheet()">Import</button>${localStorage.getItem(KEY + ".prev") != null ? `<button class="btn ghost" onclick="undoImport()">Undo last import</button>` : ""}</div></div>
     <div class="card"><div class="eyebrow sig">Settings</div>
-      <label class="note">Schedule shift (weeks) — for mini-cuts or life: <input type="number" value="${S.settings.offsetWeeks || 0}" onchange="S.settings.offsetWeeks=+this.value||0;save();render()"></label>
+      <p class="note">Schedule: ${SHIFT().length ? SHIFT().map((x) => `${esc(x.from)} +${x.weeks} wk`).join(" · ") : "as planned"}. A repeat replays the week before it; nothing you logged moves.</p>
+      <div class="rowbtns"><button class="btn ghost" onclick="repeatWeek()">Repeat a week from next Monday</button>${SHIFT().length ? `<button class="btn ghost" onclick="undoShift()">Undo last shift</button>` : ""}</div>
+      <label class="note" style="display:block;margin-top:8px">Meet date <input type="date" id="meetdate" value="${esc(S.settings.meetDate || "")}" onchange="setMeetDate(this.value)"></label>
       <p class="note">Build <b style="color:var(--chalk)">${esc(window.BUILD || "local")}</b>. If the app looks stale after an update, force it.</p>
       <div class="rowbtns"><button class="btn ghost" onclick="forceUpdate()">Force update</button></div>
       <div class="rowbtns"><button class="btn danger" onclick="if(confirm('Erase ALL logs, gates and settings?')){localStorage.removeItem(KEY);location.reload()}">Erase everything</button></div></div>
     <div class="card"><div class="eyebrow">Companion pieces</div>
       <p class="note">📓 Wave notes + 🍚 nutrition plan → Apple Notes · 📅 sessions 7:00–8:30 → Apple Calendar · this app → logging, projections, demos.</p></div>`;
 }
+// DATA-1 / MEET-6: dated shifts. A shift never starts on or before the last logged day.
+const lastLogged = () => { const k = Object.keys(S.logs).filter((x) => DK_RE.test(x)).sort(); return k.length ? Date.parse(k[k.length - 1]) : 0; };
+const nextMonday = (t) => t + (7 - ((Math.floor((t - E.WAVE1_MONDAY) / E.MS_DAY) % 7 + 7) % 7)) * E.MS_DAY;
+window.repeatWeek = () => {
+  const from = keyOf(nextMonday(Math.max(todayUTC(), lastLogged())));
+  if (!confirm(`Repeat the week before ${from}? From ${from} the schedule replays that week, then carries on one week later. Nothing you logged moves.`)) return;
+  S.settings.shifts = [...SHIFT(), { from, weeks: 1 }]; save(); render();
+};
+window.undoShift = () => {
+  const sh = SHIFT(), last = sh[sh.length - 1];
+  if (!last) return;
+  if (lastLogged() >= Date.parse(last.from)) return alert(`You have logged sessions since ${last.from} on the shifted schedule; undoing it would move them.`);
+  S.settings.shifts = sh.slice(0, -1); save(); render();
+};
+window.setMeetDate = (v) => {
+  if (!v) { delete S.settings.meetDate; save(); render(); return; }
+  S.settings.meetDate = v; save();
+  const r = E.meetAlign(v, SHIFT(), todayUTC(), lastLogged());
+  if (r.warn) alert(r.warn);
+  else if (r.segments.length && confirm(`Line the Wave ${r.wave} test up with the meet: repeat week 2 of ${r.segments.length} wave(s) (from ${r.segments.map((x) => x.from).join(", ")}). Nothing you logged moves.`)) S.settings.shifts = [...SHIFT(), ...r.segments];
+  save(); render();
+};
 window.logMeas = () => {
   const wa = parseFloat(document.getElementById("mw").value);
   const sh = parseFloat(document.getElementById("ms").value);
@@ -1122,16 +1170,23 @@ window.importSheet = () => {
     <div class="rowbtns"><button class="btn" onclick="doImport()">Import</button></div>`);
 };
 window.doImport = () => {
-  try {
-    const d = JSON.parse($("#imp").value);
-    if (typeof d !== "object" || !d.logs || typeof d.logs !== "object") throw 0;
-    for (const k of Object.keys(d.logs)) if (!DK_RE.test(k)) delete d.logs[k];
-    if (d.bw) for (const k of Object.keys(d.bw)) if (!DK_RE.test(k) || !Number.isFinite(d.bw[k])) delete d.bw[k];
-    S = d; S.logs = S.logs || {}; S.gates = S.gates || {}; S.bw = S.bw || {}; S.testMax = S.testMax || {}; S.meas = S.meas || {}; S.food = S.food || {}; S.nutri = S.nutri || { mode: "gain", since: null }; S.primer = S.primer || {};
-    S.settings = S.settings || { offsetWeeks: 0 };
-    S.spec = S.spec || { ...E.DEFAULT_SPEC }; S.ledger = S.ledger || {};
-    save(); closeSheet(); render();
-  } catch (e) { alert("That doesn't look like a Road-to-3/4/5 backup."); }
+  let d; try { d = JSON.parse($("#imp").value); } catch (e) { alert("That isn't a backup file (it is not JSON). Nothing changed."); return; }
+  const r = E.sanitizeState(d);
+  if (!r.ok) { alert("That doesn't look like a Road-to-3/4/5 backup. Nothing changed."); return; }
+  const n = Object.keys(S.logs).length, m = Object.keys(r.state.logs).length;
+  if (n && !confirm(`Replace ${n} logged days with ${m} from this file?${r.dropped ? ` ${r.dropped} unreadable entries will be skipped.` : ""}`)) return;
+  const prev = localStorage.getItem(KEY);
+  try { localStorage.setItem(KEY + ".prev", prev == null ? "{}" : prev); } catch (e) {}
+  S = normalize(r.state); save(); closeSheet();
+  try { renderInner(); } catch (e) { // never leave the app on a state that cannot render
+    try { localStorage.setItem(KEY, prev); } catch (x) {}
+    alert("Import failed — nothing changed."); location.reload();
+  }
+};
+window.undoImport = () => { const p = localStorage.getItem(KEY + ".prev"); if (p == null) return; localStorage.setItem(KEY, p); localStorage.removeItem(KEY + ".prev"); location.reload(); };
+window.rawBackup = () => {
+  const text = localStorage.getItem(KEY) || "{}", name = `road345-raw-${keyOf(todayUTC())}.json`;
+  const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([text], { type: "application/json" })); a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 5000);
 };
 
 /* ── rules sheet ── */
@@ -1172,13 +1227,24 @@ window.goTab = (id) => {
   if (id === "road") setTimeout(() => { const el = document.querySelector(".wavecard.now"); if (el) el.scrollIntoView({ block: "center", behavior: REDUCED ? "auto" : "smooth" }); }, 60);
 };
 function render() {
+  try { renderInner(); } catch (e) { renderRecovery(e); }
+}
+// DATA-2: a screen that throws on the saved data never leaves the app blank: back up, import, undo, erase
+function renderRecovery(e) {
+  const prev = localStorage.getItem(KEY + ".prev");
+  $("#view").innerHTML = `<div class="card single"><div class="eyebrow sig">This screen could not read the saved data</div>
+    <p class="note">${esc(String((e && e.message) || e))}. Your data is untouched. Back it up first, then undo the last import or import a good backup.</p>
+    <div class="rowbtns"><button class="btn" onclick="rawBackup()">Back up raw data</button><button class="btn ghost" onclick="importSheet()">Import</button>${prev != null ? `<button class="btn ghost" onclick="undoImport()">Undo last import</button>` : ""}
+    <button class="btn danger" onclick="if(confirm('Erase ALL logs, gates and settings?')){localStorage.removeItem(KEY);location.reload()}">Erase</button></div></div>`;
+}
+function renderInner() {
   renderTabs(); stopAnim();
-  const off = S.settings.offsetWeeks || 0;
+  const off = SHIFT();
   const loc = E.whereIs(todayUTC(), off);
   const ws = $("#wkstrip");
   if (loc.pre || loc.wave > 19) ws.innerHTML = "";
   else ws.innerHTML = [1, 2, 3, 4].map((w) => `<i class="${w < loc.week ? "past" : w === loc.week ? "cur" : ""}"></i>`).join("");
-  $("#ctxline").innerHTML = loc.pre ? "Wave 1 begins Mon Jul 20, 2026"
+  $("#ctxline").innerHTML = loc.pre ? "Wave 1 begins " + fmt(E.waveStartUTC(1, off))
     : loc.wave > 19 ? "Beyond Wave 19 — ask for the next map"
     : `Wave ${loc.wave} · Week ${loc.week} · ${E.CYCLE_NAME[E.cycleOf(loc.wave)]} · CB <b>${E.cbFor(loc.wave, GX()).bn}/${E.cbFor(loc.wave, GX()).sq}/${E.cbFor(loc.wave, GX()).dl}</b>`;
   ({ today: renderToday, road: renderRoad, moves: renderMoves, trends: renderTrends, more: renderMore })[tab]();

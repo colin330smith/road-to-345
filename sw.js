@@ -12,15 +12,18 @@ self.addEventListener("fetch", (e) => {
   const url = new URL(e.request.url);
   const isPage = e.request.mode === "navigate" || url.pathname.endsWith("/") || url.pathname.endsWith("/index.html");
   if (isPage) {
-    // NETWORK-FIRST for the app page: a fresh open always gets the latest build
-    // when online; the cache is only the offline fallback. (Cache-first here
+    // NETWORK FIRST, BUT NEVER STUCK: the network gets 1.5 s to answer; a stalled gym connection gets
+    // the cached app instead of a blank screen. The network copy still refreshes the cache in the
+    // background, and reg.update() + controllerchange still deliver new builds. (Pure cache-first
     // meant iOS could sit on a stale build across restarts.)
-    e.respondWith(
-      fetch(e.request).then((res) => {
-        if (res.ok) { const cl = res.clone(); caches.open(C).then((c) => c.put("./index.html", cl)); }
-        return res;
-      }).catch(() => caches.match("./index.html"))
-    );
+    const net = fetch(e.request).then((res) => {
+      if (res.ok) { const cl = res.clone(); caches.open(C).then((c) => c.put("./index.html", cl)); }
+      return res;
+    });
+    e.waitUntil(net.then(() => {}, () => {}));
+    e.respondWith(caches.match("./index.html").then((cached) => cached
+      ? Promise.race([net.catch(() => cached), new Promise((r) => setTimeout(() => r(cached), 1500))])
+      : net));
     return;
   }
   e.respondWith(

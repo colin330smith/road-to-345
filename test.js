@@ -1469,5 +1469,62 @@ eq(E.sessionFor(2, 1, 1, {}, E.DEFAULT_SPEC).find((b) => b.type === "warmup").ro
   eq(E.accStateLogged(def, 5, { index: { rowhi: sw.index[k] }, offsetWeeks: 0 }).prog, "ahead", "swap: the same sets under the planned key would have moved it");
 }
 
+// ═══ data safety: dated shifts, the meet date, imports, set keys ═══
+{
+  const D = (s) => Date.parse(s), MS = E.MS_DAY, iso = (t) => new Date(t).toISOString().slice(0, 10);
+  // DATA-1: a dated shift repeats the week before it and moves nothing logged before it
+  const sh = [{ from: "2026-11-02", weeks: 1 }];
+  let same = true;
+  for (let t = D("2026-07-13"); t < D("2026-11-02"); t += MS) if (JSON.stringify(E.whereIs(t, sh)) !== JSON.stringify(E.whereIs(t, 0))) same = false;
+  ok(same, "shift: every date before the shift keeps its wave and week");
+  eq([E.whereIs(D("2026-11-02"), sh).week, E.whereIs(D("2026-11-09"), sh)], [3, E.whereIs(D("2026-11-02"), 0)], "shift: Nov 2 repeats week 3; Nov 9 is what Nov 2 was");
+  eq([iso(E.waveStartUTC(5, sh)), iso(E.sessionDayUTC(4, 4, 1, sh))], ["2026-11-16", "2026-11-09"], "shift: Wave 5 starts a week later");
+  let rt = true;
+  for (let t = D("2026-07-20"); t <= D("2027-12-31"); t += MS) {
+    const w = E.whereIs(t, sh), back = E.sessionDayUTC(w.wave, w.week, w.day, sh), replay = t >= D("2026-11-02") && t < D("2026-11-09");
+    if (back !== (replay ? t - 7 * MS : t)) rt = false;
+  }
+  ok(rt, "shift: sessionDayUTC inverts whereIs (a replayed day maps to its first date)");
+  const legacy = [{ from: "2026-07-20", weeks: 2 }];
+  let lg = true; for (let t = D("2026-07-20"); t <= D("2027-06-01"); t += MS) if (JSON.stringify(E.whereIs(t, legacy)) !== JSON.stringify(E.whereIs(t, 2))) lg = false;
+  ok(lg, "shift: the migrated legacy offset (one segment from Wave 1) reads like the old number");
+  // a future shift never changes a gate already earned
+  const hist = { index: { "sq-single": [{ t: E.sessionDayUTC(4, 3, 1, 0), w: 270, r: 1, rpe: 9 }], "bn-single": [{ t: E.sessionDayUTC(4, 3, 2, 0), w: 230, r: 1, rate: "E" }] }, offsetWeeks: 0 };
+  eq(JSON.stringify(E.withAutoGates({}, { ...hist, shifts: [{ from: "2026-11-09", weeks: 2 }] })), JSON.stringify(E.withAutoGates({}, hist)), "shift: a later shift leaves the earned gates alone");
+  // autoregulation reads the real date of a replayed day
+  const t2 = D("2026-11-02"), rep = { index: { "sq-single": [{ t: t2, w: 300, r: 1, rate: "E" }] }, shifts: sh, today: t2 };
+  ok(E.sessionFor(4, 3, 1, {}, E.DEFAULT_SPEC, rep).find((b) => b.pkey === "sq-back").auto, "shift: Rule A reads the single logged on the replayed day");
+  // MEET-6: line the Wave 12 test up with a Jul 10 meet
+  const ma = E.meetAlign("2027-07-10", [], D("2026-10-06"), D("2026-10-05"));
+  eq([ma.weeks, ma.wave, ma.segments.length], [3, 12, 3], "meet: Jul 10 needs 3 weeks before the Wave 12 test");
+  eq(iso(E.sessionDayUTC(12, 4, 5, ma.segments)), "2027-07-09", "meet: the Wave 12 test lands on the Friday before the meet");
+  ok(ma.segments.every((x) => E.whereIs(D(x.from), ma.segments).week === 2), "meet: each extra week repeats a week 2 (loading, not a second deload)");
+  let past = true; for (let t = D("2026-07-20"); t <= D("2026-10-06"); t += MS) if (JSON.stringify(E.whereIs(t, ma.segments)) !== JSON.stringify(E.whereIs(t, 0))) past = false;
+  ok(past, "meet: no date up to today moves");
+  ok(!!E.meetAlign("2026-12-20", [], D("2026-10-06"), 0).warn, "meet: a meet before the next test day warns instead of shortening a macro");
+  eq(E.meetAlign("2027-01-02", [], D("2026-10-06"), 0).weeks, 0, "meet: Saturday Jan 2 already lines up with the Wave 6 test");
+  ok(/^MEET/.test(E.sessionFor(12, 4, 5, {}, E.DEFAULT_SPEC, { index: {}, shifts: ma.segments, meetDate: "2027-07-10" }).find((b) => b.attempts).name), "meet: the aligned test day is named MEET");
+  // DATA-2: malformed backups are cleaned, never trusted
+  for (const bad of [{ logs: { "2026-09-24": null, "2026-09-23": { sets: {} } } }, { logs: { "2026-09-24": { sets: { b1: 5 } } } }, { logs: { "2026-09-24": { sets: { b1: [null, { w: "x", r: 3 }, { w: 200, r: 5, k: "sq-back" }] } } }, bw: { "2026-09-24": "190" } }]) {
+    const r = E.sanitizeState(bad);
+    let threw = false;
+    try { for (const log of Object.values(r.state.logs)) for (const arr of Object.values(log.sets || {})) for (const st of arr) if (!(st.w >= 0)) throw 0; } catch (e) { threw = true; }
+    ok(r.ok && !threw && Object.values(r.state.logs).every((l) => l && typeof l === "object"), `import: ${JSON.stringify(bad).slice(0, 60)} is cleaned to readable shapes (dropped ${r.dropped})`);
+  }
+  eq([E.sanitizeState(null).ok, E.sanitizeState({ foo: 1 }).ok, E.sanitizeState([]).ok], [false, false, false], "import: not a backup at all = refused");
+  // DATA-5: sets move from block positions to their exercise key; keyless sets stay
+  const mig = E.migrateSetKeys({ "2026-10-17": { sets: { b1: [{ w: 40, r: 12, k: "incline-db-curl" }], b2: [{ w: 30, r: 12, k: "bayesian-cable-curl" }], b3: [{ w: 9, r: 9 }], r0: [{ w: 180, r: 3, k: "dl-back" }] } } });
+  eq(Object.keys(mig["2026-10-17"].sets).sort(), ["b3", "bayesian-cable-curl", "incline-db-curl", "r:dl-back"], "keys: sets live under their exercise key");
+  let dup = [];
+  for (const fp of E.FRAME_OPTS) for (const dt of E.DETAIL_OPTS) for (const sun of [false, true]) {
+    const spec = { framePrimary: fp, frameSecondary: "latwidth", detail: dt, sundayOn: sun, secondaryPress: "incline" };
+    for (let w = 1; w <= 19; w++) for (let wk = 1; wk <= 4; wk++) for (let d = 1; d <= 7; d++) {
+      const ks = E.sessionFor(w, wk, d, {}, spec).filter((b) => ["single", "backoff", "paused", "ohp", "accessory"].includes(b.type)).map((b) => b.pkey);
+      if (new Set(ks).size !== ks.length) dup.push(`${fp}/${dt}/${sun} W${w}.${wk}.${d}`);
+    }
+  }
+  eq(dup.slice(0, 3), [], "keys: no session has two loggable blocks with the same key, for any spec");
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

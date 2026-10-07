@@ -265,12 +265,28 @@ const macroOf = (wave) => Math.floor((wave - 1) / 6) + 1;
 const CYCLE_NAME = ["", "Calibration", "Build", "Accumulate", "Specificity", "Intensification", "Peak"];
 
 // ── schedule ────────────────────────────────────────────────────────
-function waveStartUTC(wave, offsetWeeks = 0) {
-  return WAVE1_MONDAY + ((wave - 1) * 28 + offsetWeeks * 7) * MS_DAY;
+// `off` is the schedule shift. A number (legacy) moved EVERY date, history included. Dated segments
+// [{from: "YYYY-MM-DD", weeks: n}] (DATA-1): from that Monday on, the n weeks before it are repeated and
+// everything later moves n weeks; nothing logged before `from` changes wave or week.
+const mondayOnOrAfter = (t) => t + ((7 - ((Math.floor((t - WAVE1_MONDAY) / MS_DAY) % 7) + 7) % 7) % 7) * MS_DAY;
+function segsOf(off) {
+  if (!off) return [];
+  if (!Array.isArray(off)) return [{ t: -Infinity, weeks: +off || 0 }];
+  return off.map((x) => ({ t: mondayOnOrAfter(Date.parse(x.from)), weeks: Math.max(0, Math.round(+x.weeks || 0)) })).filter((x) => Number.isFinite(x.t) && x.weeks > 0);
 }
+function offsetAt(t, off) { let n = 0; for (const x of segsOf(off)) if (x.t <= t) n += x.weeks; return n; }
+// the date of plan day `d` (days since Wave 1's Monday): the first t with t = plan date + 7 x offsetAt(t).
+// A repeated week has two dates; this is the first (the one inside the original wave).
+function planDateUTC(d, off) {
+  const base = WAVE1_MONDAY + d * MS_DAY;
+  let t = base;
+  for (let i = 0; i < 64; i++) { const n = base + offsetAt(t, off) * 7 * MS_DAY; if (n === t) break; t = n; }
+  return t;
+}
+function waveStartUTC(wave, off = 0) { return planDateUTC((wave - 1) * 28, off); }
 // date (ms UTC midnight) → {wave, week, day} · day 1–5 = Mon–Fri, 0 = weekend
-function whereIs(utcMid, offsetWeeks = 0) {
-  const d = Math.floor((utcMid - WAVE1_MONDAY) / MS_DAY) - offsetWeeks * 7;
+function whereIs(utcMid, off = 0) {
+  const d = Math.floor((utcMid - WAVE1_MONDAY) / MS_DAY) - offsetAt(utcMid, off) * 7;
   if (d < 0) return { wave: 0, week: 0, day: 0, pre: true };
   const wave = Math.floor(d / 28) + 1;
   const week = Math.floor((d % 28) / 7) + 1;
@@ -346,7 +362,7 @@ function clearedInWave(pkey, wave, minW, minReps, minSets, ctx = HISTCTX) {
   if (!ctx || !ctx.index) return null;
   const hist = ctx.index[pkey];
   if (!hist || !hist.length) return null;
-  const from = waveStartUTC(wave, ctx.offsetWeeks || 0), to = from + 28 * MS_DAY;
+  const from = waveStartUTC(wave, SH(ctx)), to = waveStartUTC(wave + 1, SH(ctx));
   const inWave = hist.filter((e) => e.t >= from && e.t < to);
   if (!inWave.length) return null;
   return inWave.filter((e) => e.w >= minW - 0.01 && e.r >= minReps).length >= minSets;
@@ -576,13 +592,13 @@ function accStateLogged(def, wave, ctx) {
   // wave's 1-set maintenance follows the schedule (it neither holds nor adopts), deload sets never
   // qualify, the latest qualifying session wins, and a heavier logged weight is adopted on the
   // exercise's own grid, never rounded up.
-  const fixed = wave > CAL_LAST, off = ctx.offsetWeeks || 0;
+  const fixed = wave > CAL_LAST, off = SH(ctx);
   const step = def.inc > 0 ? def.inc : (def.db ? 2.5 : 5);
   const need = fixed ? Math.min(2, def.sets || 2) : 2; // ENG-4: 1-set work clears on its one set
   for (let k = Math.max(1, def.since || 1); k < wave; k++) {
     const atTop = i + 1 >= last;
     const topReq = def.steps[Math.min(i + 1, last)];
-    const from = waveStartUTC(k, off), to = from + 28 * MS_DAY;
+    const from = waveStartUTC(k, off), to = waveStartUTC(k + 1, off);
     if (fixed && cycleOf(k) === 6) { // peak: 1-set "easy" maintenance, follow the schedule
       if (atTop) { if (def.inc > 0) w = def.db ? R25(w + def.inc) : w + def.inc; i = 0; } else i++;
       continue;
@@ -1041,7 +1057,9 @@ function peakSession(wave, week, day, cb, gates, opts) {
     if (day === 2) push({ type: "test", name: "TAPER \u2014 optional light bench", note: `2\u20133 crisp doubles at ${R5(cb.bn * 0.75)}, only if it reliably helps you. Otherwise rest. Test is Friday.` });
     if (day === 3 || day === 4) push({ type: "test", name: "TAPER \u2014 full rest", note: "Walk, eat, sleep. Nothing heavier than a warm-up. Test is Friday." });
     if (day === 5) {
-      push({ type: "test", name: "TEST DAY — 1st/2nd/3rd attempts", note: "Squat → Bench → Deadlift. Safeties + spotters. No misses. " + COMMANDS.sq + " " + COMMANDS.bn + " " + COMMANDS.dl, attempts: att, est: pe });
+      const meet = opts && opts.meetDate ? Date.parse(opts.meetDate) : NaN, fri = sessionDayUTC(wave, 4, 5, SH(opts));
+      const isMeet = Number.isFinite(meet) && meet >= fri && meet - fri < 3 * MS_DAY; // the meet is this Friday or that weekend
+      push({ type: "test", name: isMeet ? `MEET — ${new Date(meet).toUTCString().slice(0, 11)}: 1st/2nd/3rd attempts` : "TEST DAY — 1st/2nd/3rd attempts", note: (isMeet ? "Hand these in at weigh-in (kg). " : "") + "Squat → Bench → Deadlift. Safeties + spotters. No misses. " + COMMANDS.sq + " " + COMMANDS.bn + " " + COMMANDS.dl, attempts: att, est: pe });
     }
     return blocks;
   }
@@ -1099,7 +1117,7 @@ function peakEstimate(wave, gates, ctx, beforeWeek = 4) {
   const cb = cbFor(wave, gates), est = {}, src = {}, dayOf = { sq: 1, bn: 2, dl: 5 };
   for (const L of LIFTS) {
     for (let wk = Math.min(3, beforeWeek - 1); wk >= 1 && est[L] == null; wk--) {
-      const e = ctx && ctx.index ? ratedOn(ctx.index, L + "-single", sessionDayUTC(wave, wk, dayOf[L], ctx.offsetWeeks || 0)) : null;
+      const e = ctx && ctx.index ? ratedAt(ctx.index, L + "-single", wave, wk, dayOf[L], SH(ctx)) : null;
       if (!e) continue;
       const cap = capNum(PEAK_CAP[wk - 1]);
       est[L] = e1rm(e, cap); src[L] = { week: wk, w: e.w, rpe: effRPE(e, cap) };
@@ -1150,6 +1168,79 @@ function applyTestEntry(testMax, gates, w, L, field, value, todayMs, off) {
     if (!Object.keys(gw).length) delete g[w + 1];
   }
   return { testMax: tm, gates: g };
+}
+// MEET-6: line a peak's test Friday up with the meet. The target is the latest peak whose test Friday
+// falls on or before the meet; each missing week repeats WEEK 2 of one wave before it (newest waves
+// first), so the extra time is loading, not a second deload. Every segment starts after today and the
+// last logged day. Returns {weeks, wave, segments} or {warn}. Pure.
+function meetAlign(meetDk, shifts, todayMs, lastLoggedMs) {
+  const meet = Date.parse(meetDk);
+  if (!Number.isFinite(meet)) return { warn: "Not a date." };
+  const meetFri = meet - ((((Math.floor((meet - WAVE1_MONDAY) / MS_DAY) % 7) + 7) % 7 + 3) % 7) * MS_DAY; // Friday on or before
+  const sh = Array.isArray(shifts) ? shifts.slice() : [], floor = Math.max(todayMs, lastLoggedMs || 0);
+  let w = null;
+  for (let k = 6; k <= 18; k += 6) if (sessionDayUTC(k, 4, 5, sh) <= meetFri) w = k;
+  if (w == null || sessionDayUTC(w, 4, 5, sh) <= floor) return { warn: "The meet comes before the next peak's test day. Pick the peak you will meet from, or move the meet." };
+  const weeks = Math.round((meetFri - sessionDayUTC(w, 4, 5, sh)) / (7 * MS_DAY));
+  if (weeks === 0) return { weeks: 0, wave: w, segments: [] };
+  const waves = [];
+  for (let k = w - 1; k >= 1 && waves.length < weeks; k--) if (cycleOf(k) !== 6 && sessionDayUTC(k, 3, 1, sh) > floor) waves.push(k);
+  if (waves.length < weeks) return { warn: `Only ${waves.length} wave(s) left before the Wave ${w} peak to take ${weeks} extra week(s).` };
+  const segments = [];
+  for (const k of waves.reverse()) { // oldest first: each segment is dated on the schedule the earlier ones made
+    const seg = { from: new Date(sessionDayUTC(k, 3, 1, [...sh, ...segments])).toISOString().slice(0, 10), weeks: 1, wave: k };
+    segments.push(seg);
+  }
+  return { weeks, wave: w, segments: segments.map(({ from, weeks: n }) => ({ from, weeks: n })) };
+}
+// DATA-2: clean a stored state or a backup to the shapes the app reads. Whatever cannot be read is
+// dropped and counted, so a malformed file can never blank the app. {ok:false} = not a backup at all.
+function sanitizeState(d) {
+  const DK = /^\d{4}-\d{2}-\d{2}$/, num = (x) => typeof x === "number" && Number.isFinite(x), obj = (x) => !!x && typeof x === "object" && !Array.isArray(x);
+  if (!obj(d) || !obj(d.logs)) return { ok: false, state: null, dropped: 0 };
+  let dropped = 0;
+  const out = { ...d, logs: {} };
+  for (const [k, log] of Object.entries(d.logs)) {
+    if (!DK.test(k) || !obj(log)) { dropped++; continue; }
+    const L = { ...log };
+    if (L.sets != null) {
+      if (!obj(L.sets)) { delete L.sets; dropped++; }
+      else {
+        const sets = {};
+        for (const [bk, arr] of Object.entries(L.sets)) {
+          if (!Array.isArray(arr)) { dropped++; continue; }
+          const good = arr.filter((x) => obj(x) && num(x.w) && num(x.r));
+          dropped += arr.length - good.length;
+          if (good.length) sets[bk] = good;
+        }
+        L.sets = sets;
+      }
+    }
+    if (L.sleep != null && !num(L.sleep)) { delete L.sleep; dropped++; }
+    if (L.swap != null && !obj(L.swap)) { delete L.swap; dropped++; }
+    out.logs[k] = L;
+  }
+  const keep = (field, ok) => { if (d[field] == null) return; if (!obj(d[field])) { delete out[field]; dropped++; return; } out[field] = {}; for (const [k, v] of Object.entries(d[field])) { if (ok(k, v)) out[field][k] = v; else dropped++; } };
+  keep("bw", (k, v) => DK.test(k) && num(v));
+  keep("food", (k, v) => DK.test(k) && Array.isArray(v) && v.every((x) => obj(x) && num(x.kcal)));
+  keep("meas", (k, v) => DK.test(k) && obj(v) && Object.values(v).every(num));
+  for (const f of ["gates", "testMax", "settings", "spec", "nutri", "ledger", "primer"]) if (d[f] != null && !obj(d[f])) { delete out[f]; dropped++; }
+  return { ok: true, state: out, dropped };
+}
+// DATA-5: move sets stored by block position ("b3", "r0") to the exercise key they carry, so a spec
+// change or a reordered day can never put a past set on another exercise. Sets without a key stay put.
+function migrateSetKeys(logs) {
+  const out = JSON.parse(JSON.stringify(logs || {}));
+  for (const log of Object.values(out)) {
+    if (!log || !log.sets) continue;
+    for (const [bk, arr] of Object.entries(log.sets)) {
+      if (!/^[br]\d+$/.test(bk) || !Array.isArray(arr) || !arr.length || !arr.every((x) => x && x.k) || new Set(arr.map((x) => x.k)).size !== 1) continue;
+      const nk = (bk[0] === "r" ? "r:" : "") + arr[0].k;
+      log.sets[nk] = [...(log.sets[nk] || []), ...arr];
+      delete log.sets[bk];
+    }
+  }
+  return out;
 }
 // one-time migration of the old single "Target / made" box: a number typed before the test date was a
 // target, and the base pin it wrote (96% of it) is removed; one typed on or after the test day stays a
@@ -1274,7 +1365,15 @@ function effRPE(e, cap) {
   return null;
 }
 const rated = (e) => !!e && (Number.isFinite(e.rpe) || RATE[e.rate] != null);
-function sessionDayUTC(wave, week, day, off) { return waveStartUTC(wave, off || 0) + ((week - 1) * 7 + (day - 1)) * MS_DAY; }
+function sessionDayUTC(wave, week, day, off) { return planDateUTC((wave - 1) * 28 + (week - 1) * 7 + (day - 1), off || 0); }
+// the schedule shift a history context carries: dated `shifts` (DATA-1), else the legacy number
+const SH = (ctx) => (ctx ? (ctx.shifts != null ? ctx.shifts : ctx.offsetWeeks || 0) : 0);
+// the rated entry of a pkey on a plan day, wherever that day fell (a repeated week has two dates: the latest wins)
+function ratedAt(ix, pkey, wave, week, day, off) {
+  const ts = [...new Set(((ix && ix[pkey]) || []).map((e) => e.t))].sort((a, b) => b - a);
+  for (const t of ts) { const w = whereIs(t, off); if (w.wave === wave && w.week === week && w.day === day) { const e = ratedOn(ix, pkey, t); if (e) return e; } }
+  return null;
+}
 // the rated entry of a pkey on one day (the last set carries the rating)
 function ratedOn(ix, pkey, t) {
   const hist = (ix && ix[pkey]) || [];
@@ -1293,7 +1392,8 @@ function singleFactor(planW, cap, e) {
 const ROUND = (b, x) => (b.db ? R25(x) : R5(x));
 function autoregulate(blocks, wave, week, day, ctx) {
   if (!ctx || !ctx.index || !Array.isArray(blocks)) return blocks;
-  const ix = ctx.index, off = ctx.offsetWeeks || 0, today = sessionDayUTC(wave, week, day, off);
+  // `today` is the real date when the caller knows it (a repeated week has two dates)
+  const ix = ctx.index, off = SH(ctx), today = Number.isFinite(ctx.today) ? ctx.today : sessionDayUTC(wave, week, day, off);
   return blocks.map((b) => {
     if (!b || !b.pkey || !(b.w > 0) || b.light || b.type === "single" || b.type === "warmup") return b;
     // Rule A: main-lift back-offs follow today's single
@@ -1343,12 +1443,12 @@ const GATE_CUTS = [[0.99, "clean"], [0.975, "small"], [0.955, "repeat"]];
 function autoGate(wave, gates, ctx) {
   if (!ctx || !ctx.index || cycleOf(wave) === 6) return null;
   const { t, cyc } = mainTables(wave, gates);
-  const off = ctx.offsetWeeks || 0, out = {};
+  const off = SH(ctx), out = {};
   const dayOf = { sq: 1, bn: 2, dl: 5 };
   for (const L of LIFTS) {
     let best = null;
     for (let wk = 3; wk >= 1 && !best; wk--) {
-      const e = ratedOn(ctx.index, L + "-single", sessionDayUTC(wave, wk, dayOf[L], off));
+      const e = ratedAt(ctx.index, L + "-single", wave, wk, dayOf[L], off);
       if (!e) continue;
       const cap = capNum(cyc === 5 ? RPE_CAP_C5[wk] : RPE_CAP[wk]);
       const plan = t[L].s[wk - 1];
@@ -1378,7 +1478,7 @@ function withAutoGates(gates, ctx, upTo = 19) {
   return g;
 }
 
-const ENGINE = { kgDown, kgNear, attemptsKg, e1rm, LB_PER_KG, defaultGate, RPE_PCT_1, pctAt, RATE, RATE_LABEL, singleFactor, autoregulate, autoGate, withAutoGates, sessionDayUTC, GATE_CUTS, postTestBase, CALIBRATION, PROJ_DEFAULT, cbChain, etaWave, explicitCB, TRACKED, trackedCB, trackedFor, ARM_START, ARM_GOAL, clearedInWave, inclineCB, inclineFor, INCLINE_START, INCLINE_GOAL, pkeyOf, accStateLogged, R5, R25, START, LIFTS, LIFT_NAME, gateDelta, cbFor, cycleOf, macroOf, CYCLE_NAME, waveStartUTC, whereIs, NOTES, mainTables, ohpFor, ACC, accState, accFor, sessionFor, testAttempts, yellowW, yellowFor, redSession, RTS_N, pctReps, dayE1RM, ALT, altKey, WAVE1_MONDAY, MS_DAY, capNum, effRPE, targetsOf, peakEstimate, applyTestEntry, migrateTestMax, lbFloor, COMMANDS, PEAK_CAP,
+const ENGINE = { kgDown, kgNear, attemptsKg, e1rm, LB_PER_KG, defaultGate, RPE_PCT_1, pctAt, RATE, RATE_LABEL, singleFactor, autoregulate, autoGate, withAutoGates, sessionDayUTC, GATE_CUTS, postTestBase, CALIBRATION, PROJ_DEFAULT, cbChain, etaWave, explicitCB, TRACKED, trackedCB, trackedFor, ARM_START, ARM_GOAL, clearedInWave, inclineCB, inclineFor, INCLINE_START, INCLINE_GOAL, pkeyOf, accStateLogged, R5, R25, START, LIFTS, LIFT_NAME, gateDelta, cbFor, cycleOf, macroOf, CYCLE_NAME, waveStartUTC, whereIs, NOTES, mainTables, ohpFor, ACC, accState, accFor, sessionFor, testAttempts, yellowW, yellowFor, redSession, offsetAt, segsOf, planDateUTC, ratedAt, meetAlign, sanitizeState, migrateSetKeys, RTS_N, pctReps, dayE1RM, ALT, altKey, WAVE1_MONDAY, MS_DAY, capNum, effRPE, targetsOf, peakEstimate, applyTestEntry, migrateTestMax, lbFloor, COMMANDS, PEAK_CAP,
   FRAME_OPTS, FRAME_LABEL, DETAIL_OPTS, DETAIL_LABEL, DEFAULT_SPEC, isDefaultSpec, saturdaySession, sundaySession, sundayPlanned };
 if (typeof module !== "undefined") module.exports = ENGINE;
 
@@ -1402,17 +1502,28 @@ const KEY = "r345.v1";
 function todayUTC0() { const n = new Date(); return Date.UTC(n.getFullYear(), n.getMonth(), n.getDate()); }
 const DK_RE = /^\d{4}-\d{2}-\d{2}$/;
 let S;
-try { S = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { S = {}; }
-S.logs = S.logs || {}; S.gates = S.gates || {}; S.bw = S.bw || {}; S.testMax = S.testMax || {}; S.meas = S.meas || {}; S.food = S.food || {}; S.nutri = S.nutri || { mode: "gain", since: null }; S.primer = S.primer || {};
-S.settings = S.settings || { offsetWeeks: 0 };
-S.spec = S.spec || { ...E.DEFAULT_SPEC };
-if (!S.v32) { S.spec.sundayOn = false; S.v32 = 1; } // v32: Sunday is rest by default (stored specs predate it)
-S.ledger = S.ledger || {};
-if (!S.v62tm) { const m = E.migrateTestMax(S.testMax, S.gates, todayUTC0(), (S.settings && S.settings.offsetWeeks) || 0); S.testMax = m.testMax; S.gates = m.gates; S.v62tm = 1; try { localStorage.setItem("r345.v1", JSON.stringify(S)); } catch (e) {} }
+// every state that reaches the app goes through the engine's sanitizeState (DATA-2) and these defaults
+function normalize(d) {
+  d.logs = d.logs || {}; d.gates = d.gates || {}; d.bw = d.bw || {}; d.testMax = d.testMax || {}; d.meas = d.meas || {}; d.food = d.food || {}; d.nutri = d.nutri || { mode: "gain", since: null }; d.primer = d.primer || {};
+  d.settings = d.settings || {}; d.spec = d.spec || { ...E.DEFAULT_SPEC }; d.ledger = d.ledger || {};
+  if (d.spec.frameSecondary === d.spec.framePrimary) d.spec.frameSecondary = "none";
+  if (!d.v32) { d.spec.sundayOn = false; d.v32 = 1; } // v32: Sunday is rest by default (stored specs predate it)
+  // DATA-1: the old global shift moved every date; it becomes one segment from Wave 1, so nothing moves now
+  if (!Array.isArray(d.settings.shifts)) { const n = +d.settings.offsetWeeks || 0; d.settings.shifts = n ? [{ from: "2026-07-20", weeks: n }] : []; delete d.settings.offsetWeeks; }
+  if (!d.v62keys) { d.logs = E.migrateSetKeys(d.logs); d.v62keys = 1; } // DATA-5: sets live under their exercise key
+  if (!d.v62tm) { const m = E.migrateTestMax(d.testMax, d.gates, todayUTC0(), d.settings.shifts); d.testMax = m.testMax; d.gates = m.gates; d.v62tm = 1; } // MEET-2
+  return d;
+}
+{ let raw = null; try { raw = JSON.parse(localStorage.getItem(KEY)); } catch (e) {}
+  const san = E.sanitizeState(raw && typeof raw === "object" && !Array.isArray(raw) ? { logs: {}, ...raw } : { logs: {} });
+  S = normalize(san.ok ? san.state : { logs: {} });
+  try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+// the schedule's dated shifts (DATA-1)
+const SHIFT = () => S.settings.shifts || [];
 const save = () => { _gx = null; try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} };
 // effective gates: what the lifter set, plus Rule D (rated singles) wherever he has not
 let _gx = null;
-const GX = () => _gx || (_gx = E.withAutoGates(S.gates, { index: histIndex(), offsetWeeks: (S.settings && S.settings.offsetWeeks) || 0 }));
+const GX = () => _gx || (_gx = E.withAutoGates(S.gates, { index: histIndex(), shifts: SHIFT() }));
 // exercise history for log-driven progression: pkey -> [{t,w,r}]
 function histIndex() {
   const ix = {};
@@ -2242,7 +2353,7 @@ function blockRx(b) {
   return `${w} <small>×</small> ${b.reps} <small>× ${b.sets}${b.db ? " · per hand" : ""}</small>`;
 }
 function renderToday() {
-  const off = S.settings.offsetWeeks || 0;
+  const off = SHIFT();
   const loc = E.whereIs(viewDate, off);
   const dk = keyOf(viewDate);
   const log = S.logs[dk] || {};
@@ -2256,7 +2367,7 @@ function renderToday() {
       <label>Sleep <input type="number" step="0.5" inputmode="decimal" value="${Number.isFinite(log.sleep) ? log.sleep : ""}" onchange="setLog('${dk}','sleep',this.value)"> hr</label>
     </div>`;
 
-  if (loc.pre) { $("#view").innerHTML = inner + `<div class="card single"><div class="eyebrow sig">Countdown</div><div class="rx">Wave 1 starts <small>Mon Jul 20 · 7:00 AM</small></div>
+  if (loc.pre) { $("#view").innerHTML = inner + `<div class="card single"><div class="eyebrow sig">Countdown</div><div class="rx">Wave 1 starts <small>${fmt(E.waveStartUTC(1, off))} · 7:00 AM</small></div>
       <div class="wu" style="margin-top:9px"><span>☐ waist + neck tape</span><span>☐ photos ×3</span><span>☐ first weigh-in</span><span>☐ creatine started</span></div>
       <p class="note" style="margin-top:8px">Full baseline steps live in the 🍚 nutrition note. Day 1 is Squat: 265 × 1 @ cap 7.</p></div>`; return; }
   if (loc.wave > 19) { $("#view").innerHTML = inner + `<div class="card"><div class="eyebrow sig">Beyond the map</div><p class="note">Wave 19 was the summit on this chart. Ask Claude to extend the road.</p></div>`; return; }
@@ -2271,7 +2382,7 @@ function renderToday() {
 
   if (loc.day === 6 || loc.day === 7) inner += `<div class="rowbtns" style="margin:-2px 0 6px"><button class="btn ghost" onclick="specSheet()">⚙ Specialize · ${esc(E.FRAME_LABEL[S.spec.framePrimary])}</button></div>`;
 
-  const hctx = { index: histIndex(), offsetWeeks: off, testMax: S.testMax, ready };
+  const hctx = { index: histIndex(), shifts: off, today: viewDate, testMax: S.testMax, ready, meetDate: S.settings.meetDate };
   let blocks = E.sessionFor(loc.wave, loc.week, loc.day, GX(), S.spec, hctx);
   if (ready === "R") blocks = E.redSession(loc.wave, loc.day, GX());
 
@@ -2284,11 +2395,15 @@ function renderToday() {
           ? `<p class="note"><b style="color:var(--chalk)">${esc(P.eve.title)}.</b> ${esc(P.eve.rule)}</p><ul class="note" style="margin:6px 0 0 18px;padding:0">${P.eve.items.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>`
           : `<p class="note"><b style="color:var(--chalk)">Morning.</b> ${esc(P.day.morning)}</p><p class="note"><b style="color:var(--chalk)">Fuel.</b> ${P.day.fuel.map(esc).join(" \u00b7 ")}</p><p class="note"><b style="color:var(--chalk)">${esc(P.pump.title)}.</b> Open the primer for the session.</p>`}
         <div class="rowbtns"><button class="btn ghost" onclick="primerSheet()">Open the primer</button></div></div>`; } }
+  // DATA-5: a block's sets live under its exercise key ("r:" on a Red day); old days stored by position
+  // ("b3") are read only for sets that carry no key at all
+  const skeyOf = (b, i) => (b.pkey ? (ready === "R" ? "r:" : "") + b.pkey : (ready === "R" ? "r" : "b") + i);
+  const setsOf = (b, i) => { const st = log.sets || {}, k = skeyOf(b, i); return st[k] || (b.pkey ? (st[(ready === "R" ? "r" : "b") + i] || []).filter((x) => !x.k) : []); };
   blocks.forEach((b, i) => {
     if (!["single", "backoff", "paused", "ohp", "accessory"].includes(b.type)) return;
     const n = b.type === "single" ? 1 : b.sets;
     planned += n;
-    doneN += Math.min(n, ((log.sets || {})[(ready === "R" ? "r" : "b") + i] || []).length);
+    doneN += Math.min(n, setsOf(b, i).length);
   });
   if (planned) inner += `<div class="pline"><div class="pbar"><i style="width:${Math.round((doneN / planned) * 100)}%"></i></div><span>${doneN}/${planned}${doneN >= planned ? " 🏁" : ""}</span></div>`;
 
@@ -2296,12 +2411,13 @@ function renderToday() {
   const lastLogIdx = blocks.reduce((k, x, j) => (LOGT.includes(x.type) && !/^(FILLER|PRIMER)/.test(x.cap || "") ? j : k), -1);
   blocks.forEach((b0, i) => {
     let b = b0;
-    const bkey = (ready === "R" ? "r" : "b") + i;
-    const sets = (log.sets && log.sets[bkey]) || [];
     // LOG-7: a swap for today logs under its own key; the planned exercise's rung never sees it
     const swap = b.type === "accessory" && b.pkey && (log.swap || {})[b.pkey];
     if (swap) { const k = E.altKey(b.pkey, swap), hx = (hctx.index[k] || []).filter((e) => e.t < viewDate);
       b = { ...b, name: swap + " (swap)", pkey: k, w: hx.length ? hx[hx.length - 1].w : b.w, prog: "swap", note: `Swapped for ${b0.name} today: its own log, so ${b0.name}'s rung stays put. ${hx.length ? "Last time " + hx[hx.length - 1].w + "." : "First time: set the weight with the edit sheet."}` }; }
+    const legacy = b.pkey && !(log.sets || {})[skeyOf(b, i)] && setsOf(b, i).length;
+    const bkey = legacy ? (ready === "R" ? "r" : "b") + i : skeyOf(b, i); // edits of an old position-keyed set stay where it lives
+    const sets = setsOf(b, i);
     if (b.type === "warmup") {
       inner += `<div class="card"><div class="eyebrow">${esc(b.name)}</div>
         <div class="wu">${b.rows.map((r) => {
@@ -2432,7 +2548,7 @@ window.primerSheet = () => {
     <div class="eyebrow" style="margin-top:12px">${esc(P.day.title)} — morning</div><p class="note">${esc(P.day.morning)}</p>
     <div class="eyebrow" style="margin-top:12px">${esc(P.day.title)} — fuel</div>${li(P.day.fuel)}
     <div class="eyebrow" style="margin-top:12px">${esc(P.pump.title)}</div><p class="note">${esc(P.pump.rule)}</p>
-    ${(() => { const loc = E.whereIs(todayUTC(), S.settings.offsetWeeks || 0); const wk = Math.min(Math.max(loc.week || 1, 1), 3), wv = Math.max(loc.wave || 1, 1);
+    ${(() => { const loc = E.whereIs(todayUTC(), SHIFT()); const wk = Math.min(Math.max(loc.week || 1, 1), 3), wv = Math.max(loc.wave || 1, 1);
         const findW = (nm) => { const re = new RegExp(nm, "i"); for (let d = 1; d <= 7; d++) for (const b of E.sessionFor(wv, wk, d, GX(), S.spec)) if (re.test(b.name || "") && Number.isFinite(b.w) && b.w > 0) return b.w; return null; };
         return NUTRI.primerLoads(findW).map((x) => `<div class="frow"><span class="fn">${esc(x.k)} \u00b7 ${esc(x.name)}<small>${esc(x.why)}</small></span><span class="fv"><b>${esc(x.disp)}</b>${x.sr ? ` \u00b7 ${esc(x.sr)}` : ""}</span></div>`).join("")
           + `<p class="note" style="margin-top:6px">Weights are ~75\u201385% of this week\u2019s working loads and move with them. Pump reps, not PRs.</p>`; })()}
@@ -2490,7 +2606,7 @@ window.delSet = (dk, bkey, si) => { S.logs[dk].sets[bkey].splice(si, 1); save();
 
 /* ── ROADMAP ── */
 function renderRoad() {
-  const off = S.settings.offsetWeeks || 0;
+  const off = SHIFT();
   const now = E.whereIs(todayUTC(), off);
   const cbNow = E.cbFor(Math.max(1, Math.min(now.wave || 1, 19)), GX());
   const GOALS = { bn: [225, 315], sq: [315, 405], dl: [405, 495] };
@@ -2500,7 +2616,7 @@ function renderRoad() {
   let h = `<div class="card single"><div class="eyebrow sig">The Goal — 315/405/495 · 16" arms · 200 @ 15%</div><div class="summit">
     ${E.LIFTS.map((L) => { const [s0, g] = GOALS[L]; const pct = Math.max(0, Math.min(100, Math.round(((cbNow[L] - s0) / (g - s0)) * 100))); return `<div class="srow"><span>${E.LIFT_NAME[L]}</span><div class="sbar"><i style="width:${pct}%"></i></div><span class="sval">${cbNow[L]} / ${g}</span></div>`; }).join("")}
     ${["inc", "chin", "dip", "rdl"].map((id) => {
-        const T = E.TRACKED[id], v = E.trackedCB(id, Math.max(1, Math.min(now.wave || 1, 19)), GX(), { index: histIndex(), offsetWeeks: off });
+        const T = E.TRACKED[id], v = E.trackedCB(id, Math.max(1, Math.min(now.wave || 1, 19)), GX(), { index: histIndex(), shifts: off });
         const p = Math.max(0, Math.min(100, Math.round(((v - T.start) / (T.goal - T.start)) * 100)));
         const lbl = { inc: "Incline", chin: "Chin-up", dip: "Dip", rdl: "RDL" }[id];
         const f = (x) => (T.added ? "+" + x : x);
@@ -2515,6 +2631,9 @@ function renderRoad() {
     ${(() => { const p2 = NUTRI.PHASES[1]; return `<div class="srow" style="border-top:1px solid var(--steel);padding-top:8px;margin-top:4px"><span>Phase 2</span><span></span><span class="sval">${esc(p2.short)}</span></div>
     <p class="note" style="margin-top:2px"><b style="color:var(--chalk)">${esc(p2.name)}</b> \u2014 ${esc(p2.by)}. ${esc(p2.gate)} Same lean mass, ${p2.weeks} weeks, floor ${p2.floorBF}%. The Calvin Klein Wahlberg with 25 more pounds of muscle than the ad.</p>`; })()}</div>
   <p class="note">19 waves · 4 macros. Wave 3 runs from your measured bases. Projections re-compute from your gate results; a future gate you have not set assumes the small step (+2.5 bench, +5 squat and deadlift), the honest pace past the novice years.</p>`;
+  if (S.settings.meetDate) { const m = Date.parse(S.settings.meetDate), wk = Math.ceil((m - todayUTC()) / (7 * E.MS_DAY));
+    const peak = [6, 12, 18].find((k) => { const f = E.sessionDayUTC(k, 4, 5, off); return m >= f && m - f < 3 * E.MS_DAY; });
+    h += `<div class="card single"><div class="eyebrow sig">Meet ${esc(fmt(m))} · ${wk > 0 ? wk + " weeks out" : "done"}</div><p class="note">${peak ? `Peak = the Wave ${peak} test (${fmt(E.sessionDayUTC(peak, 4, 5, off))}).` : "No peak lines up with it yet: re-enter the date in More → Settings to line one up."}</p></div>`; }
   for (let w = 1; w <= 19; w++) {
     const cb = E.cbFor(w, GX());
     const cyc = E.cycleOf(w);
@@ -2546,7 +2665,7 @@ function renderRoad() {
 }
 window.waveSheet = (w) => {
   const { cb, cyc, t } = E.mainTables(w, GX());
-  const off = S.settings.offsetWeeks || 0;
+  const off = SHIFT();
   let h = `<button class="closex" onclick="closeSheet()">×</button>
     <h2>Wave ${w} · ${E.CYCLE_NAME[cyc]}</h2>
     <p class="note">${fmt(E.waveStartUTC(w, off))} start · CB ${cb.bn} / ${cb.sq} / ${cb.dl}</p>
@@ -2561,7 +2680,7 @@ window.waveSheet = (w) => {
           <tr><td>Paused BN</td>${[0,1,2].map((i) => `<td>${t.pb[i]}</td>`).join("")}<td>${t.pb[3]}</td></tr></table></div>`;
   } else {
     const row = S.testMax[w] || {}, ent = (L) => (row[L] && typeof row[L] === "object" ? row[L] : { target: row[L] });
-    const pe = E.peakEstimate(w, GX(), { index: histIndex(), offsetWeeks: off }, 4);
+    const pe = E.peakEstimate(w, GX(), { index: histIndex(), shifts: off }, 4);
     const att = E.testAttempts(cb, E.targetsOf(S.testMax, w), pe.est), attKg = E.attemptsKg(att);
     const canMade = todayUTC() >= E.sessionDayUTC(w, 4, 5, off);
     h += `<p class="capnote warn">Peak wave: Wk1 single@8 + 3×3 · Wk2 single@8–8.5 + 3×2 · Wk3 the opener you will hand in · Wk4 taper + TEST Friday.</p>
@@ -2589,7 +2708,7 @@ function gateEditor(intoWave) {
 }
 window.setGate = (w, L, o) => { S.gates[w] = S.gates[w] || {}; if (o) S.gates[w][L] = o; else delete S.gates[w][L]; save(); waveSheet(w - 1); };
 window.setTestEntry = (w, L, field, v) => {
-  const r = E.applyTestEntry(S.testMax, S.gates, w, L, field, v, todayUTC(), S.settings.offsetWeeks || 0);
+  const r = E.applyTestEntry(S.testMax, S.gates, w, L, field, v, todayUTC(), SHIFT());
   if (r.refused) { alert(r.refused === "before the test" ? "Made lifts open on test day." : "That is not a weight."); waveSheet(w); return; }
   S.testMax = r.testMax; S.gates = r.gates; save(); waveSheet(w);
 };
@@ -2608,7 +2727,7 @@ window.specSheet = () => {
     <div class="eyebrow sig" style="margin-top:12px">Primary frame — Saturday overload</div>
     <div class="rowbtns">${optRow("framePrimary", sp.framePrimary, E.FRAME_OPTS, E.FRAME_LABEL)}</div>
     <div class="eyebrow sig" style="margin-top:12px">Secondary frame — 1 slot, 2 sets</div>
-    <div class="rowbtns">${optRow("frameSecondary", sp.frameSecondary, [...E.FRAME_OPTS, "none"], E.FRAME_LABEL)}</div>
+    <div class="rowbtns">${optRow("frameSecondary", sp.frameSecondary, [...E.FRAME_OPTS.filter((o) => o !== sp.framePrimary), "none"], E.FRAME_LABEL)}</div>
     <p class="note">Skipped automatically on weeks triceps is your detail focus.</p>
     <div class="eyebrow sig" style="margin-top:12px">Detail weak point — Sunday</div>
     <div class="rowbtns">${optRow("detail", sp.detail, E.DETAIL_OPTS, E.DETAIL_LABEL)}</div>
@@ -2627,6 +2746,7 @@ window.specSheet = () => {
     <p class="note">Default block for the exaggerated-taper look: shoulder width + lat width + triceps/forearm. Change only from photos.</p>`);
 };
 window.setSpec = (field, val) => {
+  if (field === "frameSecondary" && val === S.spec.framePrimary) return; // one exercise key per session (DATA-5)
   S.spec[field] = val;
   if (field === "framePrimary" && S.spec.frameSecondary === val) S.spec.frameSecondary = "none";
   save(); specSheet(); if (tab === "today") render();
@@ -2723,7 +2843,7 @@ function renderTrends() {
   // only the lift itself counts (squat day also has a 470 lb leg press); light, Red and deload days never do
   const TREND = { sq: ["Squat"], bn: ["Bench"], dl: ["Deadlift"], inc: ["Incline", "incbb"], chin: ["Chin-up", "chin"], dip: ["Dip", "dip"], rdl: ["RDL", "rdl"] };
   const keysOf = (L) => new Set(E.LIFTS.includes(L) ? [L + "-single", L + "-back"] : [TREND[L][1] + "-top", TREND[L][1] + "-back"]);
-  const off0 = S.settings.offsetWeeks || 0;
+  const off0 = SHIFT();
   const liftDays = (L) => {
     const out = [], keys = keysOf(L);
     for (const [dk, log] of Object.entries(S.logs).filter(([k]) => DK_RE.test(k)).sort()) {
@@ -2735,7 +2855,7 @@ function renderTrends() {
     return out;
   };
   const liftSets = (L) => liftDays(L).flatMap((d) => d.sets.map((st) => ({ dk: d.dk, t: d.t, st })));
-  const tops = [], e1s = [], baseLine = [], added = !!(E.TRACKED[trendLift] && E.TRACKED[trendLift].added), hctx0 = { index: histIndex(), offsetWeeks: off0 };
+  const tops = [], e1s = [], baseLine = [], added = !!(E.TRACKED[trendLift] && E.TRACKED[trendLift].added), hctx0 = { index: histIndex(), shifts: off0 };
   for (const d of liftDays(trendLift)) {
     const e = added ? null : E.dayE1RM(d.sets, { week: d.week, cap: { 1: 7, 2: 7.5, 3: 8 }[d.week] });
     if (e) e1s.push({ x: d.t, y: e }); else if (added && d.week !== 4) e1s.push({ x: d.t, y: Math.max(...d.sets.map((s) => s.w)) });
@@ -2826,7 +2946,11 @@ function weeklyAverages(n) {
 
 /* ── MORE ── */
 async function forceUpdate() {
-  // logs live in localStorage and are untouched; this only drops the worker + caches
+  // logs live in localStorage and are untouched; this only drops the worker + caches, and only after the
+  // server answered: offline, the cached app is the only app there is
+  if (!navigator.onLine) return alert("Force update needs a connection — the app you have still works offline.");
+  try { const r = await fetch("./index.html?u=" + Date.now(), { cache: "no-store" }); if (!r.ok) throw 0; }
+  catch (e) { return alert("Could not reach the server — nothing changed."); }
   try { if ("serviceWorker" in navigator) for (const r of await navigator.serviceWorker.getRegistrations()) await r.unregister(); } catch (e) {}
   try { if (window.caches) for (const k of await caches.keys()) await caches.delete(k); } catch (e) {}
   location.replace(location.pathname + "?u=" + Date.now());
@@ -2835,22 +2959,46 @@ function renderMore() {
   const logged = Object.keys(S.logs).filter((k) => DK_RE.test(k) && S.logs[k].sets && Object.keys(S.logs[k].sets).length).sort().reverse();
   $("#view").innerHTML = `
     <div class="card"><div class="eyebrow sig">History</div>
-      ${logged.length ? logged.slice(0, 40).map((dk) => { const loc = E.whereIs(Date.parse(dk), S.settings.offsetWeeks || 0); return `<div class="lset"><button class="linkbtn" onclick="openDay('${esc(dk)}')">${esc(dk)} · W${loc.wave}·wk${loc.week}·d${loc.day}${S.logs[dk].r ? " · " + esc(S.logs[dk].r) : ""}</button><button class="x" onclick="delDay('${esc(dk)}')">✕</button></div>`; }).join("") : `<p class="note">No sessions logged yet. They'll pile up here.</p>`}</div>
+      ${logged.length ? logged.slice(0, 40).map((dk) => { const loc = E.whereIs(Date.parse(dk), SHIFT()); return `<div class="lset"><button class="linkbtn" onclick="openDay('${esc(dk)}')">${esc(dk)} · W${loc.wave}·wk${loc.week}·d${loc.day}${S.logs[dk].r ? " · " + esc(S.logs[dk].r) : ""}</button><button class="x" onclick="delDay('${esc(dk)}')">✕</button></div>`; }).join("") : `<p class="note">No sessions logged yet. They'll pile up here.</p>`}</div>
     <div class="card"><div class="eyebrow sig">Weekend specialization</div>
       <p class="note">Sat = frame overload · Sun = optional detail. Focus: <b style="color:var(--chalk)">${esc(E.FRAME_LABEL[S.spec.framePrimary])}</b> + <b style="color:var(--chalk)">${esc(E.DETAIL_LABEL[S.spec.detail])}</b>.</p>
       <div class="rowbtns"><button class="btn" onclick="specSheet()">⚙ Configure</button><button class="btn ghost" onclick="ledgerSheet()">📒 Ledger</button><button class="btn ghost" onclick="playbookSheet()">🍽 Playbook</button><button class="btn ghost" onclick="primerSheet()">🔥 Ultimate Pump</button></div></div>
     <div class="card"><div class="eyebrow sig">Data</div>
       <p class="note">Logs live on THIS phone only. Back up weekly: the share sheet saves the file to iCloud Drive or Files. ${backupAgeDays() == null ? "<b style=\"color:var(--signal)\">No backup yet.</b>" : `Last backup ${esc(S.lastBackup)} (${backupAgeDays()} days ago).`}</p>
       <div class="rowbtns"><button class="btn" onclick="exportData()">Back up now</button>
-      <button class="btn ghost" onclick="importSheet()">Import</button></div></div>
+      <button class="btn ghost" onclick="importSheet()">Import</button>${localStorage.getItem(KEY + ".prev") != null ? `<button class="btn ghost" onclick="undoImport()">Undo last import</button>` : ""}</div></div>
     <div class="card"><div class="eyebrow sig">Settings</div>
-      <label class="note">Schedule shift (weeks) — for mini-cuts or life: <input type="number" value="${S.settings.offsetWeeks || 0}" onchange="S.settings.offsetWeeks=+this.value||0;save();render()"></label>
+      <p class="note">Schedule: ${SHIFT().length ? SHIFT().map((x) => `${esc(x.from)} +${x.weeks} wk`).join(" · ") : "as planned"}. A repeat replays the week before it; nothing you logged moves.</p>
+      <div class="rowbtns"><button class="btn ghost" onclick="repeatWeek()">Repeat a week from next Monday</button>${SHIFT().length ? `<button class="btn ghost" onclick="undoShift()">Undo last shift</button>` : ""}</div>
+      <label class="note" style="display:block;margin-top:8px">Meet date <input type="date" id="meetdate" value="${esc(S.settings.meetDate || "")}" onchange="setMeetDate(this.value)"></label>
       <p class="note">Build <b style="color:var(--chalk)">${esc(window.BUILD || "local")}</b>. If the app looks stale after an update, force it.</p>
       <div class="rowbtns"><button class="btn ghost" onclick="forceUpdate()">Force update</button></div>
       <div class="rowbtns"><button class="btn danger" onclick="if(confirm('Erase ALL logs, gates and settings?')){localStorage.removeItem(KEY);location.reload()}">Erase everything</button></div></div>
     <div class="card"><div class="eyebrow">Companion pieces</div>
       <p class="note">📓 Wave notes + 🍚 nutrition plan → Apple Notes · 📅 sessions 7:00–8:30 → Apple Calendar · this app → logging, projections, demos.</p></div>`;
 }
+// DATA-1 / MEET-6: dated shifts. A shift never starts on or before the last logged day.
+const lastLogged = () => { const k = Object.keys(S.logs).filter((x) => DK_RE.test(x)).sort(); return k.length ? Date.parse(k[k.length - 1]) : 0; };
+const nextMonday = (t) => t + (7 - ((Math.floor((t - E.WAVE1_MONDAY) / E.MS_DAY) % 7 + 7) % 7)) * E.MS_DAY;
+window.repeatWeek = () => {
+  const from = keyOf(nextMonday(Math.max(todayUTC(), lastLogged())));
+  if (!confirm(`Repeat the week before ${from}? From ${from} the schedule replays that week, then carries on one week later. Nothing you logged moves.`)) return;
+  S.settings.shifts = [...SHIFT(), { from, weeks: 1 }]; save(); render();
+};
+window.undoShift = () => {
+  const sh = SHIFT(), last = sh[sh.length - 1];
+  if (!last) return;
+  if (lastLogged() >= Date.parse(last.from)) return alert(`You have logged sessions since ${last.from} on the shifted schedule; undoing it would move them.`);
+  S.settings.shifts = sh.slice(0, -1); save(); render();
+};
+window.setMeetDate = (v) => {
+  if (!v) { delete S.settings.meetDate; save(); render(); return; }
+  S.settings.meetDate = v; save();
+  const r = E.meetAlign(v, SHIFT(), todayUTC(), lastLogged());
+  if (r.warn) alert(r.warn);
+  else if (r.segments.length && confirm(`Line the Wave ${r.wave} test up with the meet: repeat week 2 of ${r.segments.length} wave(s) (from ${r.segments.map((x) => x.from).join(", ")}). Nothing you logged moves.`)) S.settings.shifts = [...SHIFT(), ...r.segments];
+  save(); render();
+};
 window.logMeas = () => {
   const wa = parseFloat(document.getElementById("mw").value);
   const sh = parseFloat(document.getElementById("ms").value);
@@ -2888,16 +3036,23 @@ window.importSheet = () => {
     <div class="rowbtns"><button class="btn" onclick="doImport()">Import</button></div>`);
 };
 window.doImport = () => {
-  try {
-    const d = JSON.parse($("#imp").value);
-    if (typeof d !== "object" || !d.logs || typeof d.logs !== "object") throw 0;
-    for (const k of Object.keys(d.logs)) if (!DK_RE.test(k)) delete d.logs[k];
-    if (d.bw) for (const k of Object.keys(d.bw)) if (!DK_RE.test(k) || !Number.isFinite(d.bw[k])) delete d.bw[k];
-    S = d; S.logs = S.logs || {}; S.gates = S.gates || {}; S.bw = S.bw || {}; S.testMax = S.testMax || {}; S.meas = S.meas || {}; S.food = S.food || {}; S.nutri = S.nutri || { mode: "gain", since: null }; S.primer = S.primer || {};
-    S.settings = S.settings || { offsetWeeks: 0 };
-    S.spec = S.spec || { ...E.DEFAULT_SPEC }; S.ledger = S.ledger || {};
-    save(); closeSheet(); render();
-  } catch (e) { alert("That doesn't look like a Road-to-3/4/5 backup."); }
+  let d; try { d = JSON.parse($("#imp").value); } catch (e) { alert("That isn't a backup file (it is not JSON). Nothing changed."); return; }
+  const r = E.sanitizeState(d);
+  if (!r.ok) { alert("That doesn't look like a Road-to-3/4/5 backup. Nothing changed."); return; }
+  const n = Object.keys(S.logs).length, m = Object.keys(r.state.logs).length;
+  if (n && !confirm(`Replace ${n} logged days with ${m} from this file?${r.dropped ? ` ${r.dropped} unreadable entries will be skipped.` : ""}`)) return;
+  const prev = localStorage.getItem(KEY);
+  try { localStorage.setItem(KEY + ".prev", prev == null ? "{}" : prev); } catch (e) {}
+  S = normalize(r.state); save(); closeSheet();
+  try { renderInner(); } catch (e) { // never leave the app on a state that cannot render
+    try { localStorage.setItem(KEY, prev); } catch (x) {}
+    alert("Import failed — nothing changed."); location.reload();
+  }
+};
+window.undoImport = () => { const p = localStorage.getItem(KEY + ".prev"); if (p == null) return; localStorage.setItem(KEY, p); localStorage.removeItem(KEY + ".prev"); location.reload(); };
+window.rawBackup = () => {
+  const text = localStorage.getItem(KEY) || "{}", name = `road345-raw-${keyOf(todayUTC())}.json`;
+  const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([text], { type: "application/json" })); a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 5000);
 };
 
 /* ── rules sheet ── */
@@ -2938,13 +3093,24 @@ window.goTab = (id) => {
   if (id === "road") setTimeout(() => { const el = document.querySelector(".wavecard.now"); if (el) el.scrollIntoView({ block: "center", behavior: REDUCED ? "auto" : "smooth" }); }, 60);
 };
 function render() {
+  try { renderInner(); } catch (e) { renderRecovery(e); }
+}
+// DATA-2: a screen that throws on the saved data never leaves the app blank: back up, import, undo, erase
+function renderRecovery(e) {
+  const prev = localStorage.getItem(KEY + ".prev");
+  $("#view").innerHTML = `<div class="card single"><div class="eyebrow sig">This screen could not read the saved data</div>
+    <p class="note">${esc(String((e && e.message) || e))}. Your data is untouched. Back it up first, then undo the last import or import a good backup.</p>
+    <div class="rowbtns"><button class="btn" onclick="rawBackup()">Back up raw data</button><button class="btn ghost" onclick="importSheet()">Import</button>${prev != null ? `<button class="btn ghost" onclick="undoImport()">Undo last import</button>` : ""}
+    <button class="btn danger" onclick="if(confirm('Erase ALL logs, gates and settings?')){localStorage.removeItem(KEY);location.reload()}">Erase</button></div></div>`;
+}
+function renderInner() {
   renderTabs(); stopAnim();
-  const off = S.settings.offsetWeeks || 0;
+  const off = SHIFT();
   const loc = E.whereIs(todayUTC(), off);
   const ws = $("#wkstrip");
   if (loc.pre || loc.wave > 19) ws.innerHTML = "";
   else ws.innerHTML = [1, 2, 3, 4].map((w) => `<i class="${w < loc.week ? "past" : w === loc.week ? "cur" : ""}"></i>`).join("");
-  $("#ctxline").innerHTML = loc.pre ? "Wave 1 begins Mon Jul 20, 2026"
+  $("#ctxline").innerHTML = loc.pre ? "Wave 1 begins " + fmt(E.waveStartUTC(1, off))
     : loc.wave > 19 ? "Beyond Wave 19 — ask for the next map"
     : `Wave ${loc.wave} · Week ${loc.week} · ${E.CYCLE_NAME[E.cycleOf(loc.wave)]} · CB <b>${E.cbFor(loc.wave, GX()).bn}/${E.cbFor(loc.wave, GX()).sq}/${E.cbFor(loc.wave, GX()).dl}</b>`;
   ({ today: renderToday, road: renderRoad, moves: renderMoves, trends: renderTrends, more: renderMore })[tab]();

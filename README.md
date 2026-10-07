@@ -52,7 +52,7 @@ Pure logic, no DOM. Exported as `ENGINE`; works under Node (`require`) and in th
 - **6-wave macrocycles.** `cycleOf(wave)` → 1 Calibration, 2 Build, 3 Accumulate, 4 Specificity, 5 Intensification, 6 Peak (test day).
 - **7-day week.** `sessionFor(wave, week, day, gates, spec)` where day 1=Mon squat, 2=Tue bench, 3=Wed paused squat, 4=Thu paused bench+OHP, 5=Fri deadlift, 6=Sat frame specialization, 7=Sun optional arms.
 - **Double progression** drives every accessory through `accState()` — rep waypoints advance per wave, then weight climbs by `inc` and reps reset. Both the weekday `ACC` array and the weekend `sx()` spec exercises use it.
-- **Weekend specialization** picks a `framePrimary` (arms / latwidth / shoulders / upperchest / upperback / traps) plus a `detail`. When Sunday runs, volume *transfers* off weekdays rather than stacking on top.
+- **Weekend specialization** picks a `framePrimary` (arms / latwidth / shoulders / upperchest / upperback / traps) plus a `detail`. When Sunday runs (Weeks 1–2, Wave 4 on), Monday's Bayesian curl and Tuesday's overhead extension move to it (`SUNDAY_MOVES`) and its overhead extension runs 2 sets, so the arm block stays inside the caps; a Sunday exercise that shares a Saturday name logs under `sun-<key>`.
 
 ### Invariants worth not breaking
 

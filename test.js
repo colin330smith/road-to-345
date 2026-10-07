@@ -457,7 +457,7 @@ console.log("\n── frame requirements ──");
   ok(!wk4.some((b) => /Incline Bench — top set/.test(b.name || "")), "incline: deload has no top set");
   ok(wk4.some((b) => /Incline Bench — light/.test(b.name || "")), "incline: deload keeps light volume");
   for (let d = 1; d <= 5; d++)
-    ok(E.sessionFor(1, 1, d, {}, E.DEFAULT_SPEC).some((b) => b.type === "cooldown" && /POSTURE|hams|glutes/i.test(b.note || "")), `posture: day ${d} cooldown intact`);
+    ok(E.sessionFor(1, 1, d, {}, E.DEFAULT_SPEC).some((b) => b.type === "cooldown" && /MOBILITY|hams|glutes|hips/i.test(b.note || "") && !/fix|pull you forward/i.test(b.note || "")), `posture: day ${d} cooldown intact, and no stretch claims to fix posture (Warneke 2024)`);
 }
 
 
@@ -632,7 +632,7 @@ console.log("\n── frame requirements ──");
     if (["accessory", "single", "backoff"].includes(b.type) && isSideDelt(b.name)) guaranteed += b.sets;
   ok(guaranteed >= 9, `delts: ${guaranteed} side-delt sets land Mon-Sat, independent of the optional day`);
 
-  // 3+ exposures — delts recover fast and respond to frequency
+  // 3+ exposures: per-session dose and fatigue (judgment), not a frequency effect (Pelland 2026: frequency adds little at equal volume)
   const days = new Set();
   for (let d = 1; d <= 6; d++) for (const b of E.sessionFor(1, 1, d, {}, E.DEFAULT_SPEC))
     if (isSideDelt(b.name)) days.add(d);
@@ -1118,6 +1118,56 @@ console.log("\n── frame requirements ──");
   const cbHard = E.cbFor(19, hard.gates);
   ok(cbHard.bn < E.cbFor(19).bn, `year sim: hard singles every wave hold the base (${cbHard.bn}/${cbHard.sq}/${cbHard.dl})`);
   ok(cbHard.bn >= 255 * 0.95 - 5, "year sim: repeats hold, they never spiral down");
+}
+
+// ═══ audit and copy fixes (B6): the claims say what the sources say ═══
+{
+  const fs = require("fs"), rd = (f) => fs.readFileSync(__dirname + "/" + f, "utf8");
+  const notes = fs.readdirSync(__dirname + "/out").filter((f) => /^note-wave\d+\.txt$/.test(f) && +f.match(/\d+/)[0] >= 2).map((f) => rd("out/" + f)).join("\n");
+  const src = [rd("engine.js"), rd("app-shell.html"), rd("sync.py"), notes].join("\n");
+  ok(!/two-thirds|honest pace|strongest remaining lever|13 in → 15 in/i.test(src), "copy: no 'two-thirds', 'honest pace', 'strongest remaining lever' or '13 in → 15 in' in the app, the engine, sync.py or the Wave 2+ notes (Wave 1's printout is history)");
+  ok(!/fastest-growing|anterior tilt fix|tech-neck fix|[Pp]ast 30 the front delt|~22%|about 22%/.test(src), "audit: no unsourced neck, posture-fix, past-30 or 22% claims");
+  ok(/NOT 45/.test(rd("engine.js")) && /not 45°/.test(rd("app-shell.html")), "audit: the 30° cue still says NOT 45");
+  const html = rd("app-shell.html"), readme = rd("README.md"), ev = rd("EVIDENCE.md");
+  ok(!/transfer into it|Close-Grip/.test(html + readme) && !/a\.id === "incline"/.test(rd("engine.js")), "copy: no dead close-grip option and no false Sunday-transfer promise");
+  const anchor = html.match(/const ANCHOR = \{([^}]*)\}/)[1];
+  ok([...E.FRAME_OPTS, ...E.DETAIL_OPTS].every((k) => new RegExp("\\b" + k + ":").test(anchor)), "copy: every frame and detail option has an anchor (no 'Frame: undefined')");
+  const capsOf = (t) => (t.match(/biceps 16, triceps 16, side delts 16/) ? "16/16/16" : null) || ((t.match(/(\d+) \/ (\d+) \/ (\d+) caps \(biceps, triceps, side delts\)/) || []).slice(1).join("/"));
+  eq(capsOf(readme), capsOf(ev), "copy: README and EVIDENCE.md state the same caps");
+  ok(/ES 0\.19, p = 0\.045/.test(ev) && /Rodriguez-Ridao 2020/.test(ev) && /\| 30° rather than steeper \| Partly \| Rodriguez-Ridao/.test(ev), "evidence: Refalo's pooled edge is quoted; the 30° row cites Rodriguez-Ridao, not Saeterbakken");
+  ok(/\| Main lifts stop at RPE 8 \| Judgment/.test(ev) && /Heaselgrave 2019[^\n]*did not differ significantly/.test(ev) && /\| Biceps raised moderately[^|]*\| Partly/.test(ev), "evidence: the RPE-8 stop is judgment; Heaselgrave is Partly");
+  ok(/Baz-Valle 2022, \*J Hum Kinet\* 81:199/.test(ev) && /2–7 days without training/.test(ev) && /0\.6–1\.7% seated/.test(ev), "evidence: Baz-Valle has its journal, Travis its 2-7 rest days, Kinoshita its real numbers");
+  ok(/Coleman 2024/.test(ev) && /Bickel 2011/.test(ev) && /Warneke 2024/.test(ev), "evidence: the deload/trim rules, the peak's dropped specialization and the posture claim have rows");
+}
+
+// ═══ Sunday (ENG-11, ENG-5): when it runs, volume moves to it and its keys are its own ═══
+{
+  const isCurl = (n) => /Curl/i.test(n) && !/Leg Curl|Wrist|Neck|Hammer|Reverse/i.test(n);
+  const isTri = (n) => /(Extension|Pushdown)/i.test(n) && !/Leg|Wrist|Neck/i.test(n);
+  const cnt = (w, wk, sp, f) => { let t = 0; for (let d = 1; d <= 7; d++) for (const b of E.sessionFor(w, wk, d, {}, sp)) if (b.type === "accessory" && f(b.name || "")) t += b.sets; return t; };
+  const ON = { ...E.DEFAULT_SPEC, sundayOn: true };
+  eq([cnt(4, 1, ON, isCurl), cnt(4, 1, ON, isTri), cnt(4, 1, ON, isSideDelt)], [14, 16, 16], "Sunday on (W4): 14 curl, 16 triceps isolation, 16 side-delt sets, inside the 16 caps");
+  let worst = [0, 0, 0];
+  for (const fp of E.FRAME_OPTS) for (const fs of [...E.FRAME_OPTS, "none"]) { if (fs === fp) continue; for (const dt of E.DETAIL_OPTS) {
+    const sp = { framePrimary: fp, frameSecondary: fs, detail: dt, sundayOn: true };
+    for (const w of [4, 7, 13, 19]) for (const wk of [1, 2]) worst = [Math.max(worst[0], cnt(w, wk, sp, isCurl)), Math.max(worst[1], cnt(w, wk, sp, isTri)), Math.max(worst[2], cnt(w, wk, sp, isSideDelt))];
+  } }
+  ok(worst.every((x) => x <= 16), `Sunday on, every spec, Wave 4+: curls, triceps and side delts stay at or under 16 (${worst.join("/")})`);
+  let onlyMoves = true, satKeys = true;
+  for (const w of [4, 5, 7, 10, 13, 16, 19]) for (const wk of [1, 2]) {
+    for (let d = 1; d <= 5; d++) {
+      const off = E.sessionFor(w, wk, d, {}, E.DEFAULT_SPEC).filter((b) => b.type !== "note"), on = E.sessionFor(w, wk, d, {}, ON).filter((b) => b.type !== "note");
+      const k = (a) => a.map((b) => b.pkey || b.name);
+      const runs = E.sundayPlanned(w, wk, ON);
+      if (JSON.stringify(k(off).filter((x) => !runs || !["curlmon", "ohtue"].includes(x))) !== JSON.stringify(k(on))) onlyMoves = false;
+    }
+    const sun = E.sessionFor(w, wk, 7, {}, ON).filter((b) => b.pkey), sat = new Set(E.sessionFor(w, wk, 6, {}, ON).map((b) => b.pkey).filter(Boolean));
+    if (sun.length && sun.some((b) => sat.has(b.pkey))) satKeys = false;
+  }
+  ok(onlyMoves, "Sunday on: in the weeks it runs the weekdays lose exactly Monday's Bayesian curl and Tuesday's overhead extension; otherwise nothing changes");
+  ok(satKeys, "Sunday on (Wave 4+): no Sunday exercise shares a log key with Saturday");
+  ok(E.sessionFor(4, 1, 7, {}, ON).some((b) => b.pkey === "sun-overhead-cable-extension" && b.sets === 2), "Sunday on: its overhead extension runs 2 sets under its own key");
+  ok(/moved to Sunday/.test(JSON.stringify(E.sessionFor(4, 1, 4, {}, ON))) && !/under cap/.test(JSON.stringify(E.sessionFor(3, 1, 4, {}, ON))), "Sunday on: Thursday says what moved; no 'under cap' promise in any wave");
 }
 
 // ═══ every citation the app or the notes make is in EVIDENCE.md ═══

@@ -18,7 +18,12 @@ Sources were cite-checked against PubMed or the journal page on 2026-09-25. The 
 | Plan element | Label | Source | What it supports |
 |---|---|---|---|
 | Wave 3 bases 255 / 295 / 385 (`CALIBRATION`) | Truth | His own Wave 3 sessions | Bench ran ahead of the printed chain; squat and deadlift ran behind it. |
-| RPE is reps in reserve; main lifts stop at RPE 8 | Evidence | Zourdos 2016, *J Strength Cond Res* 30(1):267 · Helms 2016, *Strength Cond J* 38(4):42 | The RIR-based RPE scale is valid for resistance training. |
+| RPE is reps in reserve | Evidence | Zourdos 2016, *J Strength Cond Res* 30(1):267 · Helms 2016, *Strength Cond J* 38(4):42 | The RIR-based RPE scale is valid for resistance training. |
+| Main lifts stop at RPE 8 | Judgment | — | The papers above validate the scale, not the stopping point. RPE 8 keeps the competition lifts as practice with about two reps in reserve. |
+| 3:1 loading-to-deload waves, week-3 trims, Cycle 5 cuts | Judgment | Coleman 2024, *PeerJ* 12:e16777 (closest evidence) | In trained lifters a one-week break mid-programme left growth unchanged and cost some lower-body strength. No study tests these exact rules; they are the program's. |
+| Specialization dropped in the peak (Cycle 6) | Partly | Bickel 2011, *Med Sci Sports Exerc* 43(7):1177 | A third, or even a ninth, of the training dose kept the hypertrophy for 32 weeks. Caveat: novices after 16 weeks of training. |
+| 3/4/5 is the goal, not the summer-2027 projection | Partly | Latella 2024 (below) · the app's own projection | On the small step the Wave 12 test (Jun 18, 2027) starts from bases of 277.5 / 340 / 430 (bench / squat / deadlift), with default thirds near 285 / 345 / 430; with every gate clean, 300 / 385 / 475. The bases reach 315 / 405 / 495 around Waves 25–27 (2028). First-year competitive gains run about 7.5–12.5%. |
+| **Not adopted:** a second deadlift or hinge day | Judgment | Pelland 2026 (below) | Frequency helped strength in the meta-regression, but all hinge work stays on Friday to protect recovery before the 2027 meet. Revisit after it. |
 | Strength chart: estimated max from rated singles (RPE chart), Epley up to 10 reps otherwise; competition sets only | Partly | RTS chart (above) · Epley formula | Epley is a rough estimate and gets worse past about 10 reps, so the chart ignores those sets. Counting only the competition lift is a bug fix: leg press used to count as the squat. |
 | %1RM for a single at each RPE (`RPE_PCT_1`: 7 = 89.2%, 8 = 92.2%, 9 = 95.5%, 10 = 100%) | Partly | RTS (Tuchscherer) coaching chart | This is a coaching chart, not a study. It is used because the RIR scale above is validated. |
 | Autoregulation (Rules A and C: loads follow how the sets felt) | Evidence | Helms 2018, *Front Physiol* 9:247 · Graham & Cleather 2021, *J Strength Cond Res* 35(9):2451 · Larsen 2021, *PeerJ* 9:e10663 (systematic review) | RPE-based or RIR-based loading matched or beat fixed percentages for strength. Helms 2018 found a small edge that was not significant. |
@@ -40,7 +45,7 @@ Sources were cite-checked against PubMed or the journal page on 2026-09-25. The 
 | Red-day sets and the deload's paused squat, paused bench and OHP never move the next load | Truth | — | A 60% triple rated Easy raised the next week's back-offs 5%; an Easy week-3 rating raised the deload. |
 | Wednesday's no-pause squat growth sets: 72.3% of the week's planned e1RM (8 reps at about RPE 7.5) from Wave 4 | Partly | RTS chart (above) | They used the paused bar and ran near RPE 6 under a 7.5–8 label. |
 | Deload warm-ups stop under the light triple (no indicator or bridge single) from Wave 4 | Truth | — | The deload warmed up to singles at 78–81% of base before a 65% triple. |
-| Peak taper: volume near zero, intensity held, last heavy touch 4 days out, then rest | Evidence | Travis 2020, *Sports* 8(9):125 | Cut volume 30–70% (30–50% looks best) and keep intensity at 85% or more over a 1–2 week step taper. The review does not fix the day of the last heavy session, so 4 days out is a judgment. |
+| Peak taper: volume cut, intensity held, last heavy touch 4 days out, then rest | Evidence | Travis 2020, *Sports* 8(9):125 | Cut volume 30–70% (30–50% trended better for squat and bench) and keep intensity at 85% or more over a 1–2 week taper, then 2–7 days without training. Monday's last touch and the Wednesday–Thursday rest sit inside that. The opener week drops accessories entirely (a cut past 70%, the edge Travis found less favourable); it stays as a judgment and is reviewed after the first peak's ratings. |
 
 ## Logging
 
@@ -72,10 +77,13 @@ Sources were cite-checked against PubMed or the journal page on 2026-09-25. The 
 | Side delts 11 sets a week in Waves 1–3, 13 from Wave 4; caps unchanged | Partly | Schoenfeld 2017, *J Sports Sci* 35(11):1073 · Pelland 2026, *Sports Med* 56(2):481 (online December 2025) | More weekly sets produce more growth, with diminishing returns. Neither paper sets a ceiling, so the exact counts and the 16 / 16 / 16 caps (biceps, triceps, side delts) are judgment. |
 | Reverse pec deck with a neutral grip | Partly | Schoenfeld 2013, *J Strength Cond Res* 27(10):2644 | Head to head in 19 trained men, a neutral grip gave more posterior-delt (p = 0.046) and infraspinatus activity than a pronated grip. EMG, not growth. (This row used to say no head-to-head study existed; that was wrong.) |
 | Face pull rep steps 12 / 15 / 20 | Judgment | — | This keeps the face pull in a loadable range instead of 25-rep sets. |
-| Only the anchor isolation takes a set close to failure; leg press, hammer curl and pushdown stop at RPE 8 | Evidence | Refalo 2023, *Sports Med* 53(3):649 · Robinson 2024, *Sports Med* 54(9):2209 | Training to failure adds no reliable growth over stopping just short (ES 0.12, not significant). Growth rises as sets end closer to failure. So the plan uses one near-failure set per muscle and keeps hard compounds away from failure. |
+| Only the anchor isolation takes a set close to failure; leg press, hammer curl and pushdown stop at RPE 8 | Evidence | Refalo 2023, *Sports Med* 53(3):649 · Robinson 2024, *Sports Med* 54(9):2209 | Across all failure definitions, training to failure gave a trivial edge (ES 0.19, p = 0.045); to strict momentary failure, none (ES 0.12, p = 0.34). Growth rises as sets end closer to failure. So the plan uses one near-failure set per muscle and keeps hard compounds away from failure. |
+| Posture is trained by the rows, face pulls and Y-raises; the cooldown stretches are for comfort and range | Partly | Warneke 2024, *Sports Med Open* 10:65 | Strengthening improved thoracic and cervical posture (d = −1.04); stretching did not. The cooldown no longer calls a stretch a "fix". |
+| Neck curl: direct work for the neck | Partly | Conley 1997 (below) | Twelve weeks of heavy compound lifting did not grow the neck; adding direct neck work did. The old "fastest-growing muscle" line had no source. |
+| Stomach vacuum is a zero-clock habit, not a proven waist shrinker | Judgment | — | No trial shows it narrows the waist. The obliques stay unloaded by choice. |
 | Seated leg curl over lying | Evidence | Maeo 2021, *Med Sci Sports Exerc* 53(4):825 | Whole hamstrings +14% vs +9%. |
-| Leg extension reclined for the rectus femoris | Evidence | Larsen 2025, *J Sports Sci* 43(2):210 | A reclined hip (40°) grew the rectus femoris more than 90°. Earlier text credited this to Maeo; that was wrong. |
-| Straight-knee calf work for the gastrocnemius | Evidence | Kinoshita 2023, *Front Physiol* 14:1272106 | Standing raises grew the gastrocnemius +9–12% vs +1–2% seated. The soleus grew similarly either way. |
+| Leg extension reclined for the rectus femoris | Evidence | Larsen 2025, *J Sports Sci* 43(2):210 | A reclined hip (40°) grew the rectus femoris more than 90°. Caveat: 22 untrained men. Earlier text credited this to Maeo; that was wrong. |
+| Straight-knee calf work for the gastrocnemius | Evidence | Kinoshita 2023, *Front Physiol* 14:1272106 | Standing raises grew the gastrocnemius +9–12% vs +0.6–1.7% seated. The soleus grew similarly either way. Caveat: 14 untrained adults. |
 | Lengthened partials on anchor sets | Evidence | Wolf 2023, *Int J Strength Cond* 3(1) · Pedrosa 2022, *Eur J Sport Sci* 22(8):1250 · Wolf 2025, *PeerJ* 13:e18904 | Partials at long muscle lengths grew muscle as well as full range, or better. |
 
 ## Arm specialization (Wave 4 on)
@@ -85,13 +93,13 @@ His stated priority is arms that are slightly disproportionate to the rest of hi
 | Plan element | Label | Source | What it supports |
 |---|---|---|---|
 | More weekly sets for the priority muscle | Evidence | Pelland 2026 (above) · Schoenfeld 2017 (above) | Hypertrophy keeps rising with weekly sets, with diminishing returns. Compound sets count about half (fractional counting fit best). |
-| Biceps raised moderately (8 to 11 curl sets, about 17 direct elbow-flexor sets with hammers and reverse curls) | Evidence | Heaselgrave 2019, *Int J Sports Physiol Perform* 14(3):360 | In trained men, 9, 18 and 27 weekly biceps sets gave +4.3%, +9.5% and +5.4% thickness: no extra gain past about 18. |
-| Triceps raised more (11 to 15 isolation sets) | Evidence | Baz-Valle 2022 (systematic review of trained lifters, excludes retracted studies) · Brigatto 2022, *J Strength Cond Res* 36(1):22 | Triceps responded to higher weekly volume in trained lifters; biceps did not separate as clearly. |
+| Biceps raised moderately (8 to 11 curl sets, about 17 direct elbow-flexor sets with hammers and reverse curls) | Partly | Heaselgrave 2019, *Int J Sports Physiol Perform* 14(3):360 | In trained men, 9, 18 and 27 weekly biceps sets gave +4.3%, +9.5% and +5.4% thickness, but the groups did not differ significantly (and the 9-set group trained once a week). "No extra gain past about 18" reads the point estimates only. |
+| Triceps raised more (11 to 15 isolation sets) | Evidence | Baz-Valle 2022, *J Hum Kinet* 81:199 (systematic review of trained men; retracted studies excluded) · Brigatto 2022, *J Strength Cond Res* 36(1):22 | Triceps favoured more than 20 weekly sets (p = 0.01); biceps (p = 0.59) and quads did not separate. Brigatto: 32 weekly sets grew the triceps more than 16 (n = 9 a group). |
 | The added triceps work is overhead | Evidence | Maeo 2023 (above) · Brandão 2020, *J Strength Cond Res* 34(5):1254 | Overhead beat pushdowns for the long head and the whole triceps. Bench-only training barely grew the long head, so pressing does not replace it. |
-| No added triceps on Monday; Tuesday's comes after all pressing | Evidence | Ferreira 2017, *Muscle Nerve* 56(5):963 · Soares 2016, *J Sports Sci Med* 15(1):111 | Triceps work can stay reduced for up to 48 h; a pushdown before bench cut bench volume about 22%. |
+| No added triceps on Monday; Tuesday's comes after all pressing | Partly | Ferreira 2017, *Muscle Nerve* 56(5):963 · Soares 2016, *J Sports Sci Med* 15(1):111 | Triceps work can stay reduced for up to 48 h. Pre-exhausting the triceps cut bench reps in one 10RM session (n = 14); the abstract gives no "22%" figure, so the app no longer quotes one. |
 | No added triceps on Thursday | Partly | Remmert 2025 (preprint, not peer reviewed) | Past about 11 fractional sets per muscle per session, more sets in that session stop showing a detectable gain. Thursday is already there. |
 | Curls 48 h apart (Mon, Wed, Sat) | Partly | Soares 2015, *J Strength Cond Res* 29(9):2594 | Preacher-curl torque was still 8% down at 24 h in trained men. |
-| Added sets stop at RPE 8; still one failure set per muscle per day | Evidence | Refalo 2023 (above) · Vasconcelos 2026, *Muscles* 5(3):61 · Hermann 2025, *Med Sci Sports Exerc* 57(9):2021 | In trained lifters, preacher curls to failure grew no more than stopping 1–3 reps short. |
+| Added sets stop at RPE 8; still one failure set per muscle per day | Partly | Refalo 2023 (above) · Vasconcelos 2026, *Muscles* 5(3):61 · Hermann 2025, *Med Sci Sports Exerc* 57(9):2021 | In trained lifters, preacher curls to failure grew no more than stopping 1–3 reps short (Vasconcelos). Hermann (one set per exercise, failure vs 2 in reserve) leaned slightly toward failure with modest differences, one reason the plan keeps one failure set per muscle. |
 | First two weeks of a new arm exercise at RPE 7 | Judgment | McHugh 2003, *Scand J Med Sci Sports* 13(2):88 | The first exposures to a new exercise cause the most soreness; the protection builds fast. The two-week ramp is a judgment. |
 | Nothing else is cut to pay for it | Judgment | — | The block fits the 90-minute slot (the longest session still estimates under 85 min), so the trade is recovery, not time. Waves 1–3 stay as they were run. |
 
@@ -102,7 +110,7 @@ From Wave 4, Thursday's two touch-and-go "growth" bench sets move to a 30° incl
 | Plan element | Label | Source | What it supports |
 |---|---|---|---|
 | Incline pressing for the upper (clavicular) chest | Partly | Chaves 2020, *Int J Exerc Sci* (Western Kentucky University, open access) | 47 men, 8 weeks: incline-only pressing grew the upper pec clearly more than flat or mixed pressing. Caveat: untrained men, one session a week. |
-| 30° rather than steeper | Partly | Saeterbakken 2017, *J Hum Kinet* 57:61 · existing 30° cue | Steeper inclines shift work to the front delt; 30° is the cue the app already uses. The exact angle is partly judgment. |
+| 30° rather than steeper | Partly | Rodriguez-Ridao 2020, *Int J Environ Res Public Health* 17(19):7339 · existing 30° cue | Upper-pec EMG peaked at 30°; front-delt EMG rose significantly above 45°. EMG, not growth. (Saeterbakken 2017, cited here before, found no pec or front-delt difference between bench angles; it did not support the row.) |
 | Growth sets moved, competition sets kept | Judgment | — | The paused sets carry the meet specificity; the touch-and-go sets were there for size, so they go where the size is wanted. |
 
 ## Upper back, traps and 3D shoulders (Wave 4 on)
@@ -174,7 +182,7 @@ Direct sets a week, Weeks 1–2, before → after: upper traps 1 → 6, rear del
 
 1. Rule D cut-offs, and the choice of the program's own model over "clean only at RPE 7".
 2. Rule A/C ±5% and one-increment clamps; the 14-day window for Rule C.
-3. Small-step projection default. It is above Latella's average for squat and deadlift, and gates correct it every wave.
+3. Small-step projection default. It is above Latella's average for squat and deadlift, and gates correct it every wave. Main lifts stop at RPE 8. The 3:1 deload, week-3 trims and Cycle 5 cuts; the opener week's full accessory cut; one hinge day a week.
 4. Post-test base 96%; default test target = estimated max × 1.02 (taper allowance); the taper's last heavy touch 4 days out.
 5. Tracked-lift clamp; chin-up anchored to bench.
 6. Exact weekly set counts and caps, including the arm block's 11 curl and 15 triceps sets and the RPE 7 ramp; the upper-back block's 6 trap, 9 rear-delt and 13 side-delt sets, its seeds, the per-head reading of the one-failure-set rule and the Wave 4+ budget; face pull rep steps.

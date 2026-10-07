@@ -3,13 +3,13 @@
 CYCLE BASES: bench 255 · squat 295 · deadlift 385
 TRACKED: incline 185 → 225 · chin-up +40 → +90 · dip +40 → +100 · RDL 280 → 315
 
-ARMS ARE THE CALLING CARD. 13 in → 15 in. Chin-up drives the biceps side,
+ARMS ARE THE CALLING CARD. 13 in → 16 in. Chin-up drives the biceps side,
 dip the triceps side, and TRICEPS ARE ~55% OF UPPER-ARM MUSCLE —
 so they carry the larger share, most of it overhead and at length.
 Chin-up, dip, RDL and incline all climb like the big three do.
 
 v34 — EXERCISE AUDIT. Paused work is now half specificity, half real 6–8-rep growth sets.
-Anchors finish with lengthened partials. Priority muscles come first. Dips upright.
+Arm and leg anchors finish with lengthened partials. Priority muscles come first. Dips upright.
 v32 — FEWER SETS, REAL RESTS. ~18–22 working sets a day, Sunday is REST.
 One failure set per muscle per day (marked ←); everything else stops at RPE 8.
 Compounds get 3 min rest, isolation 90 s. Filler sets ride inside main-lift rests.
@@ -32,11 +32,11 @@ Mon — Comp Squat + Legs
   Hanging Leg Raise: BW × 10 × 3 @ RPE 8–9  ← last set RPE 9–10
   Low-to-High Cable Fly: 35 × 12 × 4 @ RPE 8–9  ← last set RPE 9–10
   Machine / DB Shrug: 170 × 10 × 1 @ RPE 8–9
-  Cooldown — 5 min — POSTURE: couch stretch 2×30s/side (hip flexors = the anterior tilt fix) · ankle rocks 15/side · dead hang 30s · easy breathing, no bouncing
+  Cooldown — 5 min — MOBILITY: couch stretch 2×30s/side (hip flexors) · ankle rocks 15/side · dead hang 30s · easy breathing, no bouncing
 
 Tue — Comp Bench + Back
   Bar × 15 · 95 × 8 · 135 × 5 · 155 × 3 · 165 × 1 · indicator — film · 200 × 1 · bridge
-  Band Pull-Apart: BW × 20 × 2 @ RPE 7
+  Band Pull-Apart: BW × 20 × 2 @ RPE 7  (primer — before the first press, warm-up effort)
   Bench — top single: 215 × 1 × 1 @ RPE 7
   Bench — back-offs: 185 × 5 × 5 @ RPE 6.5–7
   Incline Bench — top set: 145 × 5 × 1 @ RPE 7
@@ -45,7 +45,7 @@ Tue — Comp Bench + Back
   Leaning DB Lateral Raise: 22.5 × 10 × 4 @ RPE 8–9 · per hand  ← last set RPE 9–10, then 3–5 lengthened partials
   Reverse Pec Deck: 120 × 12 × 3 @ RPE 8–9
   Neck Curl: 7.5 × 12 × 2 @ RPE 8–9  (filler — superset into rests)
-  Cooldown — 5 min — POSTURE: doorway pec stretch 2×30s (tight pecs pull you forward) · cross-body delt 30s/side · wall slides ×10 · easy breathing, no bouncing
+  Cooldown — 5 min — MOBILITY: doorway pec stretch 2×30s · cross-body delt 30s/side · wall slides ×10 · easy breathing, no bouncing
 
 Wed — Paused Squat + Arms
   Bar × 10 · 95 × 5 · 135 × 5 · 175 × 3
@@ -73,7 +73,7 @@ Thu — Paused Bench + OHP
   Prone Y-Raise: 7.5 × 12 × 2 @ RPE 8–9 · per hand  (filler — superset into rests)
   Wrist Extension: 15 × 15 × 3 @ RPE 8–9 · per hand  (filler — superset into rests)
   Neck Extension: 12.5 × 12 × 2 @ RPE 8–9  (filler — superset into rests)
-  Cooldown — 5 min — POSTURE: thoracic extension over bench 45s · lat hang 45s · chin tucks ×10 (the tech-neck fix) · easy breathing, no bouncing
+  Cooldown — 5 min — MOBILITY: thoracic extension over bench 45s · lat hang 45s · chin tucks ×10 · easy breathing, no bouncing
 
 Fri — Comp Deadlift + Back
   135 × 5 · 225 × 3 · 275 × 2 · 300 × 1 · indicator — film · 310 × 1 · bridge
@@ -118,11 +118,11 @@ Mon — Comp Squat + Legs
   Hanging Leg Raise: BW × 12 × 3 @ RPE 8–9  ← last set RPE 9–10
   Low-to-High Cable Fly: 35 × 15 × 4 @ RPE 8–9  ← last set RPE 9–10
   Machine / DB Shrug: 170 × 12 × 1 @ RPE 8–9
-  Cooldown — 5 min — POSTURE: couch stretch 2×30s/side (hip flexors = the anterior tilt fix) · ankle rocks 15/side · dead hang 30s · easy breathing, no bouncing
+  Cooldown — 5 min — MOBILITY: couch stretch 2×30s/side (hip flexors) · ankle rocks 15/side · dead hang 30s · easy breathing, no bouncing
 
 Tue — Comp Bench + Back
   Bar × 15 · 95 × 8 · 135 × 5 · 155 × 3 · 165 × 1 · indicator — film · 200 × 1 · bridge
-  Band Pull-Apart: BW × 25 × 2 @ RPE 7
+  Band Pull-Apart: BW × 25 × 2 @ RPE 7  (primer — before the first press, warm-up effort)
   Bench — top single: 220 × 1 × 1 @ RPE 7.5
   Bench — back-offs: 195 × 4 × 5 @ RPE 7–7.5
   Incline Bench — top set: 150 × 4 × 1 @ RPE 7.5
@@ -131,7 +131,7 @@ Tue — Comp Bench + Back
   Leaning DB Lateral Raise: 22.5 × 12 × 4 @ RPE 8–9 · per hand  ← last set RPE 9–10, then 3–5 lengthened partials
   Reverse Pec Deck: 120 × 15 × 3 @ RPE 8–9
   Neck Curl: 7.5 × 15 × 2 @ RPE 8–9  (filler — superset into rests)
-  Cooldown — 5 min — POSTURE: doorway pec stretch 2×30s (tight pecs pull you forward) · cross-body delt 30s/side · wall slides ×10 · easy breathing, no bouncing
+  Cooldown — 5 min — MOBILITY: doorway pec stretch 2×30s · cross-body delt 30s/side · wall slides ×10 · easy breathing, no bouncing
 
 Wed — Paused Squat + Arms
   Bar × 10 · 95 × 5 · 135 × 5 · 175 × 3
@@ -159,7 +159,7 @@ Thu — Paused Bench + OHP
   Prone Y-Raise: 7.5 × 15 × 2 @ RPE 8–9 · per hand  (filler — superset into rests)
   Wrist Extension: 15 × 20 × 3 @ RPE 8–9 · per hand  (filler — superset into rests)
   Neck Extension: 12.5 × 15 × 2 @ RPE 8–9  (filler — superset into rests)
-  Cooldown — 5 min — POSTURE: thoracic extension over bench 45s · lat hang 45s · chin tucks ×10 (the tech-neck fix) · easy breathing, no bouncing
+  Cooldown — 5 min — MOBILITY: thoracic extension over bench 45s · lat hang 45s · chin tucks ×10 · easy breathing, no bouncing
 
 Fri — Comp Deadlift + Back
   135 × 5 · 225 × 3 · 275 × 2 · 300 × 1 · indicator — film · 310 × 1 · bridge
@@ -204,11 +204,11 @@ Mon — Comp Squat + Legs
   Hanging Leg Raise: BW × 10 × 3 @ RPE 8
   Low-to-High Cable Fly: 35 × 12 × 3 @ RPE 8
   Machine / DB Shrug: 170 × 10 × 1 @ RPE 8
-  Cooldown — 5 min — POSTURE: couch stretch 2×30s/side (hip flexors = the anterior tilt fix) · ankle rocks 15/side · dead hang 30s · easy breathing, no bouncing
+  Cooldown — 5 min — MOBILITY: couch stretch 2×30s/side (hip flexors) · ankle rocks 15/side · dead hang 30s · easy breathing, no bouncing
 
 Tue — Comp Bench + Back
   Bar × 15 · 95 × 8 · 135 × 5 · 155 × 3 · 165 × 1 · indicator — film · 200 × 1 · bridge
-  Band Pull-Apart: BW × 20 × 2 @ RPE 7
+  Band Pull-Apart: BW × 20 × 2 @ RPE 7  (primer — before the first press, warm-up effort)
   Bench — top single: 230 × 1 × 1 @ RPE 8
   Bench — back-offs: 205 × 3 × 6 @ RPE 7.5–8
   Incline Bench — top set: 160 × 3 × 1 @ RPE 8
@@ -217,7 +217,7 @@ Tue — Comp Bench + Back
   Leaning DB Lateral Raise: 22.5 × 10 × 3 @ RPE 8 · per hand
   Reverse Pec Deck: 120 × 12 × 2 @ RPE 8
   Neck Curl: 7.5 × 12 × 2 @ RPE 8  (filler — superset into rests)
-  Cooldown — 5 min — POSTURE: doorway pec stretch 2×30s (tight pecs pull you forward) · cross-body delt 30s/side · wall slides ×10 · easy breathing, no bouncing
+  Cooldown — 5 min — MOBILITY: doorway pec stretch 2×30s · cross-body delt 30s/side · wall slides ×10 · easy breathing, no bouncing
 
 Wed — Paused Squat + Arms
   Bar × 10 · 95 × 5 · 135 × 5 · 175 × 3
@@ -245,7 +245,7 @@ Thu — Paused Bench + OHP
   Prone Y-Raise: 7.5 × 12 × 2 @ RPE 8 · per hand  (filler — superset into rests)
   Wrist Extension: 15 × 15 × 2 @ RPE 8 · per hand  (filler — superset into rests)
   Neck Extension: 12.5 × 12 × 2 @ RPE 8  (filler — superset into rests)
-  Cooldown — 5 min — POSTURE: thoracic extension over bench 45s · lat hang 45s · chin tucks ×10 (the tech-neck fix) · easy breathing, no bouncing
+  Cooldown — 5 min — MOBILITY: thoracic extension over bench 45s · lat hang 45s · chin tucks ×10 · easy breathing, no bouncing
 
 Fri — Comp Deadlift + Back
   135 × 5 · 225 × 3 · 275 × 2 · 300 × 1 · indicator — film · 310 × 1 · bridge
@@ -287,18 +287,18 @@ Mon — Comp Squat + Legs
   Hanging Leg Raise: BW × 10 × 2 @ RPE 6–7
   Low-to-High Cable Fly: 25 × 12 × 2 @ RPE 6–7
   Machine / DB Shrug: 120 × 10 × 2 @ RPE 6–7
-  Cooldown — 5 min — POSTURE: couch stretch 2×30s/side (hip flexors = the anterior tilt fix) · ankle rocks 15/side · dead hang 30s · easy breathing, no bouncing
+  Cooldown — 5 min — MOBILITY: couch stretch 2×30s/side (hip flexors) · ankle rocks 15/side · dead hang 30s · easy breathing, no bouncing
 
 Tue — Comp Bench + Back
   Bar × 15 · 95 × 8 · 135 × 5 · 155 × 3 · 165 × 1 · indicator — film · 200 × 1 · bridge
-  Band Pull-Apart: BW × 20 × 2 @ RPE 7
+  Band Pull-Apart: BW × 20 × 2 @ RPE 7  (primer — before the first press, warm-up effort)
   Bench — light triple: 165 × 3 × 3 @ RPE 5–6
   Incline Bench — light: 115 × 6 × 3 @ RPE 5–6
   Chest-Supported DB Row: 45 × 8 × 2 @ RPE 6–7 · per hand
   Leaning DB Lateral Raise: 15 × 10 × 2 @ RPE 6–7 · per hand
   Reverse Pec Deck: 85 × 12 × 2 @ RPE 6–7
   Neck Curl: 5 × 12 × 2 @ RPE 6–7  (filler — superset into rests)
-  Cooldown — 5 min — POSTURE: doorway pec stretch 2×30s (tight pecs pull you forward) · cross-body delt 30s/side · wall slides ×10 · easy breathing, no bouncing
+  Cooldown — 5 min — MOBILITY: doorway pec stretch 2×30s · cross-body delt 30s/side · wall slides ×10 · easy breathing, no bouncing
 
 Wed — Paused Squat + Arms
   Bar × 10 · 95 × 5 · 135 × 5 · 175 × 3
@@ -323,7 +323,7 @@ Thu — Paused Bench + OHP
   Prone Y-Raise: 5 × 12 × 2 @ RPE 6–7 · per hand  (filler — superset into rests)
   Wrist Extension: 10 × 15 × 2 @ RPE 6–7 · per hand  (filler — superset into rests)
   Neck Extension: 10 × 12 × 2 @ RPE 6–7  (filler — superset into rests)
-  Cooldown — 5 min — POSTURE: thoracic extension over bench 45s · lat hang 45s · chin tucks ×10 (the tech-neck fix) · easy breathing, no bouncing
+  Cooldown — 5 min — MOBILITY: thoracic extension over bench 45s · lat hang 45s · chin tucks ×10 · easy breathing, no bouncing
 
 Fri — Comp Deadlift + Back
   135 × 5 · 225 × 3 · 275 × 2 · 300 × 1 · indicator — film · 310 × 1 · bridge

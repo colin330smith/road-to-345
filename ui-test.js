@@ -354,6 +354,16 @@ T["nutri: no trim on unknown sleep or into Cycles 5-6"] = async (b) => {
   await ctx.close();
 };
 
+// ── B6 copy ──
+T["copy: the Specialize sheet names every anchor and promises nothing false"] = async (b) => {
+  const { ctx, page } = await open(b, { time: "2026-10-17T07:05:00", state: BASE });
+  await page.evaluate(() => specSheet());
+  const t = await page.$eval("#sheet", (e) => e.innerText);
+  ok(!/undefined/.test(t) && /Incline DB curl \+ overhead cable extension/.test(t), "Specialize: the arms frame has an anchor, no 'undefined'");
+  ok(!/Close-Grip|transfer into it/.test(t) && /Monday's Bayesian curl and Tuesday's overhead extension move to it/.test(t), "Specialize: no close-grip option; the Sunday note says what moves");
+  await ctx.close();
+};
+
 (async () => {
   const browser = await pw.chromium.launch();
   const only = process.argv[2];

@@ -300,7 +300,7 @@ console.log("\n── frame requirements ──");
   const isTri = (n) => /(Extension|Pushdown)/i.test(n) && !/Leg|Wrist|Neck/i.test(n);
   const isBi = (n) => /Curl/i.test(n) && !/Leg Curl|Neck|Wrist/i.test(n);
   const cnt = (re) => { let t = 0; for (let d = 1; d <= 7; d++) for (const b of E.sessionFor(1, 1, d, {}, E.DEFAULT_SPEC)) if (b.type === "accessory" && re.test(b.name)) t += b.sets; return t; };
-  ok(cnt(/Shrug/) >= 1, "frame: 1+ direct trap set weekly (traps declared dialed; deadlifts, RDLs and chins carry the rest)");
+  ok(cnt(/Shrug/) >= 1, "frame: Waves 1-3 ran 1+ direct trap set a week (history; from Wave 4 the traps are a declared goal, see the upper-back block)");
   { let sd = 0; for (let d = 1; d <= 7; d++) for (const b of E.sessionFor(1, 1, d, {}, E.DEFAULT_SPEC)) if (b.type === "accessory" && isSideDelt(b.name)) sd += b.sets; ok(sd >= 9, "frame: 9+ side-delt sets weekly"); }
   ok(cnt(/Low-to-High/) + E.sessionFor(1, 1, 2, {}, E.DEFAULT_SPEC).filter((b) => /Incline Bench/.test(b.name || "")).reduce((n, b) => n + b.sets, 0) >= 8, "frame: 8+ upper-chest sets on Mon+Tue alone (barbell incline + fly)");
   let bi = 0, tri = 0;
@@ -737,6 +737,28 @@ console.log("\n── frame requirements ──");
   const missing = [...need].filter((k) => !lib.has(k));
   eq(missing.length, 0, `library: every emitted moveId has a demo (${missing.join(", ") || "all covered"})`);
 }
+// ═══ movement library: one card per key, every card reachable, every block opens its own card ═══
+{
+  const html = require("fs").readFileSync(require("path").join(__dirname, "app-shell.html"), "utf8");
+  const cards = [...html.matchAll(/^\s{2}(\w+):\{name:"([^"]+)",grp:"([^"]+)"/gm)];
+  const ids = cards.map((m) => m[1]);
+  eq(ids.length, new Set(ids).size, "library: no duplicate card keys (proneY was defined twice; the later one silently won)");
+  const G = JSON.parse(html.match(/for \(const grp of (\[[^\]]+\])\)/)[1]);
+  ok(cards.every((m) => G.includes(m[3])), "library: every card's group is listed on the Moves tab (Shoulders, Core and Posture cards were invisible)");
+  const need = new Set();
+  for (const fp of E.FRAME_OPTS) for (const dt of E.DETAIL_OPTS) for (const sun of [false, true]) {
+    const spec = { framePrimary: fp, frameSecondary: "latwidth", detail: dt, sundayOn: sun, secondaryPress: "incline" };
+    for (const w of [1, 4, 5, 6, 7, 12, 19]) for (let wk = 1; wk <= 4; wk++) for (let d = 1; d <= 7; d++)
+      for (const b of E.sessionFor(w, wk, d, {}, spec)) if (b.moveId) need.add(b.moveId);
+  }
+  eq([...need].filter((k) => !ids.includes(k)), [], "library: every moveId any spec emits has a card");
+  const mv = (w, d, re) => (E.sessionFor(w, 1, d, {}, E.DEFAULT_SPEC).find((b) => re.test(b.name || "")) || {}).moveId;
+  eq([mv(4, 6, /Y-Raise/), mv(4, 6, /Bayesian/), mv(4, 2, /Leaning/), mv(4, 3, /Cable Lateral/), mv(4, 6, /Rear-Delt Raise/), mv(4, 6, /Y-Shrug/), mv(4, 5, /High-Elbow/), mv(4, 2, /External Rotation/)],
+    ["xbody", "curlmon", "leanlat", "cablelat", "rdraise", "yshrug", "rowhi", "bander"], "library: each block opens its own card");
+  const sunMv = E.sessionFor(4, 1, 7, {}, { ...E.DEFAULT_SPEC, sundayOn: true }).filter((b) => b.type === "accessory");
+  ok(sunMv.filter((b) => /Preacher/.test(b.name)).every((b) => b.moveId === "preacher") && sunMv.filter((b) => /Bayesian/.test(b.name)).every((b) => b.moveId === "curlmon"), "library: Sunday preacher and Bayesian curls open their own cards");
+  ok(/^\s{2}rowfri:\{name:"Chest-Supported Machine \/ Cable Row"/m.test(html), "library: the Friday machine row card carries the row's real name");
+}
 
 
 // ═══ nutrition module ═══
@@ -919,7 +941,8 @@ console.log("\n── frame requirements ──");
   ok(/1\.5x/.test(E.ACC.find((a) => a.id === "ohthu").cap) && /1\.4x/.test(E.ACC.find((a) => a.id === "ohthu").cap), "evidence: Maeo 2023 numbers are long head 1.5x, whole triceps 1.4x");
   const week = (wv, wk) => { const out = []; for (let d = 1; d <= 7; d++) for (const b of E.sessionFor(wv, wk, d, {}, E.DEFAULT_SPEC)) out.push(b); return out; };
   const sd = week(4, 1).filter((b) => b.type === "accessory" && isSideDelt(b.name)).reduce((n, b) => n + b.sets, 0);
-  eq(sd, 11, "evidence: 11 side-delt sets a week (lattue 4 + latwed 4 + Saturday 3)");
+  eq(sd, 13, "evidence: 13 side-delt sets a week from Wave 4 (lattue 4 + latwed 4 + Saturday Y-raise 5)");
+  eq(week(3, 1).filter((b) => b.type === "accessory" && isSideDelt(b.name)).reduce((n, b) => n + b.sets, 0), 11, "evidence: Waves 1-3 ran 11 side-delt sets a week (history)");
   ok(sd <= 16, "side delts stay inside the 16 cap");
   const rp = E.ACC.find((a) => a.id === "revpec");
   ok(rp.sets === 3 && /NEUTRAL GRIP/.test(rp.cap), "evidence: reverse pec deck 3 sets, neutral grip");
@@ -1118,6 +1141,177 @@ eq(E.sessionFor(2, 1, 1, {}, E.DEFAULT_SPEC).find((b) => b.type === "warmup").ro
   ok(week(4, 4).filter((b) => b.pkey === "curlmon" || b.pkey === "ohtue").every((b) => b.light && b.sets === 2), "arms: week 4 deloads them");
   ok(!week(6, 1).some((b) => b.pkey === "curlmon" && b.sets > 2), "arms: the peak cuts them back with everything else");
   eq(E.accState(E.ACC.find((a) => a.id === "curlmon"), 4).w, 25, "arms: new exercises start Wave 4 on their seed rung");
+}
+
+// ═══ upper back, traps and 3D shoulders (Wave 4+): EVIDENCE.md "Upper back, traps and 3D shoulders" ═══
+{
+  // (0) HISTORY. Every Wave 1-3 prescription, for every spec, is frozen at v61. Text and library
+  // links (moveId, cap, note, arch) may be corrected; loads, reps, sets, RPEs and keys may not.
+  const crypto = require("crypto");
+  const SKIP = new Set(["moveId", "cap", "note", "arch"]);
+  const canon = (x) => Array.isArray(x) ? "[" + x.map(canon).join(",") + "]"
+    : x && typeof x === "object" ? "{" + Object.keys(x).sort().filter((k) => x[k] !== undefined && !SKIP.has(k)).map((k) => JSON.stringify(k) + ":" + canon(x[k])).join(",") + "}"
+    : JSON.stringify(x);
+  const hh = crypto.createHash("sha256");
+  for (const fp of ["shoulders", "upperchest", "latwidth", "upperback", "traps", "arms"])
+    for (const fs of ["shoulders", "upperchest", "latwidth", "upperback", "traps", "arms", "none"])
+      for (const dt of ["triceps", "biceps", "brachialis"]) for (const sun of [false, true]) {
+        const spec = { framePrimary: fp, frameSecondary: fs, detail: dt, sundayOn: sun, secondaryPress: "incline" };
+        for (let w = 1; w <= 3; w++) for (let wk = 1; wk <= 4; wk++) for (let d = 1; d <= 7; d++) hh.update(canon(E.sessionFor(w, wk, d, {}, spec)) + "\n");
+      }
+  eq(hh.digest("hex"), "cb2505ffd70236f4fa21bf1d8c0c4acff311c37cbd1fe77db7a51e2e6d707986", "history: every Wave 1-3 prescription for every spec is unchanged since v61");
+  { // the same with a logged history: one-tap logs for Waves 1-3 with mixed ratings and off-plan loads
+    const ix = {}, ctx = { index: ix, offsetWeeks: 0 }, RATES = ["O", "E", "H"];
+    for (let wv = 1; wv <= 3; wv++) for (let wk = 1; wk <= 4; wk++) for (let d = 1; d <= 7; d++) {
+      const t = E.sessionDayUTC(wv, wk, d, 0);
+      E.sessionFor(wv, wk, d, E.withAutoGates({}, ctx, wv), E.DEFAULT_SPEC, ctx).forEach((b, bi) => {
+        if (!["single", "backoff", "paused", "ohp", "accessory"].includes(b.type) || !b.pkey) return;
+        const n = b.type === "single" ? 1 : b.sets, r = +String(b.repN ?? b.reps).split(/\D/)[0] || 1;
+        for (let k = 0; k < n; k++) (ix[b.pkey] = ix[b.pkey] || []).push({ t, w: b.w + ((wv + bi) % 3 === 0 ? 5 : 0), r: r + ((wv + wk + bi) % 2), rate: k === n - 1 ? RATES[(wv + wk + d + bi) % 3] : undefined });
+      });
+    }
+    const h2 = crypto.createHash("sha256");
+    for (let w = 1; w <= 3; w++) for (let wk = 1; wk <= 4; wk++) for (let d = 1; d <= 7; d++) h2.update(canon(E.sessionFor(w, wk, d, E.withAutoGates({}, ctx, w), E.DEFAULT_SPEC, ctx)) + "\n");
+    eq(h2.digest("hex"), "5f69ea44014da4ac2c7b77fd9320ad36d14bc3baf9c7e3ffa39ee4d194d094b8", "history: Waves 1-3 recomputed from a logged history are unchanged since v61");
+  }
+
+  const week = (wv, wk, spec) => { const o = []; for (let d = 1; d <= 7; d++) for (const b of E.sessionFor(wv, wk, d, {}, spec || E.DEFAULT_SPEC)) o.push({ ...b, d }); return o; };
+  const LOG = ["accessory", "single", "backoff"];
+  const prim = (b) => /^(FILLER|PRIMER)/.test(b.cap || "");
+  const sum = (wv, wk, f) => week(wv, wk).filter((b) => LOG.includes(b.type) && !prim(b) && f(b.name || "")).reduce((n, b) => n + b.sets, 0);
+  const days = (wv, wk, f) => [...new Set(week(wv, wk).filter((b) => LOG.includes(b.type) && !prim(b) && f(b.name || "")).map((b) => b.d))].sort();
+  const isShrug = (n) => /Shrug/.test(n), isRear = (n) => /Rear-Delt|Reverse Pec|Reverse-Pec|Face Pull/i.test(n);
+  const isRow = (n) => /Row\b/.test(n), isVert = (n) => /Chin-Up|Pulldown/.test(n);
+
+  // (1) the doses (Weeks 1-2, default spec)
+  eq([sum(3, 1, isShrug), sum(4, 1, isShrug)], [1, 6], "upper back: direct upper-trap sets 1 -> 6 from Wave 4 (Conley 1997, Andersen 2009; the number is judgment)");
+  eq(days(4, 1, isShrug), [1, 6], "upper back: shrugs Mon + Sat; no trap work in the 24 h before the deadlift");
+  ok(!E.sessionFor(4, 1, 4, {}, E.DEFAULT_SPEC).some((b) => /Shrug|Farmer/.test(b.name || "")), "upper back: no trap or grip work on Thursday");
+  eq([sum(3, 1, isRear), sum(4, 1, isRear)], [5, 9], "3D delts: direct rear-delt sets 5 -> 9 from Wave 4");
+  eq(days(4, 1, isRear), [2, 4, 6], "3D delts: rear delts on Tue (anchor), Thu (face pull), Sat (raise)");
+  eq([sum(3, 1, isSideDelt), sum(4, 1, isSideDelt)], [11, 13], "3D delts: side delts 11 -> 13 from Wave 4, inside the 16 cap");
+  eq([sum(3, 1, isRow), sum(4, 1, isRow)], [7, 7], "upper back: 7 row sets a week, Friday's now the upper-back row");
+  eq([sum(4, 1, isVert), sum(4, 3, isVert), sum(5, 1, isVert)], [7, 6, 6], "back detail: vertical pulls 7 / 6 / 6 (week 3 and Cycle 5 trim the pulldown to 2, never delete it)");
+  // (2) row roles: new key + lighter seed, Waves 1-3 keep the old Friday row
+  const fri4 = E.sessionFor(4, 1, 5, {}, E.DEFAULT_SPEC), tue4 = E.sessionFor(4, 1, 2, {}, E.DEFAULT_SPEC);
+  ok(fri4.some((b) => b.pkey === "rowhi") && !fri4.some((b) => b.pkey === "rowfri"), "upper back: Friday's row is the high-elbow row (its own key) from Wave 4");
+  ok(E.sessionFor(3, 1, 5, {}, E.DEFAULT_SPEC).some((b) => b.pkey === "rowfri"), "upper back: Waves 1-3 keep the tucked Friday row");
+  for (let w = 4; w <= 19; w++) for (let wk = 1; wk <= 4; wk++) ok(!E.sessionFor(w, wk, 5, {}, E.DEFAULT_SPEC).some((b) => b.pkey === "rowfri"), `upper back: rowfri retired in W${w} wk${wk} (peaks included)`);
+  eq(E.accState(E.ACC.find((a) => a.id === "rowhi"), 4), { w: 100, i: 0 }, "upper back: the high-elbow row starts Wave 4 on its own seed rung");
+  ok(/UPPER-BACK/.test(fri4.find((b) => b.pkey === "rowhi").cap) && /LAT ROW/.test(tue4.find((b) => b.pkey === "rowtue").cap), "upper back: Friday row = upper back, Tuesday row = lats (Padovan 2026)");
+  // (3) anchors: one failure set per muscle per day; added sets stop at RPE 8
+  const mon4 = E.sessionFor(4, 1, 1, {}, E.DEFAULT_SPEC).find((b) => b.pkey === "shrug"), rp4 = tue4.find((b) => b.pkey === "revpec");
+  ok(mon4.sets === 3 && mon4.lastHard && !mon4.lp, "upper back: Monday shrug is the trap anchor, 3 sets, no partials (no trap data for them)");
+  const hlr4 = E.sessionFor(4, 1, 1, {}, E.DEFAULT_SPEC).find((b) => b.pkey === "hlr");
+  ok(hlr4.sets === 2 && hlr4.lastHard && E.sessionFor(3, 1, 1, {}, E.DEFAULT_SPEC).find((b) => b.pkey === "hlr").sets === 3, "budget: hanging leg raise 3 -> 2 sets from Wave 4 pays Monday's clock; still the abs anchor");
+  ok(sum(4, 1, (n) => /Leg Raise|Crunch|Ab Wheel/.test(n)) >= 4, "abs: 4+ direct sets a week from Wave 4");
+  ok(rp4.lastHard && !rp4.lp && /NEUTRAL GRIP/.test(rp4.cap) && /Schoenfeld 2013/.test(rp4.cap), "3D delts: Tuesday reverse pec deck is the rear-delt anchor, neutral grip");
+  ok(!E.sessionFor(3, 1, 2, {}, E.DEFAULT_SPEC).find((b) => b.pkey === "revpec").lastHard && E.sessionFor(3, 1, 1, {}, E.DEFAULT_SPEC).find((b) => b.pkey === "shrug").sets === 1, "upper back: Waves 1-3 had no trap or rear-delt anchor (history)");
+  for (const wk of [1, 2]) for (const b of week(4, wk).filter((x) => ["rowhi", "facepull", "cable-y-shrug-arms-30-out", "chest-supported-rear-delt-raise-thumbs-up", "cross-body-cable-y-raise"].includes(x.pkey)))
+    ok(b.rpe === "8" && !b.lastHard, `upper back: ${b.pkey} stops at RPE 8, no extra failure set (wk${wk})`);
+  for (let d = 1; d <= 7; d++) { const hard = E.sessionFor(4, 1, d, {}, E.DEFAULT_SPEC).filter((b) => b.lastHard).map((b) => b.pkey); ok(new Set(hard).size === hard.length, `upper back: day ${d} failure sets are on different exercises (${hard.join(", ")})`); }
+  eq(week(4, 1).filter((b) => b.lastHard).length, 14, "upper back: 14 failure sets a week (12 + the trap and rear-delt anchors)");
+  // (4) new Saturday work starts on its seed and supersets with the incline press
+  const sat4 = E.sessionFor(4, 1, 6, {}, E.DEFAULT_SPEC).filter((b) => b.type === "accessory");
+  const ys = sat4.find((b) => /Y-Shrug/.test(b.name)), rr = sat4.find((b) => /Rear-Delt Raise/.test(b.name)), yr = sat4.find((b) => /Y-Raise/.test(b.name));
+  ok(ys && ys.w === 50 && ys.repN === 10 && ys.sets === 3, "upper back: Saturday Y-shrug starts Wave 4 at its seed, 3 sets");
+  ok(rr && rr.w === 12.5 && rr.repN === 12 && rr.sets === 3 && rr.db, "3D delts: Saturday rear-delt raise starts Wave 4 at its seed, 3 sets");
+  ok(yr && yr.sets === 5 && yr.moveId === "xbody", "3D delts: Saturday Y-raise is 5 sets and opens its own card");
+  const iIdx = sat4.findIndex((b) => /Incline DB Press/.test(b.name));
+  ok(sat4[iIdx + 1] === rr && sat4.indexOf(ys) < sat4.findIndex((b) => /Farmer/.test(b.name)), "upper back: rear-delt raise follows the incline DB press (same bench), Y-shrug precedes the farmer hold");
+  ok(!E.sessionFor(4, 1, 6, {}, { ...E.DEFAULT_SPEC, framePrimary: "traps" }).some((b) => /Y-Shrug/.test(b.name || "")), "upper back: the traps frame skips the Y-shrug (its module already shrugs)");
+  // (5) trims: week 3 trims, the deload never exceeds a loading week, Cycle 5 keeps the work
+  eq([sum(4, 3, isShrug), sum(4, 3, isRear), sum(4, 3, isSideDelt)], [4, 6, 9], "upper back: week 3 trims traps 4, rear delts 6, side delts 9 (never zero)");
+  eq([sum(5, 1, isShrug), sum(5, 1, isRear), sum(5, 1, isSideDelt)], [5, 8, 11], "upper back: Cycle 5 keeps traps 5, rear delts 8, side delts 11");
+  for (const w of [4, 5, 7, 10, 13, 16, 19]) {
+    const s1 = {}; for (const b of week(w, 1)) if (b.type === "accessory" && b.pkey) s1[b.pkey] = b.sets;
+    for (const b of week(w, 4)) if (b.type === "accessory" && b.pkey && s1[b.pkey] != null) ok(b.sets <= s1[b.pkey], `deload W${w}: ${b.pkey} ${b.sets} sets <= loading week ${s1[b.pkey]}`);
+  }
+  eq(week(4, 4).find((b) => b.pkey === "shrug").sets, 2, "deload: the shrug is 2 light sets (it used to double the 1-set shrug)");
+  // (6) peaks: no retired Thursday work, primers before pressing
+  for (const w of [6, 12, 18]) for (const wk of [1, 2]) {
+    ok(!E.sessionFor(w, wk, 4, {}, E.DEFAULT_SPEC).some((b) => /Lateral Raise \(Thu\)|^Rear-Delt Fly$/.test(b.name || "")), `peak W${w} wk${wk}: retired Thursday delt work stays retired`);
+    const tp = E.sessionFor(w, wk, 2, {}, E.DEFAULT_SPEC), pi = tp.findIndex((b) => b.pkey === "pullapart");
+    ok(pi > -1 && pi < tp.findIndex((b) => b.type === "single"), `peak W${w} wk${wk}: the pull-apart primes before the bench single`);
+  }
+  // (7) primers: band external rotation before both pressing days, costs no clock
+  for (const d of [2, 4]) { const s = E.sessionFor(4, 1, d, {}, E.DEFAULT_SPEC), i = s.findIndex((b) => b.pkey === "bander");
+    ok(i > -1 && /^PRIMER/.test(s[i].cap) && i < s.findIndex((b) => b.type === "single" || b.type === "paused"), `shoulder health: band external rotation primes before pressing on day ${d}`); }
+  ok(!E.sessionFor(3, 1, 2, {}, E.DEFAULT_SPEC).some((b) => b.pkey === "bander"), "shoulder health: Waves 1-3 had no band ER primer (history)");
+  // (8) cues: no internally rotated lateral, no unsupported superiority claims
+  const html = require("fs").readFileSync(__dirname + "/app-shell.html", "utf8");
+  ok(!/pinky slightly high/.test(html) && /THUMB LEVEL/.test(E.sessionFor(4, 1, 2, {}, E.DEFAULT_SPEC).find((b) => b.pkey === "lattue").cap), "shoulder health: laterals cue a level thumb, not an internally rotated 'pinky high'");
+  ok(!/THE side-delt builder|deepest stretch|#1 V-taper|best width builder|5 sets now|3 sets is the dose/.test(html + JSON.stringify(week(4, 1)) + JSON.stringify(week(3, 1))), "truth: no unsupported superiority claims or stale set counts in the library or the plan");
+  // (9) per-session dose: no back or delt region past ~11 fractional sets in one session (Remmert 2025 preprint)
+  const FR = { traps: (n) => (/Shrug/.test(n) ? 1 : /Farmer/.test(n) ? 0.5 : 0), rear: (n) => (isRear(n) ? 1 : isRow(n) || /Chin-Up/.test(n) ? 0.5 : 0),
+    side: (n) => (isSideDelt(n) ? 1 : /Overhead Press/.test(n) ? 0.5 : 0), lats: (n) => (isVert(n) ? 1 : isRow(n) ? 0.5 : 0),
+    mid: (n) => (isRow(n) ? 1 : isRear(n) || isVert(n) ? 0.5 : 0) };
+  let worstSess = 0;
+  for (let w = 4; w <= 19; w++) for (let wk = 1; wk <= 3; wk++) for (let d = 1; d <= 6; d++) {
+    const s = E.sessionFor(w, wk, d, {}, E.DEFAULT_SPEC).filter((b) => [...LOG, "ohp"].includes(b.type) && !prim(b));
+    for (const f of Object.values(FR)) worstSess = Math.max(worstSess, s.reduce((n, b) => n + f(b.name || "") * b.sets, 0));
+  }
+  ok(worstSess <= 11, `upper back: no back/delt region past 11 fractional sets in one session (worst ${worstSess})`);
+  // (10) Wave 4+ budget. The v32 per-day caps above are Wave 1 history. Judgment: every weekday estimate
+  // stays <= 75 min (15 min under the 90-min hard cap for rests longer than the clock's ~60 s), Saturday
+  // <= 85, and the set counts are pinned so any future addition is a conscious decision.
+  const cost = (b) => /FILLER|PRIMER/.test(b.cap || "") ? 0 : b.type === "single" ? 4 : b.type === "backoff" && E.LIFTS.includes(b.lift) ? b.sets * 3.5
+    : b.type === "paused" || b.type === "ohp" ? b.sets * 3 : b.type === "backoff" ? b.sets * 2.5 : b.type === "accessory" ? b.sets * (b.db ? 2 : 1.75)
+    : b.type === "warmup" ? 8 : b.type === "conditioning" ? 18 : b.type === "cooldown" ? 5 : 0;
+  let wkMin = 0, satMin = 0, sunMin = 0, wkSets = 0, satSets = 0;
+  for (const fp of E.FRAME_OPTS) for (const fs of ["latwidth", "none"]) for (const dt of E.DETAIL_OPTS) for (const sun of [false, true]) {
+    const spec = { framePrimary: fp, frameSecondary: fs, detail: dt, sundayOn: sun, secondaryPress: "incline" };
+    for (let w = 4; w <= 19; w++) for (let wk = 1; wk <= 4; wk++) for (let d = 1; d <= 7; d++) {
+      const s = E.sessionFor(w, wk, d, {}, spec), m = s.reduce((a, b) => a + cost(b), 0);
+      const n = s.filter((b) => ["accessory", "single", "backoff", "ohp", "paused"].includes(b.type) && !prim(b)).reduce((a, b) => a + b.sets, 0);
+      if (d === 7) sunMin = Math.max(sunMin, m);
+      else if (d === 6) { satMin = Math.max(satMin, m); satSets = Math.max(satSets, n); } else { wkMin = Math.max(wkMin, m); wkSets = Math.max(wkSets, n); }
+    }
+  }
+  ok(wkMin <= 75 && satMin <= 85 && sunMin <= 85, `Wave 4+ budget, every spec: longest weekday ${wkMin} min (<= 75), Saturday ${satMin}, Sunday ${sunMin}`);
+  ok(wkSets <= 27 && satSets <= 34, `Wave 4+ budget, every spec: weekday non-filler sets ${wkSets} <= 27, Saturday ${satSets} <= 34`);
+}
+
+// ═══ one-tap accessory progression (Wave 4+): logging exactly what is shown keeps every accessory on schedule ═══
+{
+  const sim = (skip) => {
+    const ix = {}, ctx = { index: ix, offsetWeeks: 0 };
+    for (let wv = 1; wv <= 19; wv++) for (let wk = 1; wk <= 4; wk++) for (let d = 1; d <= 7; d++) {
+      if (skip && skip(wv, wk, d)) continue;
+      const t = E.sessionDayUTC(wv, wk, d, 0);
+      for (const b of E.sessionFor(wv, wk, d, {}, E.DEFAULT_SPEC, ctx)) {
+        if (!["single", "backoff", "paused", "ohp", "accessory"].includes(b.type) || !b.pkey) continue;
+        const n = b.type === "single" ? 1 : b.sets, r = +String(b.repN ?? b.reps).split(/\D/)[0] || 1;
+        for (let k = 0; k < n; k++) (ix[b.pkey] = ix[b.pkey] || []).push({ t, w: b.w, r });
+      }
+    }
+    return ctx;
+  };
+  const ctx = sim();
+  // peak maintenance (1 set) no longer freezes 2-set work; the shrug's Wave 4 restart carries no false hold
+  for (const w of [5, 7, 10, 13, 16, 19]) for (let d = 1; d <= 7; d++) {
+    const plan = E.sessionFor(w, 1, d, {}, E.DEFAULT_SPEC), got = E.sessionFor(w, 1, d, {}, E.DEFAULT_SPEC, ctx);
+    got.forEach((b, i) => { if (b.type === "accessory" && plan[i].w > 0) ok(b.prog !== "held" && b.w >= plan[i].w, `one-tap W${w} d${d} ${b.pkey}: ${b.w} (${b.prog}) vs schedule ${plan[i].w}`); });
+  }
+  // a logged weight is adopted on the exercise's grid, never rounded up (the cable lateral gained a phantom 2.5 lb every other wave)
+  const LW = { w: 22.5, steps: [10, 12, 15], inc: 2.5, db: false, i0: 1, pkey: "x", since: 4 };
+  const at = (w) => ({ index: { x: [0, 1].map(() => ({ t: E.sessionDayUTC(4, 1, 3, 0), w, r: 15 })) }, offsetWeeks: 0 });
+  eq([E.accStateLogged(LW, 5, at(25)).w, E.accStateLogged(LW, 5, at(24)).w], [27.5, 25], "progression: 25 x top adopts 25 then steps; 24 is not rounded up to 25");
+  // ENG-4: 1-set work clears on its one set; 2-set work still needs two
+  const one = (sets) => E.accStateLogged({ w: 100, steps: [10, 12, 15], inc: 10, db: false, i0: 0, pkey: "y", since: 4, sets }, 5, { index: { y: [{ t: E.sessionDayUTC(4, 1, 1, 0), w: 100, r: 12 }] }, offsetWeeks: 0 });
+  eq([one(1).i, one(1).prog, one(2).i, one(2).prog], [1, "on", 0, "held"], "progression: a 1-set exercise clears on its one set; a 2-set one holds on one");
+  // deload sets never qualify a rung; a missed Saturday does not jump the crunch; log order does not matter
+  const cr = (w, wk, c) => E.sessionFor(w, wk, 6, {}, E.DEFAULT_SPEC, c).find((b) => /Crunch/.test(b.name || ""));
+  ok(cr(4, 4).w < cr(4, 1).w && cr(4, 4).light, `progression: the light-week crunch (${cr(4, 4).w}) is lighter than the working one (${cr(4, 1).w})`);
+  const c5 = cr(5, 1, sim((wv, wk, d) => wv === 4 && wk === 2 && d === 6));
+  ok(c5.w === cr(5, 1).w && c5.prog !== "ahead", `progression: a missed Saturday does not jump the crunch (${c5.w}, ${c5.prog})`);
+  const rev = { index: Object.fromEntries(Object.entries(ctx.index).map(([k, v]) => [k, [...v].reverse()])), offsetWeeks: 0 };
+  let same = true; for (const w of [5, 9, 13, 19]) for (let d = 1; d <= 7; d++) if (JSON.stringify(E.sessionFor(w, 1, d, {}, E.DEFAULT_SPEC, rev)) !== JSON.stringify(E.sessionFor(w, 1, d, {}, E.DEFAULT_SPEC, ctx))) same = false;
+  ok(same, "progression: log order does not change any prescription");
+  // the shrug restarts its ladder at Wave 4; the Waves 1-3 display is untouched
+  const sh = { index: { shrug: [1, 2, 3].map((w) => ({ t: E.sessionDayUTC(w, 2, 1, 0), w: 160, r: 15 })) }, offsetWeeks: 0 };
+  const sh4 = E.sessionFor(4, 1, 1, {}, E.DEFAULT_SPEC, sh).find((b) => b.pkey === "shrug");
+  ok(sh4.w === 160 && sh4.prog !== "held", `progression: Wave 4 shrug restarts at its seed with no false hold (${sh4.w}, ${sh4.prog})`);
 }
 
 // deload sets never feed Rule C: an "Easy" light-week set must not raise the next load

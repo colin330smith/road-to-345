@@ -56,7 +56,10 @@ Pure logic, no DOM. Exported as `ENGINE`; works under Node (`require`) and in th
 
 ### Invariants worth not breaking
 
-- Weekly caps: **biceps 16, triceps 16, side delts 16.** From Wave 4 the arm block runs 11 curl and 15 triceps isolation sets (Mon curl, Tue overhead extension, 4th Sat overhead set); side delts run 11 sets (Tue 4, Wed 4, Sat 3).
+- Weekly caps: **biceps 16, triceps 16, side delts 16.** From Wave 4 the arm block runs 11 curl and 15 triceps isolation sets (Mon curl, Tue overhead extension, 4th Sat overhead set); side delts run 13 sets (Tue 4, Wed 4, Sat 5).
+- Upper back and 3D shoulders (Wave 4+): 6 direct trap sets (Mon shrug 3, the trap anchor; Sat Y-shrug 3), 9 direct rear-delt sets (Tue reverse pec deck 3, the rear-delt anchor; Thu face pull 3; Sat raise 3), 7 row sets (Tue tucked lat row 4, Fri high-elbow upper-back row 3). No trap or grip work in the 24 h before the deadlift. Reduced weeks trim the Saturday pulldown to 2 sets, never delete it.
+- Waves 1–3 are history: a test hashes every Wave 1–3 prescription for every spec. Gate any prescription change with `from: 4`, `up: {from: 4}` or `wave >= 4`. Cue text and library links may be corrected everywhere.
+- Wave 4+ budget (every spec): every weekday estimates 75 min or less on the test clock; non-filler sets at most 27 on a weekday and 34 on Saturday. Monday's hanging leg raise runs 2 sets from Wave 4 to pay for the shrug.
 - Main lifts stop at **RPE 8**. Week 3 trims accessory sets, week 4 is a deload, cycle 6 drops specialization entirely.
 - Waves 1–2 output must equal the printed notes.
 - Every evidence claim in the app has a test and a row in EVIDENCE.md.

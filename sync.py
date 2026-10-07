@@ -47,7 +47,7 @@ def line(b):
         return f"  {b['name']}" + (f" — {b['note']}" if b.get("note") else "")
     w = "BW" if b.get("w") == 0 else f"+{b['w']}" if b.get("added") else b.get("w")
     tail = " · per hand" if b.get("db") else ""
-    hard = ("  ← last set RPE 9–10" + (", then 3–5 lengthened partials" if b.get("lp") else "")) if b.get("lastHard") else "  (filler — superset into rests)" if str(b.get("cap") or "").startswith("FILLER") else ""
+    hard = ("  ← last set RPE 9–10" + (", then 3–5 lengthened partials" if b.get("lp") else "")) if b.get("lastHard") else "  (filler — superset into rests)" if str(b.get("cap") or "").startswith("FILLER") else "  (primer — before the first press, warm-up effort)" if str(b.get("cap") or "").startswith("PRIMER") else ""
     return f"  {b['name']}: {w} × {b['reps']} × {b['sets']} @ RPE {b['rpe']}{tail}{hard}"
 
 
@@ -66,14 +66,20 @@ def note_body(wave, data):
          f"dip +{tr['dip']['cb']} → +{tr['dip']['goal']} · "
          f"RDL {tr['rdl']['cb']} → {tr['rdl']['goal']}",
          "",
-         "ARMS ARE THE CALLING CARD. 13 in → 15 in. Chin-up drives the biceps side,",
+         "ARMS ARE THE CALLING CARD. 13 in → 16 in. Chin-up drives the biceps side,",
          "dip the triceps side, and TRICEPS ARE ~55% OF UPPER-ARM MUSCLE —",
          "so they carry the larger share, most of it overhead and at length.",
          "Chin-up, dip, RDL and incline all climb like the big three do.",
-         "",
+         ""] + ([
+         "UPPER BACK + 3D SHOULDERS (Wave 4+): traps 6 direct sets a week (Mon anchor + Sat Y-shrug),",
+         "rear delts 9 (Tue anchor, Thu face pull, Sat raise), side delts 13. Friday's row is the",
+         "high-elbow upper-back row; Tuesday's stays the tucked lat row. Band external rotation",
+         "primes the shoulders before both pressing days.",
+         ""] if wave >= 4 else []) + [
          "v34 — EXERCISE AUDIT. Paused work is now half specificity, half real 6–8-rep growth sets.",
-         "Anchors finish with lengthened partials. Priority muscles come first. Dips upright.",
-         "v32 — FEWER SETS, REAL RESTS. ~18–22 working sets a day, Sunday is REST.",
+         "Arm and leg anchors finish with lengthened partials. Priority muscles come first. Dips upright.",
+         ("v32 — FEWER SETS, REAL RESTS. ~18–22 working sets a day, Sunday is REST." if wave < 4 else
+          "WAVE 4+: ~20–27 working sets a weekday, inside 75 minutes on the app's clock. Sunday is REST."),
          "One failure set per muscle per day (marked ←); everything else stops at RPE 8.",
          "Compounds get 3 min rest, isolation 90 s. Filler sets ride inside main-lift rests.",
          "",

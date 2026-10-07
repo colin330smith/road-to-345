@@ -273,35 +273,33 @@ const MOVES = {
   hlr:{name:"Hanging Leg Raise",grp:"Trunk & Grip",arch:"hlr",yt:"hanging leg raise strict",
     cues:["Dead hang, ribs down, zero swing","Curl the pelvis — the legs just come along","Progress with stricter form, then a light DB"],cap:"Stop when form breaks — swinging reps don't count."},
   rowtue:{name:"Chest-Supported DB Row",grp:"Press & Pull",arch:"row",yt:"chest supported dumbbell row",
-    cues:["Chest glued to the pad — zero body English","Elbow to hip, 1-sec squeeze","Full stretch at the bottom"],cap:"Strict only. No unsupported barbell rows in this program."},
-  rowfri:{name:"Chest-Supported DB Row",grp:"Press & Pull",arch:"row",yt:"chest supported dumbbell row",
-    cues:["Chest glued to the pad — zero body English","Elbow to hip, 1-sec squeeze"],cap:"Strict only."},
+    cues:["Chest glued to the pad — zero body English","LAT ROW: elbow to the hip, arm close to the body, 1-sec squeeze","Full stretch at the bottom","Friday's high-elbow row is the upper-back row"],cap:"Strict only. No unsupported barbell rows in this program."},
+  rowfri:{name:"Chest-Supported Machine / Cable Row",grp:"Press & Pull",arch:"row",yt:"chest supported machine row",
+    cues:["Chest glued to the pad — zero body English","Elbow to hip, 1-sec squeeze"],cap:"Strict only. Waves 1–3; the High-Elbow Row replaces it from Wave 4."},
+  rowhi:{name:"High-Elbow Chest-Supported Row",grp:"Press & Pull",arch:"row",yt:"chest supported wide grip row upper back",
+    cues:["Wide neutral handles (pronated only if the elbows like it), chest on the pad","Elbows 45–60° out, pull to the LOWER chest, 1-sec squeeze","Shoulder blades reach forward at the bottom","Elbows stop at the torso line: further back loads the front of the shoulder","Flared elbows and a wide grip shift the row to traps and rear delts (EMG: Vasconcelos 2023, Padovan 2026)"],cap:"Upper-back row: traps, rhomboids, rear delts. Lighter than a tucked row by design. RPE 8."},
   incline:{name:"Incline DB Press",grp:"Press & Pull",arch:"incpress",yt:"incline dumbbell press form",
     cues:["30–45° bench, DBs finish over the shoulders","Elbows about 45° from the torso"],cap:"RPE 8 cap — it assists bench, never competes with it."},
-  pulldown:{name:"Wide-Grip Lat Pulldown",grp:"Press & Pull",arch:"pulldown",yt:"wide grip lat pulldown technique",
-    cues:["Wide grip, chest up to the bar","Elbows drive down to the hips, not back","Straps welcome — lats are the target, not grip","5 sets now: width is the priority"],cap:"RPE 8–9."},
+  pulldown:{name:"Unilateral Cable Pulldown",grp:"Press & Pull",arch:"pulldown",yt:"single arm cable lat pulldown",
+    cues:["One arm at a time, torso tall, pull in front of the body","Elbow drives down to the hip, not back","Full stretch overhead between reps","Straps welcome — lats are the target, not grip"],cap:"RPE 8. Saturday lat work; 2 sets in reduced weeks, never zero."},
   pullover:{name:"Machine Pullover",grp:"Press & Pull",arch:"pulldown",yt:"machine pullover lats",
-    cues:["Arms stay long — pure shoulder extension","Full stretch overhead, squeeze to the hips","The best width builder: biceps can't fail first","No machine? Straight-arm cable pulldown"],cap:"RPE 8–9. The #1 V-taper movement."},
+    cues:["Arms stay long — pure shoulder extension","Full stretch overhead, squeeze to the hips","It works the chest as well as the lats: a variation, not the top lat builder","No machine? Straight-arm cable pulldown"],cap:"RPE 8–9."},
   lowhigh:{name:"Low-to-High Cable Fly",grp:"Press & Pull",arch:"rearfly",yt:"low to high cable fly upper chest",
     cues:["Pulleys at the bottom, sweep up and in","Hands finish at collarbone height","Squeeze a beat at the top","Builds the upper-chest shelf flat pressing misses"],cap:"RPE 8–9."},
   facepull:{name:"Face Pull",grp:"Arms & Delts",arch:"rearfly",yt:"face pull rope technique",
-    cues:["Rope to the forehead, elbows high","External rotation at the end — show your biceps","Rear delts AND posture — posture changes your silhouette"],cap:"RPE 8–9. Light and strict."},
+    cues:["Rope at forehead height, elbows up at shoulder level","Pull apart until the hands sit beside the ears, thumbs pointing back","Rear delts, mid and lower traps and the rotator cuff in one pull","1-sec squeeze; no leaning back"],cap:"RPE 8. Light and strict. 3 sets from Wave 4."},
   lpcalf:{name:"Leg Press Calf Raise",grp:"Legs",arch:"calf",yt:"leg press calf raise straight leg",
     cues:["Knees LOCKED — bent-knee calf work trains the soleus only","The gastrocnemius is the calf you can see; it needs a straight knee","Two-second pause in the stretch, no bouncing","Final set: after the last full rep, 3–5 partials in the bottom half"],cap:"Tracked like every accessory. Lengthened partials on the failure set only."},
   lattue:{name:"Lateral Raise",grp:"Arms & Delts",arch:"lateral",yt:"dumbbell lateral raise form",
     cues:["Lead with the elbow","Stop shy of a shrug — traps stay quiet","If it needs momentum, it's too heavy"],cap:"Final set RPE 9–10 OK in Weeks 1–2."},
-  latwed:{name:"Lateral Raise (high-rep)",grp:"Arms & Delts",arch:"lateral",yt:"lateral raise high reps",
-    cues:["15–25 reps — chase the burn, not the load","Perfect reps only, even at rep 22"],cap:"Final set RPE 9–10 OK in Weeks 1–2."},
-  latthu:{name:"Lateral Raise (4 sets)",grp:"Arms & Delts",arch:"lateral",yt:"lateral raise form",
-    cues:["The big side-delt day — 4 sets","Lead with the elbow, quiet traps"],cap:"Final set RPE 9–10 OK in Weeks 1–2."},
-  rdf:{name:"Rear-Delt Fly",grp:"Arms & Delts",arch:"rearfly",yt:"rear delt fly dumbbell",
-    cues:["Arms long, sweep OUT not back","Zero momentum, 1-sec squeeze"],cap:"Light and strict beats heavy and sloppy."},
   curlmon:{name:"Bayesian Cable Curl",grp:"Arms & Delts",arch:"curl",yt:"bayesian cable curl",
     cues:["Face away from a low pulley, arm trails behind the body","Full stretch at the bottom, elbow stays still","Curl without the shoulder rolling forward","Monday's arm exposure: 48 h before Wednesday's preacher"],cap:"Stop at RPE 8. First two weeks of the block: RPE 7."},
   ohtue:{name:"Overhead Cable Extension",grp:"Arms & Delts",arch:"ohtri",yt:"overhead cable tricep extension long head",
     cues:["AFTER all pressing, never before","Elbows in and pointed up, full stretch behind the head","Long head at length: overhead beat pushdowns ~1.5x for it (Maeo 2023)"],cap:"Stop at RPE 8: Thursday's paused bench is 48 h away. First two weeks: RPE 7."},
   revpec:{name:"Reverse Pec Deck",grp:"Arms & Delts",arch:"rearfly",yt:"reverse pec deck",
-    cues:["Neutral grip (palms facing each other), arms long","Sweep OUT, not back; squeeze a second at the back","Light and strict: the rear delt is small"],cap:"12–15 reps, 3 sets. Final reps hard, never sloppy."},
+    cues:["Neutral grip (palms facing each other): more rear-delt activity than palms down (Schoenfeld 2013)","Arms long, sweep OUT at shoulder height; squeeze a second at the back","No shrug: the rear delt is small, light and strict"],cap:"12–15 reps, 3 sets. From Wave 4 the rear-delt anchor: last set to RPE 9–10 in Weeks 1–2."},
+  rdraise:{name:"Chest-Supported Rear-Delt Raise",grp:"Shoulders",arch:"rearfly",yt:"incline prone rear delt raise thumbs up",
+    cues:["Chest on the 30° bench, arms hanging","THUMBS UP: the arm turns out, which keeps the shoulder joint open","Sweep out until the arms line up with your body, 1-sec squeeze","No shrug, no swing: 10–15 lb is plenty","Superset with the incline DB press on the same bench"],cap:"Saturday rear delt, mid traps and cuff in one move. RPE 8."},
   preacher:{name:"Cable Preacher Curl",grp:"Arms & Delts",arch:"curl",yt:"cable preacher curl form",
     cues:["THE anchor curl — first and fresh on Wednesday","Elbows planted, full stretch at the bottom, no leaning back","Preacher grew the lower biceps more, the incline curl the upper (Kassiano 2025): both belong in the week","Final set: after the last full rep, 3–5 partials in the bottom half"],cap:"Anchor: the one biceps set that goes to failure that day. 8–12 reps."},
   seatcurl3:{name:"Seated Leg Curl",grp:"Legs",arch:"legcurl",yt:"seated leg curl form",
@@ -310,8 +308,6 @@ const MOVES = {
     cues:["Same movement as Wednesday, same rung","Lean forward slightly to lengthen the hamstring","2-second eccentric, no slamming the stack","Final set: after the last full rep, 3–5 partials in the stretched half"],cap:"Monday exposure. Hamstrings before the leg press — the priority muscle gets the fresh sets."},
   ohthu:{name:"Overhead Cable Extension",grp:"Arms & Delts",arch:"ohtri",yt:"overhead cable tricep extension long head",
     cues:["LONG HEAD — the biggest triceps head; overhead work loads it at length","Elbows in and pointed up, hands behind the head at the bottom","Overhead grew the long head ~1.5x and the whole triceps ~1.4x more than pushdowns (Maeo 2023)","Final set: after the last full rep, 3–5 partials in the stretched half"],cap:"Thursday anchor. The pushdown after it stops at RPE 8."},
-  proneY:{name:"Prone Y-Raise",grp:"Posture",arch:"rearfly",yt:"prone y raise lower traps",
-    cues:["Face down on an incline bench, thumbs up, arms at 45°","LOWER traps — the muscle that actually holds your shoulders back","Tiny weight; if you need to swing, it is too heavy","Filler: superset into a main-lift rest, costs no clock"],cap:"Posture insurance. Never the limiter of a session."},
   incdb:{name:"Incline DB Press (30°)",grp:"Main Lifts",arch:"incpress",yt:"incline dumbbell press 30 degrees upper chest",
     cues:["Bench at 30° — not 45°. Past 30 the front delt takes over","Dumbbells go deeper than a bar: stop where the stretch peaks","Elbows ~45° from the torso, press up and slightly in","Second upper-chest angle of the week — Tuesday is the barbell"],cap:"Saturday. 8–12 reps, RPE 8. Upper chest is a declared weak point."},
   farmer:{name:"Heavy Farmer Hold",grp:"Arms & Delts",arch:"shrug",yt:"farmers carry hold grip",
@@ -335,21 +331,25 @@ const MOVES = {
   dip:{name:"Weighted Dip",grp:"Main Lifts",arch:"pushdown",yt:"weighted dip form triceps",
     cues:["Torso UPRIGHT, elbows tucked in — lean forward and it becomes a chest exercise","Sink until the shoulder says stop. The dip shortens the long head; the overhead extension is the stretch work","Belt or dumbbell between the feet","THE triceps compound for load. Triceps are ~55% of upper-arm muscle"],cap:"Tracked to +100. Top set to the week's RPE cap, back-offs 7–8. Stop the set if the front of the shoulder pinches."},
   xbody:{name:"Cross-Body Cable Y-Raise",grp:"Shoulders",arch:"lateral",yt:"cross body cable y raise side delt",
-    cues:["Cable low, stand side-on, reach ACROSS your body to start","That cross-body start is the deepest stretch the side delt can get","Raise out and slightly up, like the top half of a Y","Light. This is the width muscle, not a strength lift"],cap:"THE side-delt builder. Slow, no swing, 15–25 reps."},
+    cues:["Cable low, stand side-on, reach ACROSS your body to start","Elbow nearly straight, thumb level, stop at shoulder height","Raise out and slightly up, like the top half of a Y","Light. This is the width muscle, not a strength lift"],cap:"Saturday side delt: 5 sets from Wave 4 at RPE 8. Slow, no swing, 10–15 reps. The cross-body start is for feel: a long-length bias has not out-grown a short one in the delts."},
   leanlat:{name:"Leaning DB Lateral Raise",grp:"Shoulders",arch:"lateral",yt:"leaning dumbbell lateral raise",
-    cues:["Hold a rack one-handed and lean AWAY from it","Leaning shifts the resistance curve toward the stretched bottom","Dumbbell and cable laterals grew the side delt equally (Larsen 2025): pick the one you can do strictly","Elbow leads, pinky slightly high, no shrugging"],cap:"Per arm. Final set may reach RPE 9–10 in Weeks 1–2."},
+    cues:["Hold a rack one-handed and lean AWAY from it","Leaning shifts the resistance curve toward the stretched bottom","Dumbbell and cable laterals grew the side delt equally (Larsen 2025): pick the one you can do strictly","Elbow leads, THUMB LEVEL with the pinky, no shrugging","Stop at shoulder height: turning the thumb down at the top is the pinch-prone position"],cap:"Per arm. Final set may reach RPE 9–10 in Weeks 1–2."},
   cablelat:{name:"Cable Lateral Raise",grp:"Shoulders",arch:"lateral",yt:"cable lateral raise hand height",
-    cues:["Set the pulley at HAND HEIGHT, not the floor","Tension peaks where the cable and your arm make 90°","A high pulley puts that peak in the stretched half of the rep","Strict — the load is small on purpose"],cap:"Higher-rep day: chase the burn, not the load."},
+    cues:["Set the pulley at HAND HEIGHT, not the floor","Tension peaks where the cable and your arm make 90°","A high pulley puts that peak in the stretched half of the rep","Strict — the load is small on purpose","Elbow nearly straight, thumb level, stop at shoulder height"],cap:"Wednesday anchor: final set may reach RPE 9–10 in Weeks 1–2. 10–15 reps."},
   chin:{name:"Weighted Chin-Up",grp:"Main Lifts",arch:"pulldown",yt:"weighted chin up form",
     cues:["Supinated grip, shoulder width","Dead hang at the bottom, chin OVER the bar","Belt or dumbbell between the feet","THE biceps compound — nothing else loads elbow flexion this heavy"],cap:"Tracked to +90. Top set to the week's RPE cap, back-offs 7–8."},
   incbb:{name:"Incline Bench Press",grp:"Main Lifts",arch:"incpress",yt:"incline barbell bench press form",
     cues:["Bench at 30° — NOT 45°. Past 30 the front delt takes over","Bar to the upper chest, elbows ~45° from the torso","Tracked to 225: top set to the week cap, back-offs 7–8","Upper chest is a declared weak point — this is its main lift"],cap:"Top set to the week's RPE cap. Back-offs 7–8. It supports the comp bench, never competes with it."},
-  proneY:{name:"Prone Y-Raise",grp:"Arms & Delts",arch:"proneY",yt:"prone y raise lower trap",
-    cues:["Face down on an incline bench, arms hanging","Thumbs UP, sweep to a Y at about 45°","2.5–5 lb is plenty — this is not a strength lift","Lower traps: the muscle that actually holds your shoulders back"],cap:"Light and strict. Posture work, not hypertrophy volume."},
+  proneY:{name:"Prone Y-Raise",grp:"Posture",arch:"proneY",yt:"prone y raise lower trap",
+    cues:["Face down on an incline bench, arms hanging","Thumbs UP, sweep to a Y at about 45°","2.5–5 lb is plenty: if you need to swing, it is too heavy","Lower traps: the muscle that holds your shoulders back","Filler: superset into a main-lift rest, costs no clock"],cap:"Light and strict. Posture work, not hypertrophy volume."},
+  bander:{name:"Band External Rotation",grp:"Posture",arch:"rearfly",yt:"band external rotation elbow at side towel",
+    cues:["Elbow pinned to your side on a rolled towel","Rotate the forearm OUT against a light band, 2-sec return","15–20 per arm at warm-up effort, never to fatigue","Before pressing on Tuesday and Thursday, alongside the pull-apart"],cap:"Primer: costs no clock. Cuff insurance for a heavy-pressing week."},
   pullapart:{name:"Band Pull-Apart",grp:"Arms & Delts",arch:"rearfly",yt:"band pull apart form",
     cues:["BEFORE you press, not after","Arms straight, pull to the chest, squeeze","20–30 reps, no strain — this is a primer","Opens the chest and sets the shoulders back for the bench"],cap:"60 seconds. The cheapest posture insurance in the program."},
   shrug:{name:"Machine / DB Shrug",grp:"Press & Pull",arch:"shrug",yt:"dumbbell shrug technique",
-    cues:["Straight up, hold the top for a second","No rolling — elevation only","Arms are straps, traps do the work","3 sets is the dose — your deadlifts do the rest"],cap:"Developed, not overdeveloped: quality over load. RPE 8–9."},
+    cues:["Straps on — straight up toward the ears, hold the top for a second","No rolling, chin neutral — elevation only","Full stretch at the bottom","From Wave 4: 3 sets on Monday (the trap anchor) + Saturday's Y-shrug. Heavy pulling alone did not grow the neck muscles in 12 weeks; direct work did (Conley 1997)"],cap:"Monday trap anchor from Wave 4: last set to RPE 9–10 in Weeks 1–2. Stop on any neck pain."},
+  yshrug:{name:"Cable Y-Shrug (arms 30° out)",grp:"Press & Pull",arch:"shrug",yt:"cable shrug arms out upward rotation",
+    cues:["Low pulleys or dumbbells, hands about 30° out from the sides","Shrug up and slightly in toward the ears, 1-sec hold","Full stretch at the bottom, no rolling","Straps on: the farmer hold after it is the grip work","Arms out raised upper- and lower-trap activity over a plain shrug (EMG: Pizzari 2014)"],cap:"Saturday, from Wave 4: the second trap day, 24 h after the deadlift. RPE 8."},
   crunch:{name:"Cable Crunch",grp:"Trunk & Grip",arch:"crunch",yt:"kneeling cable crunch",
     cues:["Hips still — flex the SPINE, not the hips","Exhale hard at the bottom"],cap:"RPE 8–9."},
   woodchop:{name:"Cable Woodchop",grp:"Trunk & Grip",arch:"woodchop",yt:"cable woodchop high to low",
@@ -394,8 +394,9 @@ $("#modal").addEventListener("click", (e) => { if (e.target.id === "modal") clos
 function whereUsed(id) {
   const M = { sq: "Monday — Comp Squat day", bn: "Tuesday — Comp Bench day", dl: "Friday — Comp Deadlift day", ps: "Wednesday — volume day", pb: "Thursday — volume day", ohp: "Thursday, after paused bench", rdl: "Friday, after deadlifts" };
   if (M[id]) return M[id];
-  const a = E.ACC.find((x) => x.id === id);
-  return a ? ["", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"][a.day] : "";
+  const a = E.ACC.find((x) => (x.moveId || x.id) === id);
+  if (a) return ["", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"][a.day] + (id === "bander" ? " and Thursday, before pressing" : "");
+  return { xbody: "Saturday — side delt", rdraise: "Saturday — rear delt", yshrug: "Saturday — traps", inccurl: "Saturday — arms", incdb: "Saturday — upper chest", farmer: "Saturday — grip", pulldown: "Saturday — lats" }[id] || "";
 }
 function moveSheet(id) {
   const m = MOVES[id]; if (!m) return;
@@ -828,7 +829,7 @@ function renderMoves() {
     (groups[m.grp] = groups[m.grp] || []).push([id, m]);
   }
   let h = `<p class="note" style="margin-top:8px">Tap a movement for the demo, cues, and its RPE cap.</p>`;
-  for (const grp of ["Main Lifts", "Press & Pull", "Arms & Delts", "Legs", "Trunk & Grip"]) {
+  for (const grp of ["Main Lifts", "Press & Pull", "Shoulders", "Arms & Delts", "Legs", "Trunk & Grip", "Core", "Posture"]) {
     h += `<div class="grp">${grp}</div>`;
     for (const [id, m] of groups[grp] || []) {
       h += `<button class="moverow" onclick="moveSheet('${id}')">

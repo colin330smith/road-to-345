@@ -364,6 +364,47 @@ T["copy: the Specialize sheet names every anchor and promises nothing false"] = 
   await ctx.close();
 };
 
+// ── Model 2: announcement, goal tracker, measurements, photos ──
+T["model 2: the announcement is a card, never a blocking sheet, and Dismiss sticks"] = async (b) => {
+  const { ctx, page, errors } = await open(b, { time: "2026-10-07T07:05:00", state: BASE });
+  ok(!(await page.$eval("#modal", (e) => e.classList.contains("open"))), "no sheet opens on launch");
+  ok(/Model 2 is here/i.test(await page.$eval("#view", (e) => e.innerText)), "Today shows the Model 2 card");
+  ok(/Model 2/i.test(await page.$eval("header", (e) => e.innerText)), "the header carries the Model 2 pill");
+  await page.click('#m2card button:text("Dismiss")');
+  ok(!/Model 2 is here/i.test(await page.$eval("#view", (e) => e.innerText)) && (await getS(page)).seen.m2 === 1, "Dismiss hides the card and is remembered");
+  await page.click("header .m2pill");
+  const t = await page.$eval("#sheet", (e) => e.innerText);
+  ok(/What's new in Model 2/i.test(t) && /Upper back/i.test(t) && /3D shoulders/i.test(t) && /Goal tracking/i.test(t), "the pill reopens What's new");
+  ok(!errors.length, "no page errors " + errors.join(" | "));
+  await ctx.close();
+};
+T["model 2: the Road goal tracker lists every goal and the Model 2 weekly plan"] = async (b) => {
+  const { ctx, page, errors } = await open(b, { time: "2026-10-13T07:05:00", state: { ...BASE, seen: { m2: 1 } } });
+  await page.evaluate(() => goTab("road"));
+  const t = await page.$eval("#view", (e) => e.innerText);
+  for (const g of ["3/4/5", "200 lb @ 15%", "16\" arms", "3D shoulders", "Prominent upper chest", "Prominent upper back", "Shredded back"]) ok(t.includes(g), "tracker row: " + g);
+  ok(/curls 11 · triceps 15 · upper chest 14 · traps 6 · rear delts 9 · side delts 13/.test(t), "tracker shows the Model 2 weekly plan");
+  ok(/Measure day/i.test(t) && /Photo day/i.test(t), "nothing measured yet: measure and photo day are due");
+  ok(!errors.length, "no page errors " + errors.join(" | "));
+  await ctx.close();
+};
+T["model 2: logging waist + neck gives a body-fat trend; the photo day stamps"] = async (b) => {
+  const { ctx, page, errors } = await open(b, { time: "2026-10-17T07:05:00", state: { ...BASE, seen: { m2: 1 }, bw: { "2026-10-15": 190, "2026-10-16": 190.4, "2026-10-17": 190.2 } } });
+  await page.evaluate(() => goTab("trends"));
+  await page.fill("#mw", "34"); await page.fill("#mn", "15.5"); await page.fill("#ma", "13.25");
+  await page.evaluate(() => logMeas());
+  const t = await page.$eval("#view", (e) => e.innerText);
+  ok(/17\.2%/.test(t) && /lean ≈ 157\.5 lb/.test(t), "34/15.5 at 68.5 in = 17.2% and lean 157.5 lb at the 190.2 lb average");
+  const s1 = await getS(page);
+  eq(s1.meas["2026-10-17"], { wa: 34, ar: 13.25, nk: 15.5 }, "the measurements are stored under today");
+  await page.evaluate(() => { photoSheet(); photosDone(); });
+  eq((await getS(page)).photos, { "2026-10-17": 1 }, "the photo day is stamped");
+  await page.evaluate(() => goTab("road"));
+  ok(!/Measure day|Photo day/i.test(await page.$eval("#view", (e) => e.innerText)), "after both, the tracker stops asking");
+  ok(!errors.length, "no page errors " + errors.join(" | "));
+  await ctx.close();
+};
+
 (async () => {
   const browser = await pw.chromium.launch();
   const only = process.argv[2];

@@ -59,7 +59,7 @@ def render_day(blocks):
 def note_body(wave, data):
     cb = data["cb"]
     tr = data["tracked"]
-    L = [f"💪 WAVE {wave} — {data['cycName'].upper()}",
+    L = [f"💪 WAVE {wave} — {data['cycName'].upper()}" + (" · MODEL 2" if wave >= 4 else ""),
          "",
          f"CYCLE BASES: bench {cb['bn']} · squat {cb['sq']} · deadlift {cb['dl']}",
          f"TRACKED: incline {tr['inc']['cb']} → {tr['inc']['goal']} · "

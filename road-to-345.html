@@ -140,6 +140,14 @@
   .note{font-size:13px;color:var(--ash)}
   .divider{border:none;border-top:1px solid var(--steel);margin:16px 0}
   .pill{display:inline-block;font-size:11.5px;border-radius:999px;padding:2px 9px;border:1px solid var(--steel);color:var(--ash)}
+  .m2pill{font-family:var(--body);font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;vertical-align:middle;color:var(--signal);border:1px solid #6b5518;border-radius:999px;padding:2px 8px;margin-left:4px}
+  .gstat{display:inline-block;font-size:11px;font-weight:700;border-radius:999px;padding:2px 8px;border:1px solid var(--steel);color:var(--ash);white-space:nowrap}
+  .gstat.ahead,.gstat.reached{color:var(--go);border-color:#2c5c42}.gstat.ontrack{color:var(--chalk);border-color:#4d5564}
+  .gstat.behind{color:var(--stop);border-color:#6b2b25}.gstat.early,.gstat.nodata,.gstat.photo,.gstat.phase2{color:var(--ash)}
+  .grow{padding:9px 0;border-bottom:1px solid #232830}.grow:last-child{border-bottom:none}
+  .grow .gh{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+  .grow .gh b{font-size:14.5px}.grow .gv{font-size:13px;color:var(--chalk);font-variant-numeric:tabular-nums;margin-top:2px}
+  details.proto summary{cursor:pointer;color:var(--ash);font-size:12.5px;margin-top:6px}
   .wu{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
   .wu span{border:1px solid var(--steel);border-radius:7px;padding:5px 9px;font-size:13px;font-variant-numeric:tabular-nums;color:var(--ash);background:var(--plate2)}
   .wu span.ind{color:var(--signal);border-color:#6b5518}
@@ -181,7 +189,7 @@
 
 <div id="app">
   <header>
-    <div class="brand"><h1>Road to <b>3/4/5</b></h1><span class="hdrbtns"><button id="timer" aria-label="Rest timer">⏱ rest</button><button class="ibtn" id="rulesbtn" aria-label="Rules">§</button></span></div>
+    <div class="brand"><h1>Road to <b>3/4/5</b> <button class="m2pill" onclick="whatsNew()" aria-label="What's new in Model 2">Model 2</button></h1><span class="hdrbtns"><button id="timer" aria-label="Rest timer">⏱ rest</button><button class="ibtn" id="rulesbtn" aria-label="Rules">§</button></span></div>
     <div class="ctx" id="ctxline"></div>
     <div class="wkstrip" id="wkstrip" aria-hidden="true"></div>
   </header>
@@ -1255,6 +1263,7 @@ function sanitizeState(d) {
   keep("bw", (k, v) => DK.test(k) && num(v));
   keep("food", (k, v) => DK.test(k) && Array.isArray(v) && v.every((x) => obj(x) && num(x.kcal)));
   keep("meas", (k, v) => DK.test(k) && obj(v) && Object.values(v).every(num));
+  keep("photos", (k, v) => DK.test(k) && (v === 1 || v === true));
   for (const f of ["gates", "testMax", "settings", "spec", "nutri", "ledger", "primer"]) if (d[f] != null && !obj(d[f])) { delete out[f]; dropped++; }
   return { ok: true, state: out, dropped };
 }
@@ -1509,7 +1518,13 @@ function withAutoGates(gates, ctx, upTo = 19) {
   return g;
 }
 
-const ENGINE = { kgDown, kgNear, attemptsKg, e1rm, LB_PER_KG, defaultGate, RPE_PCT_1, pctAt, RATE, RATE_LABEL, singleFactor, autoregulate, autoGate, withAutoGates, sessionDayUTC, GATE_CUTS, postTestBase, CALIBRATION, PROJ_DEFAULT, cbChain, etaWave, explicitCB, TRACKED, trackedCB, trackedFor, ARM_START, ARM_GOAL, clearedInWave, inclineCB, inclineFor, INCLINE_START, INCLINE_GOAL, pkeyOf, accStateLogged, R5, R25, START, LIFTS, LIFT_NAME, gateDelta, cbFor, cycleOf, macroOf, CYCLE_NAME, waveStartUTC, whereIs, NOTES, mainTables, ohpFor, ACC, accState, accFor, sessionFor, testAttempts, yellowW, yellowFor, redSession, offsetAt, segsOf, planDateUTC, ratedAt, meetAlign, sanitizeState, migrateSetKeys, noTrimWindows, RTS_N, pctReps, dayE1RM, ALT, altKey, WAVE1_MONDAY, MS_DAY, capNum, effRPE, targetsOf, peakEstimate, applyTestEntry, migrateTestMax, lbFloor, COMMANDS, PEAK_CAP,
+// MODEL 2 starts at Wave 4 (Oct 12, 2026): the arm, upper-chest, upper-back and
+// 3D-shoulder blocks, the meet-day rebuild and goal tracking. Waves 1-3 are Model 1,
+// kept exactly as they were run (history-hash tests).
+const MODEL2_FROM = 4;
+const modelOf = (wave) => (wave >= MODEL2_FROM ? 2 : 1);
+
+const ENGINE = { MODEL2_FROM, modelOf, kgDown, kgNear, attemptsKg, e1rm, LB_PER_KG, defaultGate, RPE_PCT_1, pctAt, RATE, RATE_LABEL, singleFactor, autoregulate, autoGate, withAutoGates, sessionDayUTC, GATE_CUTS, postTestBase, CALIBRATION, PROJ_DEFAULT, cbChain, etaWave, explicitCB, TRACKED, trackedCB, trackedFor, ARM_START, ARM_GOAL, clearedInWave, inclineCB, inclineFor, INCLINE_START, INCLINE_GOAL, pkeyOf, accStateLogged, R5, R25, START, LIFTS, LIFT_NAME, gateDelta, cbFor, cycleOf, macroOf, CYCLE_NAME, waveStartUTC, whereIs, NOTES, mainTables, ohpFor, ACC, accState, accFor, sessionFor, testAttempts, yellowW, yellowFor, redSession, offsetAt, segsOf, planDateUTC, ratedAt, meetAlign, sanitizeState, migrateSetKeys, noTrimWindows, RTS_N, pctReps, dayE1RM, ALT, altKey, WAVE1_MONDAY, MS_DAY, capNum, effRPE, targetsOf, peakEstimate, applyTestEntry, migrateTestMax, lbFloor, COMMANDS, PEAK_CAP,
   FRAME_OPTS, FRAME_LABEL, DETAIL_OPTS, DETAIL_LABEL, DEFAULT_SPEC, isDefaultSpec, saturdaySession, sundaySession, sundayPlanned };
 if (typeof module !== "undefined") module.exports = ENGINE;
 
@@ -2380,6 +2395,249 @@ const NUTRI = { CERT, SUPPS, TRIM_DONE, avgIn, MODES, TRIM_WEEKS, PHASES, PRIMER
   PACE, RATE_MIN, ADJ_CAP, TRIM_MIN_DAYS, fitIn, weekCall, menuFor };
 if (typeof module !== "undefined") module.exports = NUTRI;
 
+// goals.js — Model 2 goal tracking. Pure data + functions, no DOM.
+// Spliced into app-shell at /*==GOALS==*/ and unit-tested from test.js.
+//
+// Every goal gets four things, the way an experiment would:
+//   a metric and a measuring protocol   (what exactly is measured, and how)
+//   a target and a deadline             (Phase 1 ends at Wave 45)
+//   the pace it needs                   (target minus now, over the months left)
+//   the pace he actually has            (a least-squares trend through his readings)
+// A verdict is only called when the gap is bigger than the measurement noise:
+// a tape moves about a quarter inch between honest readings, so two readings a
+// month apart cannot tell 0.1"/month from zero. Until the data can, it says so.
+
+const HEIGHT_IN = 68.5; // 5'8.5"
+const TARGETS = { bw: 200, bf: 15, lean: 170, arm: 16, ratio: 1.5, bfPhase2: 11 };
+// Noise per reading (one standard deviation). Tape circumferences: Judgment (a quarter
+// inch for the arm and waist, half an inch for the bigger girths). Body fat: the tape
+// equation missed an 8-week DXA change by 2.4 points (SD) in 926 men (Foulis 2023).
+const NOISE = { ar: 0.25, wa: 0.25, nk: 0.25, sh: 0.5, ch: 0.5, bf: 2.4 };
+const MONTH = 30.44 * 86400000;
+const DKRE = /^\d{4}-\d{2}-\d{2}$/;
+const ms = (dk) => Date.UTC(+dk.slice(0, 4), +dk.slice(5, 7) - 1, +dk.slice(8, 10));
+
+// US Navy circumference equation for men, inches (Hodgdon & Beckett 1984).
+// A field estimate: against DXA it read about 6 points low in Army trainees (Foulis 2023),
+// so it is used as a TREND, and one DXA scan recalibrates it (see bfSeries).
+function navyBF(waist, neck, height) {
+  const h = height || HEIGHT_IN;
+  if (!(waist > 0 && neck > 0 && h > 0) || waist - neck <= 0) return null;
+  const v = 86.010 * Math.log10(waist - neck) - 70.041 * Math.log10(h) + 36.76;
+  return Number.isFinite(v) && v > 2 && v < 60 ? Math.round(v * 10) / 10 : null;
+}
+
+// every reading of one field, oldest first: [{t, dk, v}]
+function series(meas, field) {
+  return Object.keys(meas || {}).filter((k) => DKRE.test(k) && meas[k] && Number.isFinite(meas[k][field])).sort()
+    .map((dk) => ({ t: ms(dk), dk, v: meas[dk][field] }));
+}
+
+// Body fat over time. Tape days give the Navy estimate; a DXA reading ("dx") on or within
+// 21 days of a tape day sets an offset that corrects every tape estimate (the tape's bias
+// is mostly constant for one person, its error in CHANGE is smaller: Foulis 2023).
+function bfSeries(meas, height) {
+  const tape = Object.keys(meas || {}).filter((k) => DKRE.test(k) && meas[k]).sort()
+    .map((dk) => ({ dk, t: ms(dk), v: navyBF(meas[dk].wa, meas[dk].nk, height) })).filter((x) => x.v != null);
+  const dxa = series(meas, "dx");
+  let offset = 0, calibratedBy = null;
+  for (const d of dxa) {
+    let best = null;
+    for (const x of tape) { const gap = Math.abs(x.t - d.t); if (gap <= 21 * 86400000 && (!best || gap < best.gap)) best = { gap, v: x.v }; }
+    if (best) { offset = Math.round((d.v - best.v) * 10) / 10; calibratedBy = d.dk; }
+  }
+  const out = tape.map((x) => ({ t: x.t, dk: x.dk, v: Math.round((x.v + offset) * 10) / 10, src: calibratedBy ? "tape+dxa" : "tape" }));
+  for (const d of dxa) if (!out.some((x) => x.dk === d.dk)) out.push({ t: d.t, dk: d.dk, v: d.v, src: "dxa" });
+  out.sort((a, b) => a.t - b.t);
+  return { points: out, offset, calibratedBy };
+}
+
+// 7-day average bodyweight ending on dk (3+ weigh-ins), else the nearest weigh-in within 3 days
+function bw7(bw, dk) {
+  const t = ms(dk), vals = [];
+  let near = null;
+  for (const [k, v] of Object.entries(bw || {})) {
+    if (!DKRE.test(k) || !Number.isFinite(v)) continue;
+    const d = (t - ms(k)) / 86400000;
+    if (d >= 0 && d < 7) vals.push(v);
+    if (Math.abs(d) <= 3 && (!near || Math.abs(d) < near.d)) near = { d: Math.abs(d), v };
+  }
+  if (vals.length >= 3) return Math.round((vals.reduce((a, b) => a + b, 0) / vals.length) * 10) / 10;
+  return near ? near.v : null;
+}
+
+// lean mass on each body-fat day: 7-day bodyweight x (1 - BF)
+function leanSeries(meas, bw, height) {
+  const { points, calibratedBy } = bfSeries(meas, height);
+  const out = [];
+  for (const p of points) { const w = bw7(bw, p.dk); if (w != null) out.push({ t: p.t, dk: p.dk, v: Math.round(w * (1 - p.v / 100) * 10) / 10, bf: p.v, bw: w }); }
+  return { points: out, calibratedBy };
+}
+
+// Least-squares slope per month through readings within the window.
+// Needs 3+ readings over 8+ weeks; otherwise null (two readings are a difference, not a trend).
+function trend(points, opts) {
+  const o = Object.assign({ minN: 3, minDays: 56, windowDays: 183, now: null }, opts || {});
+  if (!points || !points.length) return null;
+  const end = o.now != null ? o.now : points[points.length - 1].t;
+  const p = points.filter((x) => x.t <= end && x.t >= end - o.windowDays * 86400000);
+  if (p.length < o.minN) return null;
+  const span = (p[p.length - 1].t - p[0].t) / 86400000;
+  if (span < o.minDays) return null;
+  const mx = p.reduce((a, x) => a + x.t, 0) / p.length, my = p.reduce((a, x) => a + x.v, 0) / p.length;
+  let sxy = 0, sxx = 0;
+  for (const x of p) { sxy += (x.t - mx) * (x.v - my); sxx += (x.t - mx) ** 2; }
+  if (!sxx) return null;
+  return { perMonth: (sxy / sxx) * MONTH, n: p.length, spanMonths: span / 30.44 };
+}
+
+// The smallest monthly pace the data can tell from zero: the first and last readings each
+// carry the noise, so a change must beat about 2 x sqrt(2) x noise over the span (Judgment:
+// a deliberately conservative two-reading band; more readings only make it safer).
+const band = (noise, spanMonths) => (2 * Math.SQRT2 * noise) / Math.max(spanMonths, 0.25);
+
+// verdict for one goal
+function judge(o) {
+  // o: {now, target, monthsLeft, trend, noise, higherIsBetter}
+  const up = o.higherIsBetter !== false;
+  if (o.now == null) return { status: "nodata", need: null };
+  const gap = o.target - o.now;
+  if ((up && gap <= 0) || (!up && gap >= 0)) return { status: "reached", need: 0 };
+  const need = o.monthsLeft > 0 ? gap / o.monthsLeft : null;
+  if (!o.trend || need == null) return { status: "early", need };
+  const b = band(o.noise, o.trend.spanMonths), have = o.trend.perMonth;
+  const diff = up ? have - need : need - have;
+  if (diff > b) return { status: "ahead", need, have, band: b };
+  if (diff >= -b) return { status: "ontrack", need, have, band: b };
+  return { status: "behind", need, have, band: b };
+}
+
+// Process metrics: what the plan prescribes for each declared priority, per week.
+// Same predicates the tests use, so the numbers on screen are the numbers under test.
+const REGION = {
+  curls: (n) => /Curl/i.test(n) && !/Leg Curl|Wrist|Neck|Hammer|Reverse/i.test(n),
+  triceps: (n) => /(Extension|Pushdown)/i.test(n) && !/Leg|Wrist|Neck/i.test(n),
+  upperChest: (n) => /Incline Bench|Incline DB Press|Low-to-High/i.test(n),
+  traps: (n) => /Shrug/.test(n),
+  rearDelts: (n) => /Rear-Delt|Reverse Pec|Reverse-Pec|Face Pull/i.test(n),
+  sideDelts: (n) => /Lateral Raise|Cross-Body Cable Y-Raise/i.test(n) && !/Pulldown|Prone/i.test(n),
+  rows: (n) => /Row\b/.test(n),
+};
+const REGION_LABEL = { curls: "Curls", triceps: "Triceps", upperChest: "Upper chest", traps: "Traps", rearDelts: "Rear delts", sideDelts: "Side delts", rows: "Rows" };
+// blocks: every block of one week (Mon-Sun)
+function weekRegions(blocks) {
+  const out = {};
+  for (const k of Object.keys(REGION)) out[k] = 0;
+  for (const b of blocks || []) {
+    if (!b || !["accessory", "single", "backoff", "paused"].includes(b.type) || !b.sets) continue;
+    for (const [k, f] of Object.entries(REGION)) if (f(b.name || "")) out[k] += b.sets;
+  }
+  return out;
+}
+
+// adherence: days = [{planned, logged}] for the window; sets logged / sets planned
+function adherence(days) {
+  let p = 0, l = 0;
+  for (const d of days || []) { p += d.planned || 0; l += Math.min(d.logged || 0, d.planned || 0); }
+  return p ? Math.round((l / p) * 100) : null;
+}
+
+// Monthly photos: same light, same distance, same time (morning, before food), phone at chest height.
+const POSES = ["Front relaxed", "Front double biceps", "Side chest, both sides", "Rear relaxed", "Rear lat spread", "Rear double biceps"];
+// Measuring protocol, shown next to the inputs
+const PROTOCOL = {
+  wa: "Waist at the navel, relaxed, after a normal exhale",
+  nk: "Neck just below the Adam's apple, tape sloping slightly down to the front",
+  ar: "Right arm FLEXED at the peak of the biceps, cold (before training)",
+  sh: "Shoulders around the widest point of the delts, arms relaxed",
+  ch: "Chest at nipple height, relaxed, after a normal exhale",
+  dx: "DXA body fat %, if you get a scan (once or twice a year recalibrates the tape)",
+};
+const lastDate = (map) => { const k = Object.keys(map || {}).filter((x) => DKRE.test(x)).sort(); return k.length ? k[k.length - 1] : null; };
+const daysSince = (dk, todayDk) => (dk ? Math.round((ms(todayDk) - ms(dk)) / 86400000) : null);
+// the measure-and-photo day is due every 4 weeks
+function due(meas, photos, todayDk) {
+  const full = Object.keys(meas || {}).filter((k) => DKRE.test(k) && meas[k] && Number.isFinite(meas[k].wa) && Number.isFinite(meas[k].nk) && Number.isFinite(meas[k].ar)).sort();
+  const m = daysSince(full.length ? full[full.length - 1] : null, todayDk), p = daysSince(lastDate(photos), todayDk);
+  return { measure: m == null || m >= 28, photos: p == null || p >= 28, measDays: m, photoDays: p };
+}
+
+// The full report. in: {meas, bw, photos, today (dk), deadline (ms), height,
+//   strength: {now: {bn,sq,dl}, goal: {bn,sq,dl}, eta: {bn:{wave,ms},...}},
+//   regions (weekRegions of this week), adherence (percent or null), sleepAvg, bwRatePerWeek}
+function report(inp) {
+  const today = ms(inp.today), monthsLeft = Math.max(0, (inp.deadline - today) / MONTH);
+  const lever = [];
+  if (inp.adherence != null && inp.adherence < 85) lever.push(`log the plan first: ${inp.adherence}% of planned sets done in the last 4 weeks`);
+  if (inp.sleepAvg != null && inp.sleepAvg < 7) lever.push(`sleep averages ${inp.sleepAvg} h; 7+ is the cheapest growth lever`);
+  const gainLever = inp.bwRatePerWeek != null && inp.bwRatePerWeek < 0.1 ? "bodyweight is flat: apply the +150 kcal on Trends" : null;
+  const arm = series(inp.meas, "ar"), armNow = arm.length ? arm[arm.length - 1].v : null;
+  const armT = trend(arm, { now: today });
+  const bf = bfSeries(inp.meas, inp.height), bfNow = bf.points.length ? bf.points[bf.points.length - 1].v : null;
+  const lean = leanSeries(inp.meas, inp.bw, inp.height), leanNow = lean.points.length ? lean.points[lean.points.length - 1].v : null;
+  // lean mass from tape is noisy: BF noise x bodyweight (about 4.5 lb), so its verdict waits for 6 months or a DXA pair
+  const leanT = trend(lean.points, { now: today, minDays: lean.calibratedBy ? 56 : 168, windowDays: 400 });
+  const sh = series(inp.meas, "sh"), wa = series(inp.meas, "wa");
+  const ratioPts = sh.map((s) => { const w = wa.filter((x) => Math.abs(x.t - s.t) <= 7 * 86400000).pop(); return w ? { t: s.t, dk: s.dk, v: Math.round((s.v / w.v) * 1000) / 1000 } : null; }).filter(Boolean);
+  const ratioNow = ratioPts.length ? ratioPts[ratioPts.length - 1].v : null;
+  const ratioT = trend(ratioPts, { now: today });
+  const bwNow = inp.bw ? bw7(inp.bw, inp.today) : null;
+  const goals = [];
+  // 1. strength: the engine's own projection against the deadline
+  if (inp.strength) {
+    const late = Object.entries(inp.strength.eta || {}).filter(([, e]) => !e || e.ms > inp.deadline).map(([L]) => L);
+    goals.push({ key: "strength", label: "3/4/5", metric: "Cycle bases (bench/squat/deadlift)",
+      now: `${inp.strength.now.bn} / ${inp.strength.now.sq} / ${inp.strength.now.dl}`, target: "315 / 405 / 495",
+      status: late.length ? "behind" : "ontrack",
+      detail: Object.entries(inp.strength.eta || {}).map(([L, e]) => `${L === "bn" ? "bench" : L === "sq" ? "squat" : "deadlift"} ${e ? "Wave " + e.wave : "beyond Wave 80"}`).join(" · "),
+      lever: late.length ? ["rate every single: the gates move you only on rated evidence", ...lever] : [] });
+  }
+  // 2. lean mass (the 200 @ 15% build is ~170 lb lean)
+  const lj = judge({ now: leanNow, target: TARGETS.lean, monthsLeft, trend: leanT, noise: NOISE.bf / 100 * (bwNow || 190) });
+  goals.push({ key: "lean", label: "200 lb @ 15%", metric: "Lean mass = 7-day bodyweight x (1 - body fat)",
+    now: leanNow != null ? `${leanNow} lb lean · ${bfNow}% fat${bf.calibratedBy ? " (DXA-calibrated)" : " (tape)"} · ${bwNow != null ? bwNow + " lb" : "—"}` : bwNow != null ? `${bwNow} lb · log waist + neck for body fat` : "log weight, waist and neck",
+    target: `${TARGETS.lean} lb lean · ${TARGETS.bf}% · ${TARGETS.bw} lb`, ...lj,
+    unit: "lb lean/month", lever: lj.status === "behind" ? [gainLever, ...lever].filter(Boolean) : [],
+    note: lean.calibratedBy ? null : "Tape body fat reads about 6 points off DXA and misses part of each change; one DXA scan calibrates it, and the verdict waits for 6 months of monthly tapes or a DXA pair." });
+  // 3. arms
+  const aj = judge({ now: armNow, target: TARGETS.arm, monthsLeft, trend: armT, noise: NOISE.ar });
+  goals.push({ key: "arms", label: "16\" arms", metric: "Flexed arm, cold, monthly", now: armNow != null ? `${armNow}"` : "measure flexed", target: `${TARGETS.arm}"`, ...aj,
+    unit: "in/month", lever: aj.status === "behind" ? [gainLever, ...lever, "arm rungs held? check the arm cards for ⏸"].filter(Boolean) : [] });
+  // 4. 3D shoulders
+  const rj = judge({ now: ratioNow, target: TARGETS.ratio, monthsLeft, trend: ratioT, noise: 0.02 });
+  goals.push({ key: "shoulders", label: "3D shoulders", metric: "Shoulder ÷ waist + monthly photos (front, side, rear)",
+    now: ratioNow != null ? ratioNow.toFixed(2) : "measure shoulders + waist", target: TARGETS.ratio.toFixed(2), ...rj, unit: "/month",
+    lever: rj.status === "behind" ? ["side and rear delts: check the lateral and reverse-pec cards for ⏸", ...lever] : [] });
+  // 5-7. the photo goals: process metrics + photos, judged by eye at the 4-week check
+  const r = inp.regions || {};
+  goals.push({ key: "upperchest", label: "Prominent upper chest", metric: "Photos (front, side) + weekly incline-biased sets", now: `${r.upperChest || 0} sets/wk planned`, target: "visible shelf in the side photo", status: "photo" });
+  goals.push({ key: "upperback", label: "Prominent upper back", metric: "Photos (rear relaxed, lat spread) + weekly sets", now: `traps ${r.traps || 0} · rear delts ${r.rearDelts || 0} · rows ${r.rows || 0} sets/wk`, target: "thick yoke in the rear photo", status: "photo" });
+  goals.push({ key: "back", label: "Shredded back", metric: "Body fat (Phase 2 ~11%) + rear photos", now: bfNow != null ? `${bfNow}% fat` : "log waist + neck", target: `~${TARGETS.bfPhase2}% (Phase 2)`, status: "phase2",
+    note: "Detail is a leanness result: back work builds the muscle now, the Phase 2 cut reveals it. Spot work does not remove local fat." });
+  return { goals, monthsLeft: Math.round(monthsLeft * 10) / 10 };
+}
+
+// Model 2, in plain words, for the one-time "What's new" sheet.
+const MODEL2 = {
+  from: 4,
+  title: "Model 2",
+  starts: "Wave 4 · Monday Oct 12, 2026",
+  items: [
+    ["Arms (16\")", "11 curl + 15 triceps isolation sets a week, overhead work for the long head, 48 h between hard biceps days."],
+    ["Upper chest", "14 incline-biased sets a week: Thursday growth sets moved to a 30° incline; 4 Saturday incline DB sets."],
+    ["Upper back & traps", "Shrug becomes the trap anchor (3 sets) + a Saturday cable Y-shrug; Friday becomes a high-elbow upper-back row."],
+    ["3D shoulders", "Rear delts 5 → 9 sets with a real anchor, side delts 11 → 13, a band external-rotation primer before pressing."],
+    ["Meet day", "Attempts in kg from your rated singles, the real opener rehearsed in week 3, USPA commands on every heavy single, meet-date alignment."],
+    ["Logging", "Extra sets visible, edited weights carry to the next set, rest timer starts itself, swaps and 'last time' per exercise."],
+    ["Data safety", "Imports checked before they replace anything, a recovery screen, dated schedule shifts that never move past logs."],
+    ["Nutrition", "Accurate weekly rate, no trims in Cycles 5–6, a sleep gate that needs logged sleep, adjustments that move the targets."],
+    ["Goal tracking", "Each goal shows the pace it needs vs the pace you have, and the lever to pull when you fall behind."],
+  ],
+};
+
+const GOALS = { HEIGHT_IN, TARGETS, NOISE, MONTH, navyBF, series, bfSeries, bw7, leanSeries, trend, band, judge, REGION, REGION_LABEL, weekRegions, adherence, POSES, PROTOCOL, due, report, MODEL2 };
+if (typeof module !== "undefined") module.exports = GOALS;
+
 let animId = null;
 const REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
 function drawFrame(cv, arch, k, opts) { paintScene(cv, arch, k, opts); }
@@ -2579,6 +2837,12 @@ function renderToday() {
 
   { const age = backupAgeDays(), hasLogs = Object.keys(S.logs).length > 0;
     if (hasLogs && (age == null || age >= 7)) inner += `<div class="card single"><div class="eyebrow sig">Back up your logs</div><p class="note">${age == null ? "You have never backed up." : `Last backup was ${age} days ago.`} Everything lives on this phone only. One tap, save it to iCloud Drive.</p><div class="rowbtns"><button class="btn" onclick="exportData()">Back up now</button></div></div>`; }
+  // Model 2 announces itself with a card, never a blocking sheet; the header pill and More reopen it
+  if (!(S.seen && S.seen.m2)) inner += `<div class="card single" id="m2card"><div class="eyebrow sig">Model 2 is here</div><p class="note">${esc(GOALS.MODEL2.starts)}: arms, upper chest, upper back, 3D shoulders, meet day, logging, data safety, nutrition and goal tracking, all rebuilt. Waves 1–3 stay as you ran them.</p><div class="rowbtns"><button class="btn" onclick="seenM2();whatsNew()">What's new</button><button class="btn ghost" onclick="seenM2();render()">Dismiss</button></div></div>`;
+  // Model 2: the monthly measure-and-photo day (weekends, or any day once a week overdue)
+  { const d = GOALS.due(S.meas, S.photos || {}, keyOf(todayUTC())), late = (x) => x == null || x >= 35;
+    if (viewDate === todayUTC() && (d.measure || d.photos) && (loc.day >= 6 || (d.measure && late(d.measDays)) || (d.photos && late(d.photoDays))))
+      inner += `<div class="card single"><div class="eyebrow sig">📏 Measure &amp; photo day</div><p class="note">Every 4 weeks, morning, before food: waist, neck, flexed arm, shoulders, chest, then the six photos. This is how the goal tracker tells real progress from tape noise.</p><div class="rowbtns">${d.measure ? `<button class="btn" onclick="goTab('trends')">Log measurements</button>` : ""}${d.photos ? `<button class="btn ghost" onclick="photoSheet()">Photo checklist</button>` : ""}</div></div>`; }
   if (loc.day === 7 && loc.week === 4 && loc.wave < 19) inner += `<div class="card single"><div class="eyebrow sig">⚠ Gate day — end of Wave ${loc.wave}</div><p class="note">Review the wave, then set each lift's gate for Wave ${loc.wave + 1}.</p><div class="rowbtns"><button class="btn" onclick="gateSheet(${loc.wave + 1})">Set the Wave ${loc.wave + 1} gate</button></div></div>`;
   if ((loc.day === 6 || loc.day === 7) && loc.week === 4) inner += `<div class="card"><div class="eyebrow sig">Weak-point ledger</div><p class="note">End of a training block — log this cycle's anchor lift + note whether the target or another muscle failed first. Photos + measurements every 4 weeks drive the 8-week decision.</p><div class="rowbtns"><button class="btn ghost" onclick="ledgerSheet()">Open ledger</button></div></div>`;
 
@@ -2714,6 +2978,78 @@ window.saveSet = (dk, bkey, si) => {
 window.delSet = (dk, bkey, si) => { S.logs[dk].sets[bkey].splice(si, 1); save(); closeSheet(); render(); };
 
 /* ── ROADMAP ── */
+/* ── MODEL 2: goal tracking ──
+   Each goal: the pace it needs (target over the months left to Wave 45) against the
+   pace measured from his own readings, with a verdict only when the data can tell. */
+const GSTAT = { ahead: "Ahead", ontrack: "On track", behind: "Behind", early: "Too early to call", nodata: "No data yet", reached: "Reached", photo: "Photo check", phase2: "Phase 2" };
+function sleepAvg7() {
+  const t = todayUTC(), v = [];
+  for (let i = 0; i < 7; i++) { const l = S.logs[keyOf(t - i * E.MS_DAY)]; if (l && Number.isFinite(l.sleep)) v.push(l.sleep); }
+  return v.length >= 3 ? Math.round((v.reduce((a, b) => a + b, 0) / v.length) * 10) / 10 : null;
+}
+// sets logged / sets planned over the last 28 days (from the first logged day on)
+function adherence28() {
+  const off = SHIFT(), t0 = todayUTC(), days = [];
+  const first = Object.keys(S.logs).filter((k) => DK_RE.test(k)).sort()[0];
+  if (!first) return null;
+  for (let i = 1; i <= 28; i++) {
+    const t = t0 - i * E.MS_DAY;
+    if (t < Date.parse(first)) break;
+    const loc = E.whereIs(t, off);
+    if (loc.pre || !loc.wave || loc.wave > 19) continue;
+    const log = S.logs[keyOf(t)] || {};
+    const blocks = log.r === "R" ? E.redSession(loc.wave, loc.day, GX()) : E.sessionFor(loc.wave, loc.week, loc.day, GX(), S.spec);
+    const planned = blocks.filter((b) => ["single", "backoff", "paused", "ohp", "accessory"].includes(b.type)).reduce((n, b) => n + (b.type === "single" ? 1 : b.sets || 0), 0);
+    if (!planned) continue;
+    const logged = Object.values(log.sets || {}).reduce((n, a) => n + (Array.isArray(a) ? a.length : 0), 0);
+    days.push({ planned, logged });
+  }
+  return GOALS.adherence(days);
+}
+function goalInput() {
+  const off = SHIFT(), t = todayUTC(), loc = E.whereIs(t, off);
+  const wv = Math.max(E.MODEL2_FROM, Math.min(loc.wave || 1, 19)), wk = loc.wave >= E.MODEL2_FROM && loc.week <= 3 ? loc.week : 1;
+  const week = []; for (let d = 1; d <= 7; d++) week.push(...E.sessionFor(wv, wk, d, GX(), S.spec));
+  const cw = Math.max(1, Math.min(loc.wave || 1, 19)), cb = E.cbFor(cw, GX()), goal = { bn: 315, sq: 405, dl: 495 }, eta = {};
+  for (const L of E.LIFTS) { const w = E.etaWave(L, goal[L], GX()); eta[L] = w ? { wave: w, ms: E.waveStartUTC(w, off) } : null; }
+  const sleepMap = {}; for (const [k, l] of Object.entries(S.logs)) if (l && Number.isFinite(l.sleep)) sleepMap[k] = l.sleep;
+  const dec = NUTRI.decision(S.bw, S.meas, { mode: S.nutri.mode, since: S.nutri.since, sleep: sleepMap, today: keyOf(t), blocked: NO_TRIM() });
+  return { meas: S.meas, bw: S.bw, photos: S.photos || {}, today: keyOf(t), deadline: E.waveStartUTC(45, off), height: S.settings.heightIn || GOALS.HEIGHT_IN,
+    strength: { now: cb, goal, eta }, regions: GOALS.weekRegions(week), regionWave: wv, adherence: adherence28(), sleepAvg: sleepAvg7(), bwRatePerWeek: dec.rate };
+}
+function goalTrackerCard() {
+  const inp = goalInput(), rep = GOALS.report(inp), due = GOALS.due(S.meas, S.photos || {}, inp.today);
+  const fmtPace = (g) => g.need == null ? "" : `needs ${g.need >= 0 ? "+" : ""}${(Math.round(g.need * 100) / 100)} ${esc(g.unit || "")}${g.have != null ? ` · measured ${g.have >= 0 ? "+" : ""}${Math.round(g.have * 100) / 100} (±${Math.round(g.band * 100) / 100})` : ""}`;
+  const r = inp.regions;
+  return `<div class="card single"><div class="eyebrow sig">Goal tracker · Model 2</div>
+    <p class="note">${rep.monthsLeft} months to Phase 1's end (Wave 45). Each goal: the pace it needs against the pace your own readings show. A verdict appears only once the data can tell it from tape noise.</p>
+    ${due.measure || due.photos ? `<div class="capnote warn" style="margin-top:6px">${due.measure ? `📏 Measure day${due.measDays != null ? ` (last full set ${due.measDays} days ago)` : ""}` : ""}${due.measure && due.photos ? " · " : ""}${due.photos ? `📸 Photo day${due.photoDays != null ? ` (last ${due.photoDays} days ago)` : ""}` : ""}</div>
+      <div class="rowbtns">${due.measure ? `<button class="btn" onclick="goTab('trends')">Log measurements</button>` : ""}${due.photos ? `<button class="btn ghost" onclick="photoSheet()">Photo checklist</button>` : ""}</div>` : ""}
+    ${rep.goals.map((g) => `<div class="grow"><div class="gh"><b>${esc(g.label)}</b><span class="gstat ${g.status}">${GSTAT[g.status] || g.status}</span></div>
+      <div class="gv">${esc(g.now)} → ${esc(g.target)}</div>
+      <div class="note">${esc(g.metric)}${g.detail ? ` · ${esc(g.detail)}` : ""}${fmtPace(g) ? `<br>${fmtPace(g)}` : ""}</div>
+      ${(g.lever || []).length ? `<div class="capnote warn">Lever: ${g.lever.map(esc).join(" · ")}</div>` : ""}
+      ${g.note ? `<div class="note" style="margin-top:2px">${esc(g.note)}</div>` : ""}</div>`).join("")}
+    <p class="note" style="margin-top:8px">Model 2 weekly plan (Wave ${inp.regionWave}): curls ${r.curls} · triceps ${r.triceps} · upper chest ${r.upperChest} · traps ${r.traps} · rear delts ${r.rearDelts} · side delts ${r.sideDelts} · rows ${r.rows} sets.${inp.adherence != null ? ` Last 4 weeks: ${inp.adherence}% of planned sets logged.` : ""}</p></div>`;
+}
+window.photoSheet = () => {
+  const last = Object.keys(S.photos || {}).filter((k) => DK_RE.test(k)).sort().pop();
+  openSheet(`<button class="closex" onclick="closeSheet()">×</button><h2>📸 Photo day</h2>
+    <p class="note">Once every 4 weeks. Same room, same light, same distance, morning before food, phone at chest height on a timer. These photos judge the upper chest, upper back, 3D shoulders and back detail, the goals a tape can't measure.</p>
+    <ol class="cues">${GOALS.POSES.map((x) => `<li>${esc(x)}</li>`).join("")}</ol>
+    <p class="note">Keep them in an album in Photos; compare with the set from 3 months ago, never yesterday's.${last ? ` Last set: ${esc(last)}.` : ""}</p>
+    <div class="rowbtns"><button class="btn" onclick="photosDone()">Done — photos taken today</button></div>`);
+};
+window.seenM2 = () => { S.seen = { ...(S.seen || {}), m2: 1 }; save(); };
+window.photosDone = () => { S.photos = S.photos || {}; S.photos[keyOf(todayUTC())] = 1; save(); closeSheet(); render(); };
+window.whatsNew = () => {
+  const M = GOALS.MODEL2;
+  openSheet(`<button class="closex" onclick="closeSheet()">×</button><h2>What's new in ${esc(M.title)}</h2>
+    <p class="note">Starts ${esc(M.starts)}. Waves 1–3 stay exactly as you ran them (Model 1). Every change traces to a checked source or is labelled a judgment call in EVIDENCE.md.</p>
+    ${M.items.map(([h, t]) => `<div class="grow"><div class="gh"><b>${esc(h)}</b></div><div class="note">${esc(t)}</div></div>`).join("")}
+    <p class="note" style="margin-top:8px">The goal: 315/405/495 at a drug-tested meet, 200 lb at 15%, 16" arms, 3D shoulders, a prominent upper chest and upper back, and a shredded back after the Phase 2 cut.</p>
+    <div class="rowbtns"><button class="btn" onclick="closeSheet()">Let's go</button><button class="btn ghost" onclick="closeSheet();goTab('road')">See the goal tracker</button></div>`);
+};
 function renderRoad() {
   const off = SHIFT();
   const now = E.whereIs(todayUTC(), off);
@@ -2740,6 +3076,7 @@ function renderRoad() {
     ${(() => { const p2 = NUTRI.PHASES[1]; return `<div class="srow" style="border-top:1px solid var(--steel);padding-top:8px;margin-top:4px"><span>Phase 2</span><span></span><span class="sval">${esc(p2.short)}</span></div>
     <p class="note" style="margin-top:2px"><b style="color:var(--chalk)">${esc(p2.name)}</b> \u2014 ${esc(p2.by)}. ${esc(p2.gate)} Same lean mass, ${p2.weeks} weeks, floor ${p2.floorBF}%. The Calvin Klein Wahlberg with 25 more pounds of muscle than the ad.</p>`; })()}</div>
   <p class="note">19 waves · 4 macros. Wave 3 runs from your measured bases. Projections re-compute from your gate results; a future gate you have not set assumes the small step (+2.5 bench, +5 squat and deadlift): near Latella's average for bench, above it for squat and deadlift. Your rated gates correct it.</p>`;
+  h += goalTrackerCard();
   if (S.settings.meetDate) { const m = Date.parse(S.settings.meetDate), wk = Math.ceil((m - todayUTC()) / (7 * E.MS_DAY));
     const peak = [6, 12, 18].find((k) => { const f = E.sessionDayUTC(k, 4, 5, off); return m >= f && m - f < 3 * E.MS_DAY; });
     h += `<div class="card single"><div class="eyebrow sig">Meet ${esc(fmt(m))} · ${wk > 0 ? wk + " weeks out" : "done"}</div><p class="note">${peak ? `Peak = the Wave ${peak} test (${fmt(E.sessionDayUTC(peak, 4, 5, off))}).` : "No peak lines up with it yet: re-enter the date in More → Settings to line one up."}</p></div>`; }
@@ -3020,9 +3357,16 @@ function renderTrends() {
     <div class="metrics" style="margin-top:8px">
       <label>Waist <input type="number" step="0.25" inputmode="decimal" id="mw" placeholder="${lastOf("wa")}"> in</label>
       <label>Shoulders <input type="number" step="0.25" inputmode="decimal" id="ms" placeholder="${lastOf("sh")}"> in</label>
-      <label>Arm <input type="number" step="0.25" inputmode="decimal" id="ma" placeholder="${lastOf("ar")}"> in</label>
+      <label>Arm (flexed) <input type="number" step="0.25" inputmode="decimal" id="ma" placeholder="${lastOf("ar")}"> in</label>
+      <label>Neck <input type="number" step="0.25" inputmode="decimal" id="mn" placeholder="${lastOf("nk")}"> in</label>
+      <label>Chest <input type="number" step="0.25" inputmode="decimal" id="mc" placeholder="${lastOf("ch")}"> in</label>
+      <label>DXA <input type="number" step="0.1" inputmode="decimal" id="mx" placeholder="${lastOf("dx")}"> %</label>
       <button class="btn" onclick="logMeas()">Log</button>
     </div>
+    ${(() => { const bf = GOALS.bfSeries(S.meas, S.settings.heightIn), ln = GOALS.leanSeries(S.meas, S.bw, S.settings.heightIn), b = bf.points[bf.points.length - 1], l = ln.points[ln.points.length - 1];
+        return b ? `<div class="statline" style="margin-top:8px"><span class="note">Body fat (${bf.calibratedBy ? `tape, calibrated by DXA ${esc(bf.calibratedBy)}` : "tape estimate, ±3–4 points"})</span> <b style="font-size:20px;font-variant-numeric:tabular-nums">${b.v}%</b>${l ? ` <span class="note">· lean ≈ ${l.v} lb</span>` : ""}</div>` : `<p class="note" style="margin-top:6px">Log waist and neck together to get a body-fat trend (US Navy tape equation).</p>`; })()}
+    <details class="proto"><summary>How to measure (every 4 weeks, morning, before food)</summary><ul class="cues">${Object.entries(GOALS.PROTOCOL).map(([, v]) => `<li>${esc(v)}</li>`).join("")}</ul></details>
+    <div class="rowbtns"><button class="btn ghost" onclick="photoSheet()">📸 Photo checklist</button></div>
     ${ratio ? `<div class="statline" style="margin-top:8px"><span class="note">Shoulder ÷ waist</span> <b style="font-size:20px;font-variant-numeric:tabular-nums">${ratio.toFixed(2)}</b> <span class="note">· 1.4 athletic · 1.5 strong V · 1.6 elite</span></div>` : ""}
     <p class="note" style="margin-top:8px">${esc(verdict)}</p>
     ${mk.length ? `<div class="tablewrap" style="margin-top:8px"><table><tr><th>Date</th><th>Waist</th><th>Shoulders</th><th>Arm</th><th>Ratio</th></tr>${mk.slice(-6).reverse().map((k) => { const m = S.meas[k]; return `<tr><td>${esc(k)}</td><td>${m.wa || "—"}</td><td>${m.sh || "—"}</td><td>${m.ar || "—"}</td><td>${m.sh && m.wa ? (m.sh / m.wa).toFixed(2) : "—"}</td></tr>`; }).join("")}</table></div>` : `<p class="note">Nothing logged. Measure cold, first thing — waist at the navel, shoulders at the widest point, arm at the peak. Flexed or cold, pick one and never switch: consistency matters more than which. Monthly.</p>`}
@@ -3072,8 +3416,9 @@ async function forceUpdate() {
   location.replace(location.pathname + "?u=" + Date.now());
 }
 function renderMore() {
+  const whatsNewCard = `<div class="card single"><div class="eyebrow sig">Model 2</div><p class="note">The arm, upper-chest, upper-back and 3D-shoulder blocks, the meet-day rebuild and goal tracking. Starts Wave 4.</p><div class="rowbtns"><button class="btn ghost" onclick="whatsNew()">What's new in Model 2</button></div></div>`;
   const logged = Object.keys(S.logs).filter((k) => DK_RE.test(k) && S.logs[k].sets && Object.keys(S.logs[k].sets).length).sort().reverse();
-  $("#view").innerHTML = `
+  $("#view").innerHTML = whatsNewCard + `
     <div class="card"><div class="eyebrow sig">History</div>
       ${logged.length ? logged.slice(0, 40).map((dk) => { const loc = E.whereIs(Date.parse(dk), SHIFT()); return `<div class="lset"><button class="linkbtn" onclick="openDay('${esc(dk)}')">${esc(dk)} · W${loc.wave}·wk${loc.week}·d${loc.day}${S.logs[dk].r ? " · " + esc(S.logs[dk].r) : ""}</button><button class="x" onclick="delDay('${esc(dk)}')">✕</button></div>`; }).join("") : `<p class="note">No sessions logged yet. They'll pile up here.</p>`}</div>
     <div class="card"><div class="eyebrow sig">Weekend specialization</div>
@@ -3119,12 +3464,16 @@ window.logMeas = () => {
   const wa = parseFloat(document.getElementById("mw").value);
   const sh = parseFloat(document.getElementById("ms").value);
   const ar = parseFloat(document.getElementById("ma").value);
-  if (!Number.isFinite(wa) && !Number.isFinite(sh) && !Number.isFinite(ar)) return;
+  const nk = parseFloat(document.getElementById("mn").value), ch = parseFloat(document.getElementById("mc").value), dx = parseFloat(document.getElementById("mx").value);
+  if (![wa, sh, ar, nk, ch, dx].some(Number.isFinite)) return;
   const k = keyOf(todayUTC());
   S.meas[k] = S.meas[k] || {};
   if (Number.isFinite(wa)) S.meas[k].wa = wa;
   if (Number.isFinite(sh)) S.meas[k].sh = sh;
   if (Number.isFinite(ar)) S.meas[k].ar = ar;
+  if (Number.isFinite(nk)) S.meas[k].nk = nk;
+  if (Number.isFinite(ch)) S.meas[k].ch = ch;
+  if (Number.isFinite(dx) && dx > 2 && dx < 60) S.meas[k].dx = dx;
   save(); render();
 };
 window.delDay = (dk) => { if (confirm("Delete this session log?")) { delete S.logs[dk]; save(); render(); } };
@@ -3228,7 +3577,7 @@ function renderInner() {
   else ws.innerHTML = [1, 2, 3, 4].map((w) => `<i class="${w < loc.week ? "past" : w === loc.week ? "cur" : ""}"></i>`).join("");
   $("#ctxline").innerHTML = loc.pre ? "Wave 1 begins " + fmt(E.waveStartUTC(1, off))
     : loc.wave > 19 ? "Beyond Wave 19 — ask for the next map"
-    : `Wave ${loc.wave} · Week ${loc.week} · ${E.CYCLE_NAME[E.cycleOf(loc.wave)]} · CB <b>${E.cbFor(loc.wave, GX()).bn}/${E.cbFor(loc.wave, GX()).sq}/${E.cbFor(loc.wave, GX()).dl}</b>`;
+    : `${loc.wave < E.MODEL2_FROM ? "Model 1 · " : ""}Wave ${loc.wave} · Week ${loc.week} · ${E.CYCLE_NAME[E.cycleOf(loc.wave)]} · CB <b>${E.cbFor(loc.wave, GX()).bn}/${E.cbFor(loc.wave, GX()).sq}/${E.cbFor(loc.wave, GX()).dl}</b>`;
   ({ today: renderToday, road: renderRoad, moves: renderMoves, trends: renderTrends, more: renderMore })[tab]();
 }
 window.closeSheet = closeSheet; window.moveSheet = moveSheet;

@@ -178,6 +178,20 @@ Direct sets a week, Weeks 1–2, before → after: upper traps 1 → 6, rear del
 
 ---
 
+## Goal tracking (Model 2)
+
+Each goal gets a metric, a measuring protocol, the pace it needs to reach its target by Wave 45, and the pace measured from his own readings. A verdict is only called when the gap is bigger than the measurement noise.
+
+| Plan element | Label | Source | What it supports |
+|---|---|---|---|
+| Body fat from waist, neck and height (US Navy equation) | Partly | Hodgdon & Beckett 1984 (Naval Health Research Center report) · Foulis 2023, *Front Physiol* 14:1183836 | The equation was built against underwater weighing. Against DXA in 926 Army trainees it read about 6 points low (SEE 3.4%) and caught about two thirds of an 8-week change (error SD 2.4 points). So the app uses it as a trend, says so on screen, and lets one DXA scan set a personal offset. |
+| Lean mass = 7-day bodyweight × (1 − body fat) | Partly | Foulis 2023 (above) | The tape's error in a change (about 2.4 points) times his bodyweight is about 4.5 lb, larger than a year of lean gain; the lean-mass verdict therefore waits for 6 months of monthly tapes or two DXA scans. |
+| Tape noise: a quarter inch for arm, waist and neck; half an inch for shoulders and chest | Judgment | — | Used to size the band a trend must clear before the app calls ahead or behind. |
+| Verdict band: 2 × √2 × noise over the span | Judgment | — | A deliberately conservative two-reading band; more readings only make it safer. |
+| Targets: 170 lb lean, 15%, 200 lb, 16" flexed arm, shoulder ÷ waist 1.5, ~11% for back detail | Judgment | — | His stated goals. 1.5 is the app's "strong V" line; ~11% follows the Phase 2 plan. |
+| Photos every 4 weeks for upper chest, upper back, 3D shoulders and back detail | Judgment | — | No validated tape measure exists for these regions; standardized photos compared over months are the practical yardstick. |
+| Adherence = logged sets / planned sets, last 4 weeks | Judgment | — | The first lever when a goal falls behind: a plan not done cannot be judged. |
+
 ## Judgment calls, in one list
 
 1. Rule D cut-offs, and the choice of the program's own model over "clean only at RPE 7".

@@ -1174,7 +1174,7 @@ console.log("\n── frame requirements ──");
 {
   const fs = require("fs");
   const ev = fs.readFileSync(__dirname + "/EVIDENCE.md", "utf8");
-  const src = ["engine.js", "app-shell.html", "nutrition.js", "notes/nutrition.txt"].map((f) => fs.readFileSync(__dirname + "/" + f, "utf8")).join("\n");
+  const src = ["engine.js", "app-shell.html", "nutrition.js", "goals.js", "notes/nutrition.txt"].map((f) => fs.readFileSync(__dirname + "/" + f, "utf8")).join("\n");
   const MONTHS = /^(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)/;
   const cites = new Set((src.match(/\b[A-Z][a-z\u00C0-\u017F][a-zA-Z\u00C0-\u017F-]* (?:19|20)\d{2}\b/g) || []).filter((c) => !MONTHS.test(c)));
   ok(cites.size >= 10, `citations found in the app: ${cites.size}`);
@@ -1642,6 +1642,64 @@ eq(E.sessionFor(2, 1, 1, {}, E.DEFAULT_SPEC).find((b) => b.type === "warmup").ro
     }
   }
   eq(dup.slice(0, 3), [], "keys: no session has two loggable blocks with the same key, for any spec");
+}
+
+// ═══ MODEL 2: goal tracking (goals.js) ═══
+{
+  const G = require("./goals.js");
+  eq([E.MODEL2_FROM, E.modelOf(3), E.modelOf(4), E.modelOf(19)], [4, 1, 2, 2], "model 2 starts at Wave 4; Waves 1-3 are Model 1");
+  // Navy equation (Hodgdon & Beckett 1984): known value, and guards
+  eq(G.navyBF(34, 15.5, 68.5), 17.2, "navy: 34\" waist, 15.5\" neck, 68.5\" tall = 17.2%");
+  ok(G.navyBF(36, 15.5, 68.5) > G.navyBF(34, 15.5, 68.5), "navy: a bigger waist reads fatter");
+  ok(G.navyBF(34, 16.5, 68.5) < G.navyBF(34, 15.5, 68.5), "navy: a bigger neck reads leaner");
+  eq([G.navyBF(15, 16, 68.5), G.navyBF(null, 15, 68.5), G.navyBF(34, 0, 68.5)], [null, null, null], "navy: impossible inputs give no number");
+  // DXA calibration: one scan sets an offset that corrects every tape estimate
+  const meas = { "2026-11-07": { wa: 34, nk: 15.5 }, "2026-11-09": { dx: 21.2 }, "2026-12-05": { wa: 34, nk: 15.5 } };
+  const bf = G.bfSeries(meas, 68.5);
+  eq([bf.offset, bf.calibratedBy], [4, "2026-11-09"], "bf: a DXA within 21 days of a tape sets the offset (21.2 - 17.2 = +4.0)");
+  eq(bf.points.filter((x) => x.src !== "dxa").map((x) => x.v), [21.2, 21.2], "bf: every tape estimate is corrected by the offset");
+  eq(G.bfSeries({ "2026-11-07": { wa: 34, nk: 15.5 }, "2026-12-30": { dx: 21 } }, 68.5).offset, 0, "bf: a DXA far from any tape day does not calibrate");
+  // bodyweight and lean mass
+  const bw = { "2026-12-01": 190, "2026-12-02": 191, "2026-12-03": 190.5, "2026-12-05": 190.5 };
+  eq(G.bw7(bw, "2026-12-05"), 190.5, "bw7: the 7-day mean when 3+ weigh-ins");
+  eq(G.leanSeries({ "2026-12-05": { wa: 34, nk: 15.5 } }, bw, 68.5).points[0].v, Math.round(190.5 * (1 - 0.172) * 10) / 10, "lean = bw7 x (1 - bf)");
+  // trend needs 3 readings over 8 weeks; then it is a least-squares slope per month
+  const pts = (vals, gapDays) => vals.map((v, i) => ({ t: Date.UTC(2026, 9, 1) + i * gapDays * 86400000, v }));
+  eq(G.trend(pts([13, 13.2], 30)), null, "trend: two readings are a difference, not a trend");
+  eq(G.trend(pts([13, 13.1, 13.2], 20)), null, "trend: under 8 weeks is too short");
+  const tr = G.trend(pts([13, 13.1, 13.2], 30.44));
+  ok(Math.abs(tr.perMonth - 0.1) < 1e-9 && tr.n === 3, `trend: 0.1"/month recovered exactly (${tr.perMonth})`);
+  // verdicts only beyond the noise band
+  ok(Math.abs(G.band(0.25, 2) - 2 * Math.SQRT2 * 0.25 / 2) < 1e-12, "band: 2 x sqrt2 x noise over the span");
+  const J = (have, span, need) => G.judge({ now: 13, target: 16, monthsLeft: 3 / need, trend: { perMonth: have, spanMonths: span }, noise: 0.25 }).status;
+  eq([J(0.1, 6, 0.08), J(0.5, 12, 0.08), J(0.0, 3, 0.08), J(0.0, 12, 0.08), J(-0.2, 12, 0.08)], ["ontrack", "ahead", "ontrack", "behind", "behind"], "judge: a flat arm over 3 months is inside tape noise; over 12 months it is behind");
+  eq(G.judge({ now: 16.1, target: 16, monthsLeft: 10, trend: null, noise: 0.25 }).status, "reached", "judge: reached");
+  eq(G.judge({ now: 13, target: 16, monthsLeft: 10, trend: null, noise: 0.25 }).status, "early", "judge: no trend yet = too early to call");
+  eq(G.judge({ now: null, target: 16, monthsLeft: 10, trend: null, noise: 0.25 }).status, "nodata", "judge: nothing measured");
+  // the weekly priorities the tracker shows are the numbers under test elsewhere
+  const wk = []; for (let d = 1; d <= 7; d++) wk.push(...E.sessionFor(4, 1, d, {}, E.DEFAULT_SPEC));
+  const R = G.weekRegions(wk);
+  eq([R.curls, R.triceps, R.upperChest, R.traps, R.rearDelts, R.sideDelts], [11, 15, 14, 6, 9, 13], "tracker: Wave 4 plan = curls 11, triceps 15, upper chest 14, traps 6, rear delts 9, side delts 13");
+  eq(G.adherence([{ planned: 20, logged: 20 }, { planned: 20, logged: 25 }, { planned: 10, logged: 0 }]), 80, "adherence: extra sets never hide missed ones");
+  eq(G.adherence([]), null, "adherence: nothing planned = no number");
+  // due every 4 weeks; a full measure needs waist + neck + arm
+  const d1 = G.due({ "2026-10-01": { wa: 34, nk: 15.5, ar: 13.25 } }, { "2026-10-01": 1 }, "2026-10-20");
+  eq([d1.measure, d1.photos], [false, false], "due: not before 28 days");
+  const d2 = G.due({ "2026-10-01": { wa: 34, ar: 13.25 } }, {}, "2026-10-20");
+  eq([d2.measure, d2.photos], [true, true], "due: an incomplete measure (no neck) and no photos are due");
+  // report: every declared goal is present, strength late = behind with a lever
+  const rep = G.report({ meas: {}, bw: {}, photos: {}, today: "2026-10-07", deadline: Date.UTC(2029, 11, 3),
+    strength: { now: { bn: 255, sq: 295, dl: 385 }, goal: { bn: 315, sq: 405, dl: 495 }, eta: { bn: { wave: 27, ms: Date.UTC(2028, 6, 17) }, sq: { wave: 25, ms: Date.UTC(2028, 4, 22) }, dl: null } },
+    regions: R, adherence: 60, sleepAvg: 6.5, bwRatePerWeek: 0 });
+  eq(rep.goals.map((g) => g.key), ["strength", "lean", "arms", "shoulders", "upperchest", "upperback", "back"], "report: all seven goals tracked");
+  const st = rep.goals.find((g) => g.key === "strength");
+  ok(st.status === "behind" && st.lever.some((x) => /60%/.test(x)) && st.lever.some((x) => /6.5 h/.test(x)), "report: a lift beyond the deadline = behind, with adherence and sleep as levers");
+  eq(rep.goals.find((g) => g.key === "back").status, "phase2", "report: the shredded back is a Phase 2 leanness goal");
+  ok(/Spot work does not remove local fat/.test(rep.goals.find((g) => g.key === "back").note), "report: back detail note says spot work does not remove local fat");
+  ok(G.MODEL2.items.length >= 8 && G.MODEL2.from === E.MODEL2_FROM, "what's new: Model 2 items listed, starting at the engine's Wave 4");
+  // photos survive the import sanitizer; junk does not
+  const san = E.sanitizeState({ logs: {}, photos: { "2026-10-01": 1, "bad": 1, "2026-10-02": "x" } });
+  eq(san.state.photos, { "2026-10-01": 1 }, "sanitize: photo days kept, junk dropped");
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

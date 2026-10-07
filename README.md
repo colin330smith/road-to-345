@@ -1,6 +1,7 @@
 # Road to 3/4/5
 
-Training tracker for a 19-wave powerbuilding program. Goal: **200 lb @ 15% body fat while hitting a 315 bench / 405 squat / 495 deadlift.**
+Training tracker for a 19-wave powerbuilding program, now **Model 2** (from Wave 4, Oct 12, 2026; Waves 1–3 are Model 1 history).
+Goal: **315 bench / 405 squat / 495 deadlift at a USPA drug-tested meet, 200 lb @ 15% body fat, 16" arms, 3D shoulders, a prominent upper chest and upper back, and a shredded back after the Phase 2 cut.**
 
 **📱 Live app (this is the real one):** https://colin330smith.github.io/road-to-345/
 Install on iPhone: open in Safari → Share → **Add to Home Screen**. Runs standalone, works fully offline, logs live in on-device `localStorage`.
@@ -26,13 +27,16 @@ No dependencies, no package manager. Python 3 and Node are used only to build an
 
 ## Architecture
 
-Three source files splice into two deliverables. **Never edit the deliverables** — they are generated and your changes will be overwritten.
+Four source files splice into two deliverables. **Never edit the deliverables** — they are generated and your changes will be overwritten.
 
 | File | Role | Edit? |
 |---|---|---|
 | `engine.js` | All programming logic — waves, cycle bases, gates, session building, progression | ✅ |
 | `fig.js` | IK-rigged stick-figure movement demos (canvas) | ✅ |
-| `app-shell.html` | UI, styling, state, rendering. Holds the `/*==ENGINE==*/` and `/*==FIGS==*/` markers | ✅ |
+| `nutrition.js` | Fuel: modes, the decision rule, menus, supplements | ✅ |
+| `goals.js` | **Model 2** goal tracking: Navy body-fat trend (DXA-calibratable), lean mass, flexed arm, shoulder ÷ waist, required vs measured pace, photo day | ✅ |
+| `app-shell.html` | UI, styling, state, rendering. Holds the `/*==ENGINE==*/`, `/*==FIGS==*/`, `/*==NUTRI==*/` and `/*==GOALS==*/` markers | ✅ |
+| `ui-test.js` | Playwright UI tests against the built app (fake clock) | ✅ |
 | `test.js` | Test suite | ✅ |
 | `build.py` | Splices the above into the two outputs | ✅ |
 | `road-to-345.html` | **generated** — standalone single file | ❌ |

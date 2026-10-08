@@ -109,6 +109,7 @@ Sat — Frame Spec
   Overhead Cable Extension: 75 × 12–15 × 4 @ RPE 8–9
   Incline DB Press (30°): 60 × 10–12 × 4 @ RPE 8 · per hand
   Chest-Supported Rear-Delt Raise (thumbs up): 12.5 × 12–15 × 3 @ RPE 8 · per hand
+  Wide-Grip Pull-Up: BW × 10–12 × 3 @ RPE 8
   Cable Y-Shrug (arms 30° out): 50 × 10–12 × 3 @ RPE 8
   Heavy Farmer Hold (seconds): 80 × 40–50 × 2 @ RPE 8–9 · per hand
   Unilateral Cable Pulldown: 105 × 12–15 × 3 @ RPE 8
@@ -204,6 +205,7 @@ Sat — Frame Spec
   Overhead Cable Extension: 75 × 15 × 4 @ RPE 8–9
   Incline DB Press (30°): 60 × 12 × 4 @ RPE 8 · per hand
   Chest-Supported Rear-Delt Raise (thumbs up): 12.5 × 15 × 3 @ RPE 8 · per hand
+  Wide-Grip Pull-Up: BW × 12 × 3 @ RPE 8
   Cable Y-Shrug (arms 30° out): 50 × 12 × 3 @ RPE 8
   Heavy Farmer Hold (seconds): 80 × 50 × 2 @ RPE 8–9 · per hand
   Unilateral Cable Pulldown: 105 × 15 × 3 @ RPE 8
@@ -299,6 +301,7 @@ Sat — Frame Spec
   Overhead Cable Extension: 75 × 12–15 × 2 @ RPE 8–9
   Incline DB Press (30°): 60 × 10–12 × 2 @ RPE 8 · per hand
   Chest-Supported Rear-Delt Raise (thumbs up): 12.5 × 12–15 × 2 @ RPE 8 · per hand
+  Wide-Grip Pull-Up: BW × 10–12 × 2 @ RPE 8
   Cable Y-Shrug (arms 30° out): 50 × 10–12 × 2 @ RPE 8
   Heavy Farmer Hold (seconds): 80 × 40–50 × 2 @ RPE 8–9 · per hand
   Unilateral Cable Pulldown: 105 × 12–15 × 2 @ RPE 8

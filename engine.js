@@ -508,6 +508,7 @@ function sx(name, seed, steps, sets, rpe, arch, moveId, db, cap, inc, wv, since)
     type: "accessory", name, w: st.w, reps: lo === hi ? String(lo) : lo + "\u2013" + hi,
     sets, rpe, arch, moveId, db: !!db, cap: cap || "", spec: true, repN: lo, repHi: hi, inc: inc == null ? 5 : inc,
     top: hi === steps[last] && steps.length > 1, pkey: key, prog: st.prog,
+    ...((wv || 1) >= 4 ? { steps } : {}), // Wave 4+: the Now card shows the ladder (Waves 1-3 stay byte-identical)
   };
 }
 
@@ -652,6 +653,12 @@ function saturdaySession(wave, week, spec) {
   frame.forEach((ex) => blocks.push({ ...ex, sets: reduced ? 2 : ex.sets, primary: true }));
   // declared weak points (Wave 3 feedback): a second upper-chest press angle and real grip work
   blocks.push(sx("Incline DB Press (30\u00b0)", 60, [8, 10, 12], reduced ? 2 : wave >= 4 ? 4 : 3, "8", "incpress", "incdb", true, "UPPER CHEST \u2014 dumbbells go deeper than the bar, so the clavicular pec is loaded at length. 30\u00b0 bench, elbows ~45\u00b0, stop the descent when the stretch peaks", 5, wave, 3));
+  // LATS / V-TAPER (Wave 4+): more weekly lat sets, on a day that is already a lat day. At equal volume a
+  // fourth lat day adds nothing (Schoenfeld 2019), and Saturday is the one slot that costs the meet lifts
+  // nothing: Thursday sits 24 h before the tracked chin-up's top set and every other weekday is at its
+  // clock. Before the Y-shrug and farmer hold, so grip never limits it. The lat-width frame already
+  // pulls twice, so it skips this. Bodyweight first; added load displays as "+w".
+  if (wave >= 4 && spec.framePrimary !== "latwidth") blocks.push({ ...sx("Wide-Grip Pull-Up", 0, [10, 12, 15], reduced ? 2 : 3, "8", "pulldown", "widepull", false, "LATS \u2014 the V-taper. OVERHAND, hands just outside the shoulders up to about 1.5\u00d7 shoulder width, off the bar's sloped ends; bar in front, never behind the neck. Full dead hang with the shoulders set, then drive the elbows down to the ribs until the chin clears. RPE 8: a compound, no failure set. Bodyweight until 15 is easy, then a belt or dumbbell (log the added weight). 'Wide' is a preference: lat activity is about the same from 1 to 2\u00d7 shoulder width and the widest grip cost load (Andersen 2014, Lusk 2010). The extra weekly sets are what grow the lats (Pelland 2026)", 5, wave, 4), added: true });
   // UPPER TRAPS (Wave 4+): the second shrug day, 24 h AFTER the deadlift and 48 h before Monday's
   // anchor, so no trap or grip work lands in the 24 h before a deadlift. Straps on, before the
   // farmer hold so grip never limits it. The traps frame already shrugs, so it skips this.
@@ -1138,6 +1145,7 @@ function dayE1RM(sets, opts = {}) {
 // LOG-7: swaps for a busy gym, same muscle and length bias (judgment). A swapped exercise logs under
 // "<pkey>~<slug>", so it never moves the planned exercise's rung.
 const ALT = {
+  "wide-grip-pull-up": ["Neutral-Grip Pull-Up", "Shoulder-Width Pull-Up"],
   rowhi: ["Seated Cable Row (wide grip)", "T-Bar Row (chest pad, wide grip)"],
   rowtue: ["Seated Cable Row (close grip)", "Single-Arm DB Row"],
   legpress: ["Hack Squat", "Pendulum Squat"],

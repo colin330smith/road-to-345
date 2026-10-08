@@ -1301,7 +1301,7 @@ eq(E.sessionFor(2, 1, 1, {}, E.DEFAULT_SPEC).find((b) => b.type === "warmup").ro
   const sum = (wv, wk, f) => week(wv, wk).filter((b) => LOG.includes(b.type) && !prim(b) && f(b.name || "")).reduce((n, b) => n + b.sets, 0);
   const days = (wv, wk, f) => [...new Set(week(wv, wk).filter((b) => LOG.includes(b.type) && !prim(b) && f(b.name || "")).map((b) => b.d))].sort();
   const isShrug = (n) => /Shrug/.test(n), isRear = (n) => /Rear-Delt|Reverse Pec|Reverse-Pec|Face Pull/i.test(n);
-  const isRow = (n) => /Row\b/.test(n), isVert = (n) => /Chin-Up|Pulldown/.test(n);
+  const isRow = (n) => /Row\b/.test(n), isVert = (n) => /Chin-Up|Pull-Up|Pulldown/.test(n); // Pull-Up: Saturday's wide-grip pull-up (Wave 4+) must count
 
   // (1) the doses (Weeks 1-2, default spec)
   eq([sum(3, 1, isShrug), sum(4, 1, isShrug)], [1, 6], "upper back: direct upper-trap sets 1 -> 6 from Wave 4 (Conley 1997, Andersen 2009; the number is judgment)");
@@ -1311,7 +1311,7 @@ eq(E.sessionFor(2, 1, 1, {}, E.DEFAULT_SPEC).find((b) => b.type === "warmup").ro
   eq(days(4, 1, isRear), [2, 4, 6], "3D delts: rear delts on Tue (anchor), Thu (face pull), Sat (raise)");
   eq([sum(3, 1, isSideDelt), sum(4, 1, isSideDelt)], [11, 13], "3D delts: side delts 11 -> 13 from Wave 4, inside the 16 cap");
   eq([sum(3, 1, isRow), sum(4, 1, isRow)], [7, 7], "upper back: 7 row sets a week, Friday's now the upper-back row");
-  eq([sum(4, 1, isVert), sum(4, 3, isVert), sum(5, 1, isVert)], [7, 6, 6], "back detail: vertical pulls 7 / 6 / 6 (week 3 and Cycle 5 trim the pulldown to 2, never delete it)");
+  eq([sum(3, 1, isVert), sum(4, 1, isVert), sum(4, 3, isVert), sum(5, 1, isVert)], [7, 10, 8, 8], "lats: vertical pulls 7 -> 10 from Wave 4 (Saturday's wide-grip pull-up), 8 in week 3 and Cycle 5 (trimmed to 2, never deleted)");
   // (2) row roles: new key + lighter seed, Waves 1-3 keep the old Friday row
   const fri4 = E.sessionFor(4, 1, 5, {}, E.DEFAULT_SPEC), tue4 = E.sessionFor(4, 1, 2, {}, E.DEFAULT_SPEC);
   ok(fri4.some((b) => b.pkey === "rowhi") && !fri4.some((b) => b.pkey === "rowfri"), "upper back: Friday's row is the high-elbow row (its own key) from Wave 4");
@@ -1389,7 +1389,9 @@ eq(E.sessionFor(2, 1, 1, {}, E.DEFAULT_SPEC).find((b) => b.type === "warmup").ro
     }
   }
   ok(wkMin <= 75 && satMin <= 85 && sunMin <= 85, `Wave 4+ budget, every spec: longest weekday ${wkMin} min (<= 75), Saturday ${satMin}, Sunday ${sunMin}`);
-  ok(wkSets <= 27 && satSets <= 34, `Wave 4+ budget, every spec: weekday non-filler sets ${wkSets} <= 27, Saturday ${satSets} <= 34`);
+  // Saturday 34 -> 37 sets is the conscious decision for the wide-grip pull-up (EVIDENCE.md "Lats and the
+  // V-taper"): the only day where 3 more lat sets cost the meet lifts nothing, and it still estimates <= 85 min.
+  ok(wkSets <= 27 && satSets <= 37, `Wave 4+ budget, every spec: weekday non-filler sets ${wkSets} <= 27, Saturday ${satSets} <= 37`);
 }
 
 // ═══ one-tap accessory progression (Wave 4+): logging exactly what is shown keeps every accessory on schedule ═══
@@ -1713,6 +1715,40 @@ eq(E.sessionFor(2, 1, 1, {}, E.DEFAULT_SPEC).find((b) => b.type === "warmup").ro
     const m = G.muscleSets(week), pri = Object.keys(G.MUSCLES).filter((k) => G.MUSCLES[k].pri);
     ok(pri.filter((k) => k !== "traps" && k !== "midtraps").every((k) => m[k] >= 10), `muscles: Wave 4 puts 10+ weekly sets on every goal muscle but the traps (${pri.map((k) => k + " " + m[k]).join(", ")})`);
     ok(m.upperchest > m.chest, `muscles: Wave 4 upper chest (${m.upperchest}) out-doses mid chest (${m.chest})`); }
+}
+
+// ═══ lats and the V-taper (Wave 4+): Saturday's wide-grip pull-up, EVIDENCE.md "Lats and the V-taper" ═══
+{
+  const G = require("./goals.js");
+  const pu = (w, wk, spec, ctx) => E.sessionFor(w, wk, 6, {}, spec || E.DEFAULT_SPEC, ctx).find((b) => b.pkey === "wide-grip-pull-up");
+  const p41 = pu(4, 1), p42 = pu(4, 2), p43 = pu(4, 3);
+  ok(!pu(1, 1) && !pu(2, 2) && !pu(3, 1), "pull-up: Waves 1-3 never had it (history)");
+  ok(p41 && p41.sets === 3 && p41.w === 0 && p41.added && p41.repN === 10 && p42.repN === 12 && p41.rpe === "8" && !p41.lastHard, "pull-up: Wave 4 is 3 sets at bodyweight, 10 then 12 reps, RPE 8, no failure set (a compound)");
+  eq(p41.steps, [10, 12, 15], "pull-up: the ladder tops out at 15 (rep-in-reserve calls get worse past 12: Halperin 2022), then load");
+  ok(p43.sets === 2 && pu(5, 1).sets === 2 && !pu(4, 4) && !pu(6, 1) && !pu(6, 2), "pull-up: week 3 and Cycle 5 trim to 2 sets; the deload and the peak have none");
+  ok(!pu(4, 1, { ...E.DEFAULT_SPEC, framePrimary: "latwidth" }), "pull-up: the lat-width frame already pulls twice, so it skips it");
+  const sat = E.sessionFor(4, 1, 6, {}, E.DEFAULT_SPEC), at = (re) => sat.findIndex((b) => re.test(b.name || ""));
+  ok(at(/Pull-Up/) > at(/Rear-Delt Raise/) && at(/Pull-Up/) < at(/Y-Shrug/) && at(/Pull-Up/) < at(/Farmer/), "pull-up: after the incline press + rear-delt pair, before the Y-shrug and farmer hold (grip fresh)");
+  for (let d = 1; d <= 5; d++) for (const wk of [1, 2, 3]) ok(!E.sessionFor(4, wk, d, {}, E.DEFAULT_SPEC).some((b) => /Pull-Up/.test(b.name || "")), `pull-up: no weekday sets (Thursday is 24 h before the chin-up top set) d${d} wk${wk}`);
+  ok(/Andersen 2014/.test(p41.cap) && /never behind the neck/.test(p41.cap) && !/best width builder|#1 V-taper|widens? your|wider lats/i.test(p41.cap), "pull-up: the cue cites the grip evidence and claims no width magic");
+  // weekly lats: 12.5 -> 15.5 fractional sets on the engine's own week
+  const wk = (w, n) => { const o = []; for (let d = 1; d <= 7; d++) o.push(...E.sessionFor(w, n, d, {}, E.DEFAULT_SPEC)); return o; };
+  eq([G.muscleSets(wk(4, 1)).lats, G.muscleSets(wk(4, 1)).biceps], [15.5, 22.5], "pull-up: lats 12.5 -> 15.5 weekly fractional sets, biceps 21 -> 22.5 (half credit)");
+  // progression: bodyweight reps first, then added load on the grid, adopting a heavier logged weight
+  const ix = {}, ctx = { index: ix, offsetWeeks: 0 };
+  const logSat = (w, n, load, reps, k = 3) => { const t = E.sessionDayUTC(w, n, 6, 0); for (let i = 0; i < k; i++) (ix["wide-grip-pull-up"] = ix["wide-grip-pull-up"] || []).push({ t, w: load, r: reps }); };
+  logSat(4, 2, 0, 12);
+  const p5 = pu(5, 1, E.DEFAULT_SPEC, ctx);
+  ok(p5.w === 0 && p5.repN === 12 && p5.prog === "on", `pull-up: 2+ sets of 12 at bodyweight climb the ladder to 12-15 (got ${p5.w} x ${p5.reps}, ${p5.prog})`);
+  logSat(5, 2, 0, 15, 2);
+  // 15 cleared at bodyweight -> +5 lb and the ladder restarts; Wave 6 is a peak (no Saturday), and a peak
+  // wave follows the schedule one step like every accessory, so Wave 7 opens at +5 x 12-15
+  const p7 = pu(7, 1, E.DEFAULT_SPEC, ctx);
+  ok(p7.w === 5 && p7.repN === 12 && p7.added, `pull-up: 2 sets of 15 at bodyweight add 5 lb (got +${p7.w} x ${p7.reps})`);
+  logSat(7, 2, 25, 15, 2);
+  const p8 = pu(8, 1, E.DEFAULT_SPEC, ctx);
+  ok(p8.w === 30 && p8.repN === 10, `pull-up: a heavier belt logged at the top target is adopted on the grid, then +5 (got +${p8.w} x ${p8.reps})`);
+  ok(E.ALT["wide-grip-pull-up"].every((n) => /Pull-Up/.test(n)), "pull-up: swaps stay bodyweight pull-ups, so the added-load display stays true");
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

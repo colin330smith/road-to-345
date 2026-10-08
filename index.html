@@ -822,6 +822,7 @@ function sx(name, seed, steps, sets, rpe, arch, moveId, db, cap, inc, wv, since)
     type: "accessory", name, w: st.w, reps: lo === hi ? String(lo) : lo + "\u2013" + hi,
     sets, rpe, arch, moveId, db: !!db, cap: cap || "", spec: true, repN: lo, repHi: hi, inc: inc == null ? 5 : inc,
     top: hi === steps[last] && steps.length > 1, pkey: key, prog: st.prog,
+    ...((wv || 1) >= 4 ? { steps } : {}), // Wave 4+: the Now card shows the ladder (Waves 1-3 stay byte-identical)
   };
 }
 
@@ -966,6 +967,12 @@ function saturdaySession(wave, week, spec) {
   frame.forEach((ex) => blocks.push({ ...ex, sets: reduced ? 2 : ex.sets, primary: true }));
   // declared weak points (Wave 3 feedback): a second upper-chest press angle and real grip work
   blocks.push(sx("Incline DB Press (30\u00b0)", 60, [8, 10, 12], reduced ? 2 : wave >= 4 ? 4 : 3, "8", "incpress", "incdb", true, "UPPER CHEST \u2014 dumbbells go deeper than the bar, so the clavicular pec is loaded at length. 30\u00b0 bench, elbows ~45\u00b0, stop the descent when the stretch peaks", 5, wave, 3));
+  // LATS / V-TAPER (Wave 4+): more weekly lat sets, on a day that is already a lat day. At equal volume a
+  // fourth lat day adds nothing (Schoenfeld 2019), and Saturday is the one slot that costs the meet lifts
+  // nothing: Thursday sits 24 h before the tracked chin-up's top set and every other weekday is at its
+  // clock. Before the Y-shrug and farmer hold, so grip never limits it. The lat-width frame already
+  // pulls twice, so it skips this. Bodyweight first; added load displays as "+w".
+  if (wave >= 4 && spec.framePrimary !== "latwidth") blocks.push({ ...sx("Wide-Grip Pull-Up", 0, [10, 12, 15], reduced ? 2 : 3, "8", "pulldown", "widepull", false, "LATS \u2014 the V-taper. OVERHAND, hands just outside the shoulders up to about 1.5\u00d7 shoulder width, off the bar's sloped ends; bar in front, never behind the neck. Full dead hang with the shoulders set, then drive the elbows down to the ribs until the chin clears. RPE 8: a compound, no failure set. Bodyweight until 15 is easy, then a belt or dumbbell (log the added weight). 'Wide' is a preference: lat activity is about the same from 1 to 2\u00d7 shoulder width and the widest grip cost load (Andersen 2014, Lusk 2010). The extra weekly sets are what grow the lats (Pelland 2026)", 5, wave, 4), added: true });
   // UPPER TRAPS (Wave 4+): the second shrug day, 24 h AFTER the deadlift and 48 h before Monday's
   // anchor, so no trap or grip work lands in the 24 h before a deadlift. Straps on, before the
   // farmer hold so grip never limits it. The traps frame already shrugs, so it skips this.
@@ -1452,6 +1459,7 @@ function dayE1RM(sets, opts = {}) {
 // LOG-7: swaps for a busy gym, same muscle and length bias (judgment). A swapped exercise logs under
 // "<pkey>~<slug>", so it never moves the planned exercise's rung.
 const ALT = {
+  "wide-grip-pull-up": ["Neutral-Grip Pull-Up", "Shoulder-Width Pull-Up"],
   rowhi: ["Seated Cable Row (wide grip)", "T-Bar Row (chest pad, wide grip)"],
   rowtue: ["Seated Cable Row (close grip)", "Single-Arm DB Row"],
   legpress: ["Hack Squat", "Pendulum Squat"],
@@ -1764,6 +1772,8 @@ const MOVES = {
     cues:["30–45° bench, DBs finish over the shoulders","Elbows about 45° from the torso"],cap:"RPE 8 cap — it assists bench, never competes with it."},
   pulldown:{name:"Unilateral Cable Pulldown",grp:"Press & Pull",arch:"pulldown",yt:"single arm cable lat pulldown",
     cues:["One arm at a time, torso tall, pull in front of the body","Elbow drives down to the hip, not back","Full stretch overhead between reps","Straps welcome — lats are the target, not grip"],cap:"RPE 8. Saturday lat work; 2 sets in reduced weeks, never zero."},
+  widepull:{name:"Wide-Grip Pull-Up",grp:"Press & Pull",arch:"pulldown",yt:"wide grip pull up form",
+    cues:["Overhand, hands just outside the shoulders up to about 1.5× shoulder width, off the bar's sloped ends","Start from a full dead hang, shoulders set, not shrugged","Drive the elbows down to the ribs until the chin clears; bar in front, never behind the neck","Bodyweight until 15 is easy, then a belt or dumbbell: log the added weight"],cap:"RPE 8, a compound: no failure set. Saturday lat volume, 2 sets in reduced weeks. Grip width is comfort: lat activity is about the same from 1 to 2× shoulder width (Andersen 2014, Lusk 2010)."},
   pullover:{name:"Machine Pullover",grp:"Press & Pull",arch:"pulldown",yt:"machine pullover lats",
     cues:["Arms stay long — pure shoulder extension","Full stretch overhead, squeeze to the hips","It works the chest as well as the lats: a variation, not the top lat builder","No machine? Straight-arm cable pulldown"],cap:"RPE 8–9."},
   lowhigh:{name:"Low-to-High Cable Fly",grp:"Press & Pull",arch:"rearfly",yt:"low to high cable fly upper chest",
@@ -2334,7 +2344,7 @@ const PRIMER = {
            ["D2", "DB shrug, light, 1 s hold",        "2×15",         "traps / neckline",                           { from: "Shrug",                     pct: 0.60, fallback: 100, note: "machine, or 55-lb DBs" }],
            ["E",  "Hammer curl 2×15 + wrist curl 2×20", "",       "only if sleeves are rolled",                 { from: "Hammer Curl",               pct: 0.75, fallback: 30, per: "hand", note: "wrist curl at 30" }],
            ["F",  "Lateral raise drop set",           "×1, three drops", "to a burn, not to failure",               { from: "Cable Lateral Raise",       pct: 0.75, fallback: 15, note: "then 12.5 → 10 → 7.5" }],
-           ["G",  "Stomach vacuum, standing",       "3×30 s",       "finisher — pulls the waist IN. An ab wheel pumps the midsection outward and leaves it sore; abs don’t read through a shirt, a tight waist does", 0]],
+           ["G",  "Stomach vacuum, standing",       "3×30 s",       "finisher — a held vacuum draws the waist in for the moment (posture, not training: no study shows it shrinks the waist). Skip the ab wheel today: abs don’t read through a shirt, a tight waist does (judgment)", 0]],
     finish: "Posture reset, last 3 min: chin tucks ×10 · wall slides ×10 · doorway pec stretch 30 s/side. Stand tall.",
     after: "Banana or rice cakes + 500 ml water with a pinch of salt — extends the pump. Pocket a band: 15 pull-aparts + 5 chin tucks in the car before you walk in — the scapular retractors stay switched on for a while after you fire them.",
     boosters: ["30–50 g fast carbs 30 min before (banana, juice): insulin raises muscle blood flow and pulls water in with the glycogen", "Citrulline malate 6–8 g, 45–60 min before: nitric-oxide precursor, modest but real vasodilation. Certified (NSF for Sport / Informed Sport) only. Skip arginine — poor absorption", "If you own BFR cuffs: on the arm superset only, 30% load, 30/15/15/15 reps, cuffs off after — the strongest acute-swelling tool there is"] },
@@ -2804,6 +2814,7 @@ const MODEL2 = {
     ["Upper chest", "14 incline-biased sets a week: Thursday growth sets moved to a 30° incline; 4 Saturday incline DB sets."],
     ["Upper back & traps", "Shrug becomes the trap anchor (3 sets) + a Saturday cable Y-shrug; Friday becomes a high-elbow upper-back row."],
     ["3D shoulders", "Rear delts 5 → 9 sets with a real anchor, side delts 11 → 13, a band external-rotation primer before pressing."],
+    ["Lats & the V-taper", "3 Saturday sets of wide-grip pull-ups (bodyweight, then a belt): lats 12.5 → 15.5 weekly sets, on the one day that costs the meet lifts nothing. The waist stays the guard while you bulk."],
     ["Meet day", "Attempts in kg from your rated singles, the real opener rehearsed in week 3, USPA commands on every heavy single, meet-date alignment."],
     ["Logging", "Extra sets visible, edited weights carry to the next set, rest timer starts itself, swaps and 'last time' per exercise."],
     ["Data safety", "Imports checked before they replace anything, a recovery screen, dated schedule shifts that never move past logs."],
@@ -2891,7 +2902,7 @@ function whereUsed(id) {
   if (M[id]) return M[id];
   const a = E.ACC.find((x) => (x.moveId || x.id) === id);
   if (a) return ["", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"][a.day] + (id === "bander" ? " and Thursday, before pressing" : "");
-  return { xbody: "Saturday — side delt", rdraise: "Saturday — rear delt", yshrug: "Saturday — traps", inccurl: "Saturday — arms", incdb: "Saturday — upper chest", farmer: "Saturday — grip", pulldown: "Saturday — lats" }[id] || "";
+  return { xbody: "Saturday — side delt", rdraise: "Saturday — rear delt", yshrug: "Saturday — traps", inccurl: "Saturday — arms", incdb: "Saturday — upper chest", farmer: "Saturday — grip", pulldown: "Saturday — lats", widepull: "Saturday — lats, before the Y-shrug and farmer hold" }[id] || "";
 }
 function moveSheet(id, pkey) {
   const m = MOVES[id]; if (!m) return;
@@ -3010,7 +3021,7 @@ function nowCard({ dk, loc, blocks, rows, log, ready }) {
     return `<div class="card now">${head("Rest")}
       <div class="nowrest">${ringSVG(f, "nowring")}<div class="rnum"><b id="nowt">${mmss(left)}</b><small>of ${mmss(tTot / 1000)}</small></div></div>
       <p class="note" style="text-align:center">Up next · <b style="color:var(--chalk)">${esc(next.b.name)}</b></p>
-      <div class="nowbig" style="text-align:center;font-size:44px">${next.nw === 0 ? (/Band/.test(next.b.name) ? "Band" : "BW") : next.nw}<small> × ${esc(String(next.nr))}</small></div>
+      <div class="nowbig" style="text-align:center;font-size:44px">${next.nw === 0 ? (/Band/.test(next.b.name) ? "Band" : "BW") : next.b.added ? "+" + next.nw : next.nw}<small> × ${esc(String(next.nr))}</small></div>
       <p class="note" style="text-align:center">set ${next.sets.length + 1} of ${next.planned}${isBarbell(next.b) && next.nw > 45 ? " · " + esc(platesTxt(next.nw)) + " a side" : ""}</p>
       <div class="row2"><button class="btn ghost" onclick="nowPlus()">+30 s</button><button class="btn ghost" onclick="nowSkip()">Skip rest</button></div></div>`;
   }
@@ -3045,9 +3056,15 @@ function nowCard({ dk, loc, blocks, rows, log, ready }) {
   // 5. the next set
   const r = next, b = r.b, adj = nowAdj && nowAdj.bkey === r.bkey ? nowAdj : null;
   const W = adj ? adj.w : r.nw, R = adj ? adj.r : r.nr, si = r.sets.length, lastHard = b.lastHard && si === r.planned - 1;
-  const def = b.type === "accessory" && b.pkey ? E.ACC.find((a) => a.id === b.pkey) : null, steps = def && def.steps && def.steps.length > 1 ? def.steps : null;
-  const k = steps ? steps.indexOf(+b.reps) : -1;
-  const ladder = k >= 0 ? `<div class="ladder">${steps.map((s, j) => `<span class="${j === k ? "c" : j === k + 1 ? "n" : ""}">${s}</span>`).join("")}<em>${k === steps.length - 1 ? `2 sets of ${steps[k]} → weight goes up next time` : `2 sets of ${steps[k]} → ${steps[k + 1]} reps next time`}</em></div>` : "";
+  // the rep ladder, read the way the engine reads it (accStateLogged): 2 sets at the wave's top target
+  // in one session move the next wave up a step, and the last step adds load instead
+  const def = b.type === "accessory" && b.pkey ? E.ACC.find((a) => a.id === b.pkey) : null;
+  const steps = def && def.steps && def.steps.length > 1 ? def.steps : b.steps && b.steps.length > 1 ? b.steps : null;
+  // primers and fillers are warm-up effort with no load steps: no ladder for them
+  const cur = b.repN != null ? +b.repN : +b.reps, ci = steps && !b.light && !/^(PRIMER|FILLER)/.test(b.cap || "") ? steps.indexOf(cur) : -1;
+  const ri = ci < 0 ? -1 : def ? (loc.week === 2 ? Math.max(0, ci - 1) : ci) : Math.max(0, steps.indexOf(+b.repHi) - 1);
+  const hiI = ri < 0 ? -1 : Math.min(ri + 1, steps.length - 1), atTop = hiI >= 0 && hiI === steps.length - 1;
+  const ladder = ri >= 0 ? `<div class="ladder">${steps.map((s, j) => `<span class="${j === ci ? "c" : j === hiI ? "n" : ""}">${s}</span>`).join("")}<em>2 sets of ${steps[hiI]} this wave → ${!atTop ? "the ladder climbs next wave" : b.inc > 0 ? `+${b.inc} lb${b.added ? " added" : ""} next wave` : "add load and log it"}</em></div>` : "";
   const lit = GOALS.muscleRule(b.name), goal = Object.keys(lit).filter((m) => lit[m] >= 1 && GOALS.MUSCLES[m] && GOALS.MUSCLES[m].pri).map((m) => GOALS.MUSCLES[m].n);
   const mv = b.moveId && MOVES[b.moveId], cue = mv && mv.cues && mv.cues[0];
   const wTxt = W === 0 ? (/Band/.test(b.name) ? "Band" : "BW") : b.added ? "+" + W : W;
@@ -3062,8 +3079,8 @@ function nowCard({ dk, loc, blocks, rows, log, ready }) {
     ${isBarbell(b) ? platesHTML(W) : ""}${r.isSingle && b.reps === 1 && E.LIFTS.includes(b.lift) ? `<div class="cmds"><span>START</span><span>${b.lift === "bn" ? "PRESS" : b.lift === "sq" ? "SQUAT" : "LIFT"}</span><span>RACK</span></div>` : ""}${ladder}
     ${cue ? `<p class="nowcue">${esc(cue)}</p>` : ""}
     <button class="nowcta" onclick="nowLog('${dk}','${r.bkey}',${W},${R},'${esc(b.pkey || "")}',${r.cap},${r.rest(si)},${W !== r.nw || String(R) !== String(r.nr)})">✓ Log ${wTxt} × ${esc(String(R))}</button>
-    <div class="row2"${r.nw === 0 ? ' style="grid-template-columns:1fr"' : ""}>${r.nw === 0 ? "" : `<div class="stp"><button onclick="nowStep('${r.bkey}',${r.nw},${JSON.stringify(String(r.nr))},'w',-${step})" aria-label="Less weight">−</button><span><b>${wTxt}</b> lb</span><button onclick="nowStep('${r.bkey}',${r.nw},${JSON.stringify(String(r.nr))},'w',${step})" aria-label="More weight">+</button></div>`}
-      <div class="stp"><button onclick="nowStep('${r.bkey}',${r.nw},${JSON.stringify(String(r.nr))},'r',-1)" aria-label="One rep fewer">−</button><span><b>${esc(String(R))}</b> reps</span><button onclick="nowStep('${r.bkey}',${r.nw},${JSON.stringify(String(r.nr))},'r',1)" aria-label="One rep more">+</button></div></div></div>`;
+    <div class="row2"${r.nw === 0 && !b.added ? ' style="grid-template-columns:1fr"' : ""}>${r.nw === 0 && !b.added ? "" : `<div class="stp"><button onclick="nowStep('${r.bkey}',${r.nw},'${esc(String(r.nr))}','w',-${step})" aria-label="Less weight">−</button><span><b>${wTxt}</b>${W === 0 ? "" : " lb"}</span><button onclick="nowStep('${r.bkey}',${r.nw},'${esc(String(r.nr))}','w',${step})" aria-label="More weight">+</button></div>`}
+      <div class="stp"><button onclick="nowStep('${r.bkey}',${r.nw},'${esc(String(r.nr))}','r',-1)" aria-label="One rep fewer">−</button><span><b>${esc(String(R))}</b> reps</span><button onclick="nowStep('${r.bkey}',${r.nw},'${esc(String(r.nr))}','r',1)" aria-label="One rep more">+</button></div></div></div>`;
 }
 // the day at a glance, shown once, before the first set
 function briefHTML(loc, blocks, ready) {
@@ -3201,8 +3218,8 @@ function renderToday() {
       </div><span class="hdrbtns">${E.ALT[b0.pkey] && b0.type === "accessory" ? `<button class="ibtn" onclick="swapSheet('${dk}','${b0.pkey}')" aria-label="Swap exercise">⇄</button>` : ""}${b.moveId ? `<button class="ibtn" onclick="moveSheet('${b.moveId}','${esc(b.pkey || "")}')" aria-label="How to">?</button>` : ""}</span></div>
       <div class="setrow">${Array.from({ length: nShown }, (_, si) =>
         si < sets.length
-          ? `<button class="chip hit${si >= planned ? " extra" : ""}" onclick="editSet('${dk}','${bkey}',${si},${inc},${cap === "null" ? 8 : cap})">${sets[si].w === 0 ? "BW" : esc(String(sets[si].w))}×${esc(String(sets[si].r))}${sets[si].rpe != null ? "@" + esc(String(sets[si].rpe)) : ""}${si === sets.length - 1 && sets[si].rate ? " · " + esc(E.RATE_LABEL[sets[si].rate] || "") : ""}</button>`
-          : `<button class="chip${b.lastHard && si === planned - 1 ? " hard" : ""}${offPlan ? " off" : ""}" onclick="${tap(si)}" aria-label="Log set ${si + 1}${b.lastHard && si === planned - 1 ? ` — take this one to RPE 9 to 10${b.lp ? ", then 3 to 5 lengthened partials" : ""}` : ""}">${offPlan ? esc(nw + "×" + nr) : "×" + esc(String(b.reps))}${b.lastHard && si === planned - 1 ? `<small>→9–10${b.lp ? " +LP" : ""}</small>` : ""}</button>`).join("")}
+          ? `<button class="chip hit${si >= planned ? " extra" : ""}" onclick="editSet('${dk}','${bkey}',${si},${inc},${cap === "null" ? 8 : cap})">${sets[si].w === 0 ? "BW" : (b.added ? "+" : "") + esc(String(sets[si].w))}×${esc(String(sets[si].r))}${sets[si].rpe != null ? "@" + esc(String(sets[si].rpe)) : ""}${si === sets.length - 1 && sets[si].rate ? " · " + esc(E.RATE_LABEL[sets[si].rate] || "") : ""}</button>`
+          : `<button class="chip${b.lastHard && si === planned - 1 ? " hard" : ""}${offPlan ? " off" : ""}" onclick="${tap(si)}" aria-label="Log set ${si + 1}${b.lastHard && si === planned - 1 ? ` — take this one to RPE 9 to 10${b.lp ? ", then 3 to 5 lengthened partials" : ""}` : ""}">${offPlan ? esc((nw === 0 ? "BW" : (b.added ? "+" : "") + nw) + "×" + nr) : "×" + esc(String(b.reps))}${b.lastHard && si === planned - 1 ? `<small>→9–10${b.lp ? " +LP" : ""}</small>` : ""}</button>`).join("")}
         ${done ? `<button class="chip add" onclick="${tap(planned)}" aria-label="Add a set">＋</button>` : ""}
       </div>${done && b.pkey && b.w > 0 ? (() => { const cur = sets[sets.length - 1].rate;
         return `<div class="seg rate" role="group" aria-label="How did the last set feel">${["E", "O", "H"].map((r) => `<button class="${r === "E" ? "g" : r === "O" ? "y" : "r"} ${cur === r ? "on" : ""}" onclick="rateSet('${dk}','${bkey}','${r}')">${E.RATE_LABEL[r]}</button>`).join("")}</div>
@@ -3321,8 +3338,9 @@ window.hitSet = (dk, bkey, w, reps, pk, cap, rest) => {
   const st = { w, r: reps, rpe: null };
   if (pk) st.k = pk;
   if (Number.isFinite(cap)) st.cap = cap; // the RPE cap shown when the set was logged (Yellow single = 7)
-  arr.push(st); save(); render();
-  if (rest > 0) startTimer(rest);
+  arr.push(st); save();
+  if (rest > 0) startTimer(rest); // before the redraw, so the Now card opens on the rest ring, not the next set
+  render();
 };
 // Rule B: one tap on the last set. Tapping the current rating again clears it.
 window.rateSet = (dk, bkey, r) => {

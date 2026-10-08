@@ -293,6 +293,7 @@ const MODEL2 = {
     ["Upper chest", "14 incline-biased sets a week: Thursday growth sets moved to a 30° incline; 4 Saturday incline DB sets."],
     ["Upper back & traps", "Shrug becomes the trap anchor (3 sets) + a Saturday cable Y-shrug; Friday becomes a high-elbow upper-back row."],
     ["3D shoulders", "Rear delts 5 → 9 sets with a real anchor, side delts 11 → 13, a band external-rotation primer before pressing."],
+    ["Lats & the V-taper", "3 Saturday sets of wide-grip pull-ups (bodyweight, then a belt): lats 12.5 → 15.5 weekly sets, on the one day that costs the meet lifts nothing. The waist stays the guard while you bulk."],
     ["Meet day", "Attempts in kg from your rated singles, the real opener rehearsed in week 3, USPA commands on every heavy single, meet-date alignment."],
     ["Logging", "Extra sets visible, edited weights carry to the next set, rest timer starts itself, swaps and 'last time' per exercise."],
     ["Data safety", "Imports checked before they replace anything, a recovery screen, dated schedule shifts that never move past logs."],

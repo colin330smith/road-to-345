@@ -427,6 +427,49 @@ T["now: the Now card walks primers, ramp and single; the rating's preview is the
   ok(!errors.length, "no page errors " + errors.join(" | "));
   await ctx.close();
 };
+T["now: the weight and rep steppers change the set that gets logged"] = async (b) => {
+  // regression: a double-quoted rep value inside the double-quoted onclick cut the attribute, so the steppers did nothing
+  const { ctx, page, errors } = await open(b, { time: "2026-10-13T07:05:00", state: { ...BASE, seen: { m2: 1 } } });
+  const tap = (label) => page.evaluate((l) => document.querySelector(`.card.now button[aria-label="${l}"]`).click(), label); // the stepper can sit under the fixed tab bar
+  await tap("One rep more");
+  ok(/Log Band × 16/.test(await page.$eval(".nowcta", (e) => e.textContent)), "rep + turns the band primer into 16 reps");
+  await page.click(".nowcta");
+  eq((await getS(page)).logs["2026-10-13"].sets["bander"][0].r, 16, "the 16 is what got logged");
+  for (let i = 0; i < 3; i++) await page.click(".nowcta");
+  for (let i = 0; i < 6; i++) await page.click(".nowcta");
+  await tap("More weight");
+  ok(/Log 225 × 1/.test(await page.$eval(".nowcta", (e) => e.textContent)), "weight + turns the 220 single into 225");
+  await page.click(".nowcta"); await page.click(".nowrate .y");
+  ok(!!(await page.$("#nowring")), "after a set with rest, the card opens on the rest ring at once (it used to show the next set first)");
+  ok(!errors.length, "no page errors " + errors.join(" | "));
+  await ctx.close();
+};
+T["saturday: the wide-grip pull-up runs at bodyweight with its ladder; a belt logs as +5"] = async (b) => {
+  const { ctx, page, errors } = await open(b, { time: "2026-10-17T07:05:00", state: { ...BASE, seen: { m2: 1 } } });
+  for (let i = 0; i < 80; i++) {
+    const t = await page.$eval(".card.now", (e) => e.innerText).catch(() => "");
+    if (/Wide-Grip Pull-Up/i.test(t) && (await page.$(".nowcta")) && !(await page.$("#nowring"))) break;
+    if (await page.$("#nowring")) { await page.evaluate(() => nowSkip()); continue; }
+    if (!(await page.$(".nowcta"))) break;
+    await page.click(".nowcta");
+  }
+  const t = await page.$eval(".card.now", (e) => e.innerText);
+  ok(/Wide-Grip Pull-Up/i.test(t) && /BW/.test(await page.$eval(".card.now .nowbig", (e) => e.textContent)), "the Now card reaches the pull-up, at bodyweight");
+  ok(/2 sets of 12 this wave/.test(t) && /the ladder climbs/.test(t), "its ladder states the engine's rule: 2 sets at the wave's top target");
+  ok(/builds/i.test(t) && /Lats/.test(t), "it says what it builds: the lats");
+  await page.evaluate(() => document.querySelector('.card.now button[aria-label="More weight"]').click());
+  ok(/Log \+5 × 10/.test(await page.$eval(".nowcta", (e) => e.textContent)), "a belt shows as +5, not 5");
+  await page.click(".nowcta");
+  const set = (await getS(page)).logs["2026-10-17"].sets["wide-grip-pull-up"][0];
+  ok(set.w === 5 && set.r === 10 && set.ed, "logged +5 x 10, and the next set carries it");
+  await page.evaluate(() => nowSkip());
+  ok(/\+5/.test(await page.$eval(".card.now .nowbig", (e) => e.textContent)), "set 2 carries the +5");
+  ok((await page.$$eval("#view .chip.hit", (els) => els.map((e) => e.textContent))).some((x) => /^\+5×10/.test(x)), "the logged chip reads +5×10");
+  await page.evaluate(() => goTab("moves"));
+  ok(/15\.5/.test(await page.$eval("#view", (e) => e.innerText.match(/Lats\s*\n?\s*[\d.]+/) ? e.innerText.match(/Lats\s*\n?\s*[\d.]+/)[0] : "")), "the Body map counts the lats at 15.5 sets this week");
+  ok(!errors.length, "no page errors " + errors.join(" | "));
+  await ctx.close();
+};
 T["body: the map is the engine's week; tapping a muscle shows where its sets come from"] = async (b) => {
   const { ctx, page, errors } = await open(b, { time: "2026-10-13T07:05:00", state: { ...BASE, seen: { m2: 1 } } });
   await page.evaluate(() => goTab("moves"));

@@ -396,6 +396,11 @@ T["home: Trends measures maintenance and Set moves all three modes"] = async (b)
     ok(new RegExp(`MAINTAIN · ${mk}`).test(t2) && new RegExp(`TRIM · ${mk - 500}`).test(t2) && new RegExp(`GAIN · ${mk + 125}`).test(t2), "all three modes now sit on it");
     await page.evaluate(() => goTab("today"));
     ok(new RegExp(`/ ${mk}`).test(await page.$eval("#view", (e) => e.innerText)), "Today's bar reads the new number"); }
+  await page.evaluate(() => goTab("trends"));
+  await page.click('#view .seg[aria-label="Usual shift nights"] button:text("Tue")');
+  eq((await getS(page)).nutri.shiftDays, [2], "Tuesday is a usual shift night");
+  eq(await page.evaluate(() => [planFor("2026-12-08").type, planFor("2026-12-09").type, planFor("2026-12-06").type]), ["shift", "off", "rest"], "so every Tuesday plans a shift (the bag), Wednesday stays off, Sunday rests");
+  ok(!(await getS(page)).fday["2026-12-08"], "nothing is stored per day for the usual pattern");
   ok(!errors.length, "no page errors " + errors.join(" | "));
   await ctx.close();
 };

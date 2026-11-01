@@ -1069,6 +1069,8 @@ function sanitizeState(d) {
   const keep = (field, ok) => { if (d[field] == null) return; if (!obj(d[field])) { delete out[field]; dropped++; return; } out[field] = {}; for (const [k, v] of Object.entries(d[field])) { if (ok(k, v)) out[field][k] = v; else dropped++; } };
   keep("bw", (k, v) => DK.test(k) && num(v));
   keep("food", (k, v) => DK.test(k) && Array.isArray(v) && v.every((x) => obj(x) && num(x.kcal)));
+  // MAINT-3: per-day fuel marks: done (the day's log is complete) and the day type (shift / off / rest)
+  keep("fday", (k, v) => DK.test(k) && obj(v) && (v.done == null || v.done === 1) && (v.type == null || ["shift", "off", "rest"].includes(v.type)));
   keep("meas", (k, v) => DK.test(k) && obj(v) && Object.values(v).every(num));
   keep("photos", (k, v) => DK.test(k) && (v === 1 || v === true));
   for (const f of ["gates", "testMax", "settings", "spec", "nutri", "ledger", "primer"]) if (d[f] != null && !obj(d[f])) { delete out[f]; dropped++; }

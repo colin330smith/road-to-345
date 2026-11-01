@@ -309,7 +309,7 @@ T["nutri: Trends gives one instruction, and the pace band sits on the data"] = a
 };
 T["nutri: Apply moves the target the advice names"] = async (b) => {
   const food = dkSeq("2026-09-20", 7, () => [{ id: "manual", name: "day", kcal: 2700, p: 200 }]);
-  const state = { ...BASE, nutri: { mode: "trim", since: "2026-09-17" }, bw: dkSeq("2026-09-17", 11, (i) => 192 - 0.35 * i), food };
+  const state = { ...BASE, nutri: { mode: "trim", since: "2026-09-17" }, bw: dkSeq("2026-09-17", 11, (i) => 192 - 0.35 * i), food, fday: dkSeq("2026-09-20", 7, () => ({ done: 1 })) };
   const { ctx, page } = await open(b, { time: "2026-09-27T07:05:00", state });
   await page.evaluate(() => goTab("trends"));
   ok(/overshoot/.test(await page.$eval("#view", (e) => e.innerText)), "2,700 a day against 2,500 is the overshoot");
@@ -330,15 +330,102 @@ T["nutri: logging only the arm never re-saves the waist"] = async (b) => {
   eq((await getS(page)).meas["2026-09-27"], { ar: 14.75 }, "only the arm is stored for today");
   await ctx.close();
 };
-T["nutri: the food sheet lists the weekly items when gaining, never when trimming"] = async (b) => {
-  for (const mode of ["gain", "trim"]) {
-    const { ctx, page } = await open(b, { time: "2026-09-27T07:05:00", state: { ...BASE, nutri: { mode, since: "2026-09-01" } } });
-    await page.evaluate(() => foodSheet("2026-09-27"));
-    const t = await page.$eval("#sheet", (e) => e.innerText);
-    if (mode === "gain") ok(/Once a week/i.test(t) && /French fries/.test(t) && /Knife & Fork Ribs/.test(t) && /Shrimp Louie/.test(t), "gain sheet: fries, ribs and the Louie are one tap");
-    else ok(!/French fries/.test(t) && !/Knife & Fork Ribs/.test(t) && !/Once a week/i.test(t), "trim sheet: no fries, no Tier C");
-    await ctx.close();
-  }
+T["home: the food sheet is home dishes only, at this week's size"] = async (b) => {
+  const { ctx, page, errors } = await open(b, { time: "2026-11-03T07:05:00", state: { ...BASE, nutri: { mode: "maintain", since: "2026-11-01" } } });
+  await page.evaluate(() => foodSheet("2026-11-03"));
+  const t = await page.$eval("#sheet", (e) => e.innerText);
+  ok(/Hawaiian-marinated sirloin/.test(t) && /Center-cut filet/.test(t) && /· maintain/.test(t) && /Certified whey/.test(t), "the sheet lists the recipes at the maintain size");
+  ok(!/Hillstone|French fries|Knife & Fork|Tier [ABCD]|grazing/i.test(t.replace(/Zero restaurant food[^]*$/, "")), "no restaurant food anywhere on the sheet");
+  ok(!errors.length, "no page errors " + errors.join(" | "));
+  await ctx.close();
+};
+T["home: one tap logs a planned portion with its macros; the day counts once marked complete"] = async (b) => {
+  const { ctx, page, errors } = await open(b, { time: "2026-11-03T07:05:00", state: { ...BASE, nutri: { mode: "maintain", since: "2026-11-01" }, seen: { m2: 1, home65: 1 } } });
+  const plan = await page.evaluate(() => NUTRI.dayPlan("off", 2800, "2026-11-03"));
+  const rows = await page.$$eval("#view .plrow", (els) => els.map((e) => e.innerText));
+  eq(rows.length, plan.items.length, "Today shows one row per planned slot");
+  ok(/French dip/.test(rows.join("\n")) && /Steak & eggs/.test(rows.join("\n")), "Tuesday week 1: steak & eggs and the French dip");
+  await page.evaluate(() => planTick("2026-11-03", "lunch"));
+  const e1 = (await getS(page)).food["2026-11-03"];
+  ok(e1.length === 1 && e1[0].slot === "lunch" && e1[0].id === "frenchDip.maintain" && [e1[0].kcal, e1[0].p, e1[0].f, e1[0].c, e1[0].fib].every(Number.isFinite), "the tap logs the portion with kcal, protein, fat, carbs and fibre: " + JSON.stringify(e1));
+  await page.evaluate(() => planTick("2026-11-03", "lunch"));
+  ok(!(await getS(page)).food["2026-11-03"], "a second tap takes it back off");
+  for (const it of plan.items) await page.evaluate((sl) => planTick("2026-11-03", sl), it.slot);
+  ok(/2770 \/ 2800|27\d\d \/ 2800/.test(await page.$eval("#view", (e) => e.innerText)), "all five portions fill the bar to the plan's total");
+  await page.click('#view .btn:text("Mark day complete")');
+  eq((await getS(page)).fday["2026-11-03"], { done: 1 }, "the day is marked complete");
+  ok(/✓ Day complete/.test(await page.$eval("#view", (e) => e.innerText)), "the button says so");
+  ok(!errors.length, "no page errors " + errors.join(" | "));
+  await ctx.close();
+};
+T["home: the day type: a shift packs the dinner, a rest day drops the pre-lift; swaps replace the slot"] = async (b) => {
+  const { ctx, page, errors } = await open(b, { time: "2026-11-03T07:05:00", state: { ...BASE, nutri: { mode: "maintain", since: "2026-11-01" }, seen: { m2: 1, home65: 1 } } });
+  await page.click('#view .seg button:text("Shift tonight")');
+  eq((await getS(page)).fday["2026-11-03"], { type: "shift" }, "the toggle stores the day's type");
+  ok(/Shift break · cold bag/.test(await page.$eval("#view", (e) => e.innerText)), "a shift day packs the dinner");
+  await page.click('#view .seg button:text("Rest day")');
+  const t = await page.$eval("#view", (e) => e.innerText);
+  ok(!/Pre-lift/.test(t) && /Evening shake/.test(t), "a rest day has no pre-lift shake; it moves to the evening");
+  await page.click('#view .seg button:text("Off tonight")');
+  ok(!(await getS(page)).fday["2026-11-03"], "back to the usual type stores nothing");
+  await page.evaluate(() => foodSheet("2026-11-03", "dinner"));
+  ok(/Swap — Dinner at home/i.test(await page.$eval("#sheet", (e) => e.innerText)), "the swap sheet names the slot");
+  await page.evaluate(() => addFood("2026-11-03", "filetPlate.maintain", "dinner"));
+  await page.evaluate(() => addFood("2026-11-03", "ahiPonzu.maintain", "dinner"));
+  const f = (await getS(page)).food["2026-11-03"];
+  ok(f.length === 1 && f[0].id === "ahiPonzu.maintain" && f[0].slot === "dinner", "a second swap replaces the first: " + JSON.stringify(f.map((x) => x.id)));
+  ok(!errors.length, "no page errors " + errors.join(" | "));
+  await ctx.close();
+};
+T["home: Trends measures maintenance and Set moves all three modes"] = async (b) => {
+  // 35 complete days at 2,800 with the scale falling 0.3 lb a week: maintenance ~2,950
+  const food = dkSeq("2026-11-01", 35, () => [{ id: "manual", name: "day", kcal: 2800, p: 200 }]);
+  const state = { ...BASE, nutri: { mode: "maintain", since: "2026-11-01" }, food, fday: dkSeq("2026-11-01", 35, () => ({ done: 1 })), bw: dkSeq("2026-11-01", 36, (i) => +(192 - (0.3 / 7) * i + [0.4, -0.3, 0.1, -0.2, 0.3, -0.4, 0.2][i % 7]).toFixed(1)), seen: { m2: 1, home65: 1 } };
+  const { ctx, page, errors } = await open(b, { time: "2026-12-06T07:05:00", state });
+  await page.evaluate(() => goTab("trends"));
+  const t = await page.$eval("#view", (e) => e.innerText);
+  ok(/MAINTAIN · 2800/.test(t) && /TRIM · 2500/.test(t) && /GAIN · 3050/.test(t), "three mode buttons with their starting numbers");
+  const m = t.match(/(\d{4}) ± (\d+)/);
+  ok(m && Math.abs(+m[1] - 2950) <= 2 * +m[2], "the measured maintenance shows with its band: " + (m && m[0]));
+  const btn = await page.$('#view .btn:text-matches("Set maintenance to")');
+  ok(!!btn, "past its band and 100 kcal, it offers the new number");
+  if (btn) { await btn.click();
+    const S2 = await getS(page), mk = S2.nutri.maint && S2.nutri.maint.kcal;
+    ok(mk >= 2850 && mk <= 3050 && mk % 50 === 0, "the number is stored, rounded to 50: " + mk);
+    const t2 = await page.$eval("#view", (e) => e.innerText);
+    ok(new RegExp(`MAINTAIN · ${mk}`).test(t2) && new RegExp(`TRIM · ${mk - 500}`).test(t2) && new RegExp(`GAIN · ${mk + 125}`).test(t2), "all three modes now sit on it");
+    await page.evaluate(() => goTab("today"));
+    ok(new RegExp(`/ ${mk}`).test(await page.$eval("#view", (e) => e.innerText)), "Today's bar reads the new number"); }
+  ok(!errors.length, "no page errors " + errors.join(" | "));
+  await ctx.close();
+};
+T["home: recipes, prep, the Costco list and the rules open with the plan's numbers"] = async (b) => {
+  const { ctx, page, errors } = await open(b, { time: "2026-11-03T07:05:00", state: { ...BASE, nutri: { mode: "maintain", since: "2026-11-01" } } });
+  await page.evaluate(() => recipeSheet());
+  const r = await page.$eval("#sheet", (e) => e.innerText);
+  eq((await page.$$("#sheet .frow.tap.nav")).length, 14, "14 recipes listed");
+  await page.evaluate(() => recipeDetail("hawaiianSirloin", "gain"));
+  const d = await page.$eval("#sheet", (e) => e.innerText);
+  ok(/Per portion \(gain\)/i.test(d) && /Weigh out, one portion/i.test(d) && /Method/i.test(d) && /Keeps:/i.test(d) && /165 °F/.test(d), "a recipe card has its weigh-out, method, storage and reheat");
+  await page.evaluate(() => prepSheet(0));
+  const p = await page.$eval("#sheet", (e) => e.innerText);
+  ok(/Sunday cook · covers Mon–Wed/i.test(p) && /Wednesday cook · covers Thu–Sat/i.test(p) && /Costco list/i.test(p) && /\d+(\.\d)? lb/.test(p) && /\d+ eggs/.test(p), "the prep sheet has both cooks and a computed Costco list");
+  await page.evaluate(() => rulesSheet());
+  ok(/Zero restaurant food/i.test(await page.$eval("#sheet", (e) => e.innerText)), "the rules open with zero restaurant food");
+  await page.evaluate(() => suppSheet());
+  ok(/Ascent 100% Whey/.test(await page.$eval("#sheet", (e) => e.innerText)), "the supplement sheet names the certified Costco whey");
+  ok(!errors.length, "no page errors " + errors.join(" | "));
+  await ctx.close();
+};
+T["home: the intro card starts MAINTAIN, and an old gain phase is ended with a confirm"] = async (b) => {
+  const { ctx, page, errors } = await open(b, { time: "2026-11-01T09:05:00", state: { ...BASE, nutri: { mode: "gain", since: "2026-09-27", adj: 150 }, seen: { m2: 1 } } });
+  ok(/The strict home-cooked plan/i.test(await page.$eval("#view", (e) => e.innerText)), "the intro card shows");
+  await page.click('#view .btn:text("Start MAINTAIN today")');
+  const S1 = await getS(page);
+  ok(S1.nutri.mode === "maintain" && S1.nutri.since === "2026-11-01" && S1.nutri.adj === 0 && S1.seen.home65 === 1, "MAINTAIN starts today with no carried adjustment: " + JSON.stringify(S1.nutri));
+  ok(errors.some((e) => /End the GAIN phase/.test(e)), "ending the gain phase asked first");
+  ok(!/The strict home-cooked plan/i.test(await page.$eval("#view", (e) => e.innerText)), "the card is gone");
+  await ctx.close();
 };
 T["nutri: no trim on unknown sleep or into Cycles 5-6"] = async (b) => {
   const meas = { "2026-09-01": { wa: 33 }, "2026-10-01": { wa: 34 } };

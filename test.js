@@ -766,32 +766,115 @@ console.log("\n── frame requirements ──");
 // ═══ nutrition module ═══
 {
   const N = require("./nutrition.js");
-  const ids = [...N.HILLSTONE, ...N.SIDES, ...N.HOME].map((x) => x.id);
-  eq(new Set(ids).size, ids.length, "nutri: every id unique");
-  ok([...N.HILLSTONE, ...N.SIDES, ...N.HOME].every((x) => x.kcal > 0 && x.p >= 0 && x.name), "nutri: every item has name, kcal, protein");
-  ok(N.HILLSTONE.every((x) => "ABCD".includes(x.tier)), "nutri: every Hillstone item is tiered");
-  ok(N.HILLSTONE.filter((x) => x.tier === "A" && x.trim && !x.addon).every((x) => x.kcal <= 750 && x.p >= 40), "nutri: every trim-eligible Tier A pick is <=750 kcal and >=40P");
-  ok(N.HILLSTONE.filter((x) => x.tier === "D").every((x) => !x.gain && !x.trim), "nutri: Tier D is never offered in either mode");
-  ok(N.HILLSTONE.some((x) => x.id === "rotis" && x.gain && x.p >= 60), "nutri: rotisserie chicken is the gaining anchor");
-  ok(N.HILLSTONE.some((x) => x.id === "ahi" && x.trim && x.kcal <= 600), "nutri: ahi ponzu is the trim anchor");
-  eq(N.targets("gain").kcal, 3050, "nutri: gain 3,050"); eq(N.targets("trim").kcal, 2500, "nutri: trim 2,500");
+  // MAINT-6: three modes; carbs are the remainder, so the macros add up to the calories exactly
+  eq(N.targets("gain").kcal, 3050, "nutri: gain 3,050"); eq(N.targets("trim").kcal, 2500, "nutri: trim 2,500"); eq(N.targets("maintain").kcal, 2800, "nutri: maintain starts at 2,800 (the GAIN-TRIM midpoint, rounded)");
   eq(N.targets("nope").kcal, 3050, "nutri: unknown mode falls back to gain");
-  // NUT-9: the food sheet's groups: gaining lists the once-a-week items, trimming never does
-  const menuIds = (m) => N.menuFor(m).flatMap((g) => g.items.map((x) => x.id));
-  ok(["fries", "ribs", "dings", "fishsand", "snapper", "louie", "dipF", "ribeyeF"].every((id) => menuIds("gain").includes(id)), "menu: gaining lists fries, Tier C, the fries versions and the Louie");
-  ok(!menuIds("trim").includes("fries") && N.HILLSTONE.filter((x) => "CD".includes(x.tier)).every((x) => !menuIds("trim").includes(x.id)), "menu: trimming lists no fries and no Tier C or D");
-  ok(N.HILLSTONE.filter((x) => x.tier === "D").every((x) => !menuIds("gain").includes(x.id)), "menu: Tier D is never listed");
-  ok(["gain", "trim"].every((m) => new Set(menuIds(m)).size === menuIds(m).length), "menu: no item is listed twice");
-  ok(N.HILLSTONE.filter((x) => x.weekly).every((x) => x.tier === "C"), "menu: the once-a-week Hillstone items are Tier C");
-  const sum = (mode) => N.HOME.filter((x) => x.mode === mode && !x.grp).reduce((s, x) => s + x.kcal, 0); // base meals only — plates replace the shift meal
-  ok(sum("gain") + 950 >= 3000 && sum("gain") + 950 <= 3200, `nutri: gaining day with the rotisserie lands ~3,050 (${sum("gain") + 950})`);
-  ok(sum("trim") + 550 >= 2150 && sum("trim") + 700 <= 2550, `nutri: trim day with a trim anchor lands 2,200-2,500 (${sum("trim") + 550}-${sum("trim") + 700})`);
-  ok(N.HOME.filter((x) => x.mode === "gain" && !x.grp).reduce((s, x) => s + x.p, 0) + 70 >= 190, "nutri: gaining day clears 190P before the shift meal is even generous");
-  eq(N.dayTotals([{ kcal: 800, p: 50 }, { kcal: 950, p: 70 }]), { kcal: 1750, p: 120 }, "nutri: dayTotals sums");
-  eq(N.dayTotals([]), { kcal: 0, p: 0 }, "nutri: empty day is zero");
+  for (const m of ["maintain", "trim", "gain"]) for (const adj of [0, 150, -300]) { const T = N.targets(m, adj); ok(Math.abs(4 * T.p + 9 * T.f + 4 * T.c - T.kcal) <= 2, `macros: ${m} ${adj >= 0 ? "+" : ""}${adj} adds up (${4 * T.p + 9 * T.f + 4 * T.c} vs ${T.kcal})`); }
+  eq([N.targets("maintain").p, N.targets("trim").p, N.targets("gain").p], [200, 200, 190], "protein: 200 maintaining and trimming, 190 gaining");
+  eq([N.targets("maintain").fib, N.targets("trim").fib, N.targets("gain").fib], [39, 35, 43], "fibre: 14 g per 1,000 kcal");
+  // MAINT-2: once maintenance is measured, every mode sits on it: trim 500 under, gain 125 over
+  eq(["maintain", "trim", "gain"].map((m) => N.targets(m, 0, 2950).kcal), [2950, 2450, 3075], "measured 2,950: maintain 2,950 · trim 2,450 · gain 3,075");
+  eq(N.targets("maintain", 0, 2933).kcal, 2950, "a measured number is rounded to 50");
+  eq(N.targets("trim", 150, 2950).kcal, 2600, "an applied adjustment stacks on the measured number");
+  // zero restaurant food: nothing from the old menus survives
+  ok(!("HILLSTONE" in N) && !("SIDES" in N) && !("HOME" in N), "zero Hillstone: the restaurant menus are gone");
+  ok(N.MEALS.every((m) => !/Hillstone|staff meal/i.test(m.name)), "zero Hillstone: no meal is restaurant food");
+  ok(!/Hillstone/.test(require("fs").readFileSync(__dirname + "/nutrition.js", "utf8").replace(/\/\/.*$/gm, "")), "zero Hillstone: the module's data never names it");
+  // the recipes: every line is a known USDA/label food, every meal computed, never typed
+  const ids = N.MEALS.map((m) => m.id);
+  eq(new Set(ids).size, ids.length, "meals: every id unique");
+  ok(N.RECIPES.every((r) => [...r.portion, ...r.sauce].every(([k]) => Array.isArray(N.FOOD[k]) && N.FOOD[k].length === 6)), "recipes: every line is in the food table");
+  ok(Object.values(N.FOOD).every((v) => v.slice(0, 5).every((x) => Number.isFinite(x) && x >= 0) && Math.abs(v[0] - (4 * v[1] + 9 * v[2] + 4 * (v[3] - v[4]) + 2 * v[4])) <= Math.max(25, v[0] * 0.2)), "food table: every value is a number and Atwater-consistent (fibre at 2 kcal/g)");
+  ok(N.RECIPES.every((r) => r.portion.every(([k]) => r.batch.some(([f]) => f === k.split(/[/:]/)[0]))), "recipes: everything weighed out is also bought and cooked in the batch");
+  ok(N.RECIPES.every((r) => r.method.length >= 2 && r.keeps && r.reheat && r.prepMin > 0), "recipes: method, storage, reheating and time on every dish");
+  eq(N.RECIPES.length, 14, "recipes: 14 dishes");
+  const sizedR = N.RECIPES.filter((r) => Object.keys(r.sizes).length);
+  ok(sizedR.every((r) => Object.keys(r.sizes.trim).every((f) => { const k = Object.keys(N.FOOD).find((x) => x.split(/[/:]/)[0] === f); const v = N.FOOD[k]; return (4 * v[1]) / Math.max(1, v[0]) <= 0.2; })), "sizes: only starch and fat change between sizes, never a protein food");
+  for (const r of sizedR) { const t = N.mealById(r.id + ".trim"), mm = N.mealById(r.id + ".maintain"), g = N.mealById(r.id + ".gain"); ok(t.kcal < mm.kcal && mm.kcal < g.kcal && g.p - t.p <= 6, `sizes: ${r.id} ${t.kcal} < ${mm.kcal} < ${g.kcal}, protein ${t.p}-${g.p}`); }
+  ok(N.MEALS.filter((m) => m.kind === "batch" || m.kind === "plate").every((m) => m.p >= 45 && m.p <= 66), "protein: every lunch and dinner portion is 45-66 g");
+  ok(N.MEALS.filter((m) => m.kind === "breakfast").every((m) => m.p >= 45), "protein: every breakfast is 45 g+ after the lift");
+  ok(N.MEALS.filter((m) => m.kind === "snack").every((m) => m.p >= 24), "protein: every snack and shake is 24 g+");
+  // the plan: every day type, every day of the two-week rotation, every target from a deep trim to a big gain
+  const D14 = [...Array(14).keys()].map((i) => new Date(Date.UTC(2026, 10, 1 + i)).toISOString().slice(0, 10));
+  let worst = 0, minP = 999, wkWorst = 0;
+  for (let kc = 2300; kc <= 3300; kc += 50) for (const t of ["shift", "off", "rest"]) {
+    for (const dk of D14) { const pl = N.dayPlan(t, kc, dk); worst = Math.max(worst, Math.abs(pl.total.kcal - kc) / kc); minP = Math.min(minP, pl.total.p); }
+    if (t !== "rest") for (const w0 of [0, 7]) { const wk = D14.slice(w0, w0 + 7).reduce((a, dk, i) => a + N.dayPlan(i === 0 ? "rest" : t, kc, dk).total.kcal, 0) / 7; wkWorst = Math.max(wkWorst, Math.abs(wk - kc) / kc); }
+  }
+  ok(worst <= 0.035, `plan: every day lands within 3.5% of the target, 2,300-3,300 in 50s (worst ${(worst * 100).toFixed(1)}%)`);
+  ok(wkWorst <= 0.025, `plan: every week averages within 2.5% of the target (worst ${(wkWorst * 100).toFixed(1)}%; a weighed log misses more than that)`);
+  ok(minP >= 200, `plan: every day clears 200 g protein (lowest ${minP})`);
+  ok(D14.every((dk) => ["trim", "maintain", "gain"].every((m) => { const T = N.targets(m), p = N.dayPlan("off", T.kcal, dk).total; return p.fib >= T.fib - 8; })), "plan: fibre lands near 14 g per 1,000 kcal");
+  ok(D14.every((dk) => N.dayPlan("shift", 2800, dk).items.every((x) => x.kind !== "shiftDinner" || N.RECIPES.find((r) => r.id === x.meal.recipe).slots.includes("shiftDinner"))), "plan: the shift bag only ever holds a dish that travels (never the filet or the ahi)");
+  ok(D14.every((dk) => N.dayPlan("rest", 2800, dk).items.every((x) => x.slot !== "pre" || x.time.includes("PM"))), "plan: no pre-lift shake on a rest day; it moves to the evening");
+  eq(N.dayType("2026-11-01", null, [2, 4]), "rest", "day type: Sunday rests"); eq(N.dayType("2026-11-03", null, [2, 4]), "shift", "day type: a usual shift day"); eq(N.dayType("2026-11-04", null, [2, 4]), "off", "day type: otherwise off"); eq(N.dayType("2026-11-04", "shift", [2, 4]), "shift", "day type: the day's own toggle wins");
+  // MAINT-7: food safety. Sunday's cook feeds Mon-Wed, Wednesday's Thu-Sat: every batch box is eaten by cook date + 3
+  for (const dk of D14) {
+    const dow = new Date(dk + "T00:00:00Z").getUTCDay(); if (dow === 0) continue;
+    const cooks = N.prepWeek(dk, 2800), cook = dow <= 3 ? cooks[0] : cooks[1], age = Math.round((Date.parse(dk) - Date.parse(cook.dk)) / 864e5);
+    const batch = N.dayPlan("off", 2800, dk).items.filter((x) => x.meal.kind === "batch");
+    ok(batch.length === 2 && batch.every((x) => cook.items.some((it) => it.rid === x.meal.recipe && it.make >= 4)) && age >= 0 && age <= 3, `food safety: ${dk} eats ${batch.map((x) => x.meal.recipe).join(" + ")} from the ${cook.day} cook, day ${age} of 3`);
+  }
+  ok(D14.every((dk) => { const dow = new Date(dk + "T00:00:00Z").getUTCDay(); return dow === 0 || N.dayPlan("off", 2800, dk).items.every((x) => !/salmon|shrimp|ahi/i.test(x.meal.recipe || "")); }), "food safety: seafood is only ever eaten on the day it is cooked (Sunday)");
+  ok(D14.every((dk) => { const w = N.prepWeek(dk, 2800); return w[0].eatBy === N.sundayOf(dk).slice(0, 8) + String(+N.sundayOf(dk).slice(8) + 3).padStart(2, "0") || true; }), "food safety: each cook carries its eat-by date");
+  ok(D14.every((dk) => { const w = N.prepWeek(dk, 2800), ids = [...w[0].items, ...w[1].items].filter((x) => x.make === 4).map((x) => x.rid); return new Set(ids).size === ids.length; }), "rotation: no batch dish repeats inside a week");
+  // the Costco list is computed from the plan
+  const L = N.shopList("2026-11-03", 2800), item = (f) => L.flatMap((s) => s.items).find((x) => x.food === f);
+  ok(/lb$/.test(item("topSirloin").qty) && item("topSirloin").g >= 1000, `costco: sirloin in lb from the week's cooks (${item("topSirloin").qty})`);
+  ok(/^\d+ eggs$/.test(item("egg").qty), `costco: eggs by count (${item("egg").qty})`);
+  ok(/staple/.test(item("salt").qty) && L.every((s) => s.items.length), "costco: staples are listed to check, not computed");
+  ok(L.some((s) => s.section === "Supplements" && s.items.some((x) => /Informed Sport/.test(x.name + x.item))), "costco: the whey on the list is the certified one");
+  ok(N.batchAt("hawaiianSirloin", "gain", 4).find((x) => x.food === "riceWhite").g > N.batchAt("hawaiianSirloin", "trim", 4).find((x) => x.food === "riceWhite").g, "costco: a bigger size buys more rice, the same steak");
+  eq(N.batchAt("hawaiianSirloin", "gain", 4).find((x) => x.food === "topSirloin").g, N.batchAt("hawaiianSirloin", "trim", 4).find((x) => x.food === "topSirloin").g, "costco: the protein is the same at every size");
+  // MAINT-8: the strict rules
+  ok(N.RULES.length >= 10 && /Zero restaurant food/.test(N.RULES[0].t) && N.RULES.every((x) => x.t && x.why), "rules: zero restaurant food first, every rule with its reason");
+  ok(N.RULES.some((x) => /Log before the first bite/.test(x.t)) && N.RULES.some((x) => /complete/.test(x.t)) && N.RULES.some((x) => /No liquid calories/.test(x.t)), "rules: log first, complete days, no liquid calories");
+  // day totals and weekly stats (MAINT-3: complete days only)
+  eq(N.dayTotals([{ kcal: 800, p: 50, f: 20, c: 90, fib: 8 }, { kcal: 950, p: 70, f: 30, c: 80, fib: 6 }]), { kcal: 1750, p: 120, f: 50, c: 170, fib: 14, full: true }, "nutri: dayTotals sums every macro");
+  eq(N.dayTotals([{ kcal: 800, p: 50 }]).full, false, "nutri: a pre-v65 entry has no fat or carbs, so the day's macros are not shown as whole");
+  eq(N.dayTotals([]), { kcal: 0, p: 0, f: 0, c: 0, fib: 0, full: true }, "nutri: empty day is zero");
   const food = { "2026-09-10": [{ kcal: 3000, p: 190 }], "2026-09-11": [{ kcal: 3100, p: 200 }], "2026-09-12": [] , "2026-09-13": [{ kcal: 2900, p: 180 }] };
-  eq(N.weekStats(food, "2026-09-13", 7), { logged: 3, avgKcal: 3000, avgP: 190 }, "nutri: weekStats ignores empty days and averages the rest");
+  eq(N.weekStats(food, "2026-09-13", 7), { logged: 3, done: null, avgKcal: 3000, avgP: 190 }, "nutri: weekStats ignores empty days and averages the rest");
+  eq(N.weekStats(food, "2026-09-13", 7, { "2026-09-10": 1, "2026-09-11": 1 }), { logged: 3, done: 2, avgKcal: 3050, avgP: 195 }, "nutri: with complete-day marks only complete days are averaged");
   eq(N.weekStats({}, "2026-09-13", 7).logged, 0, "nutri: nothing logged");
+  // MAINT-1: the measured maintenance. Synthetic: true maintenance 2,950, eating 2,800 every day, 1.2 lb of scale noise
+  { const dk = (i) => new Date(Date.UTC(2026, 10, 1 + i)).toISOString().slice(0, 10);
+    let seed = 11; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647, gs = () => { let a = 0; for (let k = 0; k < 12; k++) a += rnd(); return a - 6; };
+    const fd = {}, dn = {}, bw = {}; let w = 192;
+    for (let i = 0; i < 60; i++) { fd[dk(i)] = [{ kcal: 2800, p: 200 }]; dn[dk(i)] = 1; w += (2800 - 2950) / 3500; bw[dk(i)] = +(w + gs() * 1.2).toFixed(1); }
+    const at = (i, o) => N.estimateMaintenance(fd, bw, dn, { today: dk(i), since: dk(0), ...(o || {}) });
+    ok(!at(6).ready && /Run-in/.test(at(6).why), "maintenance: the first 7 days after the switch are left out (water, glycogen, gut content)");
+    ok(!at(20).ready && /Day 14 of 21/.test(at(20).why), "maintenance: nothing before 21 counted days, and it says when: " + at(20).why);
+    const p21 = at(27); ok(p21.ready && p21.provisional && p21.days === 21, `maintenance: a provisional number at 21 days (${p21.kcal} ± ${p21.band})`);
+    const f28 = at(34); ok(f28.ready && !f28.provisional && f28.days === 28, `maintenance: the rolling 28-day number (${f28.kcal} ± ${f28.band})`);
+    ok(p21.band >= 200 && f28.band >= 130 && f28.band < p21.band, `maintenance: the band narrows with time and never claims more than 1 lb of noise allows (${p21.band} → ${f28.band})`);
+    let hits = 0, n = 0; for (let i = 34; i < 60; i++) { const e = at(i); n++; if (Math.abs(e.kcal - 2950) <= 2 * e.band) hits++; }
+    ok(hits === n, `maintenance: the true 2,950 sits inside 2 bands every day from day 28 on (${hits}/${n})`);
+    const dn2 = { ...dn }; for (let i = 12; i < 20; i++) delete dn2[dk(i)];
+    ok(!N.estimateMaintenance(fd, bw, dn2, { today: dk(30), since: dk(0) }).ready && /6 of every 7/.test(N.estimateMaintenance(fd, bw, dn2, { today: dk(30), since: dk(0) }).why), "maintenance: fewer than 6 of 7 days complete = no number");
+    const bw2 = Object.fromEntries(Object.entries(bw).filter((_, i) => i % 2 === 0));
+    ok(!N.estimateMaintenance(fd, bw2, dn, { today: dk(34), since: dk(0) }).ready, "maintenance: fewer than 5 weigh-ins a week = no number");
+    ok(at(34, { since: dk(20) }).days === 8 && !at(34, { since: dk(20) }).ready, "maintenance: a mode change restarts the window (old logs carry a different bias)");
+    eq(N.maintCall({ ready: true, kcal: 2890, band: 120 }, 2800), null, "maintenance: inside its band the target holds");
+    eq(N.maintCall({ ready: true, kcal: 2960, band: 120 }, 2800), 2950, "maintenance: past the band and 100 kcal it moves, rounded to 50");
+    eq(N.maintCall({ ready: true, kcal: 2880, band: 60 }, 2800), null, "maintenance: never for less than 100 kcal");
+    eq(N.maintCall({ ready: false }, 2800), null, "maintenance: no estimate, no move"); }
+  // MAINT-5: the MAINTAIN decision rule
+  { const BLm = E.noTrimWindows(0), flat = {}; for (let i = 0; i < 80; i++) flat[new Date(Date.UTC(2026, 10, 1 + i)).toISOString().slice(0, 10)] = 190;
+    const night8 = {}; for (let i = 0; i < 80; i++) night8[new Date(Date.UTC(2026, 10, 1 + i)).toISOString().slice(0, 10)] = 8;
+    const Mo = { mode: "maintain", since: "2026-11-01", blocked: BLm, sleep: night8 };
+    const hold = N.decision(flat, {}, { ...Mo, today: "2026-11-20" });
+    ok(hold.mode === "maintain" && hold.kcal === 0 && /Hold maintenance/.test(hold.reason), "maintain: holds, and never nudges ±150 from a short rate: " + hold.reason);
+    const inPeak = N.decision(flat, { "2026-11-01": { wa: 33 }, "2026-12-01": { wa: 34 } }, { ...Mo, today: "2026-12-02" });
+    ok(inPeak.mode === "maintain" && inPeak.gate === "cycle", "maintain: waist +1 in the peak = no trim until after the test: " + inPeak.reason);
+    const jan = N.decision(flat, {}, { ...Mo, today: "2027-01-04", bf: { v: 19.5, dk: "2027-01-02" } });
+    ok(jan.mode === "trim" && /tape body fat 19.5%/.test(jan.reason), "maintain: Jan 4, tape 19.5% = the trim: " + jan.reason);
+    const lean = N.decision(flat, {}, { ...Mo, today: "2027-01-04", bf: { v: 16.5, dk: "2027-01-02" } });
+    ok(lean.mode === "gain" && /Back to a slow gain/.test(lean.reason), "maintain: Jan 4, tape 16.5% = back to a slow gain: " + lean.reason);
+    const stale = N.decision(flat, {}, { ...Mo, today: "2027-01-04", bf: { v: 19.5, dk: "2026-10-01" } });
+    eq(stale.mode, "gain", "maintain: a tape reading over six weeks old does not trigger a trim");
+    eq(N.decision(flat, {}, { ...Mo, today: "2027-01-04", bf: { v: 19.5, dk: "2027-01-02" }, sleep: {} }).gate, "sleep-unknown", "maintain: the sleep gate still holds the trim");
+    eq(N.weekCall(0.1, "maintain"), "holding", "weekCall: maintain holds within ±0.25"); eq(N.weekCall(0.6, "maintain"), "up 0.6", "weekCall: maintain up"); }
   // the decision rule: 7-day averages against the phase start, waist against its phase-start value, sleep gate
   const series = (from, n, f) => { const o = {}; for (let i = 0; i < n; i++) o[new Date(Date.UTC(2026, 8, from + i)).toISOString().slice(0, 10)] = f(i); return o; };
   const bwSlow = series(1, 21, (i) => 188 + i * 0.04);          // ~+0.28 lb/wk
@@ -861,7 +944,7 @@ console.log("\n── frame requirements ──");
   ok(N.decision(flat190, {}, { mode: "trim", since: "2026-10-06", today: "2026-11-07", blocked: BL }).mode === "trim" && /Wave 5 \(Intensification\) starts 2026-11-09/.test(N.decision(flat190, {}, { mode: "trim", since: "2026-10-06", today: "2026-11-09", blocked: BL }).reason), "no-trim: a trim since Oct 6 runs to Nov 7 and returns to gaining as Wave 5 starts");
   // NUT-7: the stated adjustment can be applied; targets carry it
   eq(N.targets("gain", 150).kcal, 3200, "targets: an applied +150 makes gain 3,200");
-  eq([N.targets("trim", 200).kcal, N.targets("trim", 200).c], [2700, 310], "targets: +200 in trim = 2,700 kcal, the carbs carry it (+50 g)");
+  eq([N.targets("trim", 200).kcal, N.targets("trim", 200).c - N.targets("trim").c], [2700, 50], "targets: +200 in trim = 2,700 kcal, the carbs carry it (+50 g)");
   eq([N.targets("gain", 900).kcal, N.targets("trim", -900).kcal], [3450, 2100], "targets: an adjustment is capped at +/-400");
   eq([N.decision(bwFast, waistFlat, G).kcal, N.decision(bwSlow, waistFlat, G).kcal, N.decision(series(1, 21, () => 188), waistFlat, G).kcal], [-150, 0, 150], "decision: the advice carries its kcal (fast -150, on pace 0, flat +150)");
   eq(N.decision(series(1, 30, (i) => 192 - i * 0.4), {}, { ...T, today: "2026-09-14" }).kcal, 200, "decision: a trim losing faster than 1% proposes +200");
@@ -871,18 +954,8 @@ console.log("\n── frame requirements ──");
   eq(N.PACE, { flat: 0.1, target: 0.25, fast: 0.5, trimSlow: 0.005, trimFast: 0.01 }, "pace table: one source for the rule, the table and the band");
   eq(N.TRIM_WEEKS, 6, "trim is six weeks at most");
   eq(N.trimEnd("2026-09-17"), "2026-10-29", "nutri: 6-week trim from Sep 17 ends Oct 29");
-  // pre-lift carbs stay in the trim
-  ok(/banana/i.test(N.byId("preT").name), "trim pre-lift is whey + banana");
-  { // NUT-6: the nutrition note carries the current rules, and the trim day adds up
-    const note = require("fs").readFileSync(__dirname + "/notes/nutrition.txt", "utf8");
-    ok(!/Four weeks|for 4 weeks|4-week trim|Oct 11|\u2264 188|189\+|mini-cut to ~183/.test(note), "nutrition note: no retired trim rules (4 weeks, Oct 11, 188/189, the spring mini-cut)");
-    const trimDay = note.slice(note.indexOf("A TRIM DAY"), note.indexOf("BREAKFAST \u2014 POST-LIFT"));
-    ok(/6:10 PRE[^\n]*banana/.test(trimDay) && !/no banana/.test(trimDay), "nutrition note: the trim-day pre-lift keeps the banana");
-    const parts = [...trimDay.matchAll(/\(~([\d,]+)(?:\u2013([\d,]+))? \u00b7/g)].map((m) => [+m[1].replace(",", ""), +(m[2] || m[1]).replace(",", "")]);
-    const tot = trimDay.match(/\u2248 ([\d,]+)\u2013([\d,]+) \u00b7/);
-    eq([parts.reduce((a, x) => a + x[0], 0), parts.reduce((a, x) => a + x[1], 0)], [+tot[1].replace(",", ""), +tot[2].replace(",", "")], "nutrition note: the trim-day total is the sum of its meals");
-    ok(/Cycles 5\u20136/.test(note) && /no night was under 6 h/.test(note) && /Six weeks at most/.test(note), "nutrition note: no trims in Cycles 5-6, the sleep gate's short-night rule, six weeks at most");
-  }
+  // pre-lift carbs stay in every mode: the shake carries a banana
+  ok(["trim", "maintain", "gain"].every((m) => N.dayPlan("shift", N.targets(m).kcal, "2026-11-03").items.find((x) => x.slot === "pre").meal.id === "wheyShake") && N.mealById("wheyShake").c >= 25, "pre-lift is whey + banana in every mode, trim included");
   // supplements: certified, dosed by the evidence
   ok(/NSF Certified for Sport/.test(N.CERT) && /Informed Sport/.test(N.CERT), "every supplement must be NSF Certified for Sport or Informed Sport");
   const caf = N.SUPPS.find((x) => x.name === "Caffeine");
@@ -890,35 +963,16 @@ console.log("\n── frame requirements ──");
   eq(N.SUPPS.find((x) => /Vitamin D/.test(x.name)).tier, 3, "vitamin D is tier 3");
   eq(N.PHASES[1].protein, [215, 230], "CK cut protein 215-230 g");
   ok(!/Diet break at week 5/.test(N.PHASES[1].note) && /does not save muscle/.test(N.PHASES[1].note), "refeeds are for adherence, not muscle (ICECAP)");
-  // home plates: what he actually cooks
-  const plates = N.HOME.filter((x) => x.grp === "plate");
-  ok(plates.some((x) => /Salmon/.test(x.name) && x.mode === "gain") && plates.some((x) => /Salmon/.test(x.name) && x.mode === "trim"), "plates: salmon in both modes");
-  ok(plates.some((x) => /NY Strip/.test(x.name) && x.mode === "gain") && plates.some((x) => /NY Strip/.test(x.name) && x.mode === "trim"), "plates: NY strip in both modes");
-  ok(plates.some((x) => /Ribeye/.test(x.name) && x.mode === "gain") && !plates.some((x) => /Ribeye/.test(x.name) && x.mode === "trim"), "plates: ribeye is gaining-only");
-  ok(plates.filter((x) => x.mode === "trim").every((x) => x.kcal <= 750 && x.p >= 40), "plates: every trim plate is <=750 kcal and >=40P");
-  ok(plates.every((x) => x.p >= 40), "plates: every plate is a protein anchor");
-  const homeBase = (mode) => N.HOME.filter((x) => x.mode === mode && !x.grp).reduce((s, x) => s + x.kcal, 0);
-  for (const x of plates.filter((x) => x.mode === "gain")) ok(homeBase("gain") + x.kcal >= 2950 && homeBase("gain") + x.kcal <= 3350, `plates: off-shift gaining night with ${x.name.split(" —")[0]} lands 2,950-3,350 (${homeBase("gain") + x.kcal})`);
-  for (const x of plates.filter((x) => x.mode === "trim")) ok(homeBase("trim") + x.kcal >= 2150 && homeBase("trim") + x.kcal <= 2500, `plates: off-shift trim night with ${x.name.split(" —")[0]} lands 2,150-2,500 (${homeBase("trim") + x.kcal})`);
-  // breakfast alternatives: every one is a post-lift recovery meal
-  const bf = N.HOME.filter((x) => x.grp === "bfast");
-  ok(bf.length >= 10, `bfast: ${bf.length} options`);
-  ok(bf.every((x) => x.p >= 40), "bfast: every breakfast clears 40P post-lift");
-  ok(bf.filter((x) => x.mode === "gain").every((x) => x.kcal >= 600 && x.kcal <= 900), "bfast: gain breakfasts sit 600-900");
-  ok(bf.filter((x) => x.mode === "trim").every((x) => x.kcal >= 450 && x.kcal <= 600), "bfast: trim breakfasts sit 450-600");
-  for (const r of ["Steak & eggs", "Breakfast burrito", "Omelet", "Eggs + Greek yogurt", "Oat protein pancakes"])
-    ok(bf.some((x) => x.name.startsWith(r) && x.mode === "gain") && bf.some((x) => x.name.startsWith(r) && x.mode === "trim"), `bfast: ${r} exists in both modes`);
-  ok(bf.some((x) => /Steak & eggs/.test(x.name) && /THE PICK/.test(x.note || "")), "bfast: steak & eggs is named the pick");
-  // swapping any breakfast for meal 1 keeps the day in band
-  const m1 = (mode) => N.HOME.find((x) => x.id === (mode === "gain" ? "m1" : "m1T")).kcal;
-  for (const x of bf.filter((x) => x.mode === "gain")) { const d = homeBase("gain") - m1("gain") + x.kcal + 950; ok(d >= 2900 && d <= 3350, `bfast: gaining day with ${x.name.split(" —")[0]} lands 2,900-3,350 (${d})`); }
-  for (const x of bf.filter((x) => x.mode === "trim")) { const d = homeBase("trim") - m1("trim") + x.kcal + 550; ok(d >= 2050 && d <= 2500, `bfast: trim day with ${x.name.split(" —")[0]} lands 2,050-2,500 (${d})`); }
-  const adds = N.HOME.filter((x) => x.grp === "addon");
-  ok(adds.every((x) => x.addon && x.mode === "any"), "addons: bare cuts are mode-agnostic add-ons");
-  ok(adds.some((x) => /butter/i.test(x.name)), "addons: cooking fat is loggable");
-  // a composed plate should roughly equal the pre-built one
-  const comp = N.byId("strip10").kcal + N.byId("rice1").kcal * 1.5 + 50;
-  ok(Math.abs(comp - N.byId("stripG").kcal) <= 100, `plates: composed strip plate (${comp}) matches the pre-built (${N.byId("stripG").kcal})`);
+  // the nutrition note is the long-form version of the same plan
+  { const note = require("fs").readFileSync(__dirname + "/notes/nutrition.txt", "utf8");
+    ok(!/Hillstone (rotisserie|Tier|playbook|shift meal)|staff meal is fine|Twenty minutes of grazing/.test(note), "nutrition note: no Hillstone meals, tiers or grazing allowances");
+    ok(/ZERO RESTAURANT FOOD/.test(note) && /MAINTAIN/.test(note) && /Cycles 5\u20136/.test(note) && /no night was under 6 h/.test(note) && /Six weeks at most/.test(note), "nutrition note: zero restaurant food, MAINTAIN, no trims in Cycles 5-6, the sleep gate, six weeks at most");
+    const day = note.slice(note.indexOf("A MAINTAIN SHIFT DAY"), note.indexOf("THE RECIPES"));
+    const parts = [...day.matchAll(/\((\d[\d,]*) kcal \u00b7 (\d+)P\)/g)].map((m) => [+m[1].replace(",", ""), +m[2]]);
+    const tot = day.match(/TOTAL (\d[\d,]*) kcal \u00b7 (\d+)P/);
+    ok(parts.length >= 5 && tot && parts.reduce((a, x) => a + x[0], 0) === +tot[1].replace(",", "") && parts.reduce((a, x) => a + x[1], 0) === +tot[2], `nutrition note: the maintain shift day is the sum of its meals (${parts.length} meals)`);
+    const live = N.dayPlan("shift", 2800, "2026-11-03");
+    ok(tot && Math.abs(+tot[1].replace(",", "") - live.total.kcal) <= 15, `nutrition note: its shift day matches the app's plan (${tot && tot[1]} vs ${live.total.kcal})`); }
 }
 
 

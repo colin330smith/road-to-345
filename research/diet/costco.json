@@ -1,0 +1,2858 @@
+{
+  "meta": {
+    "title": "Costco catalog for the strict home-cooked plan (Central Florida)",
+    "asOf": "2026-11-01",
+    "fields": {
+      "id": "stable key",
+      "item": "product name as Costco (or the alt store) lists it",
+      "section": "meat | seafood | produce | dairy | frozen | pantry | bakery (where it sits in the warehouse)",
+      "kind": "protein | carb | veg | fruit | fat | sauce | spice",
+      "pack": "size and count as sold",
+      "usableG": "net grams per pack, computed in node from the labeled net weight (1 lb = 453.59237 g, 1 oz = 28.349523125 g); null for random-weight, count or volume items. This is the labeled net weight, not trimmed or cooked yield",
+      "usableML": "for liquids: mL per pack (1 fl oz = 29.5735 mL, 1 qt = 946.353 mL, 1 L = 1000 mL)",
+      "approxG": "random-weight items only: grams from an average weight shown on a Costco listing, so treat as approximate",
+      "freezes": "{ ok: can/should you freeze it, how: method + time (FDA/FSIS where cited) }",
+      "alt": "where to buy if Costco lacks it",
+      "confidence": "see confidenceScale",
+      "src": "pages the facts came from",
+      "use": "which plan dishes it serves (for the menu builder)"
+    },
+    "confidenceScale": {
+      "verified": "Exact product name (and pack, where given) read from a Costco-owned page: a costco.com product page fetched for this file, or a sameday.costco.com listing title in the search index. This confirms Costco sells it in the US. It does NOT confirm today's stock at a Central Florida warehouse: Costco publishes no per-warehouse inventory, and costco.com 'out of stock' only means not shippable online.",
+      "likely": "A Costco-owned page shows the product, but the exact name, pack size or variant could not be pinned down, or the listing is old.",
+      "unverified": "Not found on a Costco page in this research (or not searched). Buy it at the alt store."
+    },
+    "stockCheck": "In the Costco app, set your home warehouse and search the item name or number before the trip; meat-case and seafood items vary weekly.",
+    "method": "costco.com product pages fetched with curl (JSON-LD name/sku plus the spec table); sameday.costco.com pages need a session, so their titles and pack details come from the search index (marked 'via search index'). Publix pages via search index. No prices are used.",
+    "sourcesFoodSafety": "FDA Refrigerator & Freezer Storage Chart (Mar 2018), https://www.fda.gov/media/74435/download"
+  },
+  "products": [
+    {
+      "id": "beef_top_sirloin_prime",
+      "item": "Kirkland Signature USDA Prime Beef Loin Top Sirloin Steak Boneless Cap Off",
+      "section": "meat",
+      "kind": "protein",
+      "pack": "random-weight package, sold by the lb",
+      "freezes": {
+        "ok": true,
+        "how": "Yes. Portion into single steaks, wrap tightly (or vacuum-seal), label the date, freeze within the fridge window (3-5 days raw). Best quality 6-12 months at 0°F (FDA chart: steaks). Thaw in the fridge 1-2 days."
+      },
+      "alt": "Any meat counter (e.g. Publix) for USDA Choice top sirloin",
+      "confidence": "verified",
+      "src": [
+        "https://sameday.costco.com/store/costco/products/307479-kirkland-signature-usda-prime-beef-loin-top-sirloin-steak-boneless-cap-off-per-lb",
+        "https://www.costco.com/f/-/kirkland-signature-beef"
+      ],
+      "note": "Costco's Kirkland Signature beef page lists Top Sirloin and calls it lean. A USDA Choice top sirloin is likely stocked as well, but no listing was found under that name. The listing's detail text also says 'USDA Choice', so check the grade on the label.",
+      "use": [
+        "hawaiian steak",
+        "steak plates",
+        "steak & eggs"
+      ],
+      "usableG": null
+    },
+    {
+      "id": "beef_flank_choice",
+      "item": "Kirkland Signature USDA Choice Beef Flank Steak",
+      "section": "meat",
+      "kind": "protein",
+      "pack": "random-weight package, sold 'each' (same-day listing shows item #33977, via search index)",
+      "freezes": {
+        "ok": true,
+        "how": "Yes. Portion into single steaks, wrap tightly (or vacuum-seal), label the date, freeze within the fridge window (3-5 days raw). Best quality 6-12 months at 0°F (FDA chart: steaks). Thaw in the fridge 1-2 days."
+      },
+      "alt": "Publix meat counter",
+      "confidence": "verified",
+      "src": [
+        "https://sameday.costco.com/store/costco/products/32655-kirkland-signature-usda-choice-beef-flank-steak-each",
+        "https://www.costco.com/f/-/kirkland-signature-beef"
+      ],
+      "note": "Costco: naturally lean; cook fast over high heat, slice thin across the grain.",
+      "use": [
+        "thai steak noodle salad",
+        "hawaiian steak"
+      ],
+      "usableG": null
+    },
+    {
+      "id": "beef_top_round_london_broil",
+      "item": "Kirkland Signature USDA Choice Beef Round Top Round Steak (London Broil)",
+      "section": "meat",
+      "kind": "protein",
+      "pack": "random-weight package, sold by the lb; one same-day listing shows ~5.4 lb average (via search index)",
+      "freezes": {
+        "ok": true,
+        "how": "Yes. Portion into single steaks, wrap tightly (or vacuum-seal), label the date, freeze within the fridge window (3-5 days raw). Best quality 6-12 months at 0°F (FDA chart: steaks). Thaw in the fridge 1-2 days."
+      },
+      "alt": "Publix meat counter (inside round / London broil)",
+      "confidence": "likely",
+      "src": [
+        "https://sameday.costco.com/store/costco/products/57423-beef-beef-round-top-round-steak-london-broil-per-lb-per-lb"
+      ],
+      "note": "The same-day listing title reads 'Beef Round Top Round Steak London Broil Per Lb.' Inside round was not found at Costco under that name; top round is the London broil cut Costco lists. Leanest, cheapest steak here: marinate, sear, slice thin.",
+      "use": [
+        "french dip (roast beef)",
+        "steak salads",
+        "trim days"
+      ],
+      "usableG": null,
+      "approxG": 2449
+    },
+    {
+      "id": "beef_tenderloin_whole_choice",
+      "item": "Kirkland Signature USDA Choice Beef Loin Tenderloin Whole, Vacuum Packaged",
+      "section": "meat",
+      "kind": "protein",
+      "pack": "whole tenderloin, vacuum packed, sold by the lb (random weight)",
+      "freezes": {
+        "ok": true,
+        "how": "Yes. Cut into roasts/steaks, wrap tightly, label. Best quality 4-12 months (FDA chart: roasts); Costco's own card for home-cut beef: fresh 3-4 days at 35-40°F, frozen 6-12 months."
+      },
+      "alt": "Publix meat counter (filet)",
+      "confidence": "verified",
+      "src": [
+        "https://sameday.costco.com/store/costco/products/1874816-kirkland-signature-usda-choice-beef-loin-tenderloin-whole-vacuum-packaged-per-lb",
+        "https://www.costco.com/f/-/extreme-peeled-tenderloin"
+      ],
+      "note": "Needs trimming unless you buy Costco's 'Extreme Peeled' tenderloin, which Costco says has 'the highest level of pre-trimming available' (grade not stated on that page). Costco's cutting card: steaks 3/4\"-1 1/2\" thick. Weigh the trimmed meat; yield is not published.",
+      "use": [
+        "center-cut filet plate"
+      ],
+      "usableG": null
+    },
+    {
+      "id": "beef_tenderloin_steak_prime",
+      "item": "Kirkland Signature USDA Prime Beef Loin Tenderloin Steak",
+      "section": "meat",
+      "kind": "protein",
+      "pack": "pre-cut filet steaks, sold by the lb (random weight)",
+      "freezes": {
+        "ok": true,
+        "how": "Yes. Portion into single steaks, wrap tightly (or vacuum-seal), label the date, freeze within the fridge window (3-5 days raw). Best quality 6-12 months at 0°F (FDA chart: steaks). Thaw in the fridge 1-2 days."
+      },
+      "alt": "Publix meat counter",
+      "confidence": "verified",
+      "src": [
+        "https://sameday.costco.com/store/costco/products/241611-kirkland-signature-usda-prime-beef-loin-tenderloin-steak-per-lb"
+      ],
+      "note": "Listing text is inconsistent on grade (the title says Prime; the detail text reportedly says Choice). Read the label.",
+      "use": [
+        "center-cut filet plate"
+      ],
+      "usableG": null
+    },
+    {
+      "id": "beef_ribeye_choice",
+      "item": "Kirkland Signature USDA Choice Beef Ribeye Steak Boneless",
+      "section": "meat",
+      "kind": "protein",
+      "pack": "random-weight package (same-day listing shows item #33666, via search index)",
+      "freezes": {
+        "ok": true,
+        "how": "Yes. Portion into single steaks, wrap tightly (or vacuum-seal), label the date, freeze within the fridge window (3-5 days raw). Best quality 6-12 months at 0°F (FDA chart: steaks). Thaw in the fridge 1-2 days."
+      },
+      "alt": "Publix meat counter",
+      "confidence": "verified",
+      "src": [
+        "https://sameday.costco.com/store/costco/products/32649-kirkland-signature-usda-choice-beef-ribeye-steak-boneless-each",
+        "https://www.costco.com/f/-/kirkland-signature-beef"
+      ],
+      "note": "Costco calls it highly marbled; the fattiest steak here, so weigh it and log it like you mean it.",
+      "use": [
+        "hawaiian ribeye",
+        "steak plates"
+      ],
+      "usableG": null
+    },
+    {
+      "id": "beef_ribeye_prime",
+      "item": "Kirkland Signature USDA Prime Beef Boneless Ribeye Steak",
+      "section": "meat",
+      "kind": "protein",
+      "pack": "random-weight package, sold by the lb (same-day listing shows item #34323, via search index)",
+      "freezes": {
+        "ok": true,
+        "how": "Yes. Portion into single steaks, wrap tightly (or vacuum-seal), label the date, freeze within the fridge window (3-5 days raw). Best quality 6-12 months at 0°F (FDA chart: steaks). Thaw in the fridge 1-2 days."
+      },
+      "alt": "Publix meat counter",
+      "confidence": "verified",
+      "src": [
+        "https://sameday.costco.com/store/costco/products/32663-prime-beef-boneless-ribeye-steak-per-lb"
+      ],
+      "note": "",
+      "use": [
+        "hawaiian ribeye"
+      ],
+      "usableG": null
+    },
+    {
+      "id": "beef_ny_strip_choice",
+      "item": "Kirkland Signature USDA Choice Beef Loin New York Steak",
+      "section": "meat",
+      "kind": "protein",
+      "pack": "random-weight package, sold by the lb",
+      "freezes": {
+        "ok": true,
+        "how": "Yes. Portion into single steaks, wrap tightly (or vacuum-seal), label the date, freeze within the fridge window (3-5 days raw). Best quality 6-12 months at 0°F (FDA chart: steaks). Thaw in the fridge 1-2 days."
+      },
+      "alt": "Publix meat counter",
+      "confidence": "likely",
+      "src": [
+        "https://sameday.costco.com/store/costco/products/32657-kirkland-signature-beef-loin-new-york-steak-per-lb",
+        "https://www.costco.com/f/-/kirkland-signature-beef"
+      ],
+      "note": "Search titles show 'Kirkland Signature USDA Choice Beef Loin New York ...' (truncated) and 'Kirkland Signature Beef Loin New York Steak'. A Prime version is listed too: https://sameday.costco.com/store/costco/products/32659-kirkland-signature-usda-prime-beef-loin-new-york-steak-per-lb",
+      "use": [
+        "ny strip plate",
+        "steak & eggs"
+      ],
+      "usableG": null
+    },
+    {
+      "id": "beef_ground_88",
+      "item": "Kirkland Signature Ground Beef 88% Lean / 12% Fat",
+      "section": "meat",
+      "kind": "protein",
+      "pack": "random-weight package, sold 'each'",
+      "freezes": {
+        "ok": true,
+        "how": "Yes. Flatten 1-lb bags so they freeze and thaw fast. Raw ground beef keeps 1-2 days in the fridge, 3-4 months frozen (FDA chart: hamburger)."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://sameday.costco.com/store/costco/products/32660-kirkland-signature-ground-beef-88-lean-12-fat-each"
+      ],
+      "note": "The cast-iron burger grind. Weigh raw patties (cook to 160°F).",
+      "use": [
+        "cast-iron burger"
+      ],
+      "usableG": null
+    },
+    {
+      "id": "beef_ground_93_3x133",
+      "item": "Kirkland Signature Ground Beef, 1.33 lbs, 3-count",
+      "section": "meat",
+      "kind": "protein",
+      "pack": "3 x 1.33 lb packages",
+      "freezes": {
+        "ok": true,
+        "how": "Yes. Flatten 1-lb bags so they freeze and thaw fast. Raw ground beef keeps 1-2 days in the fridge, 3-4 months frozen (FDA chart: hamburger)."
+      },
+      "alt": "Publix",
+      "confidence": "likely",
+      "src": [
+        "https://sameday.costco.com/store/costco/products/63631251-kirkland-signature-ground-beef-133-lbs-3count"
+      ],
+      "note": "Search index reports 93% lean / 7% fat for this pack; confirm on the label. Pre-portioned packs freeze well.",
+      "use": [
+        "burrito",
+        "trim-day burger"
+      ],
+      "usableG": 1810
+    },
+    {
+      "id": "beef_ground_91_5x1",
+      "item": "Kirkland Signature Lean Ground Beef, 1 lb, 5-count",
+      "section": "meat",
+      "kind": "protein",
+      "pack": "5 x 1 lb packages",
+      "freezes": {
+        "ok": true,
+        "how": "Yes. Flatten 1-lb bags so they freeze and thaw fast. Raw ground beef keeps 1-2 days in the fridge, 3-4 months frozen (FDA chart: hamburger)."
+      },
+      "alt": "Publix",
+      "confidence": "likely",
+      "src": [
+        "https://sameday.costco.com/store/costco/products/537786-kirkland-signature-91-lean-ground-beef-5-x-1-lb-5-lb-1-lb"
+      ],
+      "note": "The listing URL says 91% lean; confirm on the label.",
+      "use": [
+        "burrito",
+        "burger"
+      ],
+      "usableG": 2268
+    },
+    {
+      "id": "chicken_breast_fresh",
+      "item": "Kirkland Signature Fresh Boneless Skinless Chicken Breasts",
+      "section": "meat",
+      "kind": "protein",
+      "pack": "random weight, 6 lb average; tear-off vacuum pouches of 2-3 breasts (Item 33841)",
+      "freezes": {
+        "ok": true,
+        "how": "Yes. Raw parts keep 1-2 days in the fridge; freeze in the tear-off pouches. Best quality 9 months (FDA chart: chicken parts)."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://www.costco.com/p/-/kirkland-signature-fresh-boneless-skinless-chicken-breasts/100606514"
+      ],
+      "note": "Also sold as an 8.96 lb average pack (Item 21897): https://www.costco.com/p/-/kirkland-signature-fresh-boneless-skinless-chicken-breasts-896-lb-avg-wt/100847859",
+      "use": [
+        "kale & chicken salad",
+        "chicken plates",
+        "burrito"
+      ],
+      "usableG": null,
+      "approxG": 2722
+    },
+    {
+      "id": "chicken_breast_frozen_65",
+      "item": "Kirkland Signature Chicken Breasts, Boneless Skinless, 6.5 lbs",
+      "section": "frozen",
+      "kind": "protein",
+      "pack": "6.5 lb resealable bag, individually frozen (Item 1454442)",
+      "freezes": {
+        "ok": true,
+        "how": "Already frozen (individually frozen, resealable bag). Keep at 0°F; thaw portions in the fridge overnight or cook from frozen (+50% time, FSIS)."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://www.costco.com/p/-/kirkland-signature-chicken-breasts-boneless-skinless-65-lbs/100735012"
+      ],
+      "note": "Costco: 'Contains up to 8% solution of water and kosher salt.' The added water and salt make raw weight read high. Log from this bag's own label, not a fresh-chicken entry.",
+      "use": [
+        "backup protein"
+      ],
+      "usableG": 2948
+    },
+    {
+      "id": "chicken_thigh_fresh",
+      "item": "Kirkland Signature Fresh Boneless Skinless Chicken Thighs",
+      "section": "meat",
+      "kind": "protein",
+      "pack": "random weight; tear-off vacuum pouches; one same-day listing shows ~8.76 lb per package (via search index)",
+      "freezes": {
+        "ok": true,
+        "how": "Yes. Raw parts keep 1-2 days in the fridge; freeze in the tear-off pouches. Best quality 9 months (FDA chart: chicken parts)."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://sameday.costco.com/store/costco/products/57456-chicken-thighs-boneless-skinless-per-lb"
+      ],
+      "note": "The pack weight comes from the search-index summary of the same-day listing; read the label.",
+      "use": [
+        "rice + thigh bowls",
+        "rotisserie-style thighs"
+      ],
+      "usableG": null,
+      "approxG": 3973
+    },
+    {
+      "id": "chicken_thigh_frozen_65",
+      "item": "Kirkland Signature Boneless Skinless Chicken Thighs",
+      "section": "frozen",
+      "kind": "protein",
+      "pack": "6.5 lb bag, frozen",
+      "freezes": {
+        "ok": true,
+        "how": "Already frozen (individually frozen, resealable bag). Keep at 0°F; thaw portions in the fridge overnight or cook from frozen (+50% time, FSIS)."
+      },
+      "alt": "Publix",
+      "confidence": "likely",
+      "src": [
+        "https://sameday.costco.com/store/costco/products/20899528-kirkland-signature-boneless-skinless-chicken-thighs-6-5-lb"
+      ],
+      "note": "Same-day listing title. Whether it contains a salt solution was not checked; read the label.",
+      "use": [
+        "backup protein"
+      ],
+      "usableG": 2948
+    },
+    {
+      "id": "chicken_rotisserie",
+      "item": "Kirkland Signature Rotisserie Chicken",
+      "section": "meat",
+      "kind": "protein",
+      "pack": "1 whole cooked bird (deli; weight varies; same-day listing shows item #87745, via search index)",
+      "freezes": {
+        "ok": true,
+        "how": "Pull the meat within 2 hours of buying, refrigerate in shallow covered containers, eat within 3-4 days (FSIS Kitchen Companion). Plain cooked poultry pieces: best quality 4 months frozen (FDA chart)."
+      },
+      "alt": "Publix deli rotisserie",
+      "confidence": "verified",
+      "src": [
+        "https://sameday.costco.com/store/costco/products/17676987-kirkland-signature-rotisserie-chicken-each"
+      ],
+      "note": "Weigh the picked meat and log the grams; edible yield is not published. Season and fat level are Costco's, not yours, so on a strict plan treat it as an emergency protein, not a staple.",
+      "use": [
+        "emergency protein",
+        "chicken salad"
+      ],
+      "usableG": null
+    },
+    {
+      "id": "pork_tenderloin_swift",
+      "item": "Swift Premium Boneless Pork Tenderloin",
+      "section": "meat",
+      "kind": "protein",
+      "pack": "random-weight package, sold by the lb",
+      "freezes": {
+        "ok": true,
+        "how": "Yes. Raw pork keeps 3-5 days in the fridge; best quality frozen 4-6 months as chops/medallions, 4-12 months as whole roasts (FDA chart)."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://sameday.costco.com/store/costco/products/31941-swift-premium-boneless-pork-tenderloin-per-lb"
+      ],
+      "note": "Same-day title reads 'Swift Boneless Pork Tenderloin'. A Kirkland Signature Premium Pork Loin Tenderloin Whole (two tenderloins per pouch, item #33965 via search index) is also listed. Skip the pre-seasoned 'Kirkland Signature Pork Tenderloin With Garlic Rosemary Seasoning' on a strict plan: you cannot measure its seasoning (judgment).",
+      "use": [
+        "pork tenderloin plates",
+        "bbq-style pork"
+      ],
+      "usableG": null
+    },
+    {
+      "id": "salmon_atlantic_fresh",
+      "item": "Kirkland Signature Fresh Farmed Atlantic Salmon Fillet",
+      "section": "seafood",
+      "kind": "protein",
+      "pack": "random-weight boneless skinless fillet (per same-day listings)",
+      "freezes": {
+        "ok": true,
+        "how": "Yes. Raw salmon keeps 1-2 days in the fridge (FDA chart; FDA seafood page: use within 2 days). Fatty fish: best quality 2-3 months frozen (FDA chart)."
+      },
+      "alt": "Publix seafood counter",
+      "confidence": "verified",
+      "src": [
+        "https://sameday.costco.com/store/costco/products/2634602-kirkland-signature-fresh-farmed-atlantic-salmon-fillet-raised-without-antibiotics-lb"
+      ],
+      "note": "Variant 'Raised Without Antibiotics'. Cook within 1-2 days of purchase or freeze the same day.",
+      "use": [
+        "roasted salmon + wild rice",
+        "omega-3 days"
+      ],
+      "usableG": null
+    },
+    {
+      "id": "salmon_atlantic_portions",
+      "item": "Kirkland Signature Fresh Farmed Atlantic Salmon Portions",
+      "section": "seafood",
+      "kind": "protein",
+      "pack": "random weight; one listing shows ~2.65 lb package, skin-on (via search index)",
+      "freezes": {
+        "ok": true,
+        "how": "Yes. Raw salmon keeps 1-2 days in the fridge (FDA chart; FDA seafood page: use within 2 days). Fatty fish: best quality 2-3 months frozen (FDA chart)."
+      },
+      "alt": "Publix seafood counter",
+      "confidence": "likely",
+      "src": [
+        "https://sameday.costco.com/store/costco/products/71295890-kirkland-signature-fresh-farmed-atlantic-salmon-portions-1-each"
+      ],
+      "note": "Pre-cut portions make weighing faster.",
+      "use": [
+        "roasted salmon + wild rice"
+      ],
+      "usableG": null,
+      "approxG": 1202
+    },
+    {
+      "id": "salmon_atlantic_frozen_3lb",
+      "item": "Kirkland Signature Farmed Atlantic Salmon Individually Wrapped, 3 lb",
+      "section": "frozen",
+      "kind": "protein",
+      "pack": "3 lb bag of individually wrapped portions",
+      "freezes": {
+        "ok": true,
+        "how": "Already frozen in individually sealed portions. Thaw in the fridge overnight (FDA). Fatty fish: best quality 2-3 months at home 0°F (FDA chart); also follow the bag's date."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://sameday.costco.com/store/costco/products/19232123-kirkland-signature-farmed-atlantic-salmon-individually-wrapped-3-lb-3-lb"
+      ],
+      "note": "The freezer backup for salmon night.",
+      "use": [
+        "roasted salmon"
+      ],
+      "usableG": 1361
+    },
+    {
+      "id": "salmon_sockeye_frozen_3lb",
+      "item": "Kirkland Signature Wild Alaskan Sockeye Salmon, 5 oz - 7 oz Portion, 3 lbs",
+      "section": "frozen",
+      "kind": "protein",
+      "pack": "3 lb (48 oz) bag of 5-7 oz portions (Item 221177)",
+      "freezes": {
+        "ok": true,
+        "how": "Already frozen in individually sealed portions. Thaw in the fridge overnight (FDA). Fatty fish: best quality 2-3 months at home 0°F (FDA chart); also follow the bag's date."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://www.costco.com/p/-/kirkland-signature-wild-alaskan-sockeye-salmon-5-oz-7-oz-portion-3-lbs/100441201"
+      ],
+      "note": "Leaner than farmed Atlantic (judgment). Weigh each portion: they range 5-7 oz.",
+      "use": [
+        "roasted salmon",
+        "trim-day fish"
+      ],
+      "usableG": 1361
+    },
+    {
+      "id": "ahi_fresh",
+      "item": "Kirkland Signature Fresh Wild Ahi Tuna",
+      "section": "seafood",
+      "kind": "protein",
+      "pack": "random weight, sold by the lb",
+      "freezes": {
+        "ok": true,
+        "how": "Yes, but buy fresh ahi the day you sear it. Raw fish keeps 1-2 days; lean fish best quality 6-8 months frozen (FDA chart)."
+      },
+      "alt": "A fish counter (Publix, Whole Foods) or frozen ahi steaks; not verified here",
+      "confidence": "likely",
+      "src": [
+        "https://sameday.costco.com/store/costco/products/57451-kirkland-signature-fresh-wild-ahi-tuna-per-lb"
+      ],
+      "note": "Answer to 'fresh or frozen?': Costco lists FRESH Kirkland Signature wild ahi in some warehouses' same-day catalogs; whether a Central Florida warehouse has it on a given day is not public. Do not confuse with 'Safe Catch Ahi Wild Yellowfin Tuna Steaks, 5 oz, 6-count' (Item 1292488): those are CANNED (6 cans). Sear and eat the day you buy it; never pack rare ahi for a shift (see food-safety.md).",
+      "use": [
+        "seared ahi + ponzu",
+        "seared ahi salad"
+      ],
+      "usableG": null
+    },
+    {
+      "id": "ahi_frozen_case_online",
+      "item": "Ahi Tuna Individual Vacuum Packed Portion (26-27/6 Oz. Per Portion), 26-27 Total Packs, 10 Lbs. Total Case",
+      "section": "frozen",
+      "kind": "protein",
+      "pack": "10 lb case of 6 oz vacuum-sealed portions, ships frozen, Online Only, brand Unomundo (Item 1659746)",
+      "freezes": {
+        "ok": true,
+        "how": "Yes, but buy fresh ahi the day you sear it. Raw fish keeps 1-2 days; lean fish best quality 6-8 months frozen (FDA chart)."
+      },
+      "alt": "Plain frozen ahi steaks from a fish counter (not verified here)",
+      "confidence": "verified",
+      "src": [
+        "https://www.costco.com/p/-/ahi-tuna-individual-vacuum-packed-portion-26-276-oz-per-portion-26-27-total-packs-10-lbs-total-case/100976838"
+      ],
+      "note": "Costco.com only, not a warehouse item ($229.99 when checked). Ingredients: 'yellowfin tuna, water, sodium ascorbate, sodium citrate, beet extract, annatto, and salt', which are color-retention additives. A snob may reasonably pass.",
+      "use": [
+        "seared ahi"
+      ],
+      "usableG": 4536
+    },
+    {
+      "id": "shrimp_raw_2125_tailon",
+      "item": "Kirkland Signature Farm-Raised Raw Shrimp, Tail-On, 21-25-count per Pound, 2 lbs",
+      "section": "frozen",
+      "kind": "protein",
+      "pack": "2 lb bag, peeled & deveined, tail-on, 21-25 per lb (Item 25551)",
+      "freezes": {
+        "ok": true,
+        "how": "Already frozen. Raw shrimp keeps 1-2 days in the fridge once thawed; best quality 3-6 months frozen (FDA chart). Thaw in the fridge overnight or sealed under cold water."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://www.costco.com/p/-/kirkland-signature-farm-raised-raw-shrimp-tail-on-21-25-count-per-pound-2-lbs/100408294"
+      ],
+      "note": "Big shrimp for searing or chilled 'jumbo shrimp'.",
+      "use": [
+        "shrimp louie (poach and chill)",
+        "shrimp add-on"
+      ],
+      "usableG": 907
+    },
+    {
+      "id": "shrimp_raw_3140_tailoff",
+      "item": "Kirkland Signature Farm-Raised Raw Shrimp, Peeled, Deveined, 31-40-count, 2 lbs",
+      "section": "frozen",
+      "kind": "protein",
+      "pack": "2 lb resealable bag, tail-off, 31-40 per lb",
+      "freezes": {
+        "ok": true,
+        "how": "Already frozen. Raw shrimp keeps 1-2 days in the fridge once thawed; best quality 3-6 months frozen (FDA chart). Thaw in the fridge overnight or sealed under cold water."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://sameday.costco.com/store/costco/products/21142655-kirkland-signature-31-to-40-count-raw-tail-off-shrimp-2-lb"
+      ],
+      "note": "Tail-off: fastest to cook and weigh.",
+      "use": [
+        "stir-fry",
+        "noodle salad"
+      ],
+      "usableG": 907
+    },
+    {
+      "id": "shrimp_raw_argentine",
+      "item": "Kirkland Signature Wild Argentine Raw Shrimp, 2 lb",
+      "section": "frozen",
+      "kind": "protein",
+      "pack": "2 lb bag, keep frozen, product of Argentina (Item 1462040)",
+      "freezes": {
+        "ok": true,
+        "how": "Already frozen. Raw shrimp keeps 1-2 days in the fridge once thawed; best quality 3-6 months frozen (FDA chart). Thaw in the fridge overnight or sealed under cold water."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://www.costco.com/p/-/kirkland-signature-wild-argentine-raw-shrimp-2-lb/4000298044"
+      ],
+      "note": "Wild red shrimp, sweet; overcooks fast.",
+      "use": [
+        "shrimp plates"
+      ],
+      "usableG": 907
+    },
+    {
+      "id": "shrimp_cooked_5070",
+      "item": "Kirkland Signature Farm-Raised Cooked Shrimp, Tail-Off, 50-70-count per Pound, 2 lbs",
+      "section": "frozen",
+      "kind": "protein",
+      "pack": "2 lb bag, cooked, peeled & deveined, tail-off, 50-70 per lb (Item 77009)",
+      "freezes": {
+        "ok": true,
+        "how": "Already frozen and fully cooked. Thaw in the fridge; once thawed treat as cooked seafood: 3-4 days (FDA chart: cooked fish)."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://www.costco.com/p/-/kirkland-signature-farm-raised-cooked-shrimp-tail-off-50-70-count-per-pound-2-lbs/100415670"
+      ],
+      "note": "Thaw overnight in the fridge and it is ready to eat cold: the no-cook Louie and the best shift-bag protein.",
+      "use": [
+        "shrimp louie",
+        "shift-bag salads"
+      ],
+      "usableG": 907
+    },
+    {
+      "id": "shrimp_cooked_3140_tailon",
+      "item": "Kirkland Signature Cooked Tail-On Shrimp, 31-40 ct, 2 lbs",
+      "section": "frozen",
+      "kind": "protein",
+      "pack": "2 lb bag, cooked, tail-on, 31-40 per lb",
+      "freezes": {
+        "ok": true,
+        "how": "Already frozen and fully cooked. Thaw in the fridge; once thawed treat as cooked seafood: 3-4 days (FDA chart: cooked fish)."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://sameday.costco.com/store/costco/products/19230718-kirkland-signature-cooked-tail-on-shrimp-31-40-ct-2-lbs-2-lb"
+      ],
+      "note": "",
+      "use": [
+        "chilled shrimp add-on"
+      ],
+      "usableG": 907
+    },
+    {
+      "id": "tuna_albacore_canned",
+      "item": "Kirkland Signature, Albacore Solid White Tuna in Water, 7 oz, 8-Count",
+      "section": "pantry",
+      "kind": "protein",
+      "pack": "8 x 7 oz cans (net weight includes water)",
+      "freezes": {
+        "ok": false,
+        "how": "No. Pantry item; follow the package date."
+      },
+      "alt": "Any grocery",
+      "confidence": "verified",
+      "src": [
+        "https://www.costco.com/p/-/kirkland-signature-albacore-solid-white-tuna-in-water-7-oz-8-count/100851738"
+      ],
+      "note": "Shelf-stable protein for the end of a double: it needs no cold until opened. Drain and weigh, because the 7 oz includes the water.",
+      "use": [
+        "shift backup protein"
+      ],
+      "usableG": 1588
+    },
+    {
+      "id": "eggs_24",
+      "item": "Kirkland Signature Eggs, Large, 24-count",
+      "section": "dairy",
+      "kind": "protein",
+      "pack": "24 large, cage-free (count item)",
+      "freezes": {
+        "ok": false,
+        "how": "No: do not freeze eggs in the shell (FDA chart). Shell eggs keep 3-5 weeks in the fridge. Hard-cooked: 1 week, do not freeze."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://sameday.costco.com/store/costco/products/3308878-kirkland-signature-cage-free-eggs-24-ct-24-ct"
+      ],
+      "note": "Count item. Log by egg, or weigh if logging by gram.",
+      "use": [
+        "breakfasts",
+        "hard-boiled snacks"
+      ],
+      "usableG": null
+    },
+    {
+      "id": "eggs_60",
+      "item": "Kirkland Signature Cage Free Eggs USDA Grade A, 60 ct",
+      "section": "dairy",
+      "kind": "protein",
+      "pack": "60 large (5 dozen)",
+      "freezes": {
+        "ok": false,
+        "how": "No: do not freeze eggs in the shell (FDA chart). Shell eggs keep 3-5 weeks in the fridge. Hard-cooked: 1 week, do not freeze."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://sameday.costco.com/store/costco/products/17088487-kirkland-signature-cage-free-eggs-usda-grade-a-60-ct-60-ct"
+      ],
+      "note": "Shell eggs keep 3-5 weeks in the fridge (FDA chart), so 60 is realistic at ~4/day.",
+      "use": [
+        "breakfasts"
+      ],
+      "usableG": null
+    },
+    {
+      "id": "egg_whites_6x16",
+      "item": "Kirkland Signature Cage Free Egg Whites 6/16 oz",
+      "section": "dairy",
+      "kind": "protein",
+      "pack": "6 x 16 oz cartons",
+      "freezes": {
+        "ok": true,
+        "how": "Unopened cartons can be frozen (FDA chart: 1 year). Opened: 3 days in the fridge, do not freeze. Unopened in the fridge: 10 days per the FDA chart, or the carton's date if shorter."
+      },
+      "alt": "Publix (carton egg whites)",
+      "confidence": "likely",
+      "src": [
+        "https://sameday.costco.com/store/costco/products/16460364-kirkland-signature-cage-free-egg-whites-6-16-oz-96-oz"
+      ],
+      "note": "The same-day listing is old (the search index dates it years back), so current stock is uncertain. usableG assumes the 16 oz is net weight. Opened cartons last 3 days: open one at a time.",
+      "use": [
+        "omelets",
+        "trim breakfasts"
+      ],
+      "usableG": 2722
+    },
+    {
+      "id": "yogurt_ks_organic_greek",
+      "item": "Kirkland Signature Organic Greek Yogurt, 48 oz",
+      "section": "dairy",
+      "kind": "protein",
+      "pack": "48 oz tub (Item 1048072)",
+      "freezes": {
+        "ok": false,
+        "how": "No (texture, judgment). Follow the package date; not covered by the FDA/FSIS charts used here."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://www.costco.com/p/-/kirkland-signature-organic-greek-yogurt-48-oz/100433972"
+      ],
+      "note": "Search index reports Costco describes it as nonfat. Confirm '0%' or 'nonfat' on the lid before logging it as such.",
+      "use": [
+        "yogurt bowls",
+        "sauces (tzatziki-style)"
+      ],
+      "usableG": 1361
+    },
+    {
+      "id": "yogurt_fage_0",
+      "item": "FAGE Total 0% Milkfat Plain Greek Yogurt, 48 oz",
+      "section": "dairy",
+      "kind": "protein",
+      "pack": "48 oz tub",
+      "freezes": {
+        "ok": false,
+        "how": "No (texture, judgment). Follow the package date; not covered by the FDA/FSIS charts used here."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://sameday.costco.com/store/costco/products/123053-fage-total-0-milkfat-all-natural-nonfat-greek-strained-yogurt-48-oz"
+      ],
+      "note": "Same-day title reads 'FAGE 0%, Plain Greek Yogurt'.",
+      "use": [
+        "yogurt bowls"
+      ],
+      "usableG": 1361
+    },
+    {
+      "id": "cottage_daisy_lowfat",
+      "item": "Daisy Cottage Cheese, Low Fat, Small Curd, 2% Milkfat, 3 lb",
+      "section": "dairy",
+      "kind": "protein",
+      "pack": "3 lb tub",
+      "freezes": {
+        "ok": false,
+        "how": "No (texture, judgment). Follow the package date; not covered by the FDA/FSIS charts used here."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://sameday.costco.com/store/costco/products/241519-daisy-cottage-cheese-small-curd-2-milkfat-low-fat-3-lb"
+      ],
+      "note": "A separate Daisy small-curd listing is 4% milkfat. Check the lid.",
+      "use": [
+        "snacks",
+        "protein add-on"
+      ],
+      "usableG": 1361
+    },
+    {
+      "id": "cottage_goodculture_lowfat",
+      "item": "good culture Low Fat Classic Cottage Cheese",
+      "section": "dairy",
+      "kind": "protein",
+      "pack": "48 oz per the listing URL",
+      "freezes": {
+        "ok": false,
+        "how": "No (texture, judgment). Follow the package date; not covered by the FDA/FSIS charts used here."
+      },
+      "alt": "Publix",
+      "confidence": "likely",
+      "src": [
+        "https://sameday.costco.com/store/costco/products/28217357-good-culture-low-fat-classic-cottage-cheese-48-oz"
+      ],
+      "note": "Pack size taken from the listing URL; confirm in the warehouse.",
+      "use": [
+        "snacks"
+      ],
+      "usableG": 1361
+    },
+    {
+      "id": "parm_shredded_1lb",
+      "item": "Kirkland Signature Aged Parmigiano Reggiano Cheese, Shredded, 1 lb",
+      "section": "dairy",
+      "kind": "fat",
+      "pack": "16 oz bag (Item 186626)",
+      "freezes": {
+        "ok": false,
+        "how": "Not needed: hard cheese keeps in the fridge; follow the package date (not covered by the charts used here)."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://www.costco.com/p/-/kirkland-signature-aged-parmigiano-reggiano-cheese-shredded-1-lb/100377729"
+      ],
+      "note": "Weigh it: 'a little parm' is how kale salads drift by 150 kcal (judgment).",
+      "use": [
+        "kale & chicken salad"
+      ],
+      "usableG": 454
+    },
+    {
+      "id": "parm_wedge",
+      "item": "Kirkland Signature Italian Parmesan Parmigiano Reggiano",
+      "section": "dairy",
+      "kind": "fat",
+      "pack": "random-weight wedge",
+      "freezes": {
+        "ok": false,
+        "how": "Not needed: hard cheese keeps in the fridge; follow the package date (not covered by the charts used here)."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://sameday.costco.com/store/costco/products/127442-kirkland-signature-italian-parmesan-parmigiano-reggiano-each"
+      ],
+      "note": "Microplane it over plates and weigh the plate before and after.",
+      "use": [
+        "finishing"
+      ],
+      "usableG": null
+    },
+    {
+      "id": "pecorino_wedge",
+      "item": "Kirkland Signature Pecorino Romano Cheese Wedge",
+      "section": "dairy",
+      "kind": "fat",
+      "pack": "wedge (weight not verified)",
+      "freezes": {
+        "ok": false,
+        "how": "Not needed: hard cheese keeps in the fridge; follow the package date (not covered by the charts used here)."
+      },
+      "alt": "Publix",
+      "confidence": "likely",
+      "src": [
+        "https://www.costco.com/wcsstore/CostcoUSBCCatalogAssetStore/Attachment/831241-Nutritional_Information.pdf"
+      ],
+      "note": "Only a Costco nutrition PDF was found, not a current listing.",
+      "use": [
+        "finishing"
+      ],
+      "usableG": null
+    },
+    {
+      "id": "feta_ks_organic",
+      "item": "Kirkland Signature Organic Greek Feta, 28.2 oz",
+      "section": "dairy",
+      "kind": "fat",
+      "pack": "28.2 oz (block in brine; per search index)",
+      "freezes": {
+        "ok": false,
+        "how": "Not needed: hard cheese keeps in the fridge; follow the package date (not covered by the charts used here)."
+      },
+      "alt": "Publix (crumbled feta)",
+      "confidence": "likely",
+      "src": [],
+      "note": "Named in a Costco search result; no product page fetched. No crumbled version found.",
+      "use": [
+        "salads"
+      ],
+      "usableG": 799
+    },
+    {
+      "id": "cheese_mexican_blend",
+      "item": "Kirkland Signature Shredded Mexican Style Blend Cheese, 2.5 lbs, 2-count",
+      "section": "dairy",
+      "kind": "fat",
+      "pack": "2 x 2.5 lb bags (Item 1165284)",
+      "freezes": {
+        "ok": true,
+        "how": "Yes, the second bag can be frozen unopened (quality time not on the federal charts used here)."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://www.costco.com/p/-/kirkland-signature-shredded-mexican-style-blend-cheese-25-lbs-2-count/100437629"
+      ],
+      "note": "Weigh every sprinkle.",
+      "use": [
+        "breakfast burrito",
+        "omelet"
+      ],
+      "usableG": 2268
+    },
+    {
+      "id": "cheese_sharp_cheddar_shred",
+      "item": "Kirkland Signature Shredded Sharp Cheddar Cheese, 2 x 2.5 lbs",
+      "section": "dairy",
+      "kind": "fat",
+      "pack": "2 x 2.5 lb bags",
+      "freezes": {
+        "ok": true,
+        "how": "Yes, unopened bag (quality time not on the federal charts used here)."
+      },
+      "alt": "Publix (sliced cheddar for burgers)",
+      "confidence": "verified",
+      "src": [
+        "https://sameday.costco.com/store/costco/products/18284951-kirkland-signature-shredded-sharp-cheddar-cheese-2-x-2-5-lbs-2-5-lb"
+      ],
+      "note": "Sliced cheddar for the burger was not checked at Costco.",
+      "use": [
+        "burger",
+        "eggs"
+      ],
+      "usableG": 2268
+    },
+    {
+      "id": "butter_unsalted_4x1",
+      "item": "Kirkland Signature Unsalted Sweet Cream Butter, 16 oz, 4-count",
+      "section": "dairy",
+      "kind": "fat",
+      "pack": "4 x 1 lb (quarters)",
+      "freezes": {
+        "ok": true,
+        "how": "Yes, keep extra sticks frozen in the original wrap plus a freezer bag (quality time not on the federal charts used here)."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://sameday.costco.com/store/costco/products/19502188-kirkland-signature-unsalted-butter-quarters-4-x-1-lb-1-lb"
+      ],
+      "note": "Steak basting butter: weigh the stick before and after.",
+      "use": [
+        "steak baste",
+        "eggs"
+      ],
+      "usableG": 1814
+    },
+    {
+      "id": "butter_grassfed",
+      "item": "Kirkland Signature Grass-Fed Butter, 8 oz, 4-count",
+      "section": "dairy",
+      "kind": "fat",
+      "pack": "4 x 8 oz (Item 1424237); product of New Zealand or Ireland",
+      "freezes": {
+        "ok": true,
+        "how": "Yes, keep extra sticks frozen in the original wrap plus a freezer bag (quality time not on the federal charts used here)."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://www.costco.com/p/-/kirkland-signature-grass-fed-butter-8-oz-4-count/100713067"
+      ],
+      "note": "",
+      "use": [
+        "steak baste"
+      ],
+      "usableG": 907
+    },
+    {
+      "id": "milk",
+      "item": "Milk (any Kirkland Signature or fairlife milk)",
+      "section": "dairy",
+      "kind": "carb",
+      "pack": "not checked",
+      "freezes": {
+        "ok": false,
+        "how": "No (texture, judgment). Follow the package date; not covered by the FDA/FSIS charts used here."
+      },
+      "alt": "Any grocery",
+      "confidence": "unverified",
+      "src": [],
+      "note": "No Costco milk listing was checked in this research. Costco listings found for fairlife were the Core Power and Nutrition Plan shakes, not plain milk.",
+      "use": [
+        "oats"
+      ],
+      "usableG": null
+    },
+    {
+      "id": "broccoli_florets_3lb",
+      "item": "Broccoli Florets, 3 lbs",
+      "section": "produce",
+      "kind": "veg",
+      "pack": "3 lb bag",
+      "freezes": {
+        "ok": false,
+        "how": "No (texture). Refrigerate; throw out cut produce not refrigerated within 2 hours of cutting (FSIS Kitchen Companion)."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://sameday.costco.com/store/costco/products/18848235-broccoli-florets-3-lbs-3-lb"
+      ],
+      "note": "",
+      "use": [
+        "green veg"
+      ],
+      "usableG": 1361
+    },
+    {
+      "id": "asparagus_225",
+      "item": "Asparagus, 2.25 lbs",
+      "section": "produce",
+      "kind": "veg",
+      "pack": "2.25 lb bunch",
+      "freezes": {
+        "ok": false,
+        "how": "No (texture). Refrigerate; throw out cut produce not refrigerated within 2 hours of cutting (FSIS Kitchen Companion)."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://sameday.costco.com/store/costco/products/18834265-asparagus-2-25-lbs-2-25-lb",
+        "https://sameday.costco.com/store/costco/products/550560-organic-asparagus-2-25-lb"
+      ],
+      "note": "Organic Asparagus, 2.25 lb also listed. Trim the woody ends and weigh what you cook.",
+      "use": [
+        "green veg",
+        "steak plates"
+      ],
+      "usableG": 1021
+    },
+    {
+      "id": "spinach_baby_1lb",
+      "item": "Earthbound Farm Organic Baby Spinach, 16 oz",
+      "section": "produce",
+      "kind": "veg",
+      "pack": "16 oz clamshell",
+      "freezes": {
+        "ok": false,
+        "how": "No (texture). Refrigerate; throw out cut produce not refrigerated within 2 hours of cutting (FSIS Kitchen Companion)."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://sameday.costco.com/store/costco/products/16522045-earthbound-farms-organic-baby-spinach-16-0-oz"
+      ],
+      "note": "No 2.5 lb version found.",
+      "use": [
+        "omelet",
+        "salads"
+      ],
+      "usableG": 454
+    },
+    {
+      "id": "power_greens",
+      "item": "Organic Power Greens, 1.5 lbs",
+      "section": "produce",
+      "kind": "veg",
+      "pack": "1.5 lb clamshell (Earthbound Farm)",
+      "freezes": {
+        "ok": false,
+        "how": "No (texture). Refrigerate; throw out cut produce not refrigerated within 2 hours of cutting (FSIS Kitchen Companion)."
+      },
+      "alt": "Publix (lacinato kale for the Emerald kale salad)",
+      "confidence": "verified",
+      "src": [
+        "https://sameday.costco.com/store/costco/products/18848198-organic-power-greens-1-5-lbs-1-5-lb"
+      ],
+      "note": "No loose kale listing was found at Costco. For a true Hillstone-style kale salad, buy lacinato kale at Publix (not verified).",
+      "use": [
+        "kale & chicken salad"
+      ],
+      "usableG": 680
+    },
+    {
+      "id": "romaine_hearts",
+      "item": "Artisan Romaine Hearts, 5-count",
+      "section": "produce",
+      "kind": "veg",
+      "pack": "5 hearts",
+      "freezes": {
+        "ok": false,
+        "how": "No (texture). Refrigerate; throw out cut produce not refrigerated within 2 hours of cutting (FSIS Kitchen Companion)."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://www.costco.com/p/-/artisan-romaine-hearts-5-count/100450674"
+      ],
+      "note": "Shown 'unavailable' online; a warehouse item.",
+      "use": [
+        "shrimp louie",
+        "salads"
+      ],
+      "usableG": null
+    },
+    {
+      "id": "cucumbers_cocktail",
+      "item": "Cocktail Cucumber, Greenhouse Grown, 1.5 lbs",
+      "section": "produce",
+      "kind": "veg",
+      "pack": "1.5 lb",
+      "freezes": {
+        "ok": false,
+        "how": "No (texture). Refrigerate; throw out cut produce not refrigerated within 2 hours of cutting (FSIS Kitchen Companion)."
+      },
+      "alt": "Publix (mini cucumbers)",
+      "confidence": "likely",
+      "src": [
+        "https://www.costco.com/produce.html"
+      ],
+      "note": "Named on Costco's produce page per search index. No 'mini cucumber' listing found.",
+      "use": [
+        "noodle salad",
+        "slaw"
+      ],
+      "usableG": 680
+    },
+    {
+      "id": "lemons_5lb",
+      "item": "Lemons, 5 lbs",
+      "section": "produce",
+      "kind": "veg",
+      "pack": "5 lb bag",
+      "freezes": {
+        "ok": false,
+        "how": "No (texture). Refrigerate; throw out cut produce not refrigerated within 2 hours of cutting (FSIS Kitchen Companion)."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://sameday.costco.com/store/costco/products/18848199-lemons-5-lbs-5-lb"
+      ],
+      "note": "Zero-calorie flavor: lean on it hard.",
+      "use": [
+        "salmon",
+        "dressings"
+      ],
+      "usableG": 2268
+    },
+    {
+      "id": "limes_3lb",
+      "item": "Limes, 3 lbs",
+      "section": "produce",
+      "kind": "veg",
+      "pack": "3 lb bag",
+      "freezes": {
+        "ok": false,
+        "how": "No (texture). Refrigerate; throw out cut produce not refrigerated within 2 hours of cutting (FSIS Kitchen Companion)."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://sameday.costco.com/store/costco/products/26365799-limes-3-lbs"
+      ],
+      "note": "",
+      "use": [
+        "thai steak salad",
+        "ponzu brightening"
+      ],
+      "usableG": 1361
+    },
+    {
+      "id": "garlic_minced_48",
+      "item": "Kirkland Signature Minced Garlic, 48 oz",
+      "section": "produce",
+      "kind": "spice",
+      "pack": "48 oz jar (in water)",
+      "freezes": {
+        "ok": false,
+        "how": "No. Refrigerate after opening; follow the jar's date."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://sameday.costco.com/store/costco/products/19232678-kirkland-signature-minced-garlic-48-oz-48-oz"
+      ],
+      "note": "Fresh garlic (Spice World Fresh Garlic, 5 ct) is also listed: https://sameday.costco.com/store/costco/products/157502-spice-world-garlic-fresh-5-ea",
+      "use": [
+        "marinades"
+      ],
+      "usableG": 1361
+    },
+    {
+      "id": "mushrooms_shiitake",
+      "item": "Shiitake Mushrooms Premium Grade 16 Oz.",
+      "section": "produce",
+      "kind": "veg",
+      "pack": "16 oz",
+      "freezes": {
+        "ok": false,
+        "how": "No (texture). Refrigerate; throw out cut produce not refrigerated within 2 hours of cutting (FSIS Kitchen Companion)."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://sameday.costco.com/store/costco/products/20961383-shiitake-mushrooms-premium-grade-16-oz"
+      ],
+      "note": "Search index also reports a 12 oz variant.",
+      "use": [
+        "shiitake ponzu (ahi)"
+      ],
+      "usableG": 454
+    },
+    {
+      "id": "mushrooms_minibella",
+      "item": "Highline Mushrooms Organic Mini Bella Mushrooms, 24 oz",
+      "section": "produce",
+      "kind": "veg",
+      "pack": "24 oz",
+      "freezes": {
+        "ok": false,
+        "how": "No (texture). Refrigerate; throw out cut produce not refrigerated within 2 hours of cutting (FSIS Kitchen Companion)."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://sameday.costco.com/store/costco/products/2343754-highline-mushrooms-mini-bella-organic-mushrooms-24-oz"
+      ],
+      "note": "",
+      "use": [
+        "omelet",
+        "steak plates"
+      ],
+      "usableG": 680
+    },
+    {
+      "id": "potatoes_russet_10",
+      "item": "Baking Potatoes, 10 lbs",
+      "section": "produce",
+      "kind": "carb",
+      "pack": "10 lb bag (russet)",
+      "freezes": {
+        "ok": false,
+        "how": "No. Store cool and dry (not on the federal charts used here)."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://www.costco.com/p/-/baking-potatoes-10-lbs/4000106843",
+        "https://sameday.costco.com/store/costco/products/28485793-farmer-s-promise-biggins-russet-potatoes-10-lb"
+      ],
+      "note": "",
+      "use": [
+        "baked potato",
+        "steak plates"
+      ],
+      "usableG": 4536
+    },
+    {
+      "id": "potatoes_gold_10",
+      "item": "Gold Potatoes, 10 lbs",
+      "section": "produce",
+      "kind": "carb",
+      "pack": "10 lb bag",
+      "freezes": {
+        "ok": false,
+        "how": "No. Store cool and dry (not on the federal charts used here)."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://www.costco.com/p/-/gold-potatoes-10-lbs/100602830",
+        "https://sameday.costco.com/store/costco/products/26365800-organic-gold-potatoes-10-lbs"
+      ],
+      "note": "Organic 10 lb also listed. The colcannon-style mash potato.",
+      "use": [
+        "mash",
+        "roasted potatoes"
+      ],
+      "usableG": 4536
+    },
+    {
+      "id": "sweet_potatoes_10",
+      "item": "Sweet Potatoes 10 Lbs",
+      "section": "produce",
+      "kind": "carb",
+      "pack": "10 lb bag",
+      "freezes": {
+        "ok": false,
+        "how": "No. Store cool and dry (not on the federal charts used here)."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://sameday.costco.com/store/costco/products/18848374-sweet-potatoes-10-lbs-10-lb"
+      ],
+      "note": "No 6 lb bag found.",
+      "use": [
+        "carb sides"
+      ],
+      "usableG": 4536
+    },
+    {
+      "id": "avocados",
+      "item": "Avocados (bagged)",
+      "section": "produce",
+      "kind": "fat",
+      "pack": "bag; count and size not verified",
+      "freezes": {
+        "ok": false,
+        "how": "No (texture). Refrigerate; throw out cut produce not refrigerated within 2 hours of cutting (FSIS Kitchen Companion)."
+      },
+      "alt": "Publix",
+      "confidence": "likely",
+      "src": [
+        "https://sameday.costco.com/store/costco/collections/rc-avocados-fy26"
+      ],
+      "note": "Only a same-day 'Avocados' collection page was found. Weigh the flesh: avocado is a fat serving.",
+      "use": [
+        "burrito",
+        "salads"
+      ],
+      "usableG": null
+    },
+    {
+      "id": "bananas",
+      "item": "Bananas",
+      "section": "produce",
+      "kind": "fruit",
+      "pack": "not checked",
+      "freezes": {
+        "ok": false,
+        "how": "No (texture). Refrigerate; throw out cut produce not refrigerated within 2 hours of cutting (FSIS Kitchen Companion)."
+      },
+      "alt": "Publix",
+      "confidence": "unverified",
+      "src": [],
+      "note": "Not confirmed on a Costco page in this research (not found, or not searched). Buy at the alt store if your warehouse doesn't have it.",
+      "use": [
+        "pre-lift"
+      ],
+      "usableG": null
+    },
+    {
+      "id": "ginger",
+      "item": "Fresh ginger root",
+      "section": "produce",
+      "kind": "veg",
+      "pack": "not checked",
+      "freezes": {
+        "ok": false,
+        "how": "No (texture). Refrigerate; throw out cut produce not refrigerated within 2 hours of cutting (FSIS Kitchen Companion)."
+      },
+      "alt": "Publix",
+      "confidence": "unverified",
+      "src": [],
+      "note": "Not confirmed on a Costco page in this research (not found, or not searched). Buy at the alt store if your warehouse doesn't have it.",
+      "use": [
+        "hawaiian marinade",
+        "ponzu"
+      ],
+      "usableG": null
+    },
+    {
+      "id": "green_onions",
+      "item": "Green onions / scallions",
+      "section": "produce",
+      "kind": "veg",
+      "pack": "not checked",
+      "freezes": {
+        "ok": false,
+        "how": "No (texture). Refrigerate; throw out cut produce not refrigerated within 2 hours of cutting (FSIS Kitchen Companion)."
+      },
+      "alt": "Publix",
+      "confidence": "unverified",
+      "src": [],
+      "note": "Not confirmed on a Costco page in this research (not found, or not searched). Buy at the alt store if your warehouse doesn't have it.",
+      "use": [
+        "ahi",
+        "noodle salad"
+      ],
+      "usableG": null
+    },
+    {
+      "id": "cilantro_mint",
+      "item": "Fresh cilantro, mint, Thai basil",
+      "section": "produce",
+      "kind": "veg",
+      "pack": "not checked",
+      "freezes": {
+        "ok": false,
+        "how": "No (texture). Refrigerate; throw out cut produce not refrigerated within 2 hours of cutting (FSIS Kitchen Companion)."
+      },
+      "alt": "Publix (Asian grocers for Thai basil)",
+      "confidence": "unverified",
+      "src": [],
+      "note": "Not confirmed on a Costco page in this research (not found, or not searched). Buy at the alt store if your warehouse doesn't have it.",
+      "use": [
+        "thai steak noodle salad"
+      ],
+      "usableG": null
+    },
+    {
+      "id": "cabbage",
+      "item": "Green / red cabbage or coleslaw mix",
+      "section": "produce",
+      "kind": "veg",
+      "pack": "not checked",
+      "freezes": {
+        "ok": false,
+        "how": "No (texture). Refrigerate; throw out cut produce not refrigerated within 2 hours of cutting (FSIS Kitchen Companion)."
+      },
+      "alt": "Publix",
+      "confidence": "unverified",
+      "src": [],
+      "note": "Not confirmed on a Costco page in this research (not found, or not searched). Buy at the alt store if your warehouse doesn't have it.",
+      "use": [
+        "slaw",
+        "noodle salad"
+      ],
+      "usableG": null
+    },
+    {
+      "id": "onions",
+      "item": "Yellow and red onions",
+      "section": "produce",
+      "kind": "veg",
+      "pack": "not checked",
+      "freezes": {
+        "ok": false,
+        "how": "No (texture). Refrigerate; throw out cut produce not refrigerated within 2 hours of cutting (FSIS Kitchen Companion)."
+      },
+      "alt": "Publix",
+      "confidence": "unverified",
+      "src": [],
+      "note": "Not confirmed on a Costco page in this research (not found, or not searched). Buy at the alt store if your warehouse doesn't have it.",
+      "use": [
+        "everything"
+      ],
+      "usableG": null
+    },
+    {
+      "id": "tomatoes",
+      "item": "Tomatoes (Campari / cherry)",
+      "section": "produce",
+      "kind": "veg",
+      "pack": "not checked",
+      "freezes": {
+        "ok": false,
+        "how": "No (texture). Refrigerate; throw out cut produce not refrigerated within 2 hours of cutting (FSIS Kitchen Companion)."
+      },
+      "alt": "Publix",
+      "confidence": "unverified",
+      "src": [],
+      "note": "Not confirmed on a Costco page in this research (not found, or not searched). Buy at the alt store if your warehouse doesn't have it.",
+      "use": [
+        "louie",
+        "burger"
+      ],
+      "usableG": null
+    },
+    {
+      "id": "peppers",
+      "item": "Bell / mini sweet peppers",
+      "section": "produce",
+      "kind": "veg",
+      "pack": "not checked",
+      "freezes": {
+        "ok": false,
+        "how": "No (texture). Refrigerate; throw out cut produce not refrigerated within 2 hours of cutting (FSIS Kitchen Companion)."
+      },
+      "alt": "Publix",
+      "confidence": "unverified",
+      "src": [],
+      "note": "Not confirmed on a Costco page in this research (not found, or not searched). Buy at the alt store if your warehouse doesn't have it.",
+      "use": [
+        "noodle salad",
+        "omelet"
+      ],
+      "usableG": null
+    },
+    {
+      "id": "pineapple",
+      "item": "Fresh pineapple",
+      "section": "produce",
+      "kind": "fruit",
+      "pack": "not checked",
+      "freezes": {
+        "ok": false,
+        "how": "No (texture). Refrigerate; throw out cut produce not refrigerated within 2 hours of cutting (FSIS Kitchen Companion)."
+      },
+      "alt": "Publix",
+      "confidence": "unverified",
+      "src": [],
+      "note": "Not confirmed on a Costco page in this research (not found, or not searched). Buy at the alt store if your warehouse doesn't have it.",
+      "use": [
+        "hawaiian marinade"
+      ],
+      "usableG": null
+    },
+    {
+      "id": "frz_stirfry_55",
+      "item": "Kirkland Signature Stir-Fry Vegetable Blend, 5.5 lbs",
+      "section": "frozen",
+      "kind": "veg",
+      "pack": "5.5 lb bag",
+      "freezes": {
+        "ok": true,
+        "how": "Already frozen. Keep at 0°F; follow the bag's date. Cook from frozen."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://www.costco.com/p/-/kirkland-signature-stir-fry-vegetable-blend-55-lbs/100433848"
+      ],
+      "note": "Shown as warehouse-only in one listing.",
+      "use": [
+        "noodle bowls",
+        "trim-day volume"
+      ],
+      "usableG": 2495
+    },
+    {
+      "id": "frz_normandy_55",
+      "item": "Kirkland Signature Normandy Vegetables 5.5 lbs",
+      "section": "frozen",
+      "kind": "veg",
+      "pack": "5.5 lb bag",
+      "freezes": {
+        "ok": true,
+        "how": "Already frozen. Keep at 0°F; follow the bag's date. Cook from frozen."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://sameday.costco.com/store/costco/products/19350747-kirkland-signature-normandy-vegetables-5-5-lbs-5-5-lb",
+        "https://sameday.costco.com/store/costco/products/19232693-kirkland-signature-organic-vegetables-5-5-lb-5-5-lb"
+      ],
+      "note": "An Organic Normandy Vegetables 5.5 lb is also listed.",
+      "use": [
+        "green veg"
+      ],
+      "usableG": 2495
+    },
+    {
+      "id": "frz_organic_mixed_5",
+      "item": "Kirkland Signature Organic Mixed Vegetables, 5 lbs",
+      "section": "frozen",
+      "kind": "veg",
+      "pack": "5 lb bag",
+      "freezes": {
+        "ok": true,
+        "how": "Already frozen. Keep at 0°F; follow the bag's date. Cook from frozen."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://sameday.costco.com/store/costco/products/19645076-kirkland-signature-organic-mixed-vegetables-5-lb-5-lb"
+      ],
+      "note": "",
+      "use": [
+        "rice bowls"
+      ],
+      "usableG": 2268
+    },
+    {
+      "id": "frz_organic_broccoli_4x1",
+      "item": "Kirkland Signature Organic Broccoli Florets, 1 lb, 4-count",
+      "section": "frozen",
+      "kind": "veg",
+      "pack": "4 x 1 lb microwavable bags",
+      "freezes": {
+        "ok": true,
+        "how": "Already frozen. Keep at 0°F; follow the bag's date. Cook from frozen."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://www.costco.com/p/-/kirkland-signature-organic-broccoli-florets-1-lb-4-count/100637418"
+      ],
+      "note": "Pre-portioned: one bag, one weigh.",
+      "use": [
+        "green veg"
+      ],
+      "usableG": 1814
+    },
+    {
+      "id": "frz_three_berry_4",
+      "item": "Kirkland Signature Three Berry Blend, 4 lbs",
+      "section": "frozen",
+      "kind": "fruit",
+      "pack": "4 lb bag (raspberries, blueberries, blackberries; IQF)",
+      "freezes": {
+        "ok": true,
+        "how": "Already frozen. Keep at 0°F; follow the bag's date. Cook from frozen."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://www.costco.com/p/-/kirkland-signature-three-berry-blend-4-lbs/100410665"
+      ],
+      "note": "",
+      "use": [
+        "oats",
+        "yogurt bowls"
+      ],
+      "usableG": 1814
+    },
+    {
+      "id": "frz_org_blueberries_3",
+      "item": "Kirkland Signature Organic Blueberries, 3 lbs",
+      "section": "frozen",
+      "kind": "fruit",
+      "pack": "3 lb bag (IQF)",
+      "freezes": {
+        "ok": true,
+        "how": "Already frozen. Keep at 0°F; follow the bag's date. Cook from frozen."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://www.costco.com/p/-/kirkland-signature-organic-blueberries-3-lbs/100450484"
+      ],
+      "note": "Wild Blueberries 5 lb also listed: https://sameday.costco.com/store/costco/products/79764693-kirkland-signature-wild-blueberries-5-lbs",
+      "use": [
+        "oats",
+        "pancakes"
+      ],
+      "usableG": 1361
+    },
+    {
+      "id": "frz_org_strawberries_4",
+      "item": "Kirkland Signature Organic Strawberries, 4 lbs",
+      "section": "frozen",
+      "kind": "fruit",
+      "pack": "4 lb bag (IQF)",
+      "freezes": {
+        "ok": true,
+        "how": "Already frozen. Keep at 0°F; follow the bag's date. Cook from frozen."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://www.costco.com/p/-/kirkland-signature-organic-strawberries-4-lbs/100452337"
+      ],
+      "note": "",
+      "use": [
+        "yogurt bowls"
+      ],
+      "usableG": 1814
+    },
+    {
+      "id": "rice_jasmine_25",
+      "item": "Kirkland Signature, Thai Hom Mali Jasmine Rice, 25 lbs",
+      "section": "pantry",
+      "kind": "carb",
+      "pack": "25 lb bag (Item 841930)",
+      "freezes": {
+        "ok": false,
+        "how": "Dry rice: pantry. Cooked rice: see food-safety.md (fridge 3-4 days; freezes flat in portion bags)."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://www.costco.com/p/-/kirkland-signature-thai-hom-mali-jasmine-rice-25-lbs/100334875"
+      ],
+      "note": "Weigh it dry for logging. Search index reports the label as a 52 g serving with 218 servings per bag; 218 x 52 g = 11336 g, which matches the 25 lb bag, so the serving is dry weight.",
+      "use": [
+        "every rice plate"
+      ],
+      "usableG": 11340
+    },
+    {
+      "id": "quinoa_org_45",
+      "item": "Kirkland Signature, Organic Quinoa, 4.5 lbs",
+      "section": "pantry",
+      "kind": "carb",
+      "pack": "4.5 lb resealable bag (Item 1001368)",
+      "freezes": {
+        "ok": false,
+        "how": "No. Pantry item; follow the package date."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://www.costco.com/p/-/kirkland-signature-organic-quinoa-45-lbs/100336580"
+      ],
+      "note": "",
+      "use": [
+        "grain bowls",
+        "wild-rice-salad stand-in"
+      ],
+      "usableG": 2041
+    },
+    {
+      "id": "rice_brown_lundberg_12",
+      "item": "Lundberg Family Farms Organic Short Grain Brown Rice, 12 lb",
+      "section": "pantry",
+      "kind": "carb",
+      "pack": "12 lb bag (per listing URL)",
+      "freezes": {
+        "ok": false,
+        "how": "No. Pantry item; follow the package date."
+      },
+      "alt": "Publix",
+      "confidence": "likely",
+      "src": [
+        "https://sameday.costco.com/store/costco/products/17090653-lundberg-family-farms-og-sht-grain-brn-rice-brown-rice-12-lb"
+      ],
+      "note": "Same-day title is abbreviated ('Lundberg OG Sht Grain Brn Rice').",
+      "use": [
+        "wild-rice-salad base (mix with wild rice)"
+      ],
+      "usableG": 5443
+    },
+    {
+      "id": "wild_rice_blend",
+      "item": "Lundberg Family Farms Gourmet Wild Blend Rice, 16 oz (Publix)",
+      "section": "pantry",
+      "kind": "carb",
+      "pack": "16 oz (Publix)",
+      "freezes": {
+        "ok": false,
+        "how": "No. Pantry item; follow the package date."
+      },
+      "alt": "Publix: https://www.publix.com/pd/lundberg-family-farms-gourmet-rice-wild-blend-sustainable/RIO-PCI-148904",
+      "confidence": "unverified",
+      "src": [
+        "https://www.publix.com/pd/lundberg-family-farms-gourmet-rice-wild-blend-sustainable/RIO-PCI-148904"
+      ],
+      "note": "No wild rice was found at Costco. Publix lists this blend (wild + whole-grain brown rice). Confidence refers to Costco.",
+      "use": [
+        "roasted salmon + wild rice"
+      ],
+      "usableG": 454
+    },
+    {
+      "id": "oats_quaker_10",
+      "item": "Quaker Oats Old Fashioned Rolled Oats, 10 lbs",
+      "section": "pantry",
+      "kind": "carb",
+      "pack": "2 x 5 lb bags, 9.99 lb net (Item 446586)",
+      "freezes": {
+        "ok": false,
+        "how": "No. Pantry item; follow the package date."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://www.costco.com/p/-/quaker-oats-old-fashioned-rolled-oats-10-lbs/100381521"
+      ],
+      "note": "",
+      "use": [
+        "oats",
+        "protein pancakes"
+      ],
+      "usableG": 4531
+    },
+    {
+      "id": "oats_ks_10",
+      "item": "Kirkland Signature Whole Grain Rolled Oats, 10 LBS",
+      "section": "pantry",
+      "kind": "carb",
+      "pack": "10 lb resealable bag (Item 1736339)",
+      "freezes": {
+        "ok": false,
+        "how": "No. Pantry item; follow the package date."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://www.costco.com/p/-/kirkland-signature-whole-grain-rolled-oats-10-lbs/4000218982"
+      ],
+      "note": "Not organic; product of Canada (search index).",
+      "use": [
+        "oats"
+      ],
+      "usableG": 4536
+    },
+    {
+      "id": "bread_daves_21",
+      "item": "Dave's Killer Bread Organic Bread, 21 Whole Grains and Seeds",
+      "section": "bakery",
+      "kind": "carb",
+      "pack": "2 x 27 oz loaves",
+      "freezes": {
+        "ok": true,
+        "how": "Yes. Freeze sliced/split so single pieces come out; toast from frozen (quality time not on the federal charts used here)."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://sameday.costco.com/store/costco/products/123051-dave-s-killer-bread-21-whole-grains-and-seeds-organic-bread-27-oz"
+      ],
+      "note": "",
+      "use": [
+        "toast",
+        "steak & eggs"
+      ],
+      "usableG": 1531
+    },
+    {
+      "id": "bread_sourdough",
+      "item": "The Essential Baking Company Organic Sourdough Bread (bake-at-home), 3-count",
+      "section": "bakery",
+      "kind": "carb",
+      "pack": "3 loaves (weight not verified)",
+      "freezes": {
+        "ok": true,
+        "how": "Yes. Freeze sliced/split so single pieces come out; toast from frozen (quality time not on the federal charts used here)."
+      },
+      "alt": "Publix bakery sourdough",
+      "confidence": "likely",
+      "src": [
+        "https://sameday.costco.com/store/costco/products/3073655-essential-baking-co-usda-organic-bake-at-home-sourdough-bread-3-ct"
+      ],
+      "note": "No Kirkland Signature sourdough was found; this listing is old. The plan's '1 slice sourdough' needs a gram weight: weigh slices.",
+      "use": [
+        "toast",
+        "steak & eggs"
+      ],
+      "usableG": null
+    },
+    {
+      "id": "buns_ks_artisan",
+      "item": "Kirkland Signature Artisan Burger Buns, 12-count",
+      "section": "bakery",
+      "kind": "carb",
+      "pack": "12 buns",
+      "freezes": {
+        "ok": true,
+        "how": "Yes. Freeze sliced/split so single pieces come out; toast from frozen (quality time not on the federal charts used here)."
+      },
+      "alt": "Publix bakery brioche",
+      "confidence": "verified",
+      "src": [
+        "https://sameday.costco.com/store/costco/products/19519908-kirkland-signature-artisan-burger-buns-12-ct"
+      ],
+      "note": "Franz Brioche Hamburger Buns 12-ct also listed: https://sameday.costco.com/store/costco/products/2596336-franz-brioche-buns-12-ct",
+      "use": [
+        "cast-iron burger"
+      ],
+      "usableG": null
+    },
+    {
+      "id": "rolls_ks_sandwich",
+      "item": "Kirkland Signature Sandwich Rolls, 12-count",
+      "section": "bakery",
+      "kind": "carb",
+      "pack": "12 rolls",
+      "freezes": {
+        "ok": true,
+        "how": "Yes. Freeze sliced/split so single pieces come out; toast from frozen (quality time not on the federal charts used here)."
+      },
+      "alt": "Publix bakery French/hoagie rolls",
+      "confidence": "verified",
+      "src": [
+        "https://sameday.costco.com/store/costco/products/29767131-kirkland-signature-sandwich-rolls-12-ct"
+      ],
+      "note": "The French dip roll. Freeze split, toast from frozen.",
+      "use": [
+        "french dip"
+      ],
+      "usableG": null
+    },
+    {
+      "id": "baguette_ks",
+      "item": "Kirkland Signature Baguette, 2-pack",
+      "section": "bakery",
+      "kind": "carb",
+      "pack": "2 baguettes; the listing title says '2 x 24 oz' but its URL says 1.5 lb",
+      "freezes": {
+        "ok": true,
+        "how": "Yes. Freeze sliced/split so single pieces come out; toast from frozen (quality time not on the federal charts used here)."
+      },
+      "alt": "Publix bakery",
+      "confidence": "likely",
+      "src": [
+        "https://sameday.costco.com/store/costco/products/282118-kirkland-signature-baguette-2-x-24-oz-1-5-lb"
+      ],
+      "note": "Weight conflict on the listing; weigh it.",
+      "use": [
+        "french dip (alt roll)"
+      ],
+      "usableG": null
+    },
+    {
+      "id": "tortilla_carb_balance",
+      "item": "Mission Carb Balance Soft Taco Flour Tortillas",
+      "section": "bakery",
+      "kind": "carb",
+      "pack": "2 bags (pack count per search index); weight not verified",
+      "freezes": {
+        "ok": true,
+        "how": "Yes. Freeze sliced/split so single pieces come out; toast from frozen (quality time not on the federal charts used here)."
+      },
+      "alt": "Publix",
+      "confidence": "likely",
+      "src": [
+        "https://sameday.costco.com/store/costco/products/16981452-mission-carb-balance-soft-taco-flour-tortillas-8-ct"
+      ],
+      "note": "Search index: 4 g net carbs per serving per the listing; log from the bag.",
+      "use": [
+        "breakfast burrito (trim)"
+      ],
+      "usableG": null
+    },
+    {
+      "id": "tortilla_mission_10in",
+      "item": "Mission 10\" Flour Tortillas, 40-count",
+      "section": "bakery",
+      "kind": "carb",
+      "pack": "2 x 20-count bags, 94 oz total (Item 208429)",
+      "freezes": {
+        "ok": true,
+        "how": "Yes. Freeze sliced/split so single pieces come out; toast from frozen (quality time not on the federal charts used here)."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://www.costco.com/p/-/mission-10-flour-tortillas-40-count/100613364"
+      ],
+      "note": "",
+      "use": [
+        "breakfast burrito (gain)"
+      ],
+      "usableG": 2665
+    },
+    {
+      "id": "tortilla_uncooked",
+      "item": "Tortilla Fresca Organic Uncooked Flour Tortillas, 36-count",
+      "section": "bakery",
+      "kind": "carb",
+      "pack": "36 x 10\" uncooked",
+      "freezes": {
+        "ok": true,
+        "how": "Yes. Freeze sliced/split so single pieces come out; toast from frozen (quality time not on the federal charts used here)."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://sameday.costco.com/store/costco/products/3230827-organic-uncooked-flour-tortillas-36-ct"
+      ],
+      "note": "The restaurant-quality option: cook each one in a dry pan.",
+      "use": [
+        "breakfast burrito"
+      ],
+      "usableG": null
+    },
+    {
+      "id": "black_beans",
+      "item": "Black beans, canned",
+      "section": "pantry",
+      "kind": "carb",
+      "pack": "not checked",
+      "freezes": {
+        "ok": false,
+        "how": "No. Pantry item; follow the package date."
+      },
+      "alt": "Publix",
+      "confidence": "unverified",
+      "src": [],
+      "note": "No Kirkland Signature canned black beans listing was found.",
+      "use": [
+        "breakfast burrito"
+      ],
+      "usableG": null
+    },
+    {
+      "id": "rice_noodles",
+      "item": "Rice noodles / rice vermicelli",
+      "section": "pantry",
+      "kind": "carb",
+      "pack": "not checked",
+      "freezes": {
+        "ok": false,
+        "how": "No. Pantry item; follow the package date."
+      },
+      "alt": "Asian grocers in Orlando, or Publix (not verified)",
+      "confidence": "unverified",
+      "src": [],
+      "note": "Not found at Costco or Publix in this research.",
+      "use": [
+        "thai steak noodle salad"
+      ],
+      "usableG": null
+    },
+    {
+      "id": "evoo_ks_org_2l",
+      "item": "Kirkland Signature, Organic Extra Virgin Olive Oil, 2 L",
+      "section": "pantry",
+      "kind": "fat",
+      "pack": "2 L bottle",
+      "freezes": {
+        "ok": false,
+        "how": "No. Pantry item; follow the package date."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://www.costco.com/p/-/kirkland-signature-organic-extra-virgin-olive-oil-2-l/100334841"
+      ],
+      "note": "Weigh oil in grams on the scale (tare the pan); never free-pour. Kirkland Signature Extra Virgin Italian Olive Oil 2 L is also listed.",
+      "use": [
+        "dressings",
+        "roasting"
+      ],
+      "usableG": null,
+      "usableML": 2000
+    },
+    {
+      "id": "avocado_oil_chosen_2l",
+      "item": "Chosen Foods, 100% Pure Avocado Oil, 2 L",
+      "section": "pantry",
+      "kind": "fat",
+      "pack": "2 L bottle",
+      "freezes": {
+        "ok": false,
+        "how": "No. Pantry item; follow the package date."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://www.costco.com/p/-/chosen-foods-100-pure-avocado-oil-2-l/100640848"
+      ],
+      "note": "No Kirkland avocado oil found; Ottavio Avocado Oil 2 L is also listed. The high-heat searing oil for steaks and ahi.",
+      "use": [
+        "searing"
+      ],
+      "usableG": null,
+      "usableML": 2000
+    },
+    {
+      "id": "evoo_spray_ottavio",
+      "item": "Ottavio Organic EVOO Spray, 13.5 fl oz",
+      "section": "pantry",
+      "kind": "fat",
+      "pack": "13.5 fl oz can",
+      "freezes": {
+        "ok": false,
+        "how": "No. Pantry item; follow the package date."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://sameday.costco.com/store/costco/products/32577053-ottavio-organic-evoo-spray-13-5-fl-oz"
+      ],
+      "note": "A spray is not zero calories: weigh the pan before and after if it matters (judgment). Chosen Foods avocado-oil spray (2 x 13.5 oz) is also reported on Costco's oils page.",
+      "use": [
+        "eggs",
+        "roasting trays"
+      ],
+      "usableG": null,
+      "usableML": 399
+    },
+    {
+      "id": "soy_kikkoman_lesssodium",
+      "item": "Kikkoman Soy Sauce, Less Sodium, 2 qt",
+      "section": "pantry",
+      "kind": "sauce",
+      "pack": "2 qt (64 fl oz) bottle",
+      "freezes": {
+        "ok": false,
+        "how": "No. Refrigerate after opening per label."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://sameday.costco.com/store/costco/products/244625-kikkoman-soy-sauce-less-sodium-2-qt",
+        "https://www.costco.com/p/-/kikkoman-soy-sauce-64-oz/100440131"
+      ],
+      "note": "Regular Kikkoman Soy Sauce 64 oz is also listed. Base of the Hawaiian marinade and DIY ponzu.",
+      "use": [
+        "hawaiian marinade",
+        "ponzu"
+      ],
+      "usableG": null,
+      "usableML": 1893
+    },
+    {
+      "id": "ponzu",
+      "item": "Kikkoman Ponzu Citrus Seasoned Dressing & Sauce, 10 oz (Publix)",
+      "section": "pantry",
+      "kind": "sauce",
+      "pack": "10 oz (Publix)",
+      "freezes": {
+        "ok": false,
+        "how": "No. Pantry item; follow the package date."
+      },
+      "alt": "Publix: https://delivery.publix.com/store/publix/products/36354-kikkoman-ponzu-citrus-seasoned-dressing-sauce-10-oz",
+      "confidence": "unverified",
+      "src": [
+        "https://delivery.publix.com/store/publix/products/36354-kikkoman-ponzu-citrus-seasoned-dressing-sauce-10-oz"
+      ],
+      "note": "Not found at Costco. Publix lists it. Or make it: soy + citrus + rice vinegar.",
+      "use": [
+        "seared ahi + shiitake ponzu"
+      ],
+      "usableG": null,
+      "usableML": 296
+    },
+    {
+      "id": "sesame_oil",
+      "item": "Kikkoman Sesame Oil, 100% Pure, 5 fl oz (Publix)",
+      "section": "pantry",
+      "kind": "fat",
+      "pack": "5 fl oz (Publix)",
+      "freezes": {
+        "ok": false,
+        "how": "No. Pantry item; follow the package date."
+      },
+      "alt": "Publix: https://www.publix.com/pd/kikkoman-sesame-oil-100-pure/RIO-PCI-621136",
+      "confidence": "unverified",
+      "src": [
+        "https://www.publix.com/pd/kikkoman-sesame-oil-100-pure/RIO-PCI-621136"
+      ],
+      "note": "Not found at Costco. Weigh it: a few grams carries the flavor.",
+      "use": [
+        "noodle salad",
+        "ahi"
+      ],
+      "usableG": null,
+      "usableML": 148
+    },
+    {
+      "id": "rice_vinegar",
+      "item": "Kikkoman Rice Vinegar, 10 fl oz (Publix)",
+      "section": "pantry",
+      "kind": "sauce",
+      "pack": "10 fl oz (Publix)",
+      "freezes": {
+        "ok": false,
+        "how": "No. Pantry item; follow the package date."
+      },
+      "alt": "Publix: https://delivery.publix.com/landing?postal_code=28428&product_id=71069&region_id=10672064142&retailer_id=57",
+      "confidence": "unverified",
+      "src": [
+        "https://delivery.publix.com/landing?postal_code=28428&product_id=71069&region_id=10672064142&retailer_id=57"
+      ],
+      "note": "Not found at Costco. Publix lists it.",
+      "use": [
+        "slaw",
+        "ponzu",
+        "noodle dressing"
+      ],
+      "usableG": null,
+      "usableML": 296
+    },
+    {
+      "id": "fish_sauce",
+      "item": "Fish sauce",
+      "section": "pantry",
+      "kind": "sauce",
+      "pack": "not checked",
+      "freezes": {
+        "ok": false,
+        "how": "No. Pantry item; follow the package date."
+      },
+      "alt": "Asian grocers in Orlando (not verified)",
+      "confidence": "unverified",
+      "src": [],
+      "note": "Not found at Costco or Publix in this research.",
+      "use": [
+        "thai steak noodle salad"
+      ],
+      "usableG": null
+    },
+    {
+      "id": "franks_redhot",
+      "item": "Frank's RedHot Original Cayenne Pepper Sauce, Twin Pack, 25 fl oz",
+      "section": "pantry",
+      "kind": "sauce",
+      "pack": "2 x 25 fl oz",
+      "freezes": {
+        "ok": false,
+        "how": "No. Pantry item; follow the package date."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://sameday.costco.com/store/costco/products/16596586-frank-s-redhot-twin-pack-original-cayenne-pepper-hot-sauce-25-fl-oz"
+      ],
+      "note": "",
+      "use": [
+        "eggs",
+        "chicken"
+      ],
+      "usableG": null,
+      "usableML": 1479
+    },
+    {
+      "id": "sriracha",
+      "item": "Underwood Ranches Sriracha, 17 oz, 2-count",
+      "section": "pantry",
+      "kind": "sauce",
+      "pack": "2 x 17 oz (per search index)",
+      "freezes": {
+        "ok": false,
+        "how": "No. Pantry item; follow the package date."
+      },
+      "alt": "Publix",
+      "confidence": "likely",
+      "src": [],
+      "note": "Named in a Costco search summary; Huy Fong was not found.",
+      "use": [
+        "noodle salad",
+        "eggs"
+      ],
+      "usableG": 964
+    },
+    {
+      "id": "balsamic_ks_org",
+      "item": "Kirkland Signature Organic Modena Balsamic Vinegar 2-pack (33.8 oz each)",
+      "section": "pantry",
+      "kind": "sauce",
+      "pack": "2 x 33.8 fl oz",
+      "freezes": {
+        "ok": false,
+        "how": "No. Pantry item; follow the package date."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://www.costco.com/p/-/kirkland-signature-organic-modena-balsamic-vinegar-2-pack-338-oz-each/4000229020"
+      ],
+      "note": "Shown online-only / out of stock when checked.",
+      "use": [
+        "dressings"
+      ],
+      "usableG": null,
+      "usableML": 1999
+    },
+    {
+      "id": "mayo_ks",
+      "item": "Kirkland Signature Real Mayonnaise, 64 oz",
+      "section": "pantry",
+      "kind": "fat",
+      "pack": "64 fl oz jar",
+      "freezes": {
+        "ok": false,
+        "how": "No. Refrigerate after opening; FSIS chart: commercial mayonnaise 2 months refrigerated after opening."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://www.costco.com/Kirkland-Signature-Real-Mayonnaise,-64-fl-oz.product.100333885.html"
+      ],
+      "note": "Louie dressing base. Cut it 50/50 with nonfat Greek yogurt and weigh (judgment).",
+      "use": [
+        "shrimp louie dressing",
+        "burger sauce"
+      ],
+      "usableG": null,
+      "usableML": 1893
+    },
+    {
+      "id": "chicken_stock_ks_org",
+      "item": "Kirkland Signature, Organic Chicken Stock, 32 fl oz, 6-Count",
+      "section": "pantry",
+      "kind": "sauce",
+      "pack": "6 x 32 fl oz cartons",
+      "freezes": {
+        "ok": true,
+        "how": "Opened stock: freeze leftovers in portions (FDA chart: gravy & meat broth 1-2 days fridge, 2-3 months frozen)."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://www.costco.com/p/-/kirkland-signature-organic-chicken-stock-32-fl-oz-6-count/100334015"
+      ],
+      "note": "",
+      "use": [
+        "rice",
+        "au jus base"
+      ],
+      "usableG": null,
+      "usableML": 5678
+    },
+    {
+      "id": "btb_chicken",
+      "item": "Better than Bouillon Organic Chicken Base, 16 oz",
+      "section": "pantry",
+      "kind": "sauce",
+      "pack": "16 oz jar",
+      "freezes": {
+        "ok": false,
+        "how": "No. Refrigerate after opening per label."
+      },
+      "alt": "Publix (also for a beef base for French dip jus; not verified)",
+      "confidence": "verified",
+      "src": [
+        "https://sameday.costco.com/store/costco/products/17284854-better-than-bouillon-organic-chicken-base-bouillon-16-oz"
+      ],
+      "note": "No Costco beef base was found. For a French-dip jus, buy a beef base elsewhere or use pan drippings plus stock.",
+      "use": [
+        "au jus",
+        "rice"
+      ],
+      "usableG": 454
+    },
+    {
+      "id": "maple_ks_org",
+      "item": "Kirkland Signature Organic Pure Maple Syrup, 33.8 oz",
+      "section": "pantry",
+      "kind": "carb",
+      "pack": "33.8 fl oz jug",
+      "freezes": {
+        "ok": false,
+        "how": "No. Refrigerate after opening per label."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://www.costco.com/p/-/kirkland-signature-organic-pure-maple-syrup-338-oz/100333884"
+      ],
+      "note": "Weigh it in grams.",
+      "use": [
+        "pancakes",
+        "glazes"
+      ],
+      "usableG": null,
+      "usableML": 1000
+    },
+    {
+      "id": "honey_ks_org",
+      "item": "Kirkland Signature Organic Raw Honey, 24 oz, 3-count",
+      "section": "pantry",
+      "kind": "carb",
+      "pack": "3 x 24 oz",
+      "freezes": {
+        "ok": false,
+        "how": "No. Pantry item; follow the package date."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://www.costco.com/p/-/kirkland-signature-organic-raw-honey-24-oz-3-count/100334136"
+      ],
+      "note": "Weigh it in grams.",
+      "use": [
+        "oats",
+        "marinades"
+      ],
+      "usableG": 2041
+    },
+    {
+      "id": "montreal_steak",
+      "item": "McCormick, Grill Mates, Montreal Steak Seasoning, 29 oz",
+      "section": "pantry",
+      "kind": "spice",
+      "pack": "29 oz",
+      "freezes": {
+        "ok": false,
+        "how": "No. Pantry item; follow the package date."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://www.costco.com/p/-/mccormick-grill-mates-montreal-steak-seasoning-29-oz/100381527"
+      ],
+      "note": "Coarse salt first ingredient: a sodium source.",
+      "use": [
+        "steaks"
+      ],
+      "usableG": 822
+    },
+    {
+      "id": "kinders_buttery",
+      "item": "Kinder's Organic Buttery Steakhouse 10.4 oz, 2-pack",
+      "section": "pantry",
+      "kind": "spice",
+      "pack": "2 x 10.4 oz",
+      "freezes": {
+        "ok": false,
+        "how": "No. Pantry item; follow the package date."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://www.costco.com/kinders-organic-buttery-steakhouse-10.4-oz,-2-pack.product.100432759.html"
+      ],
+      "note": "Kinder's The Blend 12.25 oz is also listed: https://sameday.costco.com/store/costco/products/20235872-kinder-s-seasoning-the-blend-12-25-oz",
+      "use": [
+        "steaks",
+        "chicken"
+      ],
+      "usableG": 590
+    },
+    {
+      "id": "dijon",
+      "item": "Dijon mustard",
+      "section": "pantry",
+      "kind": "sauce",
+      "pack": "not checked",
+      "freezes": {
+        "ok": false,
+        "how": "No. Pantry item; follow the package date."
+      },
+      "alt": "Publix",
+      "confidence": "unverified",
+      "src": [],
+      "note": "Not found at Costco in this research.",
+      "use": [
+        "dressings",
+        "french dip"
+      ],
+      "usableG": null
+    },
+    {
+      "id": "salsa",
+      "item": "Salsa",
+      "section": "pantry",
+      "kind": "sauce",
+      "pack": "not checked",
+      "freezes": {
+        "ok": false,
+        "how": "No. Pantry item; follow the package date."
+      },
+      "alt": "Publix",
+      "confidence": "unverified",
+      "src": [],
+      "note": "Not found at Costco in this research.",
+      "use": [
+        "breakfast burrito",
+        "omelet"
+      ],
+      "usableG": null
+    },
+    {
+      "id": "almonds_ks_3",
+      "item": "Kirkland Signature Supreme Whole Almonds, 3 lbs",
+      "section": "pantry",
+      "kind": "fat",
+      "pack": "3 lb bag",
+      "freezes": {
+        "ok": true,
+        "how": "Optional. Fridge or freezer slows rancidity (times not on the federal charts used here)."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://www.costco.com/p/-/kirkland-signature-supreme-whole-almonds-3-lbs/100115268"
+      ],
+      "note": "Pre-portion into weighed bags: nuts are where strict plans leak (judgment).",
+      "use": [
+        "shift-bag fat"
+      ],
+      "usableG": 1361
+    },
+    {
+      "id": "walnuts_ks_3",
+      "item": "Kirkland Signature Walnut Halves, 3 lbs",
+      "section": "pantry",
+      "kind": "fat",
+      "pack": "3 lb bag (per search index)",
+      "freezes": {
+        "ok": true,
+        "how": "Optional. Fridge or freezer slows rancidity (times not on the federal charts used here)."
+      },
+      "alt": "Publix",
+      "confidence": "likely",
+      "src": [
+        "https://www.costco.com/nuts.html?brand=Kirkland+Signature&refine=%7C%7CBrand_attr-Kirkland+Signature"
+      ],
+      "note": "",
+      "use": [
+        "salads",
+        "oats"
+      ],
+      "usableG": 1361
+    },
+    {
+      "id": "pine_nuts_ks_org",
+      "item": "Kirkland Signature Organic Pine Nuts, 1.5 lbs",
+      "section": "pantry",
+      "kind": "fat",
+      "pack": "1.5 lb (per search index)",
+      "freezes": {
+        "ok": true,
+        "how": "Optional. Fridge or freezer slows rancidity (times not on the federal charts used here)."
+      },
+      "alt": "Publix",
+      "confidence": "likely",
+      "src": [
+        "https://www.costco.com/nuts.html?brand=Kirkland+Signature&refine=%7C%7CBrand_attr-Kirkland+Signature"
+      ],
+      "note": "",
+      "use": [
+        "kale salad"
+      ],
+      "usableG": 680
+    },
+    {
+      "id": "peanut_butter",
+      "item": "Peanut butter (Kirkland Signature organic or any)",
+      "section": "pantry",
+      "kind": "fat",
+      "pack": "not checked",
+      "freezes": {
+        "ok": false,
+        "how": "No. Pantry item; follow the package date."
+      },
+      "alt": "Publix",
+      "confidence": "unverified",
+      "src": [],
+      "note": "Not confirmed at Costco in this research.",
+      "use": [
+        "oats (gain)"
+      ],
+      "usableG": null
+    },
+    {
+      "id": "ks_no_salt_seasoning",
+      "item": "Kirkland Signature Organic No-Salt Seasoning, 14.5 oz",
+      "section": "pantry",
+      "kind": "spice",
+      "pack": "14.5 oz",
+      "freezes": {
+        "ok": false,
+        "how": "No. Pantry item; follow the package date."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://www.costco.com/p/-/kirkland-signature-organic-no-salt-seasoning-145-oz/100334965"
+      ],
+      "note": "21-spice blend, salt-free: season freely, salt separately and measured.",
+      "use": [
+        "everything"
+      ],
+      "usableG": 411
+    },
+    {
+      "id": "ks_saigon_cinnamon",
+      "item": "Kirkland Signature Organic Ground Saigon Cinnamon, 10.7 oz., 2-count",
+      "section": "pantry",
+      "kind": "spice",
+      "pack": "2 x 10.7 oz",
+      "freezes": {
+        "ok": false,
+        "how": "No. Pantry item; follow the package date."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://www.costco.com/kirkland-signature-organic-ground-saigon-cinnamon,-10.7-oz.,-2-count.product.100400498.html"
+      ],
+      "note": "",
+      "use": [
+        "oats",
+        "yogurt"
+      ],
+      "usableG": 607
+    },
+    {
+      "id": "ks_granulated_garlic",
+      "item": "Kirkland Signature, Granulated Garlic, 18 oz",
+      "section": "pantry",
+      "kind": "spice",
+      "pack": "18 oz shaker",
+      "freezes": {
+        "ok": false,
+        "how": "No. Pantry item; follow the package date."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://www.costco.com/kirkland-signature,-granulated-garlic,-18-oz.product.4000051805.html"
+      ],
+      "note": "",
+      "use": [
+        "rubs"
+      ],
+      "usableG": 510
+    },
+    {
+      "id": "ks_black_pepper_grinder",
+      "item": "Kirkland Signature, Black Pepper with Grinder, 6.3 oz, 2-Count",
+      "section": "pantry",
+      "kind": "spice",
+      "pack": "2 x 6.3 oz",
+      "freezes": {
+        "ok": false,
+        "how": "No. Pantry item; follow the package date."
+      },
+      "alt": "Publix",
+      "confidence": "verified",
+      "src": [
+        "https://www.costco.com/kirkland-signature,-black-pepper-with-grinder,-6.3-oz,-2-count.product.100462186.html"
+      ],
+      "note": "Whole black peppercorns 14.1 oz also reported (search index).",
+      "use": [
+        "steaks"
+      ],
+      "usableG": 357
+    },
+    {
+      "id": "salt",
+      "item": "Kosher / sea salt",
+      "section": "pantry",
+      "kind": "spice",
+      "pack": "not checked",
+      "freezes": {
+        "ok": false,
+        "how": "No. Pantry item; follow the package date."
+      },
+      "alt": "Publix",
+      "confidence": "unverified",
+      "src": [],
+      "note": "Not checked at Costco. Weigh salt for marinades and brines.",
+      "use": [
+        "everything"
+      ],
+      "usableG": null
+    },
+    {
+      "id": "smoked_paprika",
+      "item": "Smoked paprika",
+      "section": "pantry",
+      "kind": "spice",
+      "pack": "not checked",
+      "freezes": {
+        "ok": false,
+        "how": "No. Pantry item; follow the package date."
+      },
+      "alt": "Publix",
+      "confidence": "unverified",
+      "src": [],
+      "note": "Not found at Costco.",
+      "use": [
+        "rubs"
+      ],
+      "usableG": null
+    }
+  ],
+  "supplements": {
+    "rule": "Plan rule (nutrition.js CERT): every supplement must carry NSF Certified for Sport or Informed Sport. 'Banned substance tested', 'third-party tested' and 'Informed Choice' do not meet it.",
+    "checked": {
+      "nsf": "nsfsport.com Certified Products listing, fetched 2026-11-01 (2,603 listings parsed): https://www.nsfsport.com/certified-products/search-results.php",
+      "informedSport": "Informed Sport certified list PDF dated October-2026 (generated 2026-10-31): https://sport.wetestyoutrust.com/sites/default/files/generated-pdf/file.pdf?v=1793419764 ; brand index https://sport.wetestyoutrust.com/certified-brands",
+      "kirkland": "No Kirkland Signature product appears on either list."
+    },
+    "howToVerify": "Before the first scoop of every new tub: (1) the NSF Certified for Sport or Informed Sport mark must be on the package; (2) look the product up by name, flavor and SIZE in the NSF Certified for Sport app / nsfsport.com, or on sport.wetestyoutrust.com; (3) NSF listings name specific lot numbers and package sizes, so match the lot printed on the tub. No match = don't use it.",
+    "certifiedAtCostco": [
+      {
+        "id": "whey_ascent_100",
+        "use": "whey",
+        "item": "Ascent 100% Whey, Native Whey Protein Blend, Chocolate, 4.25 lbs",
+        "alsoFlavor": "Vanilla Bean, 4.25 lbs (Item 1667705)",
+        "itemNo": "1666598",
+        "cert": "Informed Sport",
+        "evidence": "Informed Sport list (Oct 2026) includes 'Ascent 100% Whey Protein Powder Blend'; Ascent's site states 'All products are Informed Sport Certified'. Costco's page copy (a hidden/legacy block) still says 'Informed Choice', so check the bag for the Informed Sport logo.",
+        "src": [
+          "https://www.costco.com/p/-/ascent-native-fuel-whey-protein-chocolate,-68-oz/100985271",
+          "https://www.costco.com/p/-/4000177679",
+          "https://sport.wetestyoutrust.com/sites/default/files/generated-pdf/file.pdf?v=1793419764",
+          "https://ascentprotein.com/"
+        ],
+        "usableG": 1928,
+        "confidence": "verified",
+        "note": "Costco.com shows it online (out of stock when checked, limit 5); warehouse stock not public. 25 g protein per scoop per the Costco listing."
+      },
+      {
+        "id": "creatine_sports_research_caps",
+        "use": "creatine",
+        "item": "Sports Research Creatine Monohydrate 5 grams, 240-count Veggie Capsules",
+        "itemNo": "2064085",
+        "cert": "Informed Sport",
+        "evidence": "Informed Sport list (Oct 2026) includes Sports Research 'Creatine Monohydrate Capsules'; the Costco page lists 'Informed Sport' among its claims. (NSF separately lists Sports Research Creatine Monohydrate Unflavored powder, 450 g, US.)",
+        "src": [
+          "https://www.costco.com/p/-/sports-research-creatine-monohydrate-5-grams-240-count-veggie-capsules/4201011387",
+          "https://sport.wetestyoutrust.com/sites/default/files/generated-pdf/file.pdf?v=1793419764",
+          "https://www.nsfsport.com/certified-products/listing-detail.php?id=1751614"
+        ],
+        "usableG": null,
+        "confidence": "likely",
+        "note": "4 capsules = 5 g creatine, so 240 caps = 60 days at 5 g/day. Costco: 'Item may be available in your local warehouse'; the search index dates the listing ~3 years old, so stock is uncertain."
+      },
+      {
+        "id": "creatine_kaged_sticks",
+        "use": "creatine",
+        "item": "KAGED Creatine Monohydrate + MaxCatalyst, 40 Individual Serving Stick Packs, Variety Pack",
+        "itemNo": "2058354",
+        "cert": "Informed Sport (name match is partial)",
+        "evidence": "Informed Sport lists KAGED 'Creatine Monohydrate', 'Creatine Monohydrate + Max Absorption Technology' and 'Creatine Monohydrate Elite Series'. The Costco product name ('+ MaxCatalyst', flavored sticks) does not match any listed name exactly, and the Costco page shows no certification claim.",
+        "src": [
+          "https://www.costco.com/p/-/kaged-creatine-monohydrate-maxcatalyst-40-individual-serving-stick-packs-variety-pack/4201035734",
+          "https://sport.wetestyoutrust.com/sites/default/files/generated-pdf/file.pdf?v=1793419764"
+        ],
+        "usableG": null,
+        "confidence": "likely",
+        "note": "20 Orange Mango + 20 Strawberry Lemonade sticks, 5 g creatine each. Use only if the box carries the Informed Sport logo and the batch checks out."
+      },
+      {
+        "id": "electrolyte_dripdrop_zero",
+        "use": "electrolytes",
+        "item": "DripDrop Hydration Zero Sugar Electrolytes, 40 Individual Sticks in Resealable Pouch, Variety Pack",
+        "itemNo": null,
+        "cert": "NSF Certified for Sport (flavor-specific)",
+        "evidence": "NSF lists DripDrop Zero Lemon Lime (US, 9 g) and DripDrop Zero Sugar Watermelon (US, 9 g). A DripDrop announcement (via Particl) describes the Costco 40-count as Lemon Lime + Watermelon; the Costco page returned 404 when checked, so the flavor mix is not confirmed.",
+        "src": [
+          "https://www.nsfsport.com/certified-products/listing-detail.php?id=1503380",
+          "https://www.nsfsport.com/certified-products/listing-detail.php?id=1664301",
+          "https://www.particl.com/DripDrop/big-news-dripdrop-is-now-at-costco-1609877-548b1b65"
+        ],
+        "usableG": null,
+        "confidence": "likely",
+        "note": "Use only the Lemon Lime and Watermelon zero-sugar sticks; any other flavor in the pouch is not on the list. Don't confuse with the 33-stick 'Zero Sugar Plus' pack (Watermelon/Tangerine/Raspberry Lemonade; not checked)."
+      },
+      {
+        "id": "caffeine_celsius_core",
+        "use": "caffeine",
+        "item": "Celsius Sparkling Energy Drink, Core Variety Pack, 12 fl oz, 18-count",
+        "itemNo": "1966529",
+        "cert": "NSF Certified for Sport",
+        "evidence": "Costco pack = 6 Cherry Cola, 6 Orange, 6 Kiwi Guava. NSF lists CELSIUS Sparkling Cherry Cola (US, 1 can 355 mL) plus multiple Sparkling Orange and Sparkling Kiwi Guava listings.",
+        "src": [
+          "https://www.costco.com/p/-/celsius-sparkling-energy-drink-core-variety-pack-12-fl-oz-18-count/4000387897",
+          "https://www.nsfsport.com/certified-products/listing-detail.php?id=1748716"
+        ],
+        "usableG": null,
+        "confidence": "verified",
+        "note": "Optional certified pre-lift caffeine. Read the can's caffeine content against the plan's ~3 mg/kg dose and the sleep cutoff. Zero sugar, so it doesn't break the no-liquid-calories rule."
+      }
+    ],
+    "conditional": [
+      {
+        "id": "whey_on_gold_standard",
+        "item": "Optimum Nutrition Gold Standard 100% Whey Protein Powder, Extreme Milk Chocolate, 5.64 lbs (Item 1243880) / Vanilla Ice Cream, 5.47 lbs (Item 1243864)",
+        "verdict": "avoid as sold at Costco",
+        "why": "NSF lists only GOLD STANDARD 100% WHEY DOUBLE RICH CHOCOLATE (US, 4.53 kg, specific lots) and Gold Standard 100% Whey Vanilla Ice Cream (US, 4.62 kg / 10.2 lb, specific lots). Extreme Milk Chocolate is not listed, and Costco's 5.47 lb Vanilla Ice Cream is not the listed size. Informed Sport lists only ON's 'Elite Series' products. Use only if the bag itself carries the NSF Certified for Sport mark and its lot is in the NSF app.",
+        "src": [
+          "https://www.costco.com/p/-/optimum-nutrition-gold-standard-100-whey-protein-powder-extreme-milk-chocolate-564-lbs/100428750",
+          "https://www.costco.com/p/-/optimum-nutrition-gold-standard-100-whey-protein-powder-vanilla-ice-cream-547-lbs/4000177608",
+          "https://www.nsfsport.com/certified-products/listing-detail.php?id=1256427",
+          "https://www.nsfsport.com/certified-products/listing-detail.php?id=1484223"
+        ]
+      },
+      {
+        "id": "rtd_muscle_milk_genuine",
+        "item": "Muscle Milk Genuine Protein Shake Chocolate, 11 fl oz, 18-pack",
+        "verdict": "avoid (size mismatch + liquid calories)",
+        "why": "NSF lists Muscle Milk Genuine Protein Shake Chocolate in the 14 fl oz bottle (US), not Costco's 11 fl oz 18-pack. The Muscle Milk 33g Ultra-Filtered shake is not on the list at all.",
+        "src": [
+          "https://www.nsfsport.com/certified-products/listing-detail.php?id=1520709",
+          "https://www.costco.com/p/-/muscle-milk-33g-protein-ultra-filtered-milk-shake-cookies-n-crme-11-fl-oz-18-pack/4000445080"
+        ]
+      },
+      {
+        "id": "electrolyte_liquid_iv_sf",
+        "item": "Liquid I.V. Hydration Multiplier Sugar Free, Mango Pineapple (Item 2032174) / Rainbow Sherbet (Item 1947971), 30-pack",
+        "verdict": "avoid",
+        "why": "NSF lists exactly one Liquid I.V. product: Hydration Multiplier Sugar Free Raspberry Lemonade (13 g stick). Costco's sugar-free flavors are not it.",
+        "src": [
+          "https://www.nsfsport.com/certified-products/listing-detail.php?id=1760191",
+          "https://www.costco.com/p/-/liquid-iv-hydration-multiplier-30-individual-serving-stick-packs-in-resealable-pouch-sugar-free-mango-pineapple/4000440168"
+        ]
+      },
+      {
+        "id": "electrolyte_bodyarmor_lyte",
+        "item": "BODYARMOR Lyte Sports Drink, Variety Pack, 20 fl oz, 18-count (Item 1779098)",
+        "verdict": "avoid",
+        "why": "NSF lists BODYARMOR LYTE Dragonfruit Berry and Peach Mango only for Canada, in 473 mL (16 fl oz). Costco's US pack is 20 fl oz and includes Blueberry Pomegranate (not listed). Regular BODYARMOR SuperDrink is sugar, which breaks the no-liquid-calories rule.",
+        "src": [
+          "https://www.nsfsport.com/certified-products/listing-detail.php?id=1658322",
+          "https://www.nsfsport.com/certified-products/listing-detail.php?id=1596784",
+          "https://www.costco.com/p/-/bodyarmor-lyte-sports-drink-variety-pack-20-fl-oz-18-count/4000242113"
+        ]
+      }
+    ],
+    "avoid": [
+      {
+        "item": "Optimum Nutrition Micronized Creatine Powder, Unflavored, 1.49 lb",
+        "why": "Claims 'Banned Substance Tested' but is not on the NSF list; Informed Sport lists only ON's European 'Micronised Creatine Powder - Elite Series'.",
+        "src": [
+          "https://sameday.costco.com/store/costco/products/63915771-optimum-nutrition-micronized-creatine-powder-unflavored-149-lbs"
+        ]
+      },
+      {
+        "item": "Orgain, Micronized Creatine Monohydrate, Unflavored, 1.48lbs (Item 1927215)",
+        "why": "Claims 'Banned Substance Tested'; Orgain is on neither list.",
+        "src": [
+          "https://www.costco.com/p/-/orgain-micronized-creatine-monohydrate-unflavored-148lbs/4000373637"
+        ]
+      },
+      {
+        "item": "Orgain Collagen + Creatine, Unflavored, 1.95 lbs",
+        "why": "Orgain is on neither list.",
+        "src": [
+          "https://www.costco.com/p/-/orgain-collagen-creatine-unflavored-195-lbs/4000348947"
+        ]
+      },
+      {
+        "item": "Kirkland Signature Whey Protein, Creamy Chocolate, 5.4 lbs",
+        "why": "No Kirkland Signature product is on either list.",
+        "src": [
+          "https://sameday.costco.com/store/costco/products/53543841-kirkland-signature-whey-protein-creamy-chocolate-5-4-lb"
+        ]
+      },
+      {
+        "item": "Dymatize ISO100 (Hydrolyzed / Clear)",
+        "why": "Not on the NSF list; Informed Sport lists only Dymatize Europe BCAAs and Glutamine.",
+        "src": [
+          "https://www.costco.com/protein.html?brand=Dymatize+dymatize&refine=%7C%7CBrand_attr-Dymatize"
+        ]
+      },
+      {
+        "item": "Premier Protein Whey Protein Powder, Vanilla, 3 lbs (Item 1813293) and Premier shakes",
+        "why": "On neither list.",
+        "src": [
+          "https://www.costco.com/p/-/premier-protein-whey-protein-powder-vanilla-3-lbs/4000283916"
+        ]
+      },
+      {
+        "item": "Core Power (fairlife) shakes; fairlife Nutrition Plan; Orgain 30g shakes",
+        "why": "On neither list. They're also liquid calories.",
+        "src": [
+          "https://www.costco.com/p/-/core-power-protein-shake-chocolate-14-fl-oz-12-pack/4201003382"
+        ]
+      },
+      {
+        "item": "LMNT Zero Sugar Electrolytes, 48ct Variety Pack (Item 2076206)",
+        "why": "On neither list.",
+        "src": [
+          "https://www.costco.com/p/-/lmnt-zero-sugar-electrolytes-48ct-drink-mix-variety-pack-black-cherry-and-lemonade/4201035939"
+        ]
+      },
+      {
+        "item": "Kirkland Signature hydration / electrolyte sticks",
+        "why": "No Kirkland Signature product is on either list.",
+        "src": []
+      },
+      {
+        "item": "Gatorade Thirst Quencher / Gatorlyte / Gatorade Zero",
+        "why": "NSF lists only Gatorade Fast Twitch energy drinks and Gatorade Recovery protein bars.",
+        "src": []
+      },
+      {
+        "item": "Nuun Sport (US)",
+        "why": "Informed Sport lists only 'Nuun Sport (EU)' and 'Nuun Ultra Hydration'; no Nuun was found at Costco anyway.",
+        "src": [
+          "https://sport.wetestyoutrust.com/sites/default/files/generated-pdf/file.pdf?v=1793419764"
+        ]
+      }
+    ],
+    "certifiedNotAtCostco": "If Costco is out, these are on the lists (buy direct or online): NSF: Thorne Creatine, Thorne Whey Protein Isolate, Thorne Catalyte / Daily Electrolytes, Thorne Magnesium Bisglycinate; Klean Athlete Klean Creatine, Klean Isolate, Klean Electrolytes, Klean Magnesium, Klean Omega; Momentous Creatine Monohydrate, Whey Protein Isolate, Essential Grass-Fed Whey, Daily Hydration, Omega-3, Vitamin D3; Nature Made Micronized Powder Creatine Monohydrate (200 g / 450 g); Bare Performance Nutrition creatine / whey / electrolytes; Garden of Life Sport Grass Fed Whey and Sport Creatine; Muscle Milk Pro Series Creatine; Nordic Naturals (omega-3). Informed Sport: Ascent Clean Creatine and Clean Hydration; NOW Sports Creatine Monohydrate Powder and Whey Protein Isolate; KAGED Creatine Monohydrate. Check flavor, size and lot as above."
+  }
+}

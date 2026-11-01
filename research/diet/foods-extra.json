@@ -1,0 +1,861 @@
+{
+  "meta": {
+    "title": "Saturated fat and sodium per 100 g (per 100 ml where foods.json says so), keyed like foods.json",
+    "built": "2026-11-01, node tools/build_extra.js, from the FDC records each foods.json entry cites",
+    "fields": {
+      "sfa": "g saturated fatty acids per 100 g (FDC nutrient 1258 / number 606, or the label)",
+      "na": "mg sodium per 100 g (FDC nutrient 1093 / number 307, or the label)",
+      "how": "which record or derivation the value came from"
+    },
+    "states": "per100 is the state named by foods.json `state`; raw / dry / cooked / alt mirror foods.json",
+    "use": "Batch-method cooked values are raw (or dry) ÷ yield, the same way recipes-check.js derives kcal and macros."
+  },
+  "foods": {
+    "chickenBreast": {
+      "per100": {
+        "sfa": 0.99,
+        "na": 52,
+        "how": "FDC 171534 (SR Legacy food_nutrient.csv)"
+      },
+      "raw": {
+        "sfa": 0.35,
+        "na": 66,
+        "how": "FDC 2646170 (Foundation Foods JSON 2026-10-29)"
+      }
+    },
+    "chickenThigh": {
+      "per100": {
+        "sfa": 2.21,
+        "na": 83,
+        "how": "FDC 2646171 ÷ yield 0.75, as in foods.json"
+      },
+      "raw": {
+        "sfa": 1.66,
+        "na": 62,
+        "how": "FDC 2646171 (Foundation Foods JSON 2026-10-29)"
+      },
+      "alt": {
+        "usdaRoastedAnalytical": {
+          "sfa": 2.31,
+          "na": 106,
+          "how": "FDC 172388 (SR Legacy food_nutrient.csv)"
+        }
+      }
+    },
+    "rotisserie": {
+      "per100": {
+        "sfa": 1.82,
+        "na": 325,
+        "how": "50/50 blend of FDC 171518 and 171120, as in foods.json"
+      },
+      "alt": {
+        "whiteOnly": {
+          "sfa": 0.78,
+          "na": 313,
+          "how": "FDC 171518 (SR Legacy food_nutrient.csv)"
+        },
+        "darkOnly": {
+          "sfa": 2.87,
+          "na": 337,
+          "how": "FDC 171120 (SR Legacy food_nutrient.csv)"
+        },
+        "skin": {
+          "sfa": 9.99,
+          "na": 381,
+          "how": "FDC 171520 (SR Legacy food_nutrient.csv)"
+        }
+      }
+    },
+    "beef93": {
+      "per100": {
+        "sfa": 3.9,
+        "na": 86,
+        "how": "FDC 174755 (SR Legacy food_nutrient.csv)"
+      },
+      "raw": {
+        "sfa": 2.88,
+        "na": 66,
+        "how": "FDC 173110 (SR Legacy food_nutrient.csv)"
+      }
+    },
+    "beef88": {
+      "per100": {
+        "sfa": 5.15,
+        "na": 88,
+        "how": "interpolated (t=0.6) between FDC 174034 and 171794, as in foods.json"
+      },
+      "raw": {
+        "sfa": 4.64,
+        "na": 66,
+        "how": "interpolated (t=0.6) between FDC 171796 and 174030, as in foods.json"
+      }
+    },
+    "beef88Patty": {
+      "per100": {
+        "sfa": 4.65,
+        "na": 77,
+        "how": "interpolated (t=0.6) between FDC 174033 and 171793, as in foods.json"
+      },
+      "raw": {
+        "sfa": 4.64,
+        "na": 66,
+        "how": "interpolated (t=0.6) between FDC 171796 and 174030, as in foods.json"
+      }
+    },
+    "topSirloin": {
+      "per100": {
+        "sfa": 2.5,
+        "na": 63,
+        "how": "FDC 168635 (SR Legacy food_nutrient.csv)"
+      },
+      "raw": {
+        "sfa": 2.16,
+        "na": 43,
+        "how": "FDC 2727574 (Foundation Foods JSON 2026-10-29); sfa = 38% of fat, the saturated share in this food's per100 record (FDC 168635)"
+      }
+    },
+    "flank": {
+      "per100": {
+        "sfa": 3.84,
+        "na": 53,
+        "how": "FDC 169435 (SR Legacy food_nutrient.csv)"
+      },
+      "raw": {
+        "sfa": 3.55,
+        "na": 51,
+        "how": "FDC 2646175 (Foundation Foods JSON 2026-10-29)"
+      }
+    },
+    "topRound": {
+      "per100": {
+        "sfa": 3.42,
+        "na": 41,
+        "how": "FDC 169531 (SR Legacy food_nutrient.csv)"
+      },
+      "raw": {
+        "sfa": 1.7,
+        "na": 46,
+        "how": "FDC 2646173 (Foundation Foods JSON 2026-10-29)"
+      },
+      "alt": {
+        "usda0inTrimGrilled": {
+          "sfa": 1.77,
+          "na": 78,
+          "how": "FDC 168740 (SR Legacy food_nutrient.csv)"
+        }
+      }
+    },
+    "tenderloin": {
+      "per100": {
+        "sfa": 3.2,
+        "na": 60,
+        "how": "FDC 171811 (SR Legacy food_nutrient.csv)"
+      },
+      "raw": {
+        "sfa": 2.48,
+        "na": 45,
+        "how": "FDC 2727573 (Foundation Foods JSON 2026-10-29); sfa = 38% of fat, the saturated share in this food's per100 record (FDC 171811)"
+      }
+    },
+    "ribeye": {
+      "per100": {
+        "sfa": 10.31,
+        "na": 54,
+        "how": "FDC 173390 (SR Legacy food_nutrient.csv)"
+      },
+      "raw": {
+        "sfa": 7.97,
+        "na": 43,
+        "how": "FDC 2646172 (Foundation Foods JSON 2026-10-29)"
+      }
+    },
+    "porkTenderloin": {
+      "per100": {
+        "sfa": 1.36,
+        "na": 57,
+        "how": "FDC 167905 (SR Legacy food_nutrient.csv)"
+      },
+      "raw": {
+        "sfa": 0.87,
+        "na": 41,
+        "how": "FDC 2646169 (Foundation Foods JSON 2026-10-29)"
+      }
+    },
+    "salmonAtlantic": {
+      "per100": {
+        "sfa": 2.4,
+        "na": 61,
+        "how": "FDC 175168 (SR Legacy food_nutrient.csv)"
+      },
+      "raw": {
+        "sfa": 2.28,
+        "na": 50,
+        "how": "FDC 2684441 (Foundation Foods JSON 2026-10-29)"
+      }
+    },
+    "sockeye": {
+      "per100": {
+        "sfa": 0.97,
+        "na": 92,
+        "how": "FDC 173692 (SR Legacy food_nutrient.csv)"
+      },
+      "raw": {
+        "sfa": 0.72,
+        "na": 53,
+        "how": "FDC 2684440 (Foundation Foods JSON 2026-10-29)"
+      }
+    },
+    "ahi": {
+      "per100": {
+        "sfa": 0.17,
+        "na": 45,
+        "how": "FDC 175159 (SR Legacy food_nutrient.csv)"
+      },
+      "cooked": {
+        "sfa": 0.21,
+        "na": 54,
+        "how": "FDC 172006 (SR Legacy food_nutrient.csv)"
+      }
+    },
+    "shrimp": {
+      "per100": {
+        "sfa": 0.06,
+        "na": 111,
+        "how": "FDC 175180 (SR Legacy food_nutrient.csv)"
+      },
+      "raw": {
+        "sfa": 0.1,
+        "na": 119,
+        "how": "FDC 175179 (SR Legacy food_nutrient.csv)"
+      }
+    },
+    "egg": {
+      "per100": {
+        "sfa": 3.2,
+        "na": 129,
+        "how": "FDC 748967 (Foundation Foods JSON 2026-10-29)"
+      }
+    },
+    "eggWhites": {
+      "per100": {
+        "sfa": 0,
+        "na": 166,
+        "how": "FDC 172183 (SR Legacy food_nutrient.csv)"
+      }
+    },
+    "greekNonfat": {
+      "per100": {
+        "sfa": 0.11,
+        "na": 36,
+        "how": "FDC 330137 (Foundation Foods JSON 2026-10-29)"
+      }
+    },
+    "greek2": {
+      "per100": {
+        "sfa": 1.23,
+        "na": 34,
+        "how": "FDC 170903 (SR Legacy food_nutrient.csv)"
+      }
+    },
+    "cottage": {
+      "per100": {
+        "sfa": 1.26,
+        "na": 321,
+        "how": "FDC 328841 (Foundation Foods JSON 2026-10-29)"
+      },
+      "alt": {
+        "onePct": {
+          "sfa": 0.65,
+          "na": 406,
+          "how": "FDC 173417 (SR Legacy food_nutrient.csv)"
+        }
+      }
+    },
+    "whey": {
+      "per100": {
+        "sfa": 1.64,
+        "na": 164,
+        "how": "FDC 2464138 (Branded Foods label (per 100 g/ml))"
+      },
+      "alt": {
+        "isolate": {
+          "sfa": 0.54,
+          "na": 613,
+          "how": "FDC 2464901 (Branded Foods label (per 100 g/ml)); sfa = 33% of fat, the saturated share in this food's per100 record (FDC 2464138)"
+        }
+      }
+    },
+    "riceWhite": {
+      "per100": {
+        "sfa": 0.08,
+        "na": 1,
+        "how": "FDC 168878 (SR Legacy food_nutrient.csv)"
+      },
+      "dry": {
+        "sfa": 0.18,
+        "na": 5,
+        "how": "FDC 168877 (SR Legacy food_nutrient.csv)"
+      }
+    },
+    "wildRice": {
+      "per100": {
+        "sfa": 0.05,
+        "na": 3,
+        "how": "FDC 168897 (SR Legacy food_nutrient.csv)"
+      },
+      "dry": {
+        "sfa": 0.28,
+        "na": 1,
+        "how": "FDC 2710821 (Foundation Foods JSON 2026-10-29); sfa = 17% of fat, the saturated share in this food's per100 record (FDC 168897)"
+      }
+    },
+    "quinoa": {
+      "per100": {
+        "sfa": 0.23,
+        "na": 7,
+        "how": "FDC 168917 (SR Legacy food_nutrient.csv)"
+      },
+      "dry": {
+        "sfa": 0.71,
+        "na": 5,
+        "how": "FDC 168874 (SR Legacy food_nutrient.csv)"
+      }
+    },
+    "potatoYukon": {
+      "per100": {
+        "sfa": 0.04,
+        "na": 7,
+        "how": "FDC 170434 (SR Legacy food_nutrient.csv)"
+      },
+      "raw": {
+        "sfa": 0.03,
+        "na": 16,
+        "how": "FDC 170028 (SR Legacy food_nutrient.csv)"
+      }
+    },
+    "potatoRusset": {
+      "per100": {
+        "sfa": 0.03,
+        "na": 14,
+        "how": "FDC 170030 (SR Legacy food_nutrient.csv)"
+      },
+      "raw": {
+        "sfa": 0.03,
+        "na": 5,
+        "how": "FDC 170027 (SR Legacy food_nutrient.csv)"
+      }
+    },
+    "sweetPotato": {
+      "per100": {
+        "sfa": 0.05,
+        "na": 36,
+        "how": "FDC 168483 (SR Legacy food_nutrient.csv)"
+      },
+      "raw": {
+        "sfa": 0.02,
+        "na": 55,
+        "how": "FDC 168482 (SR Legacy food_nutrient.csv)"
+      }
+    },
+    "oats": {
+      "per100": {
+        "sfa": 1.11,
+        "na": 6,
+        "how": "FDC 173904 (SR Legacy food_nutrient.csv)"
+      },
+      "alt": {
+        "foundation": {
+          "sfa": 1.01,
+          "na": 1,
+          "how": "FDC 2346396 (Foundation Foods JSON 2026-10-29); sfa = 17% of fat, the saturated share in this food's per100 record (FDC 173904)"
+        }
+      }
+    },
+    "sourdough": {
+      "per100": {
+        "sfa": 0.53,
+        "na": 602,
+        "how": "FDC 172675 (SR Legacy food_nutrient.csv)"
+      }
+    },
+    "wholeGrainBread": {
+      "per100": {
+        "sfa": 0,
+        "na": 400,
+        "how": "FDC 2674263 (Branded Foods label (per 100 g/ml))"
+      },
+      "alt": {
+        "usda100WholeWheat": {
+          "sfa": 0.8,
+          "na": 408,
+          "how": "FDC 2758994 (Foundation Foods JSON 2026-10-29)"
+        }
+      }
+    },
+    "tortilla": {
+      "per100": {
+        "sfa": 2.92,
+        "na": 736,
+        "how": "FDC 175037 (SR Legacy food_nutrient.csv)"
+      }
+    },
+    "riceNoodles": {
+      "per100": {
+        "sfa": 0.02,
+        "na": 19,
+        "how": "FDC 168914 (SR Legacy food_nutrient.csv)"
+      },
+      "dry": {
+        "sfa": 0.15,
+        "na": 182,
+        "how": "FDC 169742 (SR Legacy food_nutrient.csv)"
+      }
+    },
+    "banana": {
+      "per100": {
+        "sfa": null,
+        "na": 0,
+        "how": "FDC 1105314 (Foundation Foods JSON 2026-10-29)"
+      }
+    },
+    "berries": {
+      "per100": {
+        "sfa": null,
+        "na": 12,
+        "how": "FDC 2460589 (Branded Foods label (per 100 g/ml))"
+      },
+      "alt": {
+        "blueberriesFresh": {
+          "sfa": 0.03,
+          "na": 1,
+          "how": "FDC 171711 (SR Legacy food_nutrient.csv)"
+        },
+        "strawberriesFresh": {
+          "sfa": 0.02,
+          "na": 1,
+          "how": "FDC 167762 (SR Legacy food_nutrient.csv)"
+        }
+      }
+    },
+    "pineapple": {
+      "per100": {
+        "sfa": null,
+        "na": 0,
+        "how": "FDC 2346398 (Foundation Foods JSON 2026-10-29)"
+      }
+    },
+    "apple": {
+      "per100": {
+        "sfa": 0.03,
+        "na": 1,
+        "how": "FDC 171688 (SR Legacy food_nutrient.csv)"
+      }
+    },
+    "honey": {
+      "per100": {
+        "sfa": 0,
+        "na": 4,
+        "how": "FDC 169640 (SR Legacy food_nutrient.csv)"
+      }
+    },
+    "granola": {
+      "per100": {
+        "sfa": 2.73,
+        "na": 245,
+        "how": "FDC 2009792 (Branded Foods label (per 100 g/ml))"
+      }
+    },
+    "broccoli": {
+      "per100": {
+        "sfa": 0.11,
+        "na": 33,
+        "how": "FDC 170379 (SR Legacy food_nutrient.csv)"
+      }
+    },
+    "greenBeans": {
+      "per100": {
+        "sfa": 0.05,
+        "na": 6,
+        "how": "FDC 169961 (SR Legacy food_nutrient.csv)"
+      }
+    },
+    "asparagus": {
+      "per100": {
+        "sfa": 0.04,
+        "na": 2,
+        "how": "FDC 168389 (SR Legacy food_nutrient.csv)"
+      }
+    },
+    "brusselsSprouts": {
+      "per100": {
+        "sfa": 0.06,
+        "na": 26,
+        "how": "FDC 2685575 (Foundation Foods JSON 2026-10-29); sfa from SR Legacy FDC 170383 (same description)"
+      }
+    },
+    "kale": {
+      "per100": {
+        "sfa": 0.18,
+        "na": 53,
+        "how": "FDC 323505 (Foundation Foods JSON 2026-10-29); sfa from SR Legacy FDC 168421 (same description)"
+      }
+    },
+    "spinach": {
+      "per100": {
+        "sfa": 0.06,
+        "na": 79,
+        "how": "FDC 168462 (SR Legacy food_nutrient.csv)"
+      }
+    },
+    "romaine": {
+      "per100": {
+        "sfa": 0.04,
+        "na": 8,
+        "how": "FDC 746769 (not found); sfa from SR Legacy FDC 169247 (same description); na from SR Legacy FDC 169247 (same description)"
+      }
+    },
+    "cabbage": {
+      "per100": {
+        "sfa": 0.03,
+        "na": 18,
+        "how": "FDC 169975 (SR Legacy food_nutrient.csv)"
+      }
+    },
+    "cucumber": {
+      "per100": {
+        "sfa": 0.04,
+        "na": 2,
+        "how": "FDC 168409 (SR Legacy food_nutrient.csv)"
+      }
+    },
+    "bellPepper": {
+      "per100": {
+        "sfa": 0.06,
+        "na": 4,
+        "how": "FDC 170108 (SR Legacy food_nutrient.csv)"
+      }
+    },
+    "onion": {
+      "per100": {
+        "sfa": null,
+        "na": 1,
+        "how": "FDC 790646 (Foundation Foods JSON 2026-10-29)"
+      }
+    },
+    "edamame": {
+      "per100": {
+        "sfa": 0.62,
+        "na": 6,
+        "how": "FDC 168411 (SR Legacy food_nutrient.csv)"
+      }
+    },
+    "mushrooms": {
+      "per100": {
+        "sfa": 0.05,
+        "na": 5,
+        "how": "FDC 169251 (SR Legacy food_nutrient.csv)"
+      },
+      "alt": {
+        "shiitake": {
+          "sfa": 0.08,
+          "na": 9,
+          "how": "FDC 169242 (SR Legacy food_nutrient.csv); sfa = 17% of fat, the saturated share in this food's per100 record (FDC 169251)"
+        },
+        "cremini": {
+          "sfa": 0.01,
+          "na": 6,
+          "how": "FDC 168434 (SR Legacy food_nutrient.csv)"
+        }
+      }
+    },
+    "tomatoes": {
+      "per100": {
+        "sfa": null,
+        "na": 6,
+        "how": "FDC 321360 (Foundation Foods JSON 2026-10-29)"
+      }
+    },
+    "oliveOil": {
+      "per100": {
+        "sfa": 13.81,
+        "na": 2,
+        "how": "FDC 171413 (SR Legacy food_nutrient.csv)"
+      }
+    },
+    "avocadoOil": {
+      "per100": {
+        "sfa": 11.56,
+        "na": 0,
+        "how": "FDC 173573 (SR Legacy food_nutrient.csv)"
+      }
+    },
+    "butter": {
+      "per100": {
+        "sfa": 51.37,
+        "na": 643,
+        "how": "FDC 173410 (SR Legacy food_nutrient.csv)"
+      }
+    },
+    "avocado": {
+      "per100": {
+        "sfa": 2.13,
+        "na": 8,
+        "how": "FDC 171706 (SR Legacy food_nutrient.csv)"
+      }
+    },
+    "peanutButter": {
+      "per100": {
+        "sfa": 8.42,
+        "na": 221,
+        "how": "FDC 2262072 (Foundation Foods JSON 2026-10-29)"
+      }
+    },
+    "parmesan": {
+      "per100": {
+        "sfa": 14.85,
+        "na": 1175,
+        "how": "FDC 170848 (SR Legacy food_nutrient.csv)"
+      },
+      "alt": {
+        "gratedTub": {
+          "sfa": 17.2,
+          "na": 1050,
+          "how": "FDC 2259795 (Foundation Foods JSON 2026-10-29)"
+        }
+      }
+    },
+    "feta": {
+      "per100": {
+        "sfa": 11.2,
+        "na": 1030,
+        "how": "FDC 2259796 (Foundation Foods JSON 2026-10-29)"
+      },
+      "alt": {
+        "usdaSR": {
+          "sfa": 13.3,
+          "na": 1139,
+          "how": "FDC 173420 (SR Legacy food_nutrient.csv)"
+        }
+      }
+    },
+    "mayoLight": {
+      "per100": {
+        "sfa": 3.33,
+        "na": 733,
+        "how": "FDC 2566516 (Branded Foods label (per 100 g/ml))"
+      }
+    },
+    "soySauce": {
+      "per100": {
+        "sfa": 0.07,
+        "na": 5493,
+        "how": "FDC 174277 (SR Legacy food_nutrient.csv)"
+      },
+      "alt": {
+        "lowSodium": {
+          "sfa": 0.04,
+          "na": 3598,
+          "how": "FDC 172473 (SR Legacy food_nutrient.csv)"
+        }
+      }
+    },
+    "ponzu": {
+      "per100": {
+        "sfa": null,
+        "na": 3200,
+        "how": "FDC 2633370 (Branded Foods label (per 100 g/ml))"
+      },
+      "per": "100 ml"
+    },
+    "sriracha": {
+      "per100": {
+        "sfa": null,
+        "na": 2124,
+        "how": "FDC 171186 (SR Legacy food_nutrient.csv)"
+      }
+    },
+    "dijon": {
+      "per100": {
+        "sfa": null,
+        "na": 2600,
+        "how": "FDC 2566098 (Branded Foods label (per 100 g/ml))"
+      }
+    },
+    "lemonJuice": {
+      "per100": {
+        "sfa": 0.04,
+        "na": 1,
+        "how": "FDC 167747 (SR Legacy food_nutrient.csv)"
+      }
+    },
+    "garlic": {
+      "per100": {
+        "sfa": 0.09,
+        "na": 17,
+        "how": "FDC 1104647 (not found); sfa from SR Legacy FDC 169230 (same description); na from SR Legacy FDC 169230 (same description)"
+      }
+    },
+    "ginger": {
+      "per100": {
+        "sfa": 0.2,
+        "na": 13,
+        "how": "FDC 169231 (SR Legacy food_nutrient.csv)"
+      }
+    },
+    "pineappleJuice": {
+      "per100": {
+        "sfa": 0.01,
+        "na": 2,
+        "how": "FDC 169947 (SR Legacy food_nutrient.csv)"
+      }
+    },
+    "brownSugar": {
+      "per100": {
+        "sfa": 0,
+        "na": 28,
+        "how": "FDC 168833 (SR Legacy food_nutrient.csv)"
+      }
+    },
+    "sesameOil": {
+      "per100": {
+        "sfa": 14.2,
+        "na": 0,
+        "how": "FDC 171016 (SR Legacy food_nutrient.csv)"
+      }
+    },
+    "fishSauce": {
+      "per100": {
+        "sfa": 0,
+        "na": 7851,
+        "how": "FDC 174531 (SR Legacy food_nutrient.csv)"
+      }
+    },
+    "peanuts": {
+      "per100": {
+        "sfa": 7.72,
+        "na": 410,
+        "how": "FDC 174262 (SR Legacy food_nutrient.csv)"
+      }
+    },
+    "limeJuice": {
+      "per100": {
+        "sfa": 0.01,
+        "na": 2,
+        "how": "FDC 168156 (SR Legacy food_nutrient.csv)"
+      }
+    },
+    "lemonZest": {
+      "per100": {
+        "sfa": 0.04,
+        "na": 6,
+        "how": "FDC 167749 (SR Legacy food_nutrient.csv)"
+      }
+    },
+    "greenOnion": {
+      "per100": {
+        "sfa": 0.03,
+        "na": 16,
+        "how": "FDC 170005 (SR Legacy food_nutrient.csv)"
+      }
+    },
+    "cilantro": {
+      "per100": {
+        "sfa": 0.01,
+        "na": 46,
+        "how": "FDC 169997 (SR Legacy food_nutrient.csv)"
+      }
+    },
+    "mint": {
+      "per100": {
+        "sfa": 0.19,
+        "na": 30,
+        "how": "FDC 173475 (SR Legacy food_nutrient.csv)"
+      }
+    },
+    "parsley": {
+      "per100": {
+        "sfa": 0.13,
+        "na": 56,
+        "how": "FDC 170416 (SR Legacy food_nutrient.csv)"
+      }
+    },
+    "chickenStock": {
+      "per100": {
+        "sfa": 0,
+        "na": 183,
+        "how": "FDC 2655506 (Branded Foods label (per 100 g/ml))"
+      },
+      "per": "100 ml"
+    },
+    "cheddar": {
+      "per100": {
+        "sfa": 17.86,
+        "na": 607,
+        "how": "FDC 2429357 (Branded Foods label (per 100 g/ml))"
+      }
+    },
+    "salt": {
+      "per100": {
+        "sfa": 0,
+        "na": 38758,
+        "how": "FDC 173468 (SR Legacy food_nutrient.csv)"
+      }
+    },
+    "blackPepper": {
+      "per100": {
+        "sfa": 1.39,
+        "na": 20,
+        "how": "FDC 170931 (SR Legacy food_nutrient.csv)"
+      }
+    },
+    "paprika": {
+      "per100": {
+        "sfa": 2.14,
+        "na": 68,
+        "how": "FDC 171329 (SR Legacy food_nutrient.csv)"
+      }
+    },
+    "garlicPowder": {
+      "per100": {
+        "sfa": 0.25,
+        "na": 60,
+        "how": "FDC 171325 (SR Legacy food_nutrient.csv)"
+      }
+    },
+    "cinnamon": {
+      "per100": {
+        "sfa": 0.35,
+        "na": 10,
+        "how": "FDC 171320 (SR Legacy food_nutrient.csv)"
+      }
+    },
+    "horseradish": {
+      "per100": {
+        "sfa": 0.09,
+        "na": 420,
+        "how": "FDC 173472 (SR Legacy food_nutrient.csv)"
+      }
+    },
+    "pickles": {
+      "per100": {
+        "sfa": 0.08,
+        "na": 809,
+        "how": "FDC 168558 (SR Legacy food_nutrient.csv)"
+      }
+    },
+    "water": {
+      "per100": {
+        "sfa": 0,
+        "na": 4,
+        "how": "FDC 173647 (SR Legacy food_nutrient.csv)"
+      }
+    },
+    "wheyAscent": {
+      "per100": {
+        "sfa": 0,
+        "na": 303,
+        "how": "FDC 2664129 (live FDC record (cached))"
+      }
+    }
+  }
+}

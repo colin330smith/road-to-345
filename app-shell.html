@@ -48,6 +48,13 @@
   .frow .fv b{color:var(--signal)}
   .frow.tap:active{background:var(--plate2)}
   .frow.tap .fv::after{content:"＋";color:var(--signal);margin-left:8px;font-weight:700}
+  .frow.tap.nav .fv::after{content:"›"}
+  .plrow{display:flex;align-items:center;gap:4px;border-bottom:1px solid var(--steel)}
+  .plrow .frow{border-bottom:0;flex:1;min-width:0}
+  .plrow .frow .fv::after{content:none}
+  .plrow .tick{display:inline-block;width:1.2em;color:var(--signal);font-weight:800}
+  .plrow.got .fv{color:var(--signal)}
+  .plrow .swap{min-width:44px;min-height:44px;padding:0;font-size:16px}
   .fmanual{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:end;margin-top:6px}
   .fmanual label{display:flex;flex-direction:column;gap:3px;font-size:11.5px;color:var(--ash);text-transform:uppercase;letter-spacing:.08em}
   .fmanual label:first-child{grid-column:1 / -1}
@@ -320,7 +327,8 @@ const DK_RE = /^\d{4}-\d{2}-\d{2}$/;
 let S;
 // every state that reaches the app goes through the engine's sanitizeState (DATA-2) and these defaults
 function normalize(d) {
-  d.logs = d.logs || {}; d.gates = d.gates || {}; d.bw = d.bw || {}; d.testMax = d.testMax || {}; d.meas = d.meas || {}; d.food = d.food || {}; d.nutri = d.nutri || { mode: "gain", since: null }; d.primer = d.primer || {};
+  d.logs = d.logs || {}; d.gates = d.gates || {}; d.bw = d.bw || {}; d.testMax = d.testMax || {}; d.meas = d.meas || {}; d.food = d.food || {}; d.fday = d.fday || {}; d.nutri = d.nutri || { mode: "gain", since: null }; d.primer = d.primer || {};
+  if (!["maintain", "trim", "gain"].includes(d.nutri.mode)) d.nutri.mode = "gain"; // NUTRI is spliced later in the file
   d.settings = d.settings || {}; d.spec = d.spec || { ...E.DEFAULT_SPEC }; d.ledger = d.ledger || {};
   if (d.spec.frameSecondary === d.spec.framePrimary) d.spec.frameSecondary = "none";
   if (!d.v32) { d.spec.sundayOn = false; d.v32 = 1; } // v32: Sunday is rest by default (stored specs predate it)
@@ -873,14 +881,26 @@ function renderToday() {
   if (loc.day === 7 && loc.week === 4 && loc.wave < 19) inner += `<div class="card single"><div class="eyebrow sig">⚠ Gate day — end of Wave ${loc.wave}</div><p class="note">Review the wave, then set each lift's gate for Wave ${loc.wave + 1}.</p><div class="rowbtns"><button class="btn" onclick="gateSheet(${loc.wave + 1})">Set the Wave ${loc.wave + 1} gate</button></div></div>`;
   if ((loc.day === 6 || loc.day === 7) && loc.week === 4) inner += `<div class="card"><div class="eyebrow sig">Weak-point ledger</div><p class="note">End of a training block — log this cycle's anchor lift + note whether the target or another muscle failed first. Photos + measurements every 4 weeks drive the 8-week decision.</p><div class="rowbtns"><button class="btn ghost" onclick="ledgerSheet()">Open ledger</button></div></div>`;
 
-  { const T = NUTRI.targets(S.nutri.mode, S.nutri.adj), ent = S.food[dk] || [], tot = NUTRI.dayTotals(ent);
+  { // MAINT-3: the day's plan, one tap per prepped portion; the day counts toward maintenance once marked complete
+    const T = fuelTargets(), ent = S.food[dk] || [], tot = NUTRI.dayTotals(ent), fd = S.fday[dk] || {};
+    const type = NUTRI.dayType(dk, fd.type, S.nutri.shiftDays), plan = NUTRI.dayPlan(type, T.kcal, dk);
     const pk = Math.min(100, Math.round(tot.kcal / T.kcal * 100)), pp = Math.min(100, Math.round(tot.p / T.p * 100));
     const over = tot.kcal > T.kcal + 150;
+    if (!(S.seen && S.seen.home65) && S.nutri.mode !== "maintain") inner += `<div class="card single"><div class="eyebrow sig">🍳 The strict home-cooked plan</div><p class="note">Zero Hillstone food, every bite weighed and prepped: restaurant-style dishes cooked at home from a Costco list, a plan for every shift, off and rest day, and a maintenance number measured from your own logs. It starts with MAINTAIN.</p><div class="rowbtns"><button class="btn" onclick="seenHome65();setNutriMode('maintain')">Start MAINTAIN today</button><button class="btn ghost" onclick="seenHome65();render()">Not now</button></div></div>`;
+    const typeBtn = (t, l) => `<button class="${t === type ? "y on" : "y"}" onclick="setDayType('${dk}','${t}')" aria-pressed="${t === type}">${l}</button>`;
+    const row = (it) => { const e = ent.find((x) => x.slot === it.slot), m = e || it.meal;
+      return `<div class="plrow${e ? " got" : ""}"><button class="frow tap" onclick="planTick('${dk}','${it.slot}')" aria-pressed="${!!e}"><span class="fn"><span class="tick" aria-hidden="true">${e ? "✓" : "○"}</span>${esc(m.name)}<small>${esc(it.time)} · ${esc(it.label)}${it.note && !e ? ` · ${esc(it.note)}` : ""}</small></span><span class="fv">${m.kcal} · <b>${m.p}P</b></span></button><button class="chip swap" onclick="foodSheet('${dk}','${it.slot}')" aria-label="Swap ${esc(it.label)}">⇄</button></div>`; };
+    const extra = ent.map((e, i) => [e, i]).filter(([e]) => e.slot == null || !plan.items.some((it) => it.slot === e.slot));
     inner += `<div class="card"><div class="eyebrow sig">Fuel — ${T.label} · ${T.kcal} kcal · ${T.p}P</div>
+      <div class="seg" role="group" aria-label="Day type">${typeBtn("shift", "Shift tonight")}${typeBtn("off", "Off tonight")}${typeBtn("rest", "Rest day")}</div>
       <div class="srow"><span>kcal</span><div class="sbar"><i style="width:${pk}%${over ? ";background:var(--amber,#d9a441)" : ""}"></i></div><span class="sval">${tot.kcal} / ${T.kcal}</span></div>
       <div class="srow"><span>protein</span><div class="sbar"><i style="width:${pp}%"></i></div><span class="sval">${tot.p} / ${T.p}</span></div>
-      ${ent.map((e, i) => `<div class="statline"><span class="note">${esc(e.name)}</span><span style="white-space:nowrap">${e.kcal} · ${e.p}P <button class="chip" style="padding:2px 8px" onclick="delFood('${dk}',${i})" aria-label="remove">×</button></span></div>`).join("")}
-      <div class="rowbtns"><button class="btn" onclick="foodSheet('${dk}')">＋ Log food</button></div></div>`; }
+      ${tot.full && ent.length ? `<p class="note" style="margin:2px 0 6px">Fat ${tot.f} / ${T.f} g · carbs ${tot.c} / ${T.c} g · fibre ${tot.fib} / ${T.fib} g</p>` : ""}
+      <div class="eyebrow" style="margin-top:6px">${esc(plan.title)} · plan ${plan.total.kcal} · ${plan.total.p}P</div>
+      ${plan.items.map(row).join("")}
+      ${extra.length ? `<div class="eyebrow" style="margin-top:8px">Also logged</div>` + extra.map(([e, i]) => `<div class="statline"><span class="note">${esc(e.name)}</span><span style="white-space:nowrap">${e.kcal} · ${e.p}P <button class="chip" style="padding:2px 8px" onclick="delFood('${dk}',${i})" aria-label="remove">×</button></span></div>`).join("") : ""}
+      <div class="rowbtns"><button class="btn ghost" onclick="foodSheet('${dk}')">＋ Other food</button><button class="btn${fd.done ? "" : " ghost"}" onclick="markDay('${dk}')" aria-pressed="${!!fd.done}">${fd.done ? "✓ Day complete" : "Mark day complete"}</button></div>
+      <p class="note" style="margin-top:6px">${fd.done ? "Counted toward your measured maintenance." : "Tap each portion before the first bite. Mark the day complete when the last thing you ate is logged: only complete days count toward maintenance."}</p></div>`; }
   inner += `<div class="card"><div class="eyebrow">Session note</div>
     <textarea rows="2" style="width:100%" placeholder="pain, technique, PRs…" onchange="setLog('${dk}','note',this.value)">${esc(log.note || "")}</textarea></div>`;
   $("#view").innerHTML = inner;
@@ -900,42 +920,113 @@ window.setSwap = (dk, pkey, name) => {
   save(); closeSheet(); render();
 };
 window.openDay = (dk) => { viewDate = Date.parse(dk); goTab("today"); };
-window.addFood = (dk, id) => { dk = liveDk(dk); const x = NUTRI.byId(id); if (!x) return; (S.food[dk] = S.food[dk] || []).push({ id, name: x.name, kcal: x.kcal, p: x.p }); save(); closeSheet(); render(); };
-window.addFoodManual = (dk) => { const n = $("#fn").value.trim() || "Food", k = +$("#fk").value, p = +$("#fp").value || 0; if (!Number.isFinite(k) || k <= 0) return; (S.food[dk] = S.food[dk] || []).push({ id: "manual", name: n, kcal: Math.round(k), p: Math.round(p) }); save(); closeSheet(); render(); };
+// the fuel targets everywhere: the mode, placed against measured maintenance once there is one, plus an applied adjustment
+const fuelTargets = () => NUTRI.targets(S.nutri.mode, S.nutri.adj, (S.nutri.maint || {}).kcal);
+const entryOf = (m, slot) => { const e = { id: m.id, name: m.name, kcal: m.kcal, p: m.p, f: m.f, c: m.c, fib: m.fib }; if (slot) e.slot = slot; return e; };
+const planFor = (dk) => NUTRI.dayPlan(NUTRI.dayType(dk, (S.fday[dk] || {}).type, S.nutri.shiftDays), fuelTargets().kcal, dk);
+window.addFood = (dk, id, slot) => { dk = liveDk(dk); const x = NUTRI.mealById(id); if (!x) return; const arr = (S.food[dk] = S.food[dk] || []);
+  if (slot) { const i = arr.findIndex((e) => e.slot === slot); if (i >= 0) arr.splice(i, 1); }
+  arr.push(entryOf(x, slot)); save(); closeSheet(); render(); };
+// one tap logs the planned portion for that slot; a second tap takes it back off
+window.planTick = (dk, slot) => { dk = liveDk(dk); const arr = (S.food[dk] = S.food[dk] || []), i = arr.findIndex((e) => e.slot === slot);
+  if (i >= 0) arr.splice(i, 1); else { const it = planFor(dk).items.find((x) => x.slot === slot); if (it) arr.push(entryOf(it.meal, slot)); }
+  if (!arr.length) delete S.food[dk]; save(); render(); };
+const setFday = (dk, f) => { const fd = { ...(S.fday[dk] || {}) }; f(fd); if (Object.keys(fd).length) S.fday[dk] = fd; else delete S.fday[dk]; save(); render(); };
+window.markDay = (dk) => { dk = liveDk(dk); setFday(dk, (fd) => { if (fd.done) delete fd.done; else fd.done = 1; }); };
+window.setDayType = (dk, t) => { dk = liveDk(dk); const def = NUTRI.dayType(dk, null, S.nutri.shiftDays); setFday(dk, (fd) => { if (t === def) delete fd.type; else fd.type = t; }); };
+window.toggleShiftDay = (d) => { const s = new Set(S.nutri.shiftDays || []); if (s.has(d)) s.delete(d); else s.add(d); S.nutri.shiftDays = [...s].sort(); save(); render(); };
+window.seenHome65 = () => { S.seen = { ...(S.seen || {}), home65: 1 }; save(); };
+window.addFoodManual = (dk) => { dk = liveDk(dk); const n = $("#fn").value.trim() || "Food", k = +$("#fk").value, p = +$("#fp").value || 0; if (!Number.isFinite(k) || k <= 0) return; (S.food[dk] = S.food[dk] || []).push({ id: "manual", name: n, kcal: Math.round(k), p: Math.round(p) }); save(); closeSheet(); render(); };
 window.delFood = (dk, i) => { if (!S.food[dk]) return; S.food[dk].splice(i, 1); if (!S.food[dk].length) delete S.food[dk]; save(); render(); };
 // NUT-2: the active mode is not a restart button; ending a phase asks first. A new phase starts today
-// with no applied adjustment (NUT-7).
+// with no applied adjustment (NUT-7). The measured maintenance and the usual shift days carry over.
 window.setNutriMode = (m) => {
   if (!NUTRI.MODES[m] || m === S.nutri.mode) return;
   if (S.nutri.since && !confirm(`End the ${NUTRI.MODES[S.nutri.mode].label} phase that started ${S.nutri.since}? The ${NUTRI.MODES[m].label} phase starts today.`)) return;
-  S.nutri = { mode: m, since: keyOf(todayUTC()), adj: 0 }; save(); render();
+  const keep = {}; for (const k of ["maint", "shiftDays"]) if (S.nutri[k] != null) keep[k] = S.nutri[k];
+  S.nutri = { mode: m, since: keyOf(todayUTC()), adj: 0, ...keep }; save(); render();
 };
+// MAINT-4: setting the measured maintenance moves all three modes with it; the adjustment starts over
+window.setMaint = (kcal, band) => { if (!Number.isFinite(kcal) || kcal < 1500 || kcal > 5000) return; S.nutri.maint = { kcal, band, at: keyOf(todayUTC()) }; S.nutri.adj = 0; delete S.nutri.adjAt; save(); render(); };
 window.setNutriSince = (v) => { if (DK_RE.test(v) && v <= keyOf(todayUTC())) { S.nutri.since = v; save(); } render(); };
 window.applyAdj = (d) => { S.nutri.adj = Math.max(-NUTRI.ADJ_CAP, Math.min(NUTRI.ADJ_CAP, (S.nutri.adj || 0) + d)); S.nutri.adjAt = keyOf(todayUTC()); save(); render(); };
 // NUT-5: the plan's no-trim windows on the current (shifted) schedule
 const NO_TRIM = () => E.noTrimWindows(SHIFT());
-window.foodSheet = (dk) => {
-  const mode = S.nutri.mode, T = NUTRI.targets(mode, S.nutri.adj);
-  const row = (x) => `<button class="frow tap" onclick="addFood('${dk}','${x.id}')"><span class="fn">${esc(x.name)}${x.when || x.note ? `<small>${esc([x.when, x.note].filter(Boolean).join(" · "))}</small>` : ""}</span><span class="fv">${x.kcal} · <b>${x.p}P</b></span></button>`;
-  openSheet(`<button class="closex" onclick="closeSheet()">×</button><h2>Log food — ${T.label} day · ${T.kcal}</h2>
-    ${NUTRI.menuFor(mode).map((g, i) => `<div class="eyebrow" style="margin-top:${i ? 10 : 6}px">${esc(g.title)}</div>${g.items.map(row).join("")}`).join("")}
-    <div class="eyebrow" style="margin-top:10px">Anything else</div>
-    <div class="fmanual"><label>What<input id="fn" type="text" placeholder="grazing = 300"></label><label>kcal<input id="fk" type="number" inputmode="numeric" placeholder="300"></label><label>P<input id="fp" type="number" inputmode="numeric" placeholder="0"></label><button class="btn" onclick="addFoodManual('${dk}')">Add</button></div>
-    <p class="note" style="margin-top:8px">Hillstone numbers are estimates from the menu — Hillstone publishes none. Good enough to choose by. The weekly scale average is the truth.</p>`);
+// the food sheet: this week's portion size of every dish, the slot being swapped first. No restaurant food is listed.
+window.foodSheet = (dk, slot) => {
+  const T = fuelTargets(), plan = planFor(dk), it = slot ? plan.items.find((x) => x.slot === slot) : null;
+  const arg = slot ? `,'${esc(slot)}'` : "";
+  const row = (x) => `<button class="frow tap" onclick="addFood('${dk}','${esc(x.id)}'${arg})"><span class="fn">${esc(x.name)}${x.note ? `<small>${esc(x.note)}</small>` : ""}</span><span class="fv">${x.kcal} · <b>${x.p}P</b></span></button>`;
+  openSheet(`<button class="closex" onclick="closeSheet()">×</button><h2>${it ? `Swap — ${esc(it.label)}` : "Log food"} · ${esc(T.label)} ${T.kcal}</h2>
+    <p class="note">Portions are this week's size (${esc(plan.size)}), every number computed from USDA values for the weighed grams.</p>
+    ${NUTRI.menuFor(it ? it.kind : null, plan.size).map((g, i) => `<div class="eyebrow" style="margin-top:${i ? 10 : 6}px">${esc(g.title)}</div>${g.items.map(row).join("")}`).join("")}
+    ${slot ? "" : `<div class="eyebrow" style="margin-top:10px">Weighed, off the plan</div>
+    <div class="fmanual"><label>What<input id="fn" type="text" placeholder="extra 100 g rice"></label><label>kcal<input id="fk" type="number" inputmode="numeric" placeholder="130"></label><label>P<input id="fp" type="number" inputmode="numeric" placeholder="3"></label><button class="btn" onclick="addFoodManual('${dk}')">Add</button></div>
+    <p class="note" style="margin-top:8px">Weigh it, then log it from the label or the USDA number. Zero restaurant food: a kitchen that publishes no numbers can miss by hundreds (±465 kcal a meal measured).</p>`}`);
 };
-window.playbookSheet = () => {
-  const tier = (t, title) => `<div class="eyebrow" style="margin-top:10px">${title}</div>` + NUTRI.HILLSTONE.filter((x) => x.tier === t).map((x) => `<div class="frow"><span class="fn">${esc(x.name)}${x.note ? `<small>${esc(x.note)}</small>` : ""}</span><span class="fv">~${x.kcal} · <b>${x.p}P</b></span></div>`).join("");
-  openSheet(`<button class="closex" onclick="closeSheet()">×</button><h2>Hillstone playbook</h2>
-    <p class="note">1 Protein anchor first. 2 Side = wild rice gaining, green veg trimming; fries once a week on a squat or deadlift day, never on a trim day. 3 Sauces on the side (~150–250 each). 4 Short on protein → shrimp or deviled eggs. 5 Twenty minutes of grazing = log 300. 6 Whatever the staff meal allows, the tiers still pick. 7 Alcohol: cap 2, never before squat or deadlift, zero in Week 3 and zero on a trim.</p>
-    ${tier("A", "Tier A — order without thinking")}${tier("B", "Tier B — fine with one swap")}${tier("C", "Tier C — once a week, gaining only")}${tier("D", "Tier D — not on this plan")}
-    <div class="eyebrow" style="margin-top:10px">Sides</div>${NUTRI.SIDES.map((x) => `<div class="frow"><span class="fn">${esc(x.name)}${x.note ? `<small>${esc(x.note)}</small>` : ""}</span><span class="fv">~${x.kcal}</span></div>`).join("")}`);
+// complete-day marks as a plain map for the estimator and the weekly averages
+const doneMap = () => { const o = {}; for (const [k, v] of Object.entries(S.fday || {})) if (v && v.done) o[k] = 1; return o; };
+// the latest tape (or DXA-calibrated) body fat, for MAINTAIN's end-of-peak trim trigger
+const lastBF = () => { try { const pts = GOALS.bfSeries(S.meas, S.settings.heightIn).points, x = pts[pts.length - 1]; return x ? { v: x.v, dk: x.dk } : null; } catch (e) { return null; } };
+const foodName = (key) => { const id = key.split(/[/:]/)[0], st = key.split(":")[1], alt = (key.split(":")[0].split("/")[1] || ""); const g = NUTRI.GROCERY[id]; return `${g ? g[0] : id}${alt ? ` (${alt === "lowSodium" ? "less sodium" : alt})` : ""}${st === "cooked" ? ", cooked" : st === "raw" && /Meat|Seafood|Frozen/.test(g ? g[1] : "") ? ", raw" : st === "dry" ? ", dry" : ""}`; };
+const ML = new Set(["chickenStock", "ponzu"]);
+window.recipeSheet = () => {
+  const sz = NUTRI.fitSizes(fuelTargets().kcal), sizeOf = (r) => (r.kind === "breakfast" ? sz.b : sz.l);
+  const grp = (title, kind) => `<div class="eyebrow" style="margin-top:12px">${title}</div>` + NUTRI.RECIPES.filter((r) => r.kind === kind).map((r) => { const m = NUTRI.mealById(r.sizes && Object.keys(r.sizes).length ? `${r.id}.${sizeOf(r)}` : r.id);
+    return `<button class="frow tap nav" onclick="recipeDetail('${r.id}')"><span class="fn">${esc(r.name)}<small>${esc(r.slots.map((x) => ({ preLift: "pre-lift", breakfast: "breakfast", lunch: "lunch", shiftDinner: "shift bag", homeDinner: "home dinner", snack: "snack" })[x] || x).join(" · "))} · ${r.prepMin} min</small></span><span class="fv">${m.kcal} · <b>${m.p}P</b></span></button>`; }).join("");
+  openSheet(`<button class="closex" onclick="closeSheet()">×</button><h2>🍳 Recipes</h2>
+    <p class="note">Restaurant technique at home: dry brine, hard sear, rest, char, finish with acid and herbs. Every sauce and every gram of fat is weighed. This week's portions: <b>${esc(sz.label)}</b>.</p>
+    ${grp("Breakfast", "breakfast")}${grp("Batch meals · cooked Sunday and Wednesday", "batch")}${grp("Steakhouse plates · cooked to order, never packed", "plate")}${grp("Snacks", "snack")}
+    <details class="proto"><summary>How the numbers stay true</summary><ul class="cues">${Object.values(NUTRI.KITCHEN).map((x) => `<li>${esc(x)}</li>`).join("")}</ul></details>`);
 };
+window.recipeDetail = (id, size) => {
+  const r = NUTRI.RECIPES.find((x) => x.id === id); if (!r) return;
+  const hasSizes = !!(r.sizes && Object.keys(r.sizes).length), fit = NUTRI.fitSizes(fuelTargets().kcal);
+  const s = hasSizes ? (NUTRI.SIZES.includes(size) ? size : r.kind === "breakfast" ? fit.b : fit.l) : null;
+  const m = NUTRI.mealById(hasSizes ? `${r.id}.${s}` : r.id), szg = (r.sizes || {})[s] || {};
+  const g = (key, g0) => { const v = szg[key.split(/[/:]/)[0]]; return v != null ? v : g0; };
+  const unit = (key) => (ML.has(key.split(/[/:]/)[0]) ? " ml" : " g");
+  const cups = {}; for (const [key, g0, cup] of r.sauce) (cups[cup || "sauce"] = cups[cup || "sauce"] || []).push(`${foodName(key)} ${g(key, g0)}${unit(key)}`);
+  openSheet(`<button class="closex" onclick="closeSheet()">×</button><h2>${esc(r.name)}</h2>
+    <p class="note">${esc(r.style)}</p>
+    ${hasSizes ? `<div class="seg" role="group" aria-label="Portion size">${NUTRI.SIZES.map((z) => `<button class="y ${z === s ? "on" : ""}" onclick="recipeDetail('${r.id}','${z}')">${z}</button>`).join("")}</div>` : ""}
+    <div class="statline" style="margin-top:6px"><span class="note">Per portion${s ? ` (${esc(s)})` : ""}</span> <b style="font-variant-numeric:tabular-nums">${m.kcal} kcal · ${m.p}P · ${m.f}F · ${m.c}C · ${m.fib} fibre</b></div>
+    <div class="eyebrow" style="margin-top:10px">Weigh out, one portion</div>
+    <ul class="cues">${r.portion.filter((x) => !x[2]).map(([key, g0]) => `<li>${esc(foodName(key))} — <b>${g(key, g0)}${unit(key)}</b></li>`).join("")}</ul>
+    ${r.portion.some((x) => x[2]) ? `<p class="note">Plus its share of the pan: ${esc(r.portion.filter((x) => x[2]).map(([key, g0]) => `${foodName(key)} ${g(key, g0)}${unit(key)}`).join(" · "))}.</p>` : ""}
+    ${Object.keys(cups).length ? `<div class="eyebrow" style="margin-top:8px">Cups (lidded, one per portion)</div><ul class="cues">${Object.entries(cups).map(([c, xs]) => `<li><b>${esc(c)}</b>: ${esc(xs.join(" · "))}</li>`).join("")}</ul>` : ""}
+    <div class="eyebrow" style="margin-top:8px">Shopping and the pan · ${r.portions} portion${r.portions > 1 ? "s" : ""}</div>
+    <ul class="cues">${NUTRI.batchAt(r.id, s, r.portions).filter((x) => x.food !== "water" || x.g > 0).map((x) => `<li>${esc(NUTRI.GROCERY[x.food] ? NUTRI.GROCERY[x.food][0] : x.food)}${x.state !== "as sold" ? `, ${esc(x.state)}` : ""} — <b>${x.g}${x.unit === "ml" ? " ml" : " g"}</b>${x.use ? ` <span class="note">(${esc(x.use)})</span>` : ""}</li>`).join("")}</ul>
+    <div class="eyebrow" style="margin-top:8px">Method${r.ahead ? ` · ahead: ${esc(r.ahead)}` : ""} · ${r.prepMin} min (${r.activeMin} active)</div>
+    <ol class="cues">${r.method.map((x) => `<li>${esc(x)}</li>`).join("")}</ol>
+    <p class="note"><b>Keeps:</b> ${esc(r.keeps)}</p><p class="note"><b>Reheat:</b> ${esc(r.reheat)}</p>
+    <div class="rowbtns"><button class="btn ghost" onclick="recipeSheet()">← All recipes</button></div>`);
+};
+window.prepSheet = (w) => {
+  const T = fuelTargets(), dk = keyOf(todayUTC() + (w ? 7 : 0) * E.MS_DAY), P = NUTRI.prepWeek(dk, T.kcal), L = NUTRI.shopList(dk, T.kcal), sz = NUTRI.fitSizes(T.kcal);
+  const day = (x) => fmtShort(Date.parse(x));
+  openSheet(`<button class="closex" onclick="closeSheet()">×</button><h2>🗓 Prep &amp; Costco list</h2>
+    <div class="seg" role="group" aria-label="Which week"><button class="y ${w ? "" : "on"}" onclick="prepSheet(0)">This week</button><button class="y ${w ? "on" : ""}" onclick="prepSheet(1)">Next week</button></div>
+    <p class="note">Week of ${day(P[0].dk)} · ${esc(T.label)} ${T.kcal} · ${esc(sz.label)}${sz.lean ? " · the bare-whey snack" : ""}${sz.extra ? ` · ${sz.extra} extra snack${sz.extra > 1 ? "s" : ""}` : ""}. Two cooks keep every box inside cook date + 3 (FSIS: leftovers 3–4 days).</p>
+    ${P.map((p) => `<div class="eyebrow" style="margin-top:12px">${esc(p.title)} · ${day(p.dk)} · eat by ${day(p.eatBy)}</div>
+      ${p.items.map((it) => `<button class="frow tap nav" onclick="recipeDetail('${it.rid}','${it.size || ""}')"><span class="fn">${it.make}× ${esc(it.name)}<small>${esc(it.uses)}${it.size ? ` · ${esc(it.size)}` : ""}${it.ahead ? ` · ahead: ${esc(it.ahead)}` : ""}</small></span><span class="fv">${it.min} min</span></button>`).join("")}
+      <p class="note">${esc(p.steakNote)}</p><ul class="cues">${p.notes.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>`).join("")}
+    <div class="eyebrow" style="margin-top:14px">Costco list · the whole week, one run</div>
+    <p class="note">Shop Saturday or Sunday with a cooler bag in the car (1 hour out of the cold above 90 °F). Freeze Wednesday's chicken, ground beef, fish and shrimp the day you buy them.</p>
+    ${L.map((sec) => `<div class="eyebrow" style="margin-top:10px">${esc(sec.section)}</div>${sec.items.map((it) => `<div class="frow"><span class="fn">${esc(it.name)}<small>${esc(it.item)}</small></span><span class="fv">${esc(it.qty)}${it.packs ? ` · ${it.packs} pack${it.packs > 1 ? "s" : ""}` : ""}</span></div>`).join("")}`).join("")}`);
+};
+window.rulesSheet = () => openSheet(`<button class="closex" onclick="closeSheet()">×</button><h2>📏 The rules</h2>
+  <p class="note">Strict means steady, not perfect: the same weighed food logged the same way every day calibrates itself; an unlogged meal now and then cannot be calibrated out.</p>
+  <ol class="cues">${NUTRI.RULES.map((x) => `<li><b>${esc(x.t)}</b><br><span class="note">${esc(x.why)}</span></li>`).join("")}</ol>
+  <div class="eyebrow" style="margin-top:12px">The shift bag</div>
+  <ul class="cues"><li>Every night: freeze two gel packs (5×3 in or bigger) and a 1 L water bottle.</li><li>Insulated bag with a fridge thermometer. Layer: gel pack, the later meal, the bottle, the earlier meal, gel pack on top. Sauces in their cups.</li><li>Bag closed, in the AC or shade, never the car: above 90 °F food gets 1 hour out of the cold, not 2.</li><li>At each meal check the thermometer. Above 40 °F or soft packs: it goes. Backup: an unopened can of tuna, whole fruit, certified whey powder mixed at the break.</li><li>Reheat to 165 °F. French-dip jus at a rolling boil into a thermos preheated with boiling water (it holds 140 °F+).</li><li>Never packed: seared ahi, anything still warm, anything raw-marinated.</li></ul>`);
 window.suppSheet = () => {
-  const tier = (t, title) => `<div class="eyebrow" style="margin-top:10px">${title}</div>` + NUTRI.SUPPS.filter((x) => x.tier === t).map((x) => `<div class="frow"><span class="fn">${esc(x.name)}<small>${esc(x.why)}</small></span><span class="fv">${esc(x.dose)}</span></div>`).join("");
+  const tier = (t, title) => `<div class="eyebrow" style="margin-top:10px">${title}</div>` + NUTRI.SUPPS.filter((x) => x.tier === t).map((x) => `<div class="frow"><span class="fn">${esc(x.name)}<small>${esc(x.why)}${x.buy ? `<br>${esc(x.buy)}` : ""}</small></span><span class="fv">${esc(x.dose)}</span></div>`).join("");
   openSheet(`<button class="closex" onclick="closeSheet()">×</button><h2>Supplements</h2>
     <p class="capnote warn">Every product: ${esc(NUTRI.CERT)}. No exceptions, including whey and caffeine. USPA drug-tested runs its own banned list with urine tests and no exemptions, and contamination studies found undeclared banned substances in 12–58% of supplements.</p>
     ${tier(1, "Tier 1 — daily")}${tier(2, "Tier 2 — your situation")}${tier(3, "Tier 3 — only if needed")}
-    <p class="note" style="margin-top:8px">Skip: BCAAs, pre-workout blends, fat burners, test boosters, glutamine, ZMA. The blends are where contamination lives.</p>`);
+    <p class="note" style="margin-top:8px">Skip: BCAAs, pre-workout blends, fat burners, test boosters, glutamine, ZMA. The blends are where contamination lives.</p>
+    <p class="note">Before the first scoop of a new tub: the mark on the package, then the product by name, flavour and size in the NSF Certified for Sport app or on sport.wetestyoutrust.com, and the lot on the tub. No match, no use. Checked against both lists on 2026-11-01; no Kirkland Signature product is on either.</p>`);
 };
 window.setPrimerDate = (v) => { if (!v) delete S.primer.date; else S.primer.date = v; save(); render(); };
 window.primerSheet = () => {
@@ -1041,7 +1132,7 @@ function goalInput() {
   const cw = Math.max(1, Math.min(loc.wave || 1, 19)), cb = E.cbFor(cw, GX()), goal = { bn: 315, sq: 405, dl: 495 }, eta = {};
   for (const L of E.LIFTS) { const w = E.etaWave(L, goal[L], GX()); eta[L] = w ? { wave: w, ms: E.waveStartUTC(w, off) } : null; }
   const sleepMap = {}; for (const [k, l] of Object.entries(S.logs)) if (l && Number.isFinite(l.sleep)) sleepMap[k] = l.sleep;
-  const dec = NUTRI.decision(S.bw, S.meas, { mode: S.nutri.mode, since: S.nutri.since, sleep: sleepMap, today: keyOf(t), blocked: NO_TRIM() });
+  const dec = NUTRI.decision(S.bw, S.meas, { mode: S.nutri.mode, since: S.nutri.since, sleep: sleepMap, today: keyOf(t), blocked: NO_TRIM(), bf: lastBF() });
   return { meas: S.meas, bw: S.bw, photos: S.photos || {}, today: keyOf(t), deadline: E.waveStartUTC(45, off), height: S.settings.heightIn || GOALS.HEIGHT_IN,
     strength: { now: cb, goal, eta }, regions: GOALS.weekRegions(week), regionWave: wv, adherence: adherence28(), sleepAvg: sleepAvg7(), bwRatePerWeek: dec.rate };
 }
@@ -1484,11 +1575,11 @@ let trendLift = "sq";
 function renderTrends() {
   const bwPts = Object.entries(S.bw).filter(([k]) => DK_RE.test(k)).sort().map(([k, v]) => ({ x: Date.parse(k), y: v }));
   // NUT-3: the pace band starts at this phase's first weigh-in and follows the mode's pace (NUTRI.PACE)
-  const band = [], PACE = NUTRI.PACE, trimming = S.nutri.mode === "trim";
+  const band = [], PACE = NUTRI.PACE, trimming = S.nutri.mode === "trim", holding = S.nutri.mode === "maintain";
   { const b0 = bwPts.find((p) => !S.nutri.since || p.x >= Date.parse(S.nutri.since));
     if (b0) for (let x = b0.x, endX = Math.max(todayUTC(), bwPts[bwPts.length - 1].x); x <= endX + 7 * E.MS_DAY; x += 7 * E.MS_DAY) {
       const wk = (x - b0.x) / (7 * E.MS_DAY), r1 = (v) => Math.round(v * 10) / 10;
-      band.push(trimming ? { x, lo: r1(b0.y * (1 - PACE.trimFast * wk)), hi: r1(b0.y * (1 - PACE.trimSlow * wk)) } : { x, lo: r1(b0.y + PACE.flat * wk), hi: r1(b0.y + PACE.fast * wk) });
+      band.push(trimming ? { x, lo: r1(b0.y * (1 - PACE.trimFast * wk)), hi: r1(b0.y * (1 - PACE.trimSlow * wk)) } : holding ? { x, lo: r1(b0.y - PACE.target * wk), hi: r1(b0.y + PACE.target * wk) } : { x, lo: r1(b0.y + PACE.flat * wk), hi: r1(b0.y + PACE.fast * wk) });
     } }
   // only the lift itself counts (squat day also has a 470 lb leg press); light, Red and deload days never do
   const TREND = { sq: ["Squat"], bn: ["Bench"], dl: ["Deadlift"], inc: ["Incline", "incbb"], chin: ["Chin-up", "chin"], dip: ["Dip", "dip"], rdl: ["RDL", "rdl"] };
@@ -1524,7 +1615,7 @@ function renderTrends() {
   const lastOf = (f) => { for (let i = mk.length - 1; i >= 0; i--) if (Number.isFinite(S.meas[mk[i]][f])) return S.meas[mk[i]][f]; return ""; };
   const ratio = lastOf("sh") && lastOf("wa") ? lastOf("sh") / lastOf("wa") : null;
   const sleepMap = {}; for (const [k, l] of Object.entries(S.logs)) if (l && Number.isFinite(l.sleep)) sleepMap[k] = l.sleep;
-  const dec = NUTRI.decision(S.bw, S.meas, { mode: S.nutri.mode, since: S.nutri.since, sleep: sleepMap, today: keyOf(todayUTC()), blocked: NO_TRIM() });
+  const dec = NUTRI.decision(S.bw, S.meas, { mode: S.nutri.mode, since: S.nutri.since, sleep: sleepMap, today: keyOf(todayUTC()), blocked: NO_TRIM(), bf: lastBF() });
   const verdict = (() => {
     const w = dec.dW, since = S.nutri.since || "the phase began";
     if (w == null) return `Measure the waist again this phase: the verdict compares it with its value when ${S.nutri.since ? "the phase began (" + S.nutri.since + ")" : "the phase began"}.`;
@@ -1535,26 +1626,35 @@ function renderTrends() {
     return dec.rate != null && dec.rate > 0 ? `✅ ${wt} while the scale climbs: building, not padding.` : `✅ ${wt}.`;
   })();
   const nutriCard = (() => {
-    const T = NUTRI.targets(S.nutri.mode, S.nutri.adj), st = NUTRI.weekStats(S.food, keyOf(todayUTC() - 86400000), 7);
+    const T = fuelTargets(), st = NUTRI.weekStats(S.food, keyOf(todayUTC() - 86400000), 7, doneMap());
     const end = trimming && S.nutri.since ? NUTRI.trimEnd(S.nutri.since, NUTRI.TRIM_WEEKS, NO_TRIM()) : null;
     const overdue = end && keyOf(todayUTC()) >= end;
-    const modeBtn = (m) => S.nutri.mode === m ? `<button class="btn" disabled aria-pressed="true">${NUTRI.MODES[m].label} · ${T.kcal}</button>` : `<button class="btn ghost" onclick="setNutriMode('${m}')">${NUTRI.MODES[m].label} · ${NUTRI.MODES[m].kcal}</button>`;
+    const mk = (m) => NUTRI.targets(m, 0, (S.nutri.maint || {}).kcal).kcal;
+    const modeBtn = (m) => S.nutri.mode === m ? `<button class="btn" disabled aria-pressed="true">${NUTRI.MODES[m].label} · ${T.kcal}</button>` : `<button class="btn ghost" onclick="setNutriMode('${m}')">${NUTRI.MODES[m].label} · ${mk(m)}</button>`;
+    // MAINT-1/4: maintenance measured from the complete days and the weigh-ins since the phase began
+    const est = NUTRI.estimateMaintenance(S.food, S.bw, doneMap(), { today: keyOf(todayUTC()), since: S.nutri.since });
+    const mNow = (S.nutri.maint || {}).kcal || NUTRI.MODES.maintain.kcal, to = NUTRI.maintCall(est, mNow);
+    const maintBlock = `<div class="statline" style="margin-top:8px;display:flex;justify-content:space-between;gap:10px;align-items:baseline"><span class="note">Maintenance${S.nutri.maint ? ` (set ${esc(S.nutri.maint.at)})` : " (starting number)"}</span><b style="font-variant-numeric:tabular-nums">${est.ready ? `${est.kcal} ± ${est.band}${est.provisional ? " · provisional" : ""}` : `${mNow} · measuring`}</b></div>
+      <p class="note">${esc(est.why)}${est.ready ? ` Your number is ${mNow}.` : ""}</p>
+      ${to ? `<div class="rowbtns"><button class="btn" onclick="setMaint(${to},${est.band})">Set maintenance to ${to}</button></div><p class="note">MAINTAIN becomes ${to}, TRIM ${to + NUTRI.MODES.trim.off}, GAIN ${to + NUTRI.MODES.gain.off}. It moves only past its ± band and 100 kcal.</p>` : est.ready ? `<p class="note">Within its band of ${mNow}: the target holds.</p>` : ""}`;
     const recent = S.nutri.adjAt && (todayUTC() - Date.parse(S.nutri.adjAt)) < 7 * E.MS_DAY;
     const nextAdj = Math.max(-NUTRI.ADJ_CAP, Math.min(NUTRI.ADJ_CAP, (S.nutri.adj || 0) + dec.kcal));
     const canApply = dec.kcal && !recent && nextAdj !== (S.nutri.adj || 0);
-    const head = dec.gate === "cycle" ? "→ NO TRIM IN CYCLES 5–6" : dec.gate === "sleep-unknown" ? "→ LOG SLEEP FIRST" : dec.gate === "sleep" && S.nutri.mode === "gain" ? "→ FIX SLEEP FIRST" : dec.mode ? (dec.mode === "trim" ? "→ TRIM" : "→ KEEP GAINING") : "—";
+    const head = dec.gate === "cycle" ? "→ NO TRIM IN CYCLES 5–6" : dec.gate === "sleep-unknown" ? "→ LOG SLEEP FIRST" : dec.gate === "sleep" && S.nutri.mode !== "trim" ? "→ FIX SLEEP FIRST" : dec.mode ? ({ trim: "→ TRIM", maintain: "→ HOLD MAINTENANCE", gain: S.nutri.mode === "gain" ? "→ KEEP GAINING" : "→ GAIN" })[dec.mode] : "—";
     return `<div class="card single"><div class="eyebrow sig">Fuel — the other half of the road</div>
-      <div class="rowbtns">${modeBtn("gain")}${modeBtn("trim")}</div>
+      <div class="rowbtns">${modeBtn("maintain")}${modeBtn("trim")}${modeBtn("gain")}</div>
       <label class="note" style="display:block;margin-top:6px">Phase started <input type="date" id="nsince" value="${esc(S.nutri.since || "")}" max="${keyOf(todayUTC())}" onchange="setNutriSince(this.value)"></label>
-      <p class="note">${esc(T.rate)} · ${T.p}P / ${T.f}F / ~${T.c}C${T.adj ? ` (applied ${T.adj > 0 ? "+" : ""}${T.adj} kcal)` : ""}. ${esc(T.why)}${end ? ` Trim ends <b style="color:var(--chalk)">${end}</b>.` : ""}${overdue ? " <b style=\"color:var(--amber,#d9a441)\">Trim window is over — switch back to GAIN.</b>" : ""}</p>
-      <p class="note">Phase 1 now: ${esc(NUTRI.PHASES[0].name)} \u2192 ${esc(NUTRI.PHASES[0].target)} by ${esc(NUTRI.PHASES[0].by)}. Phase 2: ${esc(NUTRI.PHASES[1].name)}, ${esc(NUTRI.PHASES[1].by)} \u2014 ${esc(NUTRI.PHASES[1].target)}.</p>
-      <div class="statline" style="margin-top:8px;display:flex;justify-content:space-between;gap:10px;align-items:baseline"><span class="note">Last 7 full days</span><b style="font-variant-numeric:tabular-nums">${st.logged ? `${st.avgKcal} kcal · ${st.avgP}P avg · ${st.logged}/7 logged` : "nothing logged"}</b></div>
-      ${st.logged ? `<p class="note">${st.avgKcal > T.kcal + 150 ? "⚠️ Averaging over target — that's the overshoot." : st.avgKcal < T.kcal - 200 ? (trimming ? "⚠️ Under target — eat the target; the trim is already sized." : "⚠️ Under target — you will not grow on this.") : "✅ On target."}${st.avgP < T.p - 15 ? " Protein is short — add the shrimp or a scoop." : ""}</p>` : ""}
+      <p class="note">${esc(T.rate)} · ${T.p}P / ${T.f}F / ${T.c}C · fibre ${T.fib} g${T.adj ? ` (applied ${T.adj > 0 ? "+" : ""}${T.adj} kcal)` : ""}. ${esc(T.why)}${end ? ` Trim ends <b style="color:var(--chalk)">${end}</b>.` : ""}${overdue ? " <b style=\"color:var(--amber,#d9a441)\">Trim window is over — switch back to GAIN.</b>" : ""}</p>
+      <p class="note">Phase 1 now: ${esc(NUTRI.PHASES[0].name)} → ${esc(NUTRI.PHASES[0].target)} by ${esc(NUTRI.PHASES[0].by)}. Phase 2: ${esc(NUTRI.PHASES[1].name)}, ${esc(NUTRI.PHASES[1].by)} — ${esc(NUTRI.PHASES[1].target)}.</p>
+      ${maintBlock}
+      <div class="statline" style="margin-top:8px;display:flex;justify-content:space-between;gap:10px;align-items:baseline"><span class="note">Last 7 days</span><b style="font-variant-numeric:tabular-nums">${st.logged ? `${st.done ? `${st.avgKcal} kcal · ${st.avgP}P avg · ` : ""}${st.done}/7 complete` : "nothing logged"}</b></div>
+      ${st.logged && !st.done ? `<p class="note">${st.logged} day${st.logged === 1 ? "" : "s"} logged, none marked complete: tap "Mark day complete" on Today once the last bite is in.</p>` : ""}
+      ${st.done ? `<p class="note">${st.avgKcal > T.kcal + 150 ? "⚠️ Averaging over target — that's the overshoot." : st.avgKcal < T.kcal - 200 ? (S.nutri.mode === "gain" ? "⚠️ Under target — you will not grow on this." : "⚠️ Under target — eat the plan; it is already sized.") : "✅ On target."}${st.avgP < T.p - 15 ? " Protein is short — eat the planned portions, the shake included." : ""}</p>` : ""}
       <div class="statline" style="margin-top:8px;display:flex;justify-content:space-between;gap:10px;align-items:baseline"><span class="note">Decision rule</span><b>${head}</b></div>
       <p class="note">${esc(dec.reason)}</p>
       ${canApply ? `<div class="rowbtns"><button class="btn" onclick="applyAdj(${dec.kcal})">Apply ${dec.kcal > 0 ? "+" : "−"}${Math.abs(dec.kcal)} kcal</button></div>` : recent && dec.kcal ? `<p class="note">Applied ${S.nutri.adjAt}: give it a week on the scale before the next change.</p>` : ""}
-      ${dec.mode && dec.mode !== S.nutri.mode ? `<div class="rowbtns"><button class="btn" onclick="setNutriMode('${dec.mode}')">${dec.mode === "trim" ? `Start the trim (until ${esc(dec.end || "")} at the latest)` : "Back to gaining"}</button></div>` : ""}
-      <div class="rowbtns"><button class="btn ghost" onclick="playbookSheet()">🍽 Hillstone playbook</button><button class="btn ghost" onclick="suppSheet()">💊 Supplements</button></div></div>`;
+      ${dec.mode && dec.mode !== S.nutri.mode ? `<div class="rowbtns"><button class="btn" onclick="setNutriMode('${dec.mode}')">${dec.mode === "trim" ? `Start the trim (until ${esc(dec.end || "")} at the latest)` : dec.mode === "maintain" ? "Hold maintenance" : "Back to gaining"}</button></div>` : ""}
+      <div class="rowbtns"><button class="btn ghost" onclick="recipeSheet()">🍳 Recipes</button><button class="btn ghost" onclick="prepSheet()">🗓 Prep &amp; Costco list</button><button class="btn ghost" onclick="rulesSheet()">📏 The rules</button><button class="btn ghost" onclick="suppSheet()">💊 Supplements</button></div></div>`;
   })();
   const measCard = `<div class="card single"><div class="eyebrow sig">Waist &amp; frame — the auditor</div>
     <p class="note">Abs are a body-fat number, not a training one. Waist is the metric that tells you whether the scale climbing is muscle or padding.</p>
@@ -1578,9 +1678,9 @@ function renderTrends() {
   $("#view").innerHTML = measCard + nutriCard + `
     <div class="card"><div class="eyebrow sig">Bodyweight — road to 200</div>
       <div class="chartwrap">${svgChart(bwPts, { band, unit: " lb", empty: "Log a morning weigh-in on the Today tab and the road to 200 draws itself." })}</div>
-      <div class="legend"><span><span class="k" style="background:#e9e7e1"></span>morning weigh-ins</span><span><span class="k" style="background:rgba(255,178,36,.5)"></span>${trimming ? `trim band (${PACE.trimSlow * 100}–${PACE.trimFast * 100}% of bodyweight a week)` : `on-pace band (+${PACE.flat}–${PACE.fast} lb/wk)`} from this phase's first weigh-in</span></div>
+      <div class="legend"><span><span class="k" style="background:#e9e7e1"></span>morning weigh-ins</span><span><span class="k" style="background:rgba(255,178,36,.5)"></span>${trimming ? `trim band (${PACE.trimSlow * 100}–${PACE.trimFast * 100}% of bodyweight a week)` : holding ? `hold band (±${PACE.target} lb/wk)` : `on-pace band (+${PACE.flat}–${PACE.fast} lb/wk)`} from this phase's first weigh-in</span></div>
       ${wkAvg.length ? `<div class="tablewrap" style="margin-top:10px"><table><tr><th>Week of</th><th>Avg</th><th>Δ</th><th>Call</th></tr>${wkAvg.map((r) => `<tr><td>${r.wk}</td><td>${r.avg}</td><td>${r.d === null ? "—" : (r.d > 0 ? "+" : "") + r.d}</td><td class="note">${r.call}</td></tr>`).join("")}</table></div>` : ""}
-      <p class="note" style="margin-top:8px">Gain mode: ${NUTRI.MODES.gain.kcal} cal · P ${NUTRI.MODES.gain.p} · +${PACE.target} lb/wk. A trim starts at waist +1" since the phase began (about 18%), runs six weeks at most and never in Cycles 5–6. Goal: <b style="color:var(--chalk)">200 @ 15%</b> ≈ 170 lb lean.</p></div>
+      <p class="note" style="margin-top:8px">${esc(fuelTargets().label)}: ${fuelTargets().kcal} kcal · P ${fuelTargets().p} · ${esc(fuelTargets().rate)}. A trim starts at waist +1" since the phase began (or tape 18%+ at the end of a maintenance block), runs six weeks at most and never in Cycles 5–6. Goal: <b style="color:var(--chalk)">200 @ 15%</b> ≈ 170 lb lean.</p></div>
     <div class="card"><div class="eyebrow sig">Strength</div>
       <div class="seg" style="flex-wrap:wrap">${Object.keys(TREND).map((L) => `<button class="y ${trendLift === L ? "on" : ""}" onclick="trendLift='${L}';render()">${TREND[L][0]}</button>`).join("")}</div>
       <div class="chartwrap">${svgChart(e1s, { line2: baseLine, unit: added ? " lb added" : " lb est. max", extraY: tops.map((p) => p.y), empty: "Log and rate your " + TREND[trendLift][0].toLowerCase() + " top set to start this chart." })}</div>
@@ -1627,7 +1727,7 @@ function renderMore() {
       ${logged.length ? logged.slice(0, 40).map((dk) => { const loc = E.whereIs(Date.parse(dk), SHIFT()); return `<div class="lset"><button class="linkbtn" onclick="openDay('${esc(dk)}')">${esc(dk)} · W${loc.wave}·wk${loc.week}·d${loc.day}${S.logs[dk].r ? " · " + esc(S.logs[dk].r) : ""}</button><button class="x" onclick="delDay('${esc(dk)}')">✕</button></div>`; }).join("") : `<p class="note">No sessions logged yet. They'll pile up here.</p>`}</div>
     <div class="card"><div class="eyebrow sig">Weekend specialization</div>
       <p class="note">Sat = frame overload · Sun = optional detail. Focus: <b style="color:var(--chalk)">${esc(E.FRAME_LABEL[S.spec.framePrimary])}</b> + <b style="color:var(--chalk)">${esc(E.DETAIL_LABEL[S.spec.detail])}</b>.</p>
-      <div class="rowbtns"><button class="btn" onclick="specSheet()">⚙ Configure</button><button class="btn ghost" onclick="ledgerSheet()">📒 Ledger</button><button class="btn ghost" onclick="playbookSheet()">🍽 Playbook</button><button class="btn ghost" onclick="primerSheet()">🔥 Ultimate Pump</button></div></div>
+      <div class="rowbtns"><button class="btn" onclick="specSheet()">⚙ Configure</button><button class="btn ghost" onclick="ledgerSheet()">📒 Ledger</button><button class="btn ghost" onclick="recipeSheet()">🍳 Recipes</button><button class="btn ghost" onclick="primerSheet()">🔥 Ultimate Pump</button></div></div>
     <div class="card"><div class="eyebrow sig">Data</div>
       <p class="note">Logs live on THIS phone only. Back up weekly: the share sheet saves the file to iCloud Drive or Files. ${backupAgeDays() == null ? "<b style=\"color:var(--signal)\">No backup yet.</b>" : `Last backup ${esc(S.lastBackup)} (${backupAgeDays()} days ago).`}</p>
       <div class="rowbtns"><button class="btn" onclick="exportData()">Back up now</button>

@@ -1,0 +1,3684 @@
+[
+  {
+    "id": "chickenBreast",
+    "name": "Chicken breast, boneless skinless — grilled or roasted (cooked weight)",
+    "group": "protein",
+    "state": "cooked",
+    "per100": {
+      "kcal": 151,
+      "p": 30.5,
+      "f": 3.2,
+      "c": 0,
+      "fib": 0
+    },
+    "src": "USDA FDC 171534 (SR Legacy, NDB 5747): \"Chicken, broiler or fryers, breast, skinless, boneless, meat only, cooked, grilled\"",
+    "raw": {
+      "per100": {
+        "kcal": 112,
+        "p": 22.5,
+        "f": 1.9,
+        "c": 0,
+        "fib": 0
+      },
+      "src": "USDA FDC 2646170 (Foundation, published 10/26/2023, NDB 100304): \"Chicken, breast, boneless, skinless, raw\" [Energy, Atwater specific factors (nutrient 2048)]",
+      "note": "USDA's older SR raw sample (FDC 171077) is 120 kcal / 22.5 g P per 100 g. If the pack says \"contains up to __% solution/broth\", log raw with FDC 171509 (108 kcal, 20.3 g P)."
+    },
+    "yield": {
+      "cookedOverRaw": 0.72,
+      "range": [
+        0.61,
+        0.82
+      ],
+      "rangeType": "USDA min–max",
+      "src": "USDA Table of Cooking Yields for Meat and Poultry (USDA ARS Nutrient Data Laboratory, Dec 2012), https://www.ars.usda.gov/ARSUserFiles/80400525/Data/retn/USDA_CookingYields_MeatPoultry.pdf: \"Chicken, broiler-fryer, breast\", baked/roasted 72% (min 61, max 82; AH-102 1975 data). Same value from USDA SR portion weights for one boneless breast piece: raw 272 g (FDC 171077) → grilled 196 g (FDC 171534) = 0.72."
+    },
+    "check": {
+      "expectedKcal": 156,
+      "cookedKcal": 151,
+      "diffPct": -3,
+      "method": "raw kcal ÷ yield (assumes no fat drip)"
+    },
+    "logAs": "cooked weight from a batch; best: batch method (weigh the raw batch, weigh the cooked batch)",
+    "units": [],
+    "costco": "See costco.json: chicken_breast_fresh (verified), chicken_breast_frozen_65 (verified).",
+    "note": "The workhorse lean protein. USDA cooked values reflect USDA cooking endpoints; a juicier (less cooked) breast holds more water, so it has slightly fewer kcal per cooked gram.",
+    "verified": true,
+    "unverified": [],
+    "costcoIds": [
+      "chicken_breast_fresh",
+      "chicken_breast_frozen_65"
+    ]
+  },
+  {
+    "id": "chickenThigh",
+    "name": "Chicken thighs, boneless skinless — roasted (cooked weight)",
+    "group": "protein",
+    "state": "cooked",
+    "per100": {
+      "kcal": 199,
+      "p": 24.8,
+      "f": 10.6,
+      "c": 0,
+      "fib": 0
+    },
+    "src": "Calculated: USDA FDC 2646171 (Foundation Foods, published 10/26/2023) \"Chicken, thigh, boneless, skinless, raw\" ÷ cooked yield 0.75, assuming all protein and fat stay in the meat (so it errs slightly high). USDA's older analytical roasted value (FDC 172388: 179 kcal, 24.8 P, 8.2 F) is lower; the matching older SR raw thigh (FDC 173627) has 4.1 g fat/100 g vs 7.9 g in the Foundation retail sample, so the old cooked value likely under-reads today's thighs by about 10%.",
+    "raw": {
+      "per100": {
+        "kcal": 149,
+        "p": 18.6,
+        "f": 7.9,
+        "c": 0,
+        "fib": 0
+      },
+      "src": "USDA FDC 2646171 (Foundation, published 10/26/2023, NDB 100305): \"Chicken, thigh, boneless, skinless, raw\" [Energy, Atwater specific factors (nutrient 2048)]"
+    },
+    "yield": {
+      "cookedOverRaw": 0.75,
+      "range": [
+        0.74,
+        0.78
+      ],
+      "rangeType": "span of the USDA portion-weight pairs",
+      "src": "USDA SR portion weights for one skinless thigh: raw 149 g (FDC 173627) → braised 111 g (FDC 172853) = 0.74, roasted 116 g (FDC 172388) = 0.78; protein balance raw FDC 2646171 → roasted FDC 172388 = 0.75. (USDA Table of Cooking Yields for Meat and Poultry (USDA ARS Nutrient Data Laboratory, Dec 2012), https://www.ars.usda.gov/ARSUserFiles/80400525/Data/retn/USDA_CookingYields_MeatPoultry.pdf lists 69% for \"Chicken, broiler-fryer, thigh\", baked or roasted — AH-102 1975 data, cut form not stated.)"
+    },
+    "check": {
+      "note": "per100 is derived from raw ÷ yield, so raw and cooked agree by construction"
+    },
+    "logAs": "cooked weight from a batch; best: batch method",
+    "units": [],
+    "alt": {
+      "usdaRoastedAnalytical": {
+        "per100": {
+          "kcal": 179,
+          "p": 24.8,
+          "f": 8.2,
+          "c": 0,
+          "fib": 0
+        },
+        "src": "USDA FDC 172388 (SR Legacy, NDB 5098): \"Chicken, broilers or fryers, thigh, meat only, cooked, roasted\""
+      }
+    },
+    "costco": "See costco.json: chicken_thigh_fresh (verified), chicken_thigh_frozen_65 (likely). This pass: Verified on Costco same-day listings: Kirkland Signature boneless skinless chicken thighs (fresh family pack and frozen 6.5 lb bag).",
+    "note": "Richer than breast; the base for the Hawaiian/teriyaki-style and Thai bowls.",
+    "verified": true,
+    "unverified": [],
+    "costcoIds": [
+      "chicken_thigh_fresh",
+      "chicken_thigh_frozen_65"
+    ]
+  },
+  {
+    "id": "rotisserie",
+    "name": "Costco rotisserie chicken — pulled meat, no skin (white + dark mix)",
+    "group": "protein",
+    "state": "cooked",
+    "per100": {
+      "kcal": 167,
+      "p": 26,
+      "f": 6.9,
+      "c": 0,
+      "fib": 0
+    },
+    "src": "Judgment blend, 50% white / 50% dark by weight, of USDA FDC 171518 (SR Legacy, NDB 5342): \"Chicken, broilers or fryers, rotisserie, original seasoning, breast, meat only, cooked\" and USDA FDC 171120 (SR Legacy, NDB 5345): \"Chicken, broilers or fryers, rotisserie, original seasoning, thigh, meat only, cooked\".",
+    "alt": {
+      "whiteOnly": {
+        "per100": {
+          "kcal": 137,
+          "p": 28,
+          "f": 2.8,
+          "c": 0,
+          "fib": 0
+        },
+        "src": "USDA FDC 171518 (SR Legacy, NDB 5342): \"Chicken, broilers or fryers, rotisserie, original seasoning, breast, meat only, cooked\""
+      },
+      "darkOnly": {
+        "per100": {
+          "kcal": 196,
+          "p": 24.1,
+          "f": 11.1,
+          "c": 0,
+          "fib": 0
+        },
+        "src": "USDA FDC 171120 (SR Legacy, NDB 5345): \"Chicken, broilers or fryers, rotisserie, original seasoning, thigh, meat only, cooked\""
+      },
+      "skin": {
+        "per100": {
+          "kcal": 406,
+          "p": 17.7,
+          "f": 37.2,
+          "c": 0.1,
+          "fib": 0
+        },
+        "src": "USDA FDC 171520 (SR Legacy, NDB 5344): \"Chicken, broilers or fryers, rotisserie, original seasoning, skin only, cooked\""
+      }
+    },
+    "logAs": "cooked (sold cooked). Strict option: pull white and dark into separate containers and log each with its own values.",
+    "units": [
+      {
+        "name": "3 oz (85 g)",
+        "g": 85,
+        "kcal": 142,
+        "p": 22.1,
+        "f": 5.9,
+        "c": 0
+      }
+    ],
+    "costco": "See costco.json: chicken_rotisserie (verified). This pass: Costco deli rotisserie chicken. Costco's own nutrition label for it was not verified here (crowd-sourced copies disagree).",
+    "note": "Remove all skin: it is 406 kcal per 100 g. USDA's entries are for \"original seasoning\" rotisserie chicken.",
+    "verified": true,
+    "unverified": [
+      "50/50 white:dark split is a judgment default, not a measured Costco ratio",
+      "Costco package label"
+    ],
+    "costcoIds": [
+      "chicken_rotisserie"
+    ]
+  },
+  {
+    "id": "beef93",
+    "name": "Ground beef 93/7 — browned crumbles, drained (cooked weight)",
+    "group": "protein",
+    "state": "cooked",
+    "per100": {
+      "kcal": 209,
+      "p": 28.9,
+      "f": 9.5,
+      "c": 0,
+      "fib": 0
+    },
+    "src": "USDA FDC 174755 (SR Legacy, NDB 23476): \"Beef, ground, 93% lean meat / 7% fat, crumbles, cooked, pan-browned\" (USDA derivation AR: analytical, fitted by regression on fat level)",
+    "raw": {
+      "per100": {
+        "kcal": 152,
+        "p": 20.9,
+        "f": 7,
+        "c": 0,
+        "fib": 0
+      },
+      "src": "USDA FDC 173110 (SR Legacy, NDB 23472): \"Beef, ground, 93% lean meat / 7% fat, raw\""
+    },
+    "yield": {
+      "cookedOverRaw": 0.69,
+      "range": [
+        0.67,
+        0.7
+      ],
+      "rangeType": "USDA min–max",
+      "src": "USDA Table of Cooking Yields for Meat and Poultry (USDA ARS Nutrient Data Laboratory, Dec 2012), https://www.ars.usda.gov/ARSUserFiles/80400525/Data/retn/USDA_CookingYields_MeatPoultry.pdf: \"Beef, ground, low fat (<12%), crumbles\", fried in pan/sautéed: 69% (n=4, min 67, max 70; fat change −1.4%)."
+    },
+    "check": {
+      "expectedKcal": 220,
+      "cookedKcal": 209,
+      "diffPct": -5,
+      "method": "raw kcal ÷ yield (assumes no fat drip)"
+    },
+    "logAs": "cooked weight (drain the fat)",
+    "units": [],
+    "costco": "See costco.json: beef_ground_93_3x133 (likely), beef_ground_91_5x1 (likely). This pass: Verified on Costco same-day listing: Kirkland Signature Ground Beef 93% lean / 7% fat, 3 × 1.33 lb.",
+    "note": "Labels are targets, not guarantees: a USDA Foundation retail sample sold as 90/10 measured 12.8 g fat per 100 g raw (FDC 2514743).",
+    "verified": true,
+    "unverified": [],
+    "costcoIds": [
+      "beef_ground_93_3x133",
+      "beef_ground_91_5x1"
+    ]
+  },
+  {
+    "id": "beef88",
+    "name": "Ground beef 88/12 — browned crumbles, drained (cooked weight)",
+    "group": "protein",
+    "state": "cooked",
+    "per100": {
+      "kcal": 240,
+      "p": 28.2,
+      "f": 13.3,
+      "c": 0,
+      "fib": 0
+    },
+    "src": "Calculated: linear interpolation (t=0.6) between USDA FDC 174034 \"Beef, ground, 85% lean meat / 15% fat, crumbles, cooked, pan-browned\" and FDC 171794 \"…90% lean / 10% fat, crumbles, cooked, pan-browned\". USDA has no 88/12 entry; its ground-beef values are regression-fitted on fat level (derivation code AR), so interpolation follows USDA's own method.",
+    "raw": {
+      "per100": {
+        "kcal": 192,
+        "p": 19.4,
+        "f": 12,
+        "c": 0,
+        "fib": 0
+      },
+      "src": "Calculated: same interpolation between FDC 171796 (85/15 raw) and FDC 174030 (90/10 raw)."
+    },
+    "yield": {
+      "cookedOverRaw": 0.67,
+      "range": [
+        0.64,
+        0.72
+      ],
+      "rangeType": "USDA min–max",
+      "src": "USDA Table of Cooking Yields for Meat and Poultry (USDA ARS Nutrient Data Laboratory, Dec 2012), https://www.ars.usda.gov/ARSUserFiles/80400525/Data/retn/USDA_CookingYields_MeatPoultry.pdf: \"Beef, ground, medium fat (12%-22%), crumbles\", fried in pan: 67% (n=4, min 64, max 72; fat change −5.3%)."
+    },
+    "check": {
+      "note": "not applicable: about 5 g of fat per 100 g raw renders out and is drained (USDA fat change −5.3%)"
+    },
+    "logAs": "cooked weight (drain the fat)",
+    "units": [],
+    "costco": "See costco.json: beef_ground_88 (verified). This pass: Verified on Costco same-day listing: Kirkland Signature Ground Beef 88% lean / 12% fat (Costco's own recipe PDF also calls for it).",
+    "note": "Costco's default grind. Bowls, lettuce-wrap tacos, bolognese.",
+    "verified": true,
+    "unverified": [
+      "88/12 values are interpolated, not a measured USDA sample"
+    ],
+    "costcoIds": [
+      "beef_ground_88"
+    ]
+  },
+  {
+    "id": "beef88Patty",
+    "name": "Ground beef 88/12 — cast-iron burger patty (cooked weight)",
+    "group": "protein",
+    "state": "cooked",
+    "per100": {
+      "kcal": 215,
+      "p": 25,
+      "f": 12,
+      "c": 0,
+      "fib": 0
+    },
+    "src": "Calculated: linear interpolation (t=0.6) between USDA FDC 174033 \"Beef, ground, 85% lean meat / 15% fat, patty, cooked, pan-broiled\" and FDC 171793 \"…90% lean / 10% fat, patty, cooked, pan-broiled\" (USDA regression-based values).",
+    "raw": {
+      "per100": {
+        "kcal": 192,
+        "p": 19.4,
+        "f": 12,
+        "c": 0,
+        "fib": 0
+      },
+      "src": "Calculated: interpolation between FDC 171796 (85/15 raw) and FDC 174030 (90/10 raw)."
+    },
+    "yield": {
+      "cookedOverRaw": 0.73,
+      "range": [
+        0.71,
+        0.76
+      ],
+      "rangeType": "USDA min–max",
+      "src": "USDA Table of Cooking Yields for Meat and Poultry (USDA ARS Nutrient Data Laboratory, Dec 2012), https://www.ars.usda.gov/ARSUserFiles/80400525/Data/retn/USDA_CookingYields_MeatPoultry.pdf: \"Beef, ground, medium fat (12%-22%), patty\", pan-broiled: 73% (n=4, min 71, max 76). USDA SR portion for 85/15: 1 patty from 1/4 lb raw = 83 g cooked (0.73)."
+    },
+    "check": {
+      "note": "not applicable: fat renders into the pan"
+    },
+    "logAs": "raw patty weight is easiest (form 6 oz / 170 g raw); or weigh the cooked patty",
+    "units": [
+      {
+        "name": "patty from 6 oz (170 g) raw",
+        "g": 124.1,
+        "kcal": 267,
+        "p": 31,
+        "f": 14.9,
+        "c": 0
+      }
+    ],
+    "costco": "See costco.json: beef_ground_88 (verified). This pass: Same Kirkland 88/12 as above. Kirkland pre-formed patties exist but are other blends (75/25 and 80/20 grass-fed listings) — not this entry.",
+    "note": "The burger night. Bun and cheese are logged separately.",
+    "verified": true,
+    "unverified": [
+      "interpolated values"
+    ],
+    "costcoIds": [
+      "beef_ground_88"
+    ]
+  },
+  {
+    "id": "topSirloin",
+    "name": "Top sirloin steak, trimmed — grilled or seared (cooked weight)",
+    "group": "protein",
+    "state": "cooked",
+    "per100": {
+      "kcal": 188,
+      "p": 30.3,
+      "f": 6.6,
+      "c": 0,
+      "fib": 0
+    },
+    "src": "USDA FDC 168635 (SR Legacy, NDB 13455): \"Beef, top sirloin, steak, separable lean only, trimmed to 0\" fat, choice, cooked, broiled\"",
+    "raw": {
+      "per100": {
+        "kcal": 146,
+        "p": 22,
+        "f": 5.7,
+        "c": 0.2,
+        "fib": 0
+      },
+      "src": "USDA FDC 2727574 (Foundation, published 4/24/2025, NDB 100379): \"Beef, top sirloin steak, raw\" [Energy, Atwater specific factors (nutrient 2048)]"
+    },
+    "yield": {
+      "cookedOverRaw": 0.8,
+      "range": [
+        0.69,
+        0.87
+      ],
+      "rangeType": "USDA min–max",
+      "src": "USDA Table of Cooking Yields for Meat and Poultry (USDA ARS Nutrient Data Laboratory, Dec 2012), https://www.ars.usda.gov/ARSUserFiles/80400525/Data/retn/USDA_CookingYields_MeatPoultry.pdf: \"Beef, top sirloin, steak, separable lean and fat, trimmed to 1/8\\\" fat\", broiled or grilled: 80% (n=20, min 69, max 87). USDA cooked its steaks to 149°F/65°C internal (same report, beef study protocol)."
+    },
+    "check": {
+      "expectedKcal": 183,
+      "cookedKcal": 188,
+      "diffPct": 3,
+      "method": "raw kcal ÷ yield (assumes no fat drip)"
+    },
+    "logAs": "raw weight (each steak is weighed before cooking); cooked weight for sliced leftovers",
+    "units": [],
+    "costco": "See costco.json: beef_top_sirloin_prime (verified). Costco's listed top sirloin is USDA Prime, cap off: Prime is more marbled than these Choice lean-only values, so weigh it raw and treat the cooked number as a floor.",
+    "note": "Lean, cheap, takes a marinade (Hawaiian steak). Trim the fat cap: these are lean-only values.",
+    "verified": true,
+    "unverified": [],
+    "costcoIds": [
+      "beef_top_sirloin_prime"
+    ]
+  },
+  {
+    "id": "flank",
+    "name": "Flank steak — grilled or seared, sliced (cooked weight)",
+    "group": "protein",
+    "state": "cooked",
+    "per100": {
+      "kcal": 202,
+      "p": 27.6,
+      "f": 9.3,
+      "c": 0,
+      "fib": 0
+    },
+    "src": "USDA FDC 169435 (SR Legacy, NDB 13067): \"Beef, flank, steak, separable lean and fat, trimmed to 0\" fat, choice, cooked, broiled\"",
+    "raw": {
+      "per100": {
+        "kcal": 170,
+        "p": 20.1,
+        "f": 9.4,
+        "c": 0,
+        "fib": 0
+      },
+      "src": "USDA FDC 2646175 (Foundation, published 10/26/2023, NDB 100309): \"Beef, flank, steak, boneless, choice, raw\" [Energy, Atwater specific factors (nutrient 2048)]"
+    },
+    "yield": {
+      "cookedOverRaw": 0.81,
+      "range": [
+        0.74,
+        0.89
+      ],
+      "rangeType": "USDA min–max",
+      "src": "USDA Table of Cooking Yields for Meat and Poultry (USDA ARS Nutrient Data Laboratory, Dec 2012), https://www.ars.usda.gov/ARSUserFiles/80400525/Data/retn/USDA_CookingYields_MeatPoultry.pdf: \"Beef, flank, separable lean and fat, trimmed to 0\\\" fat\", broiled or grilled: 81% (n=20, min 74, max 89). SR portion: 1 steak cooked 387 g from 483 g raw (0.8)."
+    },
+    "check": {
+      "expectedKcal": 210,
+      "cookedKcal": 202,
+      "diffPct": -4,
+      "method": "raw kcal ÷ yield (assumes no fat drip)"
+    },
+    "logAs": "cooked sliced weight in meal-prep boxes; raw weight if cooked to order",
+    "units": [],
+    "costco": "See costco.json: beef_flank_choice (verified).",
+    "note": "The Thai steak-and-noodle salad steak.",
+    "verified": true,
+    "unverified": [],
+    "costcoIds": [
+      "beef_flank_choice"
+    ]
+  },
+  {
+    "id": "topRound",
+    "name": "Inside (top) round / London broil — roasted or broiled, sliced thin (cooked weight)",
+    "group": "protein",
+    "state": "cooked",
+    "per100": {
+      "kcal": 204,
+      "p": 30.7,
+      "f": 9,
+      "c": 0,
+      "fib": 0
+    },
+    "src": "USDA FDC 169531 (SR Legacy, NDB 13893): \"Beef, round, top round steak, separable lean and fat, trimmed to 1/8\" fat, all grades, cooked, broiled\"",
+    "raw": {
+      "per100": {
+        "kcal": 146,
+        "p": 21.5,
+        "f": 5.7,
+        "c": 0.9,
+        "fib": 0
+      },
+      "src": "USDA FDC 2646173 (Foundation, published 10/26/2023, NDB 100307): \"Beef, round, top round, boneless, choice, raw\" [Energy, Atwater specific factors (nutrient 2048)]"
+    },
+    "yield": {
+      "cookedOverRaw": 0.72,
+      "range": [
+        0.62,
+        0.83
+      ],
+      "rangeType": "USDA min–max",
+      "src": "USDA Table of Cooking Yields for Meat and Poultry (USDA ARS Nutrient Data Laboratory, Dec 2012), https://www.ars.usda.gov/ARSUserFiles/80400525/Data/retn/USDA_CookingYields_MeatPoultry.pdf: \"Beef, round, top round steak, separable lean and fat, trimmed to 1/8\\\" fat\", broiled or grilled: 72% (n=20, min 62, max 83). SR portion: 326 g cooked per 1 lb raw (0.72)."
+    },
+    "check": {
+      "expectedKcal": 203,
+      "cookedKcal": 204,
+      "diffPct": 1,
+      "method": "raw kcal ÷ yield (assumes no fat drip)"
+    },
+    "logAs": "cooked sliced weight (French dip, salads)",
+    "units": [],
+    "alt": {
+      "usda0inTrimGrilled": {
+        "per100": {
+          "kcal": 170,
+          "p": 30.1,
+          "f": 4.6,
+          "c": 0,
+          "fib": 0
+        },
+        "src": "USDA FDC 168740 (SR Legacy, NDB 13968): \"Beef, round, top round steak, boneless, separable lean and fat, trimmed to 0\" fat, choice, cooked, grilled\" — if every bit of external fat is trimmed off"
+      }
+    },
+    "costco": "See costco.json: beef_top_round_london_broil (likely).",
+    "note": "\"Inside round\" is the meat-trade name for top round. Leanest red meat here; the French dip roast beef. Cooked medium-rare it keeps more water than USDA's 149°F endpoint, so these values err slightly high.",
+    "verified": true,
+    "unverified": [],
+    "costcoIds": [
+      "beef_top_round_london_broil"
+    ]
+  },
+  {
+    "id": "tenderloin",
+    "name": "Beef tenderloin (filet) — seared (cooked weight)",
+    "group": "protein",
+    "state": "cooked",
+    "per100": {
+      "kcal": 200,
+      "p": 29,
+      "f": 8.4,
+      "c": 0,
+      "fib": 0
+    },
+    "src": "USDA FDC 171811 (SR Legacy, NDB 23600): \"Beef, tenderloin, steak, separable lean only, trimmed to 1/8\" fat, all grades, cooked, broiled\"",
+    "raw": {
+      "per100": {
+        "kcal": 149,
+        "p": 21.1,
+        "f": 6.5,
+        "c": 0.2,
+        "fib": 0
+      },
+      "src": "USDA FDC 2727573 (Foundation, published 4/24/2025, NDB 100378): \"Beef, tenderloin steak, raw\" [Energy, Atwater specific factors (nutrient 2048)]"
+    },
+    "yield": {
+      "cookedOverRaw": 0.8,
+      "range": [
+        0.71,
+        0.86
+      ],
+      "rangeType": "USDA min–max",
+      "src": "USDA Table of Cooking Yields for Meat and Poultry (USDA ARS Nutrient Data Laboratory, Dec 2012), https://www.ars.usda.gov/ARSUserFiles/80400525/Data/retn/USDA_CookingYields_MeatPoultry.pdf: \"Beef, tenderloin, steak, separable lean only, trimmed to 1/8\\\" fat\", broiled or grilled: 80% (n=19, min 71, max 86)."
+    },
+    "check": {
+      "expectedKcal": 186,
+      "cookedKcal": 200,
+      "diffPct": 7,
+      "method": "raw kcal ÷ yield (assumes no fat drip)"
+    },
+    "logAs": "raw weight (portion filets raw)",
+    "units": [],
+    "costco": "See costco.json: beef_tenderloin_whole_choice (verified), beef_tenderloin_steak_prime (verified).",
+    "note": "Hillstone filet night at home.",
+    "verified": true,
+    "unverified": [],
+    "costcoIds": [
+      "beef_tenderloin_whole_choice",
+      "beef_tenderloin_steak_prime"
+    ]
+  },
+  {
+    "id": "ribeye",
+    "name": "Ribeye steak, boneless — grilled or seared (cooked weight)",
+    "group": "protein",
+    "state": "cooked",
+    "per100": {
+      "kcal": 303,
+      "p": 22.9,
+      "f": 23.5,
+      "c": 0,
+      "fib": 0
+    },
+    "src": "USDA FDC 173390 (SR Legacy, NDB 23195): \"Beef, rib eye steak, boneless, lip-on, separable lean and fat, trimmed to 1/8\" fat, choice, cooked, grilled\"",
+    "raw": {
+      "per100": {
+        "kcal": 260,
+        "p": 18.7,
+        "f": 20,
+        "c": 0,
+        "fib": 0
+      },
+      "src": "USDA FDC 2646172 (Foundation, published 10/26/2023, NDB 100306): \"Beef, ribeye, steak, boneless, choice, raw\" [Energy, Atwater specific factors (nutrient 2048)]"
+    },
+    "yield": {
+      "cookedOverRaw": 0.84,
+      "range": [
+        0.75,
+        0.92
+      ],
+      "rangeType": "USDA min–max",
+      "src": "USDA Table of Cooking Yields for Meat and Poultry (USDA ARS Nutrient Data Laboratory, Dec 2012), https://www.ars.usda.gov/ARSUserFiles/80400525/Data/retn/USDA_CookingYields_MeatPoultry.pdf: \"Beef, rib eye steak, boneless, lip-on, separable lean and fat, trimmed to 1/8\\\" fat\", grilled: 84% (n=36, min 75, max 92)."
+    },
+    "check": {
+      "expectedKcal": 310,
+      "cookedKcal": 303,
+      "diffPct": -2,
+      "method": "raw kcal ÷ yield (assumes no fat drip)"
+    },
+    "logAs": "raw weight (weigh the steak before it hits the pan)",
+    "units": [],
+    "costco": "See costco.json: beef_ribeye_choice (verified), beef_ribeye_prime (verified).",
+    "note": "The fattiest cut on the list: lean and fat as eaten. A weekly treat, not a staple.",
+    "verified": true,
+    "unverified": [],
+    "costcoIds": [
+      "beef_ribeye_choice",
+      "beef_ribeye_prime"
+    ]
+  },
+  {
+    "id": "porkTenderloin",
+    "name": "Pork tenderloin — roasted (cooked weight)",
+    "group": "protein",
+    "state": "cooked",
+    "per100": {
+      "kcal": 147,
+      "p": 26,
+      "f": 4,
+      "c": 0,
+      "fib": 0
+    },
+    "src": "USDA FDC 167905 (SR Legacy, NDB 10222): \"Pork, fresh, loin, tenderloin, separable lean and fat, cooked, roasted\"",
+    "raw": {
+      "per100": {
+        "kcal": 125,
+        "p": 21.6,
+        "f": 3.9,
+        "c": 0,
+        "fib": 0
+      },
+      "src": "USDA FDC 2646169 (Foundation, published 10/26/2023, NDB 100303): \"Pork, loin, tenderloin, boneless, raw\" [Energy, Atwater specific factors (nutrient 2048)]"
+    },
+    "yield": {
+      "cookedOverRaw": 0.8,
+      "range": [
+        0.74,
+        0.84
+      ],
+      "rangeType": "USDA min–max",
+      "src": "USDA Table of Cooking Yields for Meat and Poultry (USDA ARS Nutrient Data Laboratory, Dec 2012), https://www.ars.usda.gov/ARSUserFiles/80400525/Data/retn/USDA_CookingYields_MeatPoultry.pdf: \"Pork, fresh, loin, tenderloin, separable lean only\", roasted: 80% (n=12, min 74, max 84)."
+    },
+    "check": {
+      "expectedKcal": 156,
+      "cookedKcal": 147,
+      "diffPct": -6,
+      "method": "raw kcal ÷ yield (assumes no fat drip)"
+    },
+    "logAs": "cooked sliced weight",
+    "units": [],
+    "costco": "See costco.json: pork_tenderloin_swift (verified).",
+    "note": "Lean, mild; roast with a mustard-herb crust or char siu-style glaze (log the glaze).",
+    "verified": true,
+    "unverified": [],
+    "costcoIds": [
+      "pork_tenderloin_swift"
+    ]
+  },
+  {
+    "id": "salmonAtlantic",
+    "name": "Atlantic salmon (farmed) — roasted fillet (cooked weight)",
+    "group": "protein",
+    "state": "cooked",
+    "per100": {
+      "kcal": 206,
+      "p": 22.1,
+      "f": 12.4,
+      "c": 0,
+      "fib": 0
+    },
+    "src": "USDA FDC 175168 (SR Legacy, NDB 15237): \"Fish, salmon, Atlantic, farmed, cooked, dry heat\"",
+    "raw": {
+      "per100": {
+        "kcal": 203,
+        "p": 20.3,
+        "f": 13.1,
+        "c": 0,
+        "fib": 0
+      },
+      "src": "USDA FDC 2684441 (Foundation, published 4/18/2024, NDB 15236): \"Fish, salmon, Atlantic, farm raised, raw\" [Energy, Atwater specific factors (nutrient 2048)]",
+      "units": [
+        {
+          "name": "6 oz (170 g) raw portion",
+          "g": 170,
+          "kcal": 345,
+          "p": 34.5,
+          "f": 22.3,
+          "c": 0
+        }
+      ]
+    },
+    "yield": {
+      "cookedOverRaw": 0.8,
+      "range": [
+        0.78,
+        0.82
+      ],
+      "rangeType": "±95% confidence interval (Bognár)",
+      "src": "Bognár A. (2002) Tables on weight yield of food and retention factors of food constituents for the calculation of nutrient composition of cooked foods (dishes). BFE-R--02-03, Bundesforschungsanstalt für Ernährung, Karlsruhe, https://publikationen.bibliothek.kit.edu/9642002/1928, Table 13: \"Fish, fillet (cod, red fish, pollack), fried\" (pan, deep-fried or grilled) 0.80 ± 0.02 (n=10). No salmon-specific yield was found in USDA or Bognár; this lean-fish fillet value is the closest sourced number."
+    },
+    "check": {
+      "expectedKcal": 221,
+      "cookedKcal": 206,
+      "diffPct": -7,
+      "method": "(raw P×4.27×0.95 + raw F×9.02×0.8) ÷ yield; retention factors: Bognár 2002 Table 22 (fat fish >5% fat), \"fry in oven\", fish part: protein 0.95, fat 0.80"
+    },
+    "logAs": "raw weight — cut the fillet into portions raw on prep day (fish values shift with cooking more than meat)",
+    "units": [],
+    "costco": "See costco.json: salmon_atlantic_fresh (verified), salmon_atlantic_portions (likely), salmon_atlantic_frozen_3lb (verified).",
+    "note": "Counts as the day's omega-3. Bognár's fat-fish factors assume about 20% of the fat leaves the fillet in the oven, so logging the raw weight counts that fat too (errs slightly high, which is the safe side).",
+    "verified": true,
+    "unverified": [],
+    "costcoIds": [
+      "salmon_atlantic_fresh",
+      "salmon_atlantic_portions",
+      "salmon_atlantic_frozen_3lb"
+    ]
+  },
+  {
+    "id": "sockeye",
+    "name": "Wild sockeye salmon — roasted or seared fillet (cooked weight)",
+    "group": "protein",
+    "state": "cooked",
+    "per100": {
+      "kcal": 156,
+      "p": 26.5,
+      "f": 5.6,
+      "c": 0,
+      "fib": 0
+    },
+    "src": "USDA FDC 173692 (SR Legacy, NDB 15086): \"Fish, salmon, sockeye, cooked, dry heat\" (USDA derived this from raw using a yield; implied cooked/raw ≈ 0.84)",
+    "raw": {
+      "per100": {
+        "kcal": 136,
+        "p": 22.3,
+        "f": 4.9,
+        "c": 0,
+        "fib": 0
+      },
+      "src": "USDA FDC 2684440 (Foundation, published 4/18/2024, NDB 100324): \"Fish, salmon, sockeye, wild caught, raw\" [Energy, Atwater specific factors (nutrient 2048)]",
+      "units": [
+        {
+          "name": "one 6 oz (170 g) frozen portion, raw",
+          "g": 170,
+          "kcal": 231,
+          "p": 37.9,
+          "f": 8.3,
+          "c": 0
+        }
+      ]
+    },
+    "yield": {
+      "cookedOverRaw": 0.8,
+      "range": [
+        0.78,
+        0.84
+      ],
+      "rangeType": "±95% confidence interval (Bognár)",
+      "src": "Bognár A. (2002) Tables on weight yield of food and retention factors of food constituents for the calculation of nutrient composition of cooked foods (dishes). BFE-R--02-03, Bundesforschungsanstalt für Ernährung, Karlsruhe, https://publikationen.bibliothek.kit.edu/9642002/1928, Table 13: fish fillet fried/grilled 0.80 ± 0.02 (n=10). USDA's own calculation for this entry implies 0.84."
+    },
+    "check": {
+      "expectedKcal": 166,
+      "cookedKcal": 156,
+      "diffPct": -6,
+      "method": "(raw P×4.27×0.95 + raw F×9.02×0.95) ÷ yield; retention factors: Bognár 2002 Table 20 (low-fat fish <5% fat), \"fry in oven\", fish part: protein 0.95, fat 0.95"
+    },
+    "logAs": "raw weight of each frozen portion (they are pre-portioned)",
+    "units": [],
+    "costco": "See costco.json: salmon_sockeye_frozen_3lb (verified). This pass: Verified on costco.com: Kirkland Signature Wild Alaskan Sockeye Salmon, 5–7 oz portions, 3 lb frozen bag (availability varies by warehouse).",
+    "note": "Leaner than farmed Atlantic (about 1/3 less fat). Cook it less; it dries fast.",
+    "verified": true,
+    "unverified": [],
+    "costcoIds": [
+      "salmon_sockeye_frozen_3lb"
+    ]
+  },
+  {
+    "id": "ahi",
+    "name": "Ahi / yellowfin tuna — seared rare (log the raw weight)",
+    "group": "protein",
+    "state": "raw",
+    "per100": {
+      "kcal": 109,
+      "p": 24.4,
+      "f": 0.5,
+      "c": 0,
+      "fib": 0
+    },
+    "src": "USDA FDC 175159 (SR Legacy, NDB 15127): \"Fish, tuna, fresh, yellowfin, raw\"",
+    "cooked": {
+      "per100": {
+        "kcal": 130,
+        "p": 29.2,
+        "f": 0.6,
+        "c": 0,
+        "fib": 0
+      },
+      "src": "USDA FDC 172006 (SR Legacy, NDB 15221): \"Fish, tuna, yellowfin, fresh, cooked, dry heat\" — cooked through; USDA derived it from raw (implied yield 0.84)"
+    },
+    "yield": {
+      "cookedOverRaw": 0.84,
+      "src": "Implied by USDA SR raw (FDC 175159) vs cooked dry-heat (FDC 172006) protein. A rare sear loses far less water: not sourced, so weigh raw."
+    },
+    "logAs": "raw weight before searing",
+    "units": [
+      {
+        "name": "6 oz (170 g) raw steak",
+        "g": 170,
+        "kcal": 185,
+        "p": 41.5,
+        "f": 0.9,
+        "c": 0
+      }
+    ],
+    "costco": "See costco.json: ahi_fresh (likely), ahi_frozen_case_online (verified). This pass: A costco.com search showed only bulk online ahi cases (Teja / Northwest Fish saku slices and sesame-crusted steaks); warehouse fresh ahi not confirmed here.",
+    "note": "Seared ahi with ponzu. USDA Foundation frozen wild ahi (FDC 2747673) measured 24.7 g protein / 0.4 g fat per 100 g raw, matching this entry. Buy sushi/sashimi-grade if served rare.",
+    "verified": true,
+    "unverified": [],
+    "costcoIds": [
+      "ahi_fresh",
+      "ahi_frozen_case_online"
+    ]
+  },
+  {
+    "id": "shrimp",
+    "name": "Shrimp, peeled — cooked (cooked weight)",
+    "group": "protein",
+    "state": "cooked",
+    "per100": {
+      "kcal": 99,
+      "p": 24,
+      "f": 0.3,
+      "c": 0.2,
+      "fib": 0
+    },
+    "src": "USDA FDC 175180 (SR Legacy, NDB 15271): \"Crustaceans, shrimp, cooked\" (analytical)",
+    "raw": {
+      "per100": {
+        "kcal": 85,
+        "p": 20.1,
+        "f": 0.5,
+        "c": 0,
+        "fib": 0
+      },
+      "src": "USDA FDC 175179 (SR Legacy, NDB 15270): \"Crustaceans, shrimp, raw\" (analytical, same series)",
+      "note": "USDA's Foundation Foods entry for farm-raised raw shrimp (FDC 2684443, published 4/18/2024) is only 76 kcal / 15.6 g protein per 100 g (water 81.3%) — frozen farm-raised shrimp often carry added water, so cooked weight is the honest number."
+    },
+    "yield": {
+      "cookedOverRaw": 0.84,
+      "range": [
+        0.65,
+        0.84
+      ],
+      "rangeType": "water-added farm-raised (low) to USDA analytical pair (high)",
+      "src": "Protein balance of USDA SR raw (FDC 175179) vs cooked (FDC 175180) = 0.84. For water-added farm-raised shrimp the same balance against USDA Foundation FDC 2684443 gives 0.65."
+    },
+    "check": {
+      "note": "raw and cooked are a matched USDA analytical pair"
+    },
+    "logAs": "cooked weight (weigh after cooking, tails off)",
+    "units": [],
+    "costco": "See costco.json: shrimp_raw_2125_tailon (verified), shrimp_raw_3140_tailoff (verified), shrimp_cooked_5070 (verified), shrimp_cooked_3140_tailon (verified). This pass: Verified on Costco same-day listing: Kirkland Signature Farm-Raised Raw Shrimp, tail-on, 21–25 per lb, 2 lb bag.",
+    "note": "Shrimp Louie, chilled shrimp add-on, shrimp in the noodle bowl.",
+    "verified": true,
+    "unverified": [],
+    "costcoIds": [
+      "shrimp_raw_2125_tailon",
+      "shrimp_raw_3140_tailoff",
+      "shrimp_cooked_5070",
+      "shrimp_cooked_3140_tailon"
+    ]
+  },
+  {
+    "id": "egg",
+    "name": "Egg, whole, large (raw weight, shell off)",
+    "group": "protein",
+    "state": "raw",
+    "per100": {
+      "kcal": 147,
+      "p": 12.4,
+      "f": 10,
+      "c": 1,
+      "fib": 0
+    },
+    "src": "USDA FDC 748967 (Foundation, published 12/16/2019, NDB 1123): \"Eggs, Grade A, Large, egg whole\" [Energy, Atwater specific factors (nutrient 2048) from live FDC, 2026-11-01; the download carries only the general-factor 148 kcal]",
+    "units": [
+      {
+        "name": "1 large egg (USDA 50.3 g edible)",
+        "g": 50.3,
+        "kcal": 74,
+        "p": 6.2,
+        "f": 5,
+        "c": 0.5
+      }
+    ],
+    "logAs": "by count (1 large ≈ 50 g) or weight; cooking without fat does not change the count",
+    "costco": "See costco.json: eggs_24 (verified), eggs_60 (verified). This pass: Verified in FDC branded data: Kirkland Signature Cage Free Large Eggs, GTIN 096619102556 — label per egg (50 g): 70 kcal, 6 g P, 5 g F (FDC 2094567, 2021).",
+    "note": "Cooking fat (butter/oil) is logged separately.",
+    "verified": true,
+    "unverified": [],
+    "costcoIds": [
+      "eggs_24",
+      "eggs_60"
+    ]
+  },
+  {
+    "id": "eggWhites",
+    "name": "Liquid egg whites, carton (as sold)",
+    "group": "protein",
+    "state": "as sold",
+    "per100": {
+      "kcal": 52,
+      "p": 10.9,
+      "f": 0.2,
+      "c": 0.7,
+      "fib": 0
+    },
+    "src": "USDA FDC 172183 (SR Legacy, NDB 1124): \"Egg, white, raw, fresh\"",
+    "units": [
+      {
+        "name": "3 Tbsp (46 g, carton label serving)",
+        "g": 46,
+        "kcal": 24,
+        "p": 5,
+        "f": 0.1,
+        "c": 0.3
+      },
+      {
+        "name": "1 cup (243 g, USDA)",
+        "g": 243,
+        "kcal": 126,
+        "p": 26.5,
+        "f": 0.5,
+        "c": 1.7
+      }
+    ],
+    "labelCheck": "Label via USDA FDC 2665662 (Branded Foods, 2023-11-16): ALL WHITES \"100% LIQUID EGG WHITES\", GTIN 706624333332, serving 46.0 GRM (3 Tbsp): per 46 g = 25 kcal, 5 g P (100% egg whites).",
+    "logAs": "weigh the pour (grams), not tablespoons",
+    "costco": "See costco.json: egg_whites_6x16 (likely).",
+    "note": "Pasteurized; 100% egg white, so the USDA raw egg white value applies.",
+    "verified": true,
+    "unverified": [
+      "Costco brand/availability"
+    ],
+    "costcoIds": [
+      "egg_whites_6x16"
+    ]
+  },
+  {
+    "id": "greekNonfat",
+    "name": "Greek yogurt, plain, nonfat (0%)",
+    "group": "protein",
+    "state": "as sold",
+    "per100": {
+      "kcal": 61,
+      "p": 10.3,
+      "f": 0.4,
+      "c": 3.6,
+      "fib": 0
+    },
+    "src": "USDA FDC 330137 (Foundation, published 4/1/2019, NDB 1256): \"Yogurt, Greek, plain, nonfat\"",
+    "units": [
+      {
+        "name": "170 g (3/4 cup)",
+        "g": 170,
+        "kcal": 104,
+        "p": 17.5,
+        "f": 0.7,
+        "c": 6.1
+      },
+      {
+        "name": "1 cup (227 g)",
+        "g": 227,
+        "kcal": 138,
+        "p": 23.4,
+        "f": 0.9,
+        "c": 8.2
+      }
+    ],
+    "labelCheck": "Label via USDA FDC 2757161 (Branded Foods, 2026-04-23): Fage \"Total 0% Plain Greek Yogurt, 16 oz\", GTIN 00689544001737, serving 170.093994140625 g: per 170 g = 90 kcal, 18 g P.",
+    "costco": "See costco.json: yogurt_ks_organic_greek (verified), yogurt_fage_0 (verified). This pass: Verified on costco.com / Costco same-day: Kirkland Signature Organic Greek Yogurt (nonfat), 48 oz (item 1048072; listed unavailable in some warehouses) and FAGE Total 0% Greek, 48 oz. Log your tub's label if it differs.",
+    "note": "Base for the yogurt bowl and the tzatziki/herb sauces.",
+    "verified": true,
+    "unverified": [],
+    "costcoIds": [
+      "yogurt_ks_organic_greek",
+      "yogurt_fage_0"
+    ]
+  },
+  {
+    "id": "greek2",
+    "name": "Greek yogurt, plain, 2% (low-fat)",
+    "group": "protein",
+    "state": "as sold",
+    "per100": {
+      "kcal": 73,
+      "p": 10,
+      "f": 1.9,
+      "c": 3.9,
+      "fib": 0
+    },
+    "src": "USDA FDC 170903 (SR Legacy, NDB 1287): \"Yogurt, Greek, plain, lowfat\"",
+    "units": [
+      {
+        "name": "170 g (3/4 cup)",
+        "g": 170,
+        "kcal": 124,
+        "p": 17,
+        "f": 3.2,
+        "c": 6.6
+      }
+    ],
+    "labelCheck": "Label via USDA FDC 2756717 (Branded Foods, 2026-04-23): Fage \"Fage Total 2% Milkfat All Natural Lowfat Greek Strained Yogurt\", GTIN 00689544083023, serving 180.0 g: per 170 g = 113 kcal, 16.1 g P, 3.3 g F.",
+    "costco": "2% Greek tub at Costco: not verified in this pass.",
+    "note": "Creamier for sauces (with lemon, garlic, dill).",
+    "verified": true,
+    "unverified": []
+  },
+  {
+    "id": "cottage",
+    "name": "Cottage cheese, low-fat 2%",
+    "group": "protein",
+    "state": "as sold",
+    "per100": {
+      "kcal": 84,
+      "p": 11,
+      "f": 2.3,
+      "c": 4.3,
+      "fib": 0
+    },
+    "src": "USDA FDC 328841 (Foundation, published 4/1/2019, NDB 1015): \"Cheese, cottage, lowfat, 2% milkfat\"",
+    "units": [
+      {
+        "name": "1/2 cup (113 g)",
+        "g": 113,
+        "kcal": 95,
+        "p": 12.4,
+        "f": 2.6,
+        "c": 4.9
+      }
+    ],
+    "labelCheck": "Label via USDA FDC 2634188 (Branded Foods, 2023-09-14): DAISY \"2% LOW FAT COTTAGE CHEESE\", GTIN 073420503208, serving 113.0 GRM (1/2 cup): per 113 g = 90 kcal, 13 g P.",
+    "alt": {
+      "onePct": {
+        "per100": {
+          "kcal": 72,
+          "p": 12.4,
+          "f": 1,
+          "c": 2.7,
+          "fib": 0
+        },
+        "src": "USDA FDC 173417 (SR Legacy, NDB 1016): \"Cheese, cottage, lowfat, 1% milkfat\""
+      }
+    },
+    "costco": "See costco.json: cottage_daisy_lowfat (verified), cottage_goodculture_lowfat (likely).",
+    "note": "Pre-bed casein option.",
+    "verified": true,
+    "unverified": [],
+    "costcoIds": [
+      "cottage_daisy_lowfat",
+      "cottage_goodculture_lowfat"
+    ]
+  },
+  {
+    "id": "whey",
+    "name": "Whey protein powder — typical label (whey isolate/concentrate blend)",
+    "group": "protein",
+    "state": "as sold",
+    "per100": {
+      "kcal": 395,
+      "p": 79,
+      "f": 4.9,
+      "c": 9.9,
+      "fib": 3.3
+    },
+    "src": "Label via USDA FDC 2464138 (Branded Foods, 2023-02-16): OPTIMUM NUTRITION \"DOUBLE RICH CHOCOLATE FLAVORED GOLD STANDARD 100% WHEY PROTEIN POWDER DRINK MIX, DOUBLE RICH CHOCOLATE\", GTIN 748927028614, serving 30.399999618530273 g (1 Scoop)",
+    "units": [
+      {
+        "name": "1 scoop (30.4 g, label)",
+        "g": 30.4,
+        "kcal": 120,
+        "p": 24,
+        "f": 1.5,
+        "c": 3
+      }
+    ],
+    "alt": {
+      "isolate": {
+        "per100": {
+          "kcal": 355,
+          "p": 80.7,
+          "f": 1.6,
+          "c": 3.2,
+          "fib": 0
+        },
+        "src": "Label via USDA FDC 2464901 (Branded Foods, 2023-02-16): OPTIMUM NUTRITION \"CHOCOLATE BLISS GOLD STANDARD 100% ISOLATE PROTEIN POWDER DRINK MIX, CHOCOLATE BLISS\", GTIN 748927060911, serving 31.0 g (1 Scoop)",
+        "scoop": {
+          "name": "1 scoop (31 g, label)",
+          "g": 31,
+          "kcal": 110,
+          "p": 25,
+          "f": 0.5,
+          "c": 1
+        }
+      }
+    },
+    "logAs": "weigh the powder (scoops vary ±10%)",
+    "costco": "Whey at Costco: not verified in this pass.",
+    "note": "Typical labels only, not a product pick. Rule: the exact product and flavour must appear in the NSF Certified for Sport (nsfsport.com) or Informed Sport database before he buys it; certification of these two labels was not checked here. Log the label of the tub he actually buys.",
+    "verified": true,
+    "unverified": [
+      "sport certification of the example products"
+    ]
+  },
+  {
+    "id": "riceWhite",
+    "name": "Jasmine or basmati rice (white, long-grain) — cooked",
+    "group": "carb",
+    "state": "cooked",
+    "per100": {
+      "kcal": 130,
+      "p": 2.7,
+      "f": 0.3,
+      "c": 28.2,
+      "fib": 0.4
+    },
+    "src": "USDA FDC 168878 (SR Legacy, NDB 20045): \"Rice, white, long-grain, regular, enriched, cooked\"",
+    "dry": {
+      "per100": {
+        "kcal": 365,
+        "p": 7.1,
+        "f": 0.7,
+        "c": 80,
+        "fib": 1.3
+      },
+      "src": "USDA FDC 168877 (SR Legacy, NDB 20044): \"Rice, white, long-grain, regular, raw, enriched\""
+    },
+    "yield": {
+      "cookedOverDry": 2.98,
+      "range": [
+        2.8,
+        3
+      ],
+      "src": "Bognár A. (2002) Tables on weight yield of food and retention factors of food constituents for the calculation of nutrient composition of cooked foods (dishes). BFE-R--02-03, Bundesforschungsanstalt für Ernährung, Karlsruhe, https://publikationen.bibliothek.kit.edu/9642002/1928, Table (cereals): \"Rice, long corn, polished, boiled\" 2.98 ± 0.05 (n=140). USDA SR composition implies 2.8 (dry matter of FDC 168877 → FDC 168878)."
+    },
+    "units": [
+      {
+        "name": "1 cup cooked (158 g, USDA)",
+        "g": 158,
+        "kcal": 205,
+        "p": 4.3,
+        "f": 0.5,
+        "c": 44.6
+      }
+    ],
+    "logAs": "cooked weight from a batch; best: batch method (weigh dry rice, weigh the cooked pot, divide)",
+    "costco": "See costco.json: rice_jasmine_25 (verified).",
+    "note": "USDA has no separate jasmine or basmati entry; both are long-grain white rice. Cooked weight depends on the water you use, which is why the batch method wins.",
+    "verified": true,
+    "unverified": [
+      "basmati at Costco"
+    ],
+    "costcoIds": [
+      "rice_jasmine_25"
+    ]
+  },
+  {
+    "id": "wildRice",
+    "name": "Wild rice — cooked",
+    "group": "carb",
+    "state": "cooked",
+    "per100": {
+      "kcal": 101,
+      "p": 4,
+      "f": 0.3,
+      "c": 21.3,
+      "fib": 1.8
+    },
+    "src": "USDA FDC 168897 (SR Legacy, NDB 20089): \"Wild rice, cooked\"",
+    "dry": {
+      "per100": {
+        "kcal": 359,
+        "p": 12.8,
+        "f": 1.7,
+        "c": 75.7,
+        "fib": 4.3
+      },
+      "src": "USDA FDC 2710821 (Foundation, published 10/31/2024, NDB 20088): \"Wild rice, dry, raw\" [Energy, Atwater specific factors (nutrient 2048)]"
+    },
+    "yield": {
+      "cookedOverDry": 3.54,
+      "src": "USDA SR composition: dry matter of FDC 169726 (raw) → FDC 168897 (cooked) = 3.54. No Bognár entry."
+    },
+    "units": [
+      {
+        "name": "1 cup cooked (164 g, USDA)",
+        "g": 164,
+        "kcal": 166,
+        "p": 6.6,
+        "f": 0.5,
+        "c": 34.9
+      }
+    ],
+    "logAs": "cooked weight from a batch",
+    "costco": "See costco.json: wild_rice_blend (unverified).",
+    "note": "The Hillstone wild rice side at home: toss with diced peppers, scallion, lemon and a measured spoon of oil (log the oil).",
+    "verified": true,
+    "unverified": [
+      "Costco availability"
+    ],
+    "costcoIds": [
+      "wild_rice_blend"
+    ]
+  },
+  {
+    "id": "quinoa",
+    "name": "Quinoa — cooked",
+    "group": "carb",
+    "state": "cooked",
+    "per100": {
+      "kcal": 120,
+      "p": 4.4,
+      "f": 1.9,
+      "c": 21.3,
+      "fib": 2.8
+    },
+    "src": "USDA FDC 168917 (SR Legacy, NDB 20137): \"Quinoa, cooked\"",
+    "dry": {
+      "per100": {
+        "kcal": 368,
+        "p": 14.1,
+        "f": 6.1,
+        "c": 64.2,
+        "fib": 7
+      },
+      "src": "USDA FDC 168874 (SR Legacy, NDB 20035): \"Quinoa, uncooked\""
+    },
+    "yield": {
+      "cookedOverDry": 3.42,
+      "range": [
+        3.05,
+        3.42
+      ],
+      "src": "Bognár A. (2002) Tables on weight yield of food and retention factors of food constituents for the calculation of nutrient composition of cooked foods (dishes). BFE-R--02-03, Bundesforschungsanstalt für Ernährung, Karlsruhe, https://publikationen.bibliothek.kit.edu/9642002/1928: \"Quinoa, stewed\" 3.42 ± 0.03 (n=3). USDA SR composition implies 3.05."
+    },
+    "units": [
+      {
+        "name": "1 cup cooked (185 g, USDA)",
+        "g": 185,
+        "kcal": 222,
+        "p": 8.1,
+        "f": 3.5,
+        "c": 39.4
+      }
+    ],
+    "logAs": "cooked weight from a batch",
+    "costco": "See costco.json: quinoa_org_45 (verified).",
+    "note": "",
+    "verified": true,
+    "unverified": [
+      "Costco availability"
+    ],
+    "costcoIds": [
+      "quinoa_org_45"
+    ]
+  },
+  {
+    "id": "potatoYukon",
+    "name": "Yukon Gold potato, baked or roasted with skin (cooked weight, no oil)",
+    "group": "carb",
+    "state": "cooked",
+    "per100": {
+      "kcal": 92,
+      "p": 2.1,
+      "f": 0.2,
+      "c": 21.1,
+      "fib": 2.1
+    },
+    "src": "USDA FDC 170434 (SR Legacy, NDB 11357): \"Potatoes, white, flesh and skin, baked\" — closest USDA entry; USDA has no baked Yukon Gold entry.",
+    "raw": {
+      "per100": {
+        "kcal": 69,
+        "p": 1.7,
+        "f": 0.1,
+        "c": 15.7,
+        "fib": 2.4
+      },
+      "src": "USDA FDC 170028 (SR Legacy, NDB 11354): \"Potatoes, white, flesh and skin, raw\"",
+      "note": "USDA Foundation gold potato raw, without skin (FDC 2346403): 72 kcal, 16 g carb per 100 g."
+    },
+    "yield": {
+      "cookedOverRaw": 0.81,
+      "range": [
+        0.78,
+        0.84
+      ],
+      "src": "Bognár A. (2002) Tables on weight yield of food and retention factors of food constituents for the calculation of nutrient composition of cooked foods (dishes). BFE-R--02-03, Bundesforschungsanstalt für Ernährung, Karlsruhe, https://publikationen.bibliothek.kit.edu/9642002/1928, Table 21: \"Potato, with peel, baked, barbecue\" 0.81 ± 0.03 (n=4), weight with peel."
+    },
+    "units": [
+      {
+        "name": "1 medium (173 g baked, USDA)",
+        "g": 173,
+        "kcal": 159,
+        "p": 3.6,
+        "f": 0.3,
+        "c": 36.5
+      }
+    ],
+    "logAs": "cooked weight; or raw weight of cut potatoes before roasting with the raw values",
+    "costco": "See costco.json: potatoes_gold_10 (verified).",
+    "note": "Roasting oil or butter is logged separately (that is where the calories hide).",
+    "verified": true,
+    "unverified": [
+      "Yukon-specific cooked values (proxy used)"
+    ],
+    "costcoIds": [
+      "potatoes_gold_10"
+    ]
+  },
+  {
+    "id": "potatoRusset",
+    "name": "Russet potato, baked with skin (cooked weight)",
+    "group": "carb",
+    "state": "cooked",
+    "per100": {
+      "kcal": 95,
+      "p": 2.6,
+      "f": 0.1,
+      "c": 21.4,
+      "fib": 2.3
+    },
+    "src": "USDA FDC 170030 (SR Legacy, NDB 11356): \"Potatoes, Russet, flesh and skin, baked\"",
+    "raw": {
+      "per100": {
+        "kcal": 79,
+        "p": 2.1,
+        "f": 0.1,
+        "c": 18.1,
+        "fib": 1.3
+      },
+      "src": "USDA FDC 170027 (SR Legacy, NDB 11353): \"Potatoes, russet, flesh and skin, raw (Includes foods for USDA's Food Distribution Program)\""
+    },
+    "yield": {
+      "cookedOverRaw": 0.81,
+      "range": [
+        0.81,
+        0.84
+      ],
+      "src": "Bognár A. (2002) Tables on weight yield of food and retention factors of food constituents for the calculation of nutrient composition of cooked foods (dishes). BFE-R--02-03, Bundesforschungsanstalt für Ernährung, Karlsruhe, https://publikationen.bibliothek.kit.edu/9642002/1928, Table 21: \"Potato, with peel, baked\" 0.81 ± 0.03 (n=4). USDA SR composition implies 0.84."
+    },
+    "units": [
+      {
+        "name": "1 medium (173 g baked, USDA)",
+        "g": 173,
+        "kcal": 164,
+        "p": 4.5,
+        "f": 0.2,
+        "c": 37
+      },
+      {
+        "name": "1 large (299 g baked, USDA)",
+        "g": 299,
+        "kcal": 284,
+        "p": 7.8,
+        "f": 0.3,
+        "c": 64
+      }
+    ],
+    "logAs": "cooked weight",
+    "costco": "See costco.json: potatoes_russet_10 (verified).",
+    "note": "Steakhouse baked potato: Greek yogurt + chives instead of sour cream and butter.",
+    "verified": true,
+    "unverified": [],
+    "costcoIds": [
+      "potatoes_russet_10"
+    ]
+  },
+  {
+    "id": "sweetPotato",
+    "name": "Sweet potato, baked in skin — flesh (cooked weight)",
+    "group": "carb",
+    "state": "cooked",
+    "per100": {
+      "kcal": 90,
+      "p": 2,
+      "f": 0.2,
+      "c": 20.7,
+      "fib": 3.3
+    },
+    "src": "USDA FDC 168483 (SR Legacy, NDB 11508): \"Sweet potato, cooked, baked in skin, flesh, without salt\"",
+    "raw": {
+      "per100": {
+        "kcal": 86,
+        "p": 1.6,
+        "f": 0.1,
+        "c": 20.1,
+        "fib": 3
+      },
+      "src": "USDA FDC 168482 (SR Legacy, NDB 11507): \"Sweet potato, raw, unprepared (Includes foods for USDA's Food Distribution Program)\""
+    },
+    "yield": {
+      "cookedOverRaw": null,
+      "src": "No sourced baking yield found (juices and sugars leak out); weigh the flesh after baking."
+    },
+    "units": [
+      {
+        "name": "1 cup flesh (200 g, USDA)",
+        "g": 200,
+        "kcal": 180,
+        "p": 4,
+        "f": 0.4,
+        "c": 41.4
+      }
+    ],
+    "logAs": "cooked flesh weight",
+    "costco": "See costco.json: sweet_potatoes_10 (verified).",
+    "note": "",
+    "verified": true,
+    "unverified": [],
+    "costcoIds": [
+      "sweet_potatoes_10"
+    ]
+  },
+  {
+    "id": "oats",
+    "name": "Rolled oats, old-fashioned — dry",
+    "group": "carb",
+    "state": "raw",
+    "per100": {
+      "kcal": 379,
+      "p": 13.2,
+      "f": 6.5,
+      "c": 67.7,
+      "fib": 10.1
+    },
+    "src": "USDA FDC 173904 (SR Legacy, NDB 8120): \"Cereals, oats, regular and quick, not fortified, dry\"",
+    "alt": {
+      "foundation": {
+        "per100": {
+          "kcal": 379,
+          "p": 13.5,
+          "f": 5.9,
+          "c": 68.7,
+          "fib": null
+        },
+        "src": "USDA FDC 2346396 (Foundation, published 10/28/2022, NDB 20038): \"Oats, whole grain, rolled, old fashioned\" [Energy, Atwater specific factors (nutrient 2048)]"
+      }
+    },
+    "units": [
+      {
+        "name": "1/2 cup dry (40 g, USDA RACC)",
+        "g": 40,
+        "kcal": 152,
+        "p": 5.3,
+        "f": 2.6,
+        "c": 27.1
+      },
+      {
+        "name": "1 cup dry (81 g, USDA)",
+        "g": 81,
+        "kcal": 307,
+        "p": 10.7,
+        "f": 5.3,
+        "c": 54.8
+      }
+    ],
+    "logAs": "dry weight before cooking",
+    "costco": "See costco.json: oats_ks_10 (verified), oats_quaker_10 (verified).",
+    "note": "Always weigh dry; cooked oatmeal weight depends on the water.",
+    "verified": true,
+    "unverified": [],
+    "costcoIds": [
+      "oats_ks_10",
+      "oats_quaker_10"
+    ]
+  },
+  {
+    "id": "sourdough",
+    "name": "Sourdough bread",
+    "group": "carb",
+    "state": "as sold",
+    "per100": {
+      "kcal": 272,
+      "p": 10.8,
+      "f": 2.4,
+      "c": 51.9,
+      "fib": 2.2
+    },
+    "src": "USDA FDC 172675 (SR Legacy, NDB 18029): \"Bread, french or vienna (includes sourdough)\"",
+    "units": [
+      {
+        "name": "1 oz (28 g)",
+        "g": 28.4,
+        "kcal": 77,
+        "p": 3.1,
+        "f": 0.7,
+        "c": 14.7
+      },
+      {
+        "name": "50 g slice (weigh yours)",
+        "g": 50,
+        "kcal": 136,
+        "p": 5.4,
+        "f": 1.2,
+        "c": 26
+      }
+    ],
+    "logAs": "weigh each slice (bakery sourdough slices vary; labels in FDC branded data use 28–57 g servings)",
+    "costco": "See costco.json: bread_sourdough (likely).",
+    "note": "Toasting removes water, not calories: weigh before toasting.",
+    "verified": true,
+    "unverified": [],
+    "costcoIds": [
+      "bread_sourdough"
+    ]
+  },
+  {
+    "id": "wholeGrainBread",
+    "name": "Whole-grain bread — Dave's Killer Bread 21 Whole Grains and Seeds (label)",
+    "group": "carb",
+    "state": "as sold",
+    "per100": {
+      "kcal": 267,
+      "p": 11.1,
+      "f": 4.4,
+      "c": 48.9,
+      "fib": 11.1
+    },
+    "src": "Label via USDA FDC 2674263 (Branded Foods, 2023-11-16): DAVE'S KILLER BREAD \"DAVE'S KILLER BREAD, 21 WHOLE GRAINS AND SEEDS ORGANIC BREAD\", GTIN 013764027053, serving 45.0 GRM (1 SLICE)",
+    "units": [
+      {
+        "name": "1 slice (45 g, label)",
+        "g": 45,
+        "kcal": 120,
+        "p": 5,
+        "f": 2,
+        "c": 22
+      }
+    ],
+    "alt": {
+      "usda100WholeWheat": {
+        "per100": {
+          "kcal": 261,
+          "p": 12.9,
+          "f": 3.5,
+          "c": 44.5,
+          "fib": 5.9
+        },
+        "src": "USDA FDC 2758994 (Foundation, published 4/30/2026, NDB 18075): \"Bread, 100% whole wheat, commercial\" [Energy, Atwater general factors (nutrient 2047)]"
+      }
+    },
+    "costco": "See costco.json: bread_daves_21 (verified).",
+    "note": "Label values (rounded per slice).",
+    "verified": true,
+    "unverified": [
+      "Costco availability"
+    ],
+    "costcoIds": [
+      "bread_daves_21"
+    ]
+  },
+  {
+    "id": "tortilla",
+    "name": "Flour tortilla, uncooked/refrigerated (weigh before cooking)",
+    "group": "carb",
+    "state": "raw",
+    "per100": {
+      "kcal": 306,
+      "p": 8.2,
+      "f": 8,
+      "c": 49.4,
+      "fib": 3.5
+    },
+    "src": "USDA FDC 175037 (SR Legacy, NDB 18364): \"Tortillas, ready-to-bake or -fry, flour, refrigerated\"",
+    "units": [
+      {
+        "name": "1 tortilla, 7–8\" (49 g, USDA)",
+        "g": 49,
+        "kcal": 150,
+        "p": 4,
+        "f": 3.9,
+        "c": 24.2
+      },
+      {
+        "name": "1 tortilla, 10\" (72 g, USDA)",
+        "g": 72,
+        "kcal": 220,
+        "p": 5.9,
+        "f": 5.8,
+        "c": 35.6
+      }
+    ],
+    "labelCheck": "Label via USDA FDC 2601647 (Branded Foods, 2023-07-13): TORTILLA LAND \"FLOUR SOFT TACO SIZE TORTILLAS, FLOUR\", GTIN 044946082157, serving 47.0 GRM (1 Tortilla): per 47 g tortilla = 140 kcal, 3 g P, 4 g F.",
+    "costco": "See costco.json: tortilla_uncooked (verified), tortilla_mission_10in (verified). The uncooked tortillas match this entry. The Mission 10\" ones are pre-cooked: use their label (USDA's Mission soft-taco entry, FDC 175082, is 287 kcal per 100 g).",
+    "note": "Breakfast burritos and steak tacos.",
+    "verified": true,
+    "unverified": [
+      "Costco availability"
+    ],
+    "costcoIds": [
+      "tortilla_uncooked",
+      "tortilla_mission_10in"
+    ]
+  },
+  {
+    "id": "riceNoodles",
+    "name": "Rice noodles — cooked",
+    "group": "carb",
+    "state": "cooked",
+    "per100": {
+      "kcal": 108,
+      "p": 1.8,
+      "f": 0.2,
+      "c": 24,
+      "fib": 1
+    },
+    "src": "USDA FDC 168914 (SR Legacy, NDB 20134): \"Rice noodles, cooked\"",
+    "dry": {
+      "per100": {
+        "kcal": 364,
+        "p": 6,
+        "f": 0.6,
+        "c": 80.2,
+        "fib": 1.6
+      },
+      "src": "USDA FDC 169742 (SR Legacy, NDB 20133): \"Rice noodles, dry\""
+    },
+    "yield": {
+      "cookedOverDry": 3.36,
+      "src": "USDA SR composition: dry matter of FDC 169742 (dry) → FDC 168914 (cooked) = 3.36."
+    },
+    "units": [
+      {
+        "name": "1 cup cooked (176 g, USDA)",
+        "g": 176,
+        "kcal": 190,
+        "p": 3.2,
+        "f": 0.4,
+        "c": 42.2
+      }
+    ],
+    "logAs": "dry weight is more reliable (soaking water varies)",
+    "costco": "See costco.json: rice_noodles (unverified).",
+    "note": "Thai steak-and-noodle salad base.",
+    "verified": true,
+    "unverified": [
+      "Costco availability"
+    ],
+    "costcoIds": [
+      "rice_noodles"
+    ]
+  },
+  {
+    "id": "banana",
+    "name": "Banana, raw (peeled)",
+    "group": "carb",
+    "state": "raw",
+    "per100": {
+      "kcal": 88,
+      "p": 0.7,
+      "f": 0.3,
+      "c": 23,
+      "fib": 1.7
+    },
+    "src": "USDA FDC 1105314 (Foundation, published 4/1/2020, NDB 9040): \"Bananas, ripe and slightly ripe, raw\" [Energy, Atwater specific factors (nutrient 2048) from live FDC, 2026-11-01; the download carries only the general-factor 97 kcal]",
+    "units": [
+      {
+        "name": "1 medium, 7–8\" (118 g peeled, USDA)",
+        "g": 118,
+        "kcal": 104,
+        "p": 0.8,
+        "f": 0.4,
+        "c": 27.1
+      },
+      {
+        "name": "1 large (136 g peeled, USDA)",
+        "g": 136,
+        "kcal": 120,
+        "p": 1,
+        "f": 0.4,
+        "c": 31.3
+      }
+    ],
+    "costco": "See costco.json: bananas (unverified).",
+    "note": "Pre-lift fast carbs.",
+    "verified": true,
+    "unverified": [],
+    "costcoIds": [
+      "bananas"
+    ]
+  },
+  {
+    "id": "berries",
+    "name": "Berries — Kirkland Signature Three Berry Blend, frozen (raspberry, blueberry, blackberry)",
+    "group": "carb",
+    "state": "as sold",
+    "per100": {
+      "kcal": 56,
+      "p": 0.8,
+      "f": 0,
+      "c": 13.5,
+      "fib": 4
+    },
+    "src": "Label via USDA FDC 2460589 (Branded Foods, 2023-02-16): KIRKLAND SIGNATURE \"THREE BERRY BLEND, FLAVOR, THREE BERRY\", GTIN 096619174041, serving 126.0 g (1 Cup)",
+    "units": [
+      {
+        "name": "1 cup (126 g, label)",
+        "g": 126,
+        "kcal": 71,
+        "p": 1,
+        "f": 0,
+        "c": 17
+      }
+    ],
+    "alt": {
+      "blueberriesFresh": {
+        "per100": {
+          "kcal": 57,
+          "p": 0.7,
+          "f": 0.3,
+          "c": 14.5,
+          "fib": 2.4
+        },
+        "src": "USDA FDC 171711 (SR Legacy, NDB 9050): \"Blueberries, raw\""
+      },
+      "strawberriesFresh": {
+        "per100": {
+          "kcal": 32,
+          "p": 0.7,
+          "f": 0.3,
+          "c": 7.7,
+          "fib": 2
+        },
+        "src": "USDA FDC 167762 (SR Legacy, NDB 9316): \"Strawberries, raw\""
+      }
+    },
+    "costco": "See costco.json: frz_three_berry_4 (verified), frz_org_blueberries_3 (verified), frz_org_strawberries_4 (verified). This pass: Kirkland Signature Three Berry Blend: label present in FDC branded data (GTIN 096619174041, 2023); current stock not checked.",
+    "note": "",
+    "verified": true,
+    "unverified": [],
+    "costcoIds": [
+      "frz_three_berry_4",
+      "frz_org_blueberries_3",
+      "frz_org_strawberries_4"
+    ]
+  },
+  {
+    "id": "pineapple",
+    "name": "Pineapple, raw",
+    "group": "carb",
+    "state": "raw",
+    "per100": {
+      "kcal": 54,
+      "p": 0.5,
+      "f": 0.2,
+      "c": 14.1,
+      "fib": 0.9
+    },
+    "src": "USDA FDC 2346398 (Foundation, published 10/28/2022, NDB 9266): \"Pineapple, raw\" [Energy, Atwater specific factors (nutrient 2048)]",
+    "units": [
+      {
+        "name": "1 cup chunks (165 g, USDA)",
+        "g": 165,
+        "kcal": 89,
+        "p": 0.8,
+        "f": 0.3,
+        "c": 23.3
+      }
+    ],
+    "costco": "See costco.json: pineapple (unverified).",
+    "note": "",
+    "verified": true,
+    "unverified": [],
+    "costcoIds": [
+      "pineapple"
+    ]
+  },
+  {
+    "id": "apple",
+    "name": "Apple, raw, with skin",
+    "group": "carb",
+    "state": "raw",
+    "per100": {
+      "kcal": 52,
+      "p": 0.3,
+      "f": 0.2,
+      "c": 13.8,
+      "fib": 2.4
+    },
+    "src": "USDA FDC 171688 (SR Legacy, NDB 9003): \"Apples, raw, with skin (Includes foods for USDA's Food Distribution Program)\"",
+    "units": [
+      {
+        "name": "1 medium, 3\" (182 g, USDA)",
+        "g": 182,
+        "kcal": 95,
+        "p": 0.5,
+        "f": 0.4,
+        "c": 25.1
+      }
+    ],
+    "costco": "Apples: not verified in this pass.",
+    "note": "",
+    "verified": true,
+    "unverified": []
+  },
+  {
+    "id": "honey",
+    "name": "Honey",
+    "group": "carb",
+    "state": "as sold",
+    "per100": {
+      "kcal": 304,
+      "p": 0.3,
+      "f": 0,
+      "c": 82.4,
+      "fib": 0.2
+    },
+    "src": "USDA FDC 169640 (SR Legacy, NDB 19296): \"Honey\"",
+    "units": [
+      {
+        "name": "1 Tbsp (21 g, USDA)",
+        "g": 21,
+        "kcal": 64,
+        "p": 0.1,
+        "f": 0,
+        "c": 17.3
+      },
+      {
+        "name": "1 tsp (7 g)",
+        "g": 7,
+        "kcal": 21,
+        "p": 0,
+        "f": 0,
+        "c": 5.8
+      }
+    ],
+    "labelCheck": "Label via USDA FDC 2097593 (Branded Foods, 2021-10-28): KIRKLAND SIGNATURE \"ORGANIC HONEY\", GTIN 096619785445, serving 21.0 g (1 Tbsp): 1 Tbsp (21 g) = 60 kcal (label rounding).",
+    "logAs": "weigh it on the scale, straight into the bowl",
+    "costco": "See costco.json: honey_ks_org (verified). This pass: Kirkland Signature Organic Honey: label present in FDC branded data (GTIN 096619785445, 2021).",
+    "note": "",
+    "verified": true,
+    "unverified": [],
+    "costcoIds": [
+      "honey_ks_org"
+    ]
+  },
+  {
+    "id": "granola",
+    "name": "Granola — Kirkland Signature Ancient Grains Granola with Almonds (label)",
+    "group": "carb",
+    "state": "as sold",
+    "per100": {
+      "kcal": 455,
+      "p": 9.1,
+      "f": 16.4,
+      "c": 70.9,
+      "fib": 10.9
+    },
+    "src": "Label via USDA FDC 2009792 (Branded Foods, 2021-10-28): KIRKLAND SIGNATURE \"ANCIENT GRAINS GRANOLA WITH ALMONDS\", GTIN 096619994700, serving 55.0 g (0.75 cup)",
+    "units": [
+      {
+        "name": "3/4 cup (55 g, label)",
+        "g": 55,
+        "kcal": 250,
+        "p": 5,
+        "f": 9,
+        "c": 39
+      },
+      {
+        "name": "1/4 cup (18 g)",
+        "g": 18,
+        "kcal": 82,
+        "p": 1.6,
+        "f": 3,
+        "c": 12.8
+      }
+    ],
+    "logAs": "weigh it (it is calorie-dense: a heavy pour is +150 kcal)",
+    "costco": "Kirkland Signature Ancient Grains Granola: label present in FDC branded data (GTIN 096619994700, label dated 2018, FDC 2021); current stock not checked.",
+    "note": "Topping only, 20–30 g.",
+    "verified": true,
+    "unverified": []
+  },
+  {
+    "id": "broccoli",
+    "name": "Broccoli, raw",
+    "group": "veg",
+    "state": "raw",
+    "per100": {
+      "kcal": 34,
+      "p": 2.8,
+      "f": 0.4,
+      "c": 6.6,
+      "fib": 2.6
+    },
+    "src": "USDA FDC 170379 (SR Legacy, NDB 11090): \"Broccoli, raw\"",
+    "units": [
+      {
+        "name": "1 cup chopped (91 g)",
+        "g": 91,
+        "kcal": 31,
+        "p": 2.5,
+        "f": 0.4,
+        "c": 6
+      }
+    ],
+    "logAs": "raw weight before cooking (water loss in roasting does not change the calories)",
+    "costco": "See costco.json: broccoli_florets_3lb (verified), frz_organic_broccoli_4x1 (verified). This pass: Kirkland Signature Organic Broccoli Florets (frozen): label present in FDC branded data (GTIN 096619308293, 2021).",
+    "note": "",
+    "verified": true,
+    "unverified": [],
+    "labelCheck": "Label via USDA FDC 2178037 (Branded Foods, 2021-10-28): KIRKLAND \"ORGANIC BROCCOLI FLORETS\", GTIN 096619308293, serving 85.0 g (5 florets): 29 kcal, 3.5 g P, 4.7 g carb per 100 g.",
+    "costcoIds": [
+      "broccoli_florets_3lb",
+      "frz_organic_broccoli_4x1"
+    ]
+  },
+  {
+    "id": "greenBeans",
+    "name": "Green beans, raw",
+    "group": "veg",
+    "state": "raw",
+    "per100": {
+      "kcal": 31,
+      "p": 1.8,
+      "f": 0.2,
+      "c": 7,
+      "fib": 2.7
+    },
+    "src": "USDA FDC 169961 (SR Legacy, NDB 11052): \"Beans, snap, green, raw\"",
+    "units": [
+      {
+        "name": "1 cup 1/2\" pieces (100 g)",
+        "g": 100,
+        "kcal": 31,
+        "p": 1.8,
+        "f": 0.2,
+        "c": 7
+      }
+    ],
+    "logAs": "raw weight before cooking (water loss in roasting does not change the calories)",
+    "costco": "Kirkland Signature Organic Whole Green Beans (frozen): label present in FDC branded data (GTIN 096619309672, 2022).",
+    "note": "",
+    "verified": true,
+    "unverified": [],
+    "labelCheck": "Label via USDA FDC 2419223 (Branded Foods, 2022-12-22): KIRKLAND SIGNATURE \"ORGANIC WHOLE GREEN BEANS\", GTIN 096619309672, serving 83.0 g (3/4 cup): 36 kcal, 1.2 g P, 7.2 g carb per 100 g."
+  },
+  {
+    "id": "asparagus",
+    "name": "Asparagus, raw",
+    "group": "veg",
+    "state": "raw",
+    "per100": {
+      "kcal": 20,
+      "p": 2.2,
+      "f": 0.1,
+      "c": 3.9,
+      "fib": 2.1
+    },
+    "src": "USDA FDC 168389 (SR Legacy, NDB 11011): \"Asparagus, raw\"",
+    "units": [
+      {
+        "name": "1 cup (134 g)",
+        "g": 134,
+        "kcal": 27,
+        "p": 2.9,
+        "f": 0.1,
+        "c": 5.2
+      },
+      {
+        "name": "1 medium spear (16 g)",
+        "g": 16,
+        "kcal": 3,
+        "p": 0.4,
+        "f": 0,
+        "c": 0.6
+      }
+    ],
+    "logAs": "raw weight before cooking (water loss in roasting does not change the calories)",
+    "costco": "See costco.json: asparagus_225 (verified).",
+    "note": "",
+    "verified": true,
+    "unverified": [],
+    "costcoIds": [
+      "asparagus_225"
+    ]
+  },
+  {
+    "id": "brusselsSprouts",
+    "name": "Brussels sprouts, raw",
+    "group": "veg",
+    "state": "raw",
+    "per100": {
+      "kcal": 49,
+      "p": 4,
+      "f": 0.6,
+      "c": 9.6,
+      "fib": 4.8
+    },
+    "src": "USDA FDC 2685575 (Foundation, published 4/18/2024, NDB 11098): \"Brussels sprouts, raw\" [Energy, Atwater specific factors (nutrient 2048)]",
+    "units": [
+      {
+        "name": "1 cup (85 g, USDA RACC)",
+        "g": 85,
+        "kcal": 42,
+        "p": 3.4,
+        "f": 0.5,
+        "c": 8.2
+      }
+    ],
+    "logAs": "raw weight before cooking (water loss in roasting does not change the calories)",
+    "costco": "Costco: not verified in this pass.",
+    "note": "",
+    "verified": true,
+    "unverified": []
+  },
+  {
+    "id": "kale",
+    "name": "Kale, raw",
+    "group": "veg",
+    "state": "raw",
+    "per100": {
+      "kcal": 35,
+      "p": 2.9,
+      "f": 1.5,
+      "c": 4.4,
+      "fib": 4.1
+    },
+    "src": "USDA FDC 323505 (Foundation, published 4/1/2019, NDB 11233): \"Kale, raw\"",
+    "units": [
+      {
+        "name": "1 cup pieces (20.6 g)",
+        "g": 20.6,
+        "kcal": 7,
+        "p": 0.6,
+        "f": 0.3,
+        "c": 0.9
+      }
+    ],
+    "logAs": "raw weight before cooking (water loss in roasting does not change the calories)",
+    "costco": "See costco.json: power_greens (verified). The catalog item is a power-greens mix; kale values are a proxy for it.",
+    "note": "",
+    "verified": true,
+    "unverified": [],
+    "costcoIds": [
+      "power_greens"
+    ]
+  },
+  {
+    "id": "spinach",
+    "name": "Spinach, raw",
+    "group": "veg",
+    "state": "raw",
+    "per100": {
+      "kcal": 23,
+      "p": 2.9,
+      "f": 0.4,
+      "c": 3.6,
+      "fib": 2.2
+    },
+    "src": "USDA FDC 168462 (SR Legacy, NDB 11457): \"Spinach, raw\"",
+    "units": [
+      {
+        "name": "1 cup (30 g)",
+        "g": 30,
+        "kcal": 7,
+        "p": 0.9,
+        "f": 0.1,
+        "c": 1.1
+      }
+    ],
+    "logAs": "raw weight before cooking (water loss in roasting does not change the calories)",
+    "costco": "See costco.json: spinach_baby_1lb (verified).",
+    "note": "",
+    "verified": true,
+    "unverified": [],
+    "costcoIds": [
+      "spinach_baby_1lb"
+    ]
+  },
+  {
+    "id": "romaine",
+    "name": "Romaine lettuce, raw",
+    "group": "veg",
+    "state": "raw",
+    "per100": {
+      "kcal": 17,
+      "p": 1.2,
+      "f": 0.3,
+      "c": 3.2,
+      "fib": 1.8
+    },
+    "src": "USDA FDC 746769 (Foundation, published 12/16/2019, NDB 11251): \"Lettuce, cos or romaine, raw\"",
+    "units": [
+      {
+        "name": "85 g (USDA RACC)",
+        "g": 85,
+        "kcal": 14,
+        "p": 1,
+        "f": 0.3,
+        "c": 2.7
+      }
+    ],
+    "logAs": "raw weight before cooking (water loss in roasting does not change the calories)",
+    "costco": "See costco.json: romaine_hearts (verified).",
+    "note": "",
+    "verified": true,
+    "unverified": [],
+    "costcoIds": [
+      "romaine_hearts"
+    ]
+  },
+  {
+    "id": "cabbage",
+    "name": "Cabbage / coleslaw mix, raw",
+    "group": "veg",
+    "state": "raw",
+    "per100": {
+      "kcal": 25,
+      "p": 1.3,
+      "f": 0.1,
+      "c": 5.8,
+      "fib": 2.5
+    },
+    "src": "USDA FDC 169975 (SR Legacy, NDB 11109): \"Cabbage, raw\"",
+    "units": [
+      {
+        "name": "1 cup shredded (70 g)",
+        "g": 70,
+        "kcal": 18,
+        "p": 0.9,
+        "f": 0.1,
+        "c": 4.1
+      }
+    ],
+    "logAs": "raw weight before cooking (water loss in roasting does not change the calories)",
+    "costco": "See costco.json: cabbage (unverified).",
+    "note": "Bagged coleslaw mix is mostly green cabbage with some carrot; cabbage values are used for it. Dressing is logged separately.",
+    "verified": true,
+    "unverified": [],
+    "costcoIds": [
+      "cabbage"
+    ]
+  },
+  {
+    "id": "cucumber",
+    "name": "Cucumber with peel, raw",
+    "group": "veg",
+    "state": "raw",
+    "per100": {
+      "kcal": 15,
+      "p": 0.7,
+      "f": 0.1,
+      "c": 3.6,
+      "fib": 0.5
+    },
+    "src": "USDA FDC 168409 (SR Legacy, NDB 11205): \"Cucumber, with peel, raw\"",
+    "units": [
+      {
+        "name": "1/2 cup slices (52 g)",
+        "g": 52,
+        "kcal": 8,
+        "p": 0.4,
+        "f": 0.1,
+        "c": 1.9
+      }
+    ],
+    "logAs": "raw weight before cooking (water loss in roasting does not change the calories)",
+    "costco": "See costco.json: cucumbers_cocktail (likely).",
+    "note": "",
+    "verified": true,
+    "unverified": [],
+    "costcoIds": [
+      "cucumbers_cocktail"
+    ]
+  },
+  {
+    "id": "bellPepper",
+    "name": "Red bell pepper, raw",
+    "group": "veg",
+    "state": "raw",
+    "per100": {
+      "kcal": 26,
+      "p": 1,
+      "f": 0.3,
+      "c": 6,
+      "fib": 2.1
+    },
+    "src": "USDA FDC 170108 (SR Legacy, NDB 11821): \"Peppers, sweet, red, raw\"",
+    "units": [
+      {
+        "name": "1 medium (119 g)",
+        "g": 119,
+        "kcal": 31,
+        "p": 1.2,
+        "f": 0.4,
+        "c": 7.1
+      }
+    ],
+    "logAs": "raw weight before cooking (water loss in roasting does not change the calories)",
+    "costco": "See costco.json: peppers (unverified).",
+    "note": "",
+    "verified": true,
+    "unverified": [],
+    "costcoIds": [
+      "peppers"
+    ]
+  },
+  {
+    "id": "onion",
+    "name": "Yellow onion, raw",
+    "group": "veg",
+    "state": "raw",
+    "per100": {
+      "kcal": 36,
+      "p": 0.8,
+      "f": 0.1,
+      "c": 8.6,
+      "fib": 1.9
+    },
+    "src": "USDA FDC 790646 (Foundation, published 4/1/2020, NDB 100253): \"Onions, yellow, raw\" [Energy, Atwater specific factors (nutrient 2048) from live FDC, 2026-11-01; the download carries only the general-factor 38 kcal]",
+    "units": [
+      {
+        "name": "1 onion (143 g edible)",
+        "g": 143,
+        "kcal": 51,
+        "p": 1.1,
+        "f": 0.1,
+        "c": 12.3
+      }
+    ],
+    "logAs": "raw weight before cooking (water loss in roasting does not change the calories)",
+    "costco": "See costco.json: onions (unverified).",
+    "note": "",
+    "verified": true,
+    "unverified": [],
+    "costcoIds": [
+      "onions"
+    ]
+  },
+  {
+    "id": "edamame",
+    "name": "Edamame, shelled, frozen — prepared",
+    "group": "veg",
+    "state": "cooked",
+    "per100": {
+      "kcal": 121,
+      "p": 11.9,
+      "f": 5.2,
+      "c": 8.9,
+      "fib": 5.2
+    },
+    "src": "USDA FDC 168411 (SR Legacy, NDB 11212): \"Edamame, frozen, prepared\"",
+    "units": [
+      {
+        "name": "1 cup (155 g)",
+        "g": 155,
+        "kcal": 188,
+        "p": 18.4,
+        "f": 8.1,
+        "c": 13.8
+      }
+    ],
+    "logAs": "weigh shelled beans after cooking",
+    "costco": "Costco: not verified in this pass.",
+    "note": "Counts as protein and fibre; a good shift-box side.",
+    "verified": true,
+    "unverified": []
+  },
+  {
+    "id": "mushrooms",
+    "name": "Mushrooms, white/button, raw",
+    "group": "veg",
+    "state": "raw",
+    "per100": {
+      "kcal": 22,
+      "p": 3.1,
+      "f": 0.3,
+      "c": 3.3,
+      "fib": 1
+    },
+    "src": "USDA FDC 169251 (SR Legacy, NDB 11260): \"Mushrooms, white, raw\"",
+    "units": [
+      {
+        "name": "1 cup slices (70 g)",
+        "g": 70,
+        "kcal": 15,
+        "p": 2.2,
+        "f": 0.2,
+        "c": 2.3
+      }
+    ],
+    "logAs": "raw weight before cooking (water loss in roasting does not change the calories)",
+    "costco": "See costco.json: mushrooms_minibella (verified), mushrooms_shiitake (verified). Mini bella = cremini (see alt.cremini).",
+    "note": "",
+    "verified": true,
+    "unverified": [],
+    "alt": {
+      "shiitake": {
+        "per100": {
+          "kcal": 34,
+          "p": 2.2,
+          "f": 0.5,
+          "c": 6.8,
+          "fib": 2.5
+        },
+        "src": "USDA FDC 169242 (SR Legacy, NDB 11238): \"Mushrooms, shiitake, raw\""
+      },
+      "cremini": {
+        "per100": {
+          "kcal": 22,
+          "p": 2.5,
+          "f": 0.1,
+          "c": 4.3,
+          "fib": 0.6
+        },
+        "src": "USDA FDC 168434 (SR Legacy, NDB 11266): \"Mushrooms, brown, italian, or crimini, raw\""
+      }
+    },
+    "costcoIds": [
+      "mushrooms_minibella",
+      "mushrooms_shiitake"
+    ]
+  },
+  {
+    "id": "tomatoes",
+    "name": "Grape tomatoes, raw",
+    "group": "veg",
+    "state": "raw",
+    "per100": {
+      "kcal": 27,
+      "p": 0.8,
+      "f": 0.6,
+      "c": 5.5,
+      "fib": 2.1
+    },
+    "src": "USDA FDC 321360 (Foundation, published 4/1/2019, NDB 100147): \"Tomatoes, grape, raw\"",
+    "units": [
+      {
+        "name": "1 cup (152 g)",
+        "g": 152,
+        "kcal": 41,
+        "p": 1.2,
+        "f": 0.9,
+        "c": 8.4
+      }
+    ],
+    "logAs": "raw weight before cooking (water loss in roasting does not change the calories)",
+    "costco": "See costco.json: tomatoes (unverified).",
+    "note": "",
+    "verified": true,
+    "unverified": [],
+    "costcoIds": [
+      "tomatoes"
+    ]
+  },
+  {
+    "id": "oliveOil",
+    "name": "Olive oil (extra virgin)",
+    "group": "fat",
+    "state": "as sold",
+    "per100": {
+      "kcal": 884,
+      "p": 0,
+      "f": 100,
+      "c": 0,
+      "fib": 0
+    },
+    "src": "USDA FDC 171413 (SR Legacy, NDB 4053): \"Oil, olive, salad or cooking\"",
+    "units": [
+      {
+        "name": "1 Tbsp (13.5 g, USDA)",
+        "g": 13.5,
+        "kcal": 119,
+        "p": 0,
+        "f": 13.5,
+        "c": 0
+      },
+      {
+        "name": "1 tsp (4.5 g, USDA)",
+        "g": 4.5,
+        "kcal": 40,
+        "p": 0,
+        "f": 4.5,
+        "c": 0
+      }
+    ],
+    "costco": "See costco.json: evoo_ks_org_2l (verified). This pass: Kirkland Signature olive oils: label present in FDC branded data (Greek olive oil, GTIN 096619584994, 2021).",
+    "note": "",
+    "verified": true,
+    "unverified": [],
+    "logAs": "weigh it in grams on the scale; spray bottles are not zero",
+    "labelCheck": "Label via USDA FDC 1542339 (Branded Foods, 2021-03-19): KIRKLAND SIGNATURE \"GREEK OLIVE OIL\", GTIN 096619584994, serving 15.0 ml (1 Tbsp): 1 Tbsp (15 ml) = 125 kcal.",
+    "costcoIds": [
+      "evoo_ks_org_2l"
+    ]
+  },
+  {
+    "id": "avocadoOil",
+    "name": "Avocado oil",
+    "group": "fat",
+    "state": "as sold",
+    "per100": {
+      "kcal": 884,
+      "p": 0,
+      "f": 100,
+      "c": 0,
+      "fib": 0
+    },
+    "src": "USDA FDC 173573 (SR Legacy, NDB 4581): \"Oil, avocado\"",
+    "units": [
+      {
+        "name": "1 Tbsp (14 g, USDA)",
+        "g": 14,
+        "kcal": 124,
+        "p": 0,
+        "f": 14,
+        "c": 0
+      },
+      {
+        "name": "1 tsp (4.5 g, USDA)",
+        "g": 4.5,
+        "kcal": 40,
+        "p": 0,
+        "f": 4.5,
+        "c": 0
+      }
+    ],
+    "costco": "See costco.json: avocado_oil_chosen_2l (verified).",
+    "note": "",
+    "verified": true,
+    "unverified": [],
+    "logAs": "weigh it; the searing oil",
+    "costcoIds": [
+      "avocado_oil_chosen_2l"
+    ]
+  },
+  {
+    "id": "butter",
+    "name": "Butter, salted",
+    "group": "fat",
+    "state": "as sold",
+    "per100": {
+      "kcal": 717,
+      "p": 0.9,
+      "f": 81.1,
+      "c": 0.1,
+      "fib": 0
+    },
+    "src": "USDA FDC 173410 (SR Legacy, NDB 1001): \"Butter, salted\"",
+    "units": [
+      {
+        "name": "1 Tbsp (14.2 g, USDA)",
+        "g": 14.2,
+        "kcal": 102,
+        "p": 0.1,
+        "f": 11.5,
+        "c": 0
+      },
+      {
+        "name": "1 pat (5 g, USDA)",
+        "g": 5,
+        "kcal": 36,
+        "p": 0,
+        "f": 4.1,
+        "c": 0
+      }
+    ],
+    "costco": "See costco.json: butter_unsalted_4x1 (verified), butter_grassfed (verified). This pass: Kirkland Signature Salted Sweet Cream Butter: label present in FDC branded data (GTIN 096619441112, 2022). The catalog lists unsalted and grass-fed butter; USDA unsalted butter (FDC 173430) has the same macros as this salted entry.",
+    "note": "Steak basting butter counts only if it is eaten: log what goes on the plate.",
+    "verified": true,
+    "unverified": [],
+    "labelCheck": "Label via USDA FDC 2329482 (Branded Foods, 2022-06-21): KIRKLAND SIGNATURE \"SALTED SWEET CREAM BUTTER, SALTED\", GTIN 096619441112, serving 14.0 g (1 Tbsp): 1 Tbsp (14 g) = 100 kcal, 11 g fat.",
+    "costcoIds": [
+      "butter_unsalted_4x1",
+      "butter_grassfed"
+    ]
+  },
+  {
+    "id": "avocado",
+    "name": "Avocado (Hass), raw flesh",
+    "group": "fat",
+    "state": "raw",
+    "per100": {
+      "kcal": 167,
+      "p": 2,
+      "f": 15.4,
+      "c": 8.6,
+      "fib": 6.8
+    },
+    "src": "USDA FDC 171706 (SR Legacy, NDB 9038): \"Avocados, raw, California\"",
+    "units": [
+      {
+        "name": "1 fruit flesh (136 g, USDA)",
+        "g": 136,
+        "kcal": 227,
+        "p": 2.7,
+        "f": 20.9,
+        "c": 11.7
+      },
+      {
+        "name": "1/2 fruit (68 g)",
+        "g": 68,
+        "kcal": 114,
+        "p": 1.4,
+        "f": 10.5,
+        "c": 5.8
+      }
+    ],
+    "costco": "See costco.json: avocados (likely).",
+    "note": "",
+    "verified": true,
+    "unverified": [],
+    "costcoIds": [
+      "avocados"
+    ]
+  },
+  {
+    "id": "peanutButter",
+    "name": "Peanut butter, creamy",
+    "group": "fat",
+    "state": "as sold",
+    "per100": {
+      "kcal": 589,
+      "p": 24,
+      "f": 49.4,
+      "c": 22.7,
+      "fib": 6.3
+    },
+    "src": "USDA FDC 2262072 (Foundation, published 4/28/2022, NDB 16098): \"Peanut butter, creamy\" [Energy, Atwater specific factors (nutrient 2048)]",
+    "units": [
+      {
+        "name": "2 Tbsp (32 g)",
+        "g": 32,
+        "kcal": 188,
+        "p": 7.7,
+        "f": 15.8,
+        "c": 7.3
+      },
+      {
+        "name": "1 Tbsp (16 g)",
+        "g": 16,
+        "kcal": 94,
+        "p": 3.8,
+        "f": 7.9,
+        "c": 3.6
+      }
+    ],
+    "costco": "See costco.json: peanut_butter (unverified). This pass: Kirkland Signature Organic Creamy Peanut Butter: label present in FDC branded data (GTIN 096619555505, 2021).",
+    "note": "Also the base of the Thai peanut dressing (log by weight).",
+    "verified": true,
+    "unverified": [],
+    "logAs": "weigh it (a \"tablespoon\" off a spoon is often 25 g)",
+    "labelCheck": "Label via USDA FDC 2063383 (Branded Foods, 2021-10-28): KIRKLAND SIGNATURE \"ORGANIC CREAMY PEANUT BUTTER\", GTIN 096619555505, serving 32.0 g (2 Tbsp): 2 Tbsp (32 g) = 200 kcal, 8 g P (label rounding).",
+    "costcoIds": [
+      "peanut_butter"
+    ]
+  },
+  {
+    "id": "parmesan",
+    "name": "Parmesan / Parmigiano-Reggiano, hard (grate it yourself)",
+    "group": "fat",
+    "state": "as sold",
+    "per100": {
+      "kcal": 392,
+      "p": 35.8,
+      "f": 25,
+      "c": 3.2,
+      "fib": 0
+    },
+    "src": "USDA FDC 170848 (SR Legacy, NDB 1033): \"Cheese, parmesan, hard\"",
+    "units": [
+      {
+        "name": "1 oz (28.35 g)",
+        "g": 28.4,
+        "kcal": 111,
+        "p": 10.1,
+        "f": 7.1,
+        "c": 0.9
+      },
+      {
+        "name": "10 g (a generous grate)",
+        "g": 10,
+        "kcal": 39,
+        "p": 3.6,
+        "f": 2.5,
+        "c": 0.3
+      }
+    ],
+    "costco": "See costco.json: parm_wedge (verified), parm_shredded_1lb (verified).",
+    "note": "",
+    "verified": true,
+    "unverified": [],
+    "alt": {
+      "gratedTub": {
+        "per100": {
+          "kcal": 405,
+          "p": 30.1,
+          "f": 29.5,
+          "c": 4.3,
+          "fib": 0
+        },
+        "src": "USDA FDC 2259795 (Foundation, published 4/28/2022, NDB 100272): \"Cheese, parmesan, grated, refrigerated\" [Energy, Atwater specific factors (nutrient 2048)]"
+      }
+    },
+    "costcoIds": [
+      "parm_wedge",
+      "parm_shredded_1lb"
+    ]
+  },
+  {
+    "id": "feta",
+    "name": "Feta, crumbled",
+    "group": "fat",
+    "state": "as sold",
+    "per100": {
+      "kcal": 273,
+      "p": 19.7,
+      "f": 19.1,
+      "c": 5.6,
+      "fib": 0
+    },
+    "src": "USDA FDC 2259796 (Foundation, published 4/28/2022, NDB 1019): \"Cheese, feta, whole milk, crumbled\" [Energy, Atwater specific factors (nutrient 2048)]",
+    "units": [
+      {
+        "name": "1 oz (28 g)",
+        "g": 28,
+        "kcal": 76,
+        "p": 5.5,
+        "f": 5.3,
+        "c": 1.6
+      },
+      {
+        "name": "30 g (USDA RACC)",
+        "g": 30,
+        "kcal": 82,
+        "p": 5.9,
+        "f": 5.7,
+        "c": 1.7
+      }
+    ],
+    "costco": "See costco.json: feta_ks_organic (likely).",
+    "note": "",
+    "verified": true,
+    "unverified": [],
+    "alt": {
+      "usdaSR": {
+        "per100": {
+          "kcal": 265,
+          "p": 14.2,
+          "f": 21.5,
+          "c": 3.9,
+          "fib": 0
+        },
+        "src": "USDA FDC 173420 (SR Legacy, NDB 1019): \"Cheese, feta\""
+      }
+    },
+    "costcoIds": [
+      "feta_ks_organic"
+    ]
+  },
+  {
+    "id": "mayoLight",
+    "name": "Light mayonnaise — Hellmann's / Best Foods Light (label)",
+    "group": "fat",
+    "state": "as sold",
+    "per100": {
+      "kcal": 233,
+      "p": 0,
+      "f": 23.3,
+      "c": 6.7,
+      "fib": 0
+    },
+    "src": "Label via USDA FDC 2566516 (Branded Foods, 2023-06-29): HELLMANN'S \"LIGHT MAYONNAISE\", GTIN 0048001354722, serving 15.0 GRM (1 Tbsp (15g))",
+    "units": [
+      {
+        "name": "1 Tbsp (15 g, label)",
+        "g": 15,
+        "kcal": 35,
+        "p": 0,
+        "f": 3.5,
+        "c": 1
+      }
+    ],
+    "costco": "See costco.json: mayo_ks (verified). The catalog lists Kirkland Real (full-fat) mayonnaise, not light: regular mayonnaise is 680 kcal per 100 g (USDA FDC 171009) vs 233 here — log the jar you actually use.",
+    "note": "Louie dressing, burger sauce (log by weight).",
+    "verified": true,
+    "unverified": [],
+    "costcoIds": [
+      "mayo_ks"
+    ]
+  },
+  {
+    "id": "soySauce",
+    "name": "Soy sauce (shoyu, regular)",
+    "group": "flavor",
+    "state": "as sold",
+    "per100": {
+      "kcal": 53,
+      "p": 8.1,
+      "f": 0.6,
+      "c": 4.9,
+      "fib": 0.8
+    },
+    "src": "USDA FDC 174277 (SR Legacy, NDB 16123): \"Soy sauce made from soy and wheat (shoyu)\"",
+    "units": [
+      {
+        "name": "1 Tbsp (16 g, USDA)",
+        "g": 16,
+        "kcal": 8,
+        "p": 1.3,
+        "f": 0.1,
+        "c": 0.8
+      },
+      {
+        "name": "1 tsp (5.3 g, USDA)",
+        "g": 5.3,
+        "kcal": 3,
+        "p": 0.4,
+        "f": 0,
+        "c": 0.3
+      }
+    ],
+    "costco": "See costco.json: soy_kikkoman_lesssodium (verified).",
+    "note": "Low-calorie; the sodium is the cost.",
+    "verified": true,
+    "unverified": [],
+    "alt": {
+      "lowSodium": {
+        "per100": {
+          "kcal": 57,
+          "p": 9.1,
+          "f": 0.3,
+          "c": 5.6,
+          "fib": 0.7
+        },
+        "src": "USDA FDC 172473 (SR Legacy, NDB 16424): \"Soy sauce made from soy and wheat (shoyu), low sodium\""
+      }
+    },
+    "costcoIds": [
+      "soy_kikkoman_lesssodium"
+    ]
+  },
+  {
+    "id": "ponzu",
+    "name": "Ponzu — Kikkoman Ponzu Citrus Seasoned Dressing & Sauce (label)",
+    "group": "flavor",
+    "state": "as sold",
+    "per100": {
+      "kcal": 67,
+      "p": 6.7,
+      "f": 0,
+      "c": 13.3,
+      "fib": 0
+    },
+    "src": "Label via USDA FDC 2633370 (Branded Foods, 2023-09-14): KIKKOMAN \"PONZU CITRUS SEASONED DRESSING & SAUCE, PONZU CITRUS\", GTIN 041390020810, serving 15.0 MLT (1 Tbsp)",
+    "units": [
+      {
+        "name": "1 Tbsp (15 ml, label)",
+        "ml": 15,
+        "kcal": 10,
+        "p": 1,
+        "f": 0,
+        "c": 2
+      }
+    ],
+    "costco": "See costco.json: ponzu (unverified).",
+    "note": "Per 100 ml (the label is per 15 ml). Seared ahi, salmon, slaw dressing.",
+    "verified": true,
+    "unverified": [],
+    "per": "100 ml",
+    "costcoIds": [
+      "ponzu"
+    ]
+  },
+  {
+    "id": "sriracha",
+    "name": "Sriracha",
+    "group": "flavor",
+    "state": "as sold",
+    "per100": {
+      "kcal": 93,
+      "p": 1.9,
+      "f": 0.9,
+      "c": 19.2,
+      "fib": 2.2
+    },
+    "src": "USDA FDC 171186 (SR Legacy, NDB 6631): \"Sauce, hot chile, sriracha\"",
+    "units": [
+      {
+        "name": "1 tsp (6.5 g, USDA)",
+        "g": 6.5,
+        "kcal": 6,
+        "p": 0.1,
+        "f": 0.1,
+        "c": 1.2
+      }
+    ],
+    "costco": "See costco.json: sriracha (likely).",
+    "note": "",
+    "verified": true,
+    "unverified": [],
+    "costcoIds": [
+      "sriracha"
+    ]
+  },
+  {
+    "id": "dijon",
+    "name": "Dijon mustard — Maille Dijon Originale (label)",
+    "group": "flavor",
+    "state": "as sold",
+    "per100": {
+      "kcal": 200,
+      "p": 0,
+      "f": 10,
+      "c": 20,
+      "fib": 0
+    },
+    "src": "Label via USDA FDC 2566098 (Branded Foods, 2023-06-29): MAILLE \"DIJON ORIGINALE MUSTARD\", GTIN 0043646201288, serving 5.0 GRM (1 tsp (5g))",
+    "units": [
+      {
+        "name": "1 tsp (5 g, label)",
+        "g": 5,
+        "kcal": 10,
+        "p": 0,
+        "f": 0.5,
+        "c": 1
+      }
+    ],
+    "costco": "See costco.json: dijon (unverified).",
+    "note": "USDA has no Dijon entry. US Dijon labels round heavily per 5 g teaspoon: Maille lists 10 kcal (used here, the higher value), Grey Poupon 5 kcal (FDC 2597122).",
+    "verified": true,
+    "unverified": [
+      "per-100 g macros are label-rounded"
+    ],
+    "costcoIds": [
+      "dijon"
+    ]
+  },
+  {
+    "id": "lemonJuice",
+    "name": "Lemon juice, fresh",
+    "group": "flavor",
+    "state": "raw",
+    "per100": {
+      "kcal": 22,
+      "p": 0.4,
+      "f": 0.2,
+      "c": 6.9,
+      "fib": 0.3
+    },
+    "src": "USDA FDC 167747 (SR Legacy, NDB 9152): \"Lemon juice, raw\"",
+    "units": [
+      {
+        "name": "1 Tbsp (15.25 g)",
+        "g": 15.3,
+        "kcal": 3,
+        "p": 0.1,
+        "f": 0,
+        "c": 1.1
+      },
+      {
+        "name": "juice of 1 lemon (48 g, USDA)",
+        "g": 48,
+        "kcal": 11,
+        "p": 0.2,
+        "f": 0.1,
+        "c": 3.3
+      }
+    ],
+    "costco": "See costco.json: lemons_5lb (verified).",
+    "note": "",
+    "verified": true,
+    "unverified": [],
+    "costcoIds": [
+      "lemons_5lb"
+    ]
+  },
+  {
+    "id": "garlic",
+    "name": "Garlic, raw",
+    "group": "flavor",
+    "state": "raw",
+    "per100": {
+      "kcal": 130,
+      "p": 6.6,
+      "f": 0.4,
+      "c": 28.2,
+      "fib": 2.7
+    },
+    "src": "USDA FDC 1104647 (Foundation, published 10/30/2020, NDB 11215): \"Garlic, raw\" [Energy, Atwater specific factors (nutrient 2048) from live FDC, 2026-11-01; the download carries only the general-factor 143 kcal]",
+    "units": [
+      {
+        "name": "1 clove (3 g, USDA SR)",
+        "g": 3,
+        "kcal": 4,
+        "p": 0.2,
+        "f": 0,
+        "c": 0.8
+      }
+    ],
+    "costco": "See costco.json: garlic_minced_48 (verified). The catalog item is jarred minced garlic; log by the jar label if it differs (this entry is fresh raw garlic).",
+    "note": "",
+    "verified": true,
+    "unverified": [],
+    "costcoIds": [
+      "garlic_minced_48"
+    ]
+  },
+  {
+    "id": "ginger",
+    "name": "Ginger root, raw",
+    "group": "flavor",
+    "state": "raw",
+    "per100": {
+      "kcal": 80,
+      "p": 1.8,
+      "f": 0.8,
+      "c": 17.8,
+      "fib": 2
+    },
+    "src": "USDA FDC 169231 (SR Legacy, NDB 11216): \"Ginger root, raw\"",
+    "units": [
+      {
+        "name": "1 tsp grated (2 g, USDA)",
+        "g": 2,
+        "kcal": 2,
+        "p": 0,
+        "f": 0,
+        "c": 0.4
+      }
+    ],
+    "costco": "See costco.json: ginger (unverified).",
+    "note": "",
+    "verified": true,
+    "unverified": [],
+    "costcoIds": [
+      "ginger"
+    ]
+  },
+  {
+    "id": "pineappleJuice",
+    "name": "Pineapple juice, unsweetened (marinade only)",
+    "group": "flavor",
+    "state": "as sold",
+    "per100": {
+      "kcal": 53,
+      "p": 0.4,
+      "f": 0.1,
+      "c": 12.9,
+      "fib": 0.2
+    },
+    "src": "USDA FDC 169947 (SR Legacy, NDB 9273): \"Pineapple juice, canned or bottled, unsweetened, without added ascorbic acid\"",
+    "units": [
+      {
+        "name": "1/4 cup (USDA 1 cup = 250 g)",
+        "g": 62.5,
+        "kcal": 33,
+        "p": 0.3,
+        "f": 0.1,
+        "c": 8.1
+      }
+    ],
+    "costco": "Canned pineapple juice at Costco: not verified in this pass.",
+    "note": "For the Hawaiian marinade only: no drinking juice (no liquid calories). Most of a marinade is poured away; logging only what is brushed on or reduced into a glaze is a judgment call.",
+    "verified": true,
+    "unverified": []
+  },
+  {
+    "id": "brownSugar",
+    "name": "Brown sugar",
+    "group": "flavor",
+    "state": "as sold",
+    "per100": {
+      "kcal": 380,
+      "p": 0.1,
+      "f": 0,
+      "c": 98.1,
+      "fib": 0
+    },
+    "src": "USDA FDC 168833 (SR Legacy, NDB 19334): \"Sugars, brown\"",
+    "units": [
+      {
+        "name": "1 tsp packed (4.6 g, USDA)",
+        "g": 4.6,
+        "kcal": 17,
+        "p": 0,
+        "f": 0,
+        "c": 4.5
+      },
+      {
+        "name": "1 Tbsp packed (13.8 g)",
+        "g": 13.8,
+        "kcal": 52,
+        "p": 0,
+        "f": 0,
+        "c": 13.5
+      }
+    ],
+    "costco": "Brown sugar at Costco: not verified in this pass.",
+    "note": "",
+    "verified": true,
+    "unverified": []
+  },
+  {
+    "id": "sesameOil",
+    "name": "Toasted sesame oil",
+    "group": "fat",
+    "state": "as sold",
+    "per100": {
+      "kcal": 884,
+      "p": 0,
+      "f": 100,
+      "c": 0,
+      "fib": 0
+    },
+    "src": "USDA FDC 171016 (SR Legacy, NDB 4058): \"Oil, sesame, salad or cooking\"",
+    "units": [
+      {
+        "name": "1 tsp (4.5 g, USDA)",
+        "g": 4.5,
+        "kcal": 40,
+        "p": 0,
+        "f": 4.5,
+        "c": 0
+      },
+      {
+        "name": "1 Tbsp (13.6 g, USDA)",
+        "g": 13.6,
+        "kcal": 120,
+        "p": 0,
+        "f": 13.6,
+        "c": 0
+      }
+    ],
+    "costco": "See costco.json: sesame_oil (unverified).",
+    "note": "",
+    "verified": true,
+    "unverified": [],
+    "labelCheck": "Label via USDA FDC 2054023 (Branded Foods, 2021-10-28): KADOYA \"KADOYA, PURE SESAME OIL\", GTIN 012822009222, serving 14.0 g (1 Tbsp): per 100 g 929 kcal (label rounding).",
+    "costcoIds": [
+      "sesame_oil"
+    ]
+  },
+  {
+    "id": "fishSauce",
+    "name": "Fish sauce",
+    "group": "flavor",
+    "state": "as sold",
+    "per100": {
+      "kcal": 35,
+      "p": 5.1,
+      "f": 0,
+      "c": 3.6,
+      "fib": 0
+    },
+    "src": "USDA FDC 174531 (SR Legacy, NDB 6179): \"Sauce, fish, ready-to-serve\"",
+    "units": [
+      {
+        "name": "1 Tbsp (18 g, USDA)",
+        "g": 18,
+        "kcal": 6,
+        "p": 0.9,
+        "f": 0,
+        "c": 0.6
+      }
+    ],
+    "costco": "See costco.json: fish_sauce (unverified).",
+    "note": "",
+    "verified": true,
+    "unverified": [],
+    "labelCheck": "Label via USDA FDC 2631358 (Branded Foods, 2023-08-31): RED BOAT \"FISH SAUCE, FISH\", GTIN 860002015705, serving 18.799999237060547 GRM (1 Tbsp): 1 Tbsp (18.8 g) = 15 kcal, 4 g P.",
+    "costcoIds": [
+      "fish_sauce"
+    ]
+  },
+  {
+    "id": "peanuts",
+    "name": "Peanuts, dry-roasted, salted",
+    "group": "fat",
+    "state": "as sold",
+    "per100": {
+      "kcal": 587,
+      "p": 24.4,
+      "f": 49.7,
+      "c": 21.3,
+      "fib": 8.4
+    },
+    "src": "USDA FDC 174262 (SR Legacy, NDB 16090): \"Peanuts, all types, dry-roasted, with salt\"",
+    "units": [
+      {
+        "name": "1 oz (28.35 g)",
+        "g": 28.4,
+        "kcal": 166,
+        "p": 6.9,
+        "f": 14.1,
+        "c": 6
+      },
+      {
+        "name": "1 Tbsp chopped (9 g)",
+        "g": 9,
+        "kcal": 53,
+        "p": 2.2,
+        "f": 4.5,
+        "c": 1.9
+      }
+    ],
+    "costco": "Kirkland Signature Super Extra-Large Peanuts: label present in FDC branded data (GTIN 096619222490, 2021).",
+    "note": "Garnish weight only (Thai salad).",
+    "verified": true,
+    "unverified": [],
+    "labelCheck": "Label via USDA FDC 2068135 (Branded Foods, 2021-10-28): KIRKLAND SIGNATURE \"SUPER EXTRA LARGE PEANUTS, ROASTED & SALTED\", GTIN 096619222490, serving 31.0 g (3 Tbsp): 3 Tbsp (31 g) = 170 kcal."
+  },
+  {
+    "id": "limeJuice",
+    "name": "Lime juice, fresh",
+    "group": "flavor",
+    "state": "raw",
+    "per100": {
+      "kcal": 25,
+      "p": 0.4,
+      "f": 0.1,
+      "c": 8.4,
+      "fib": 0.4
+    },
+    "src": "USDA FDC 168156 (SR Legacy, NDB 9160): \"Lime juice, raw\"",
+    "units": [
+      {
+        "name": "juice of 1 lime (44 g, USDA)",
+        "g": 44,
+        "kcal": 11,
+        "p": 0.2,
+        "f": 0,
+        "c": 3.7
+      },
+      {
+        "name": "1 fl oz (30.8 g, USDA)",
+        "g": 30.8,
+        "kcal": 8,
+        "p": 0.1,
+        "f": 0,
+        "c": 2.6
+      }
+    ],
+    "costco": "See costco.json: limes_3lb (verified).",
+    "costcoIds": [
+      "limes_3lb"
+    ],
+    "note": "Thai dressing, ahi slaw, the Louie. Squeeze and weigh it.",
+    "verified": true,
+    "unverified": [],
+    "liveCheck": "Matched live FDC on 2026-11-01 (fdc.nal.usda.gov/portal-data/external/168156): description and kcal 25, protein 0.42, fat 0.07, carbs 8.42 per 100 g.",
+    "addedBy": "recipes"
+  },
+  {
+    "id": "lemonZest",
+    "name": "Lemon zest (peel), raw",
+    "group": "flavor",
+    "state": "raw",
+    "per100": {
+      "kcal": 47,
+      "p": 1.5,
+      "f": 0.3,
+      "c": 16,
+      "fib": 10.6
+    },
+    "src": "USDA FDC 167749 (SR Legacy, NDB 9156): \"Lemon peel, raw\"",
+    "units": [
+      {
+        "name": "1 tsp (2 g, USDA)",
+        "g": 2,
+        "kcal": 1,
+        "p": 0,
+        "f": 0,
+        "c": 0.3
+      }
+    ],
+    "costco": "See costco.json: lemons_5lb (verified).",
+    "costcoIds": [
+      "lemons_5lb"
+    ],
+    "note": "Microplane the yellow only, before you juice the lemon. Salmon, wild rice, kale salad.",
+    "verified": true,
+    "unverified": [],
+    "liveCheck": "Matched live FDC on 2026-11-01 (fdc.nal.usda.gov/portal-data/external/167749): description and kcal 47, protein 1.5, fat 0.3, carbs 16 per 100 g.",
+    "addedBy": "recipes"
+  },
+  {
+    "id": "greenOnion",
+    "name": "Green onions / scallions, raw (tops and bulb)",
+    "group": "veg",
+    "state": "raw",
+    "per100": {
+      "kcal": 32,
+      "p": 1.8,
+      "f": 0.2,
+      "c": 7.3,
+      "fib": 2.6
+    },
+    "src": "USDA FDC 170005 (SR Legacy, NDB 11291): \"Onions, spring or scallions (includes tops and bulb), raw\"",
+    "units": [
+      {
+        "name": "1 Tbsp chopped (6 g, USDA)",
+        "g": 6,
+        "kcal": 2,
+        "p": 0.1,
+        "f": 0,
+        "c": 0.4
+      },
+      {
+        "name": "1 medium scallion (15 g, USDA)",
+        "g": 15,
+        "kcal": 5,
+        "p": 0.3,
+        "f": 0,
+        "c": 1.1
+      }
+    ],
+    "costco": "See costco.json: green_onions (unverified).",
+    "costcoIds": [
+      "green_onions"
+    ],
+    "note": "Garnish weight; ahi, noodle salad, baked potato.",
+    "verified": true,
+    "unverified": [],
+    "liveCheck": "Matched live FDC on 2026-11-01 (fdc.nal.usda.gov/portal-data/external/170005): description and kcal 32, protein 1.83, fat 0.19, carbs 7.34 per 100 g.",
+    "addedBy": "recipes"
+  },
+  {
+    "id": "cilantro",
+    "name": "Cilantro leaves, raw",
+    "group": "flavor",
+    "state": "raw",
+    "per100": {
+      "kcal": 23,
+      "p": 2.1,
+      "f": 0.5,
+      "c": 3.7,
+      "fib": 2.8
+    },
+    "src": "USDA FDC 169997 (SR Legacy, NDB 11165): \"Coriander (cilantro) leaves, raw\"",
+    "units": [
+      {
+        "name": "1/4 cup (4 g, USDA)",
+        "g": 4,
+        "kcal": 1,
+        "p": 0.1,
+        "f": 0,
+        "c": 0.1
+      }
+    ],
+    "costco": "See costco.json: cilantro_mint (unverified).",
+    "costcoIds": [
+      "cilantro_mint"
+    ],
+    "note": "Herb garnish (Thai salad, slaw).",
+    "verified": true,
+    "unverified": [],
+    "liveCheck": "Matched live FDC on 2026-11-01 (fdc.nal.usda.gov/portal-data/external/169997): description and kcal 23, protein 2.13, fat 0.52, carbs 3.67 per 100 g.",
+    "addedBy": "recipes"
+  },
+  {
+    "id": "mint",
+    "name": "Mint (spearmint) leaves, fresh",
+    "group": "flavor",
+    "state": "raw",
+    "per100": {
+      "kcal": 44,
+      "p": 3.3,
+      "f": 0.7,
+      "c": 8.4,
+      "fib": 6.8
+    },
+    "src": "USDA FDC 173475 (SR Legacy, NDB 2065): \"Spearmint, fresh\"",
+    "units": [
+      {
+        "name": "2 Tbsp (11.4 g, USDA)",
+        "g": 11.4,
+        "kcal": 5,
+        "p": 0.4,
+        "f": 0.1,
+        "c": 1
+      }
+    ],
+    "costco": "See costco.json: cilantro_mint (unverified).",
+    "costcoIds": [
+      "cilantro_mint"
+    ],
+    "note": "Herb garnish (Thai salad).",
+    "verified": true,
+    "unverified": [],
+    "liveCheck": "Matched live FDC on 2026-11-01 (fdc.nal.usda.gov/portal-data/external/173475): description and kcal 44, protein 3.29, fat 0.73, carbs 8.41 per 100 g.",
+    "addedBy": "recipes"
+  },
+  {
+    "id": "parsley",
+    "name": "Flat-leaf parsley, fresh",
+    "group": "flavor",
+    "state": "raw",
+    "per100": {
+      "kcal": 36,
+      "p": 3,
+      "f": 0.8,
+      "c": 6.3,
+      "fib": 3.3
+    },
+    "src": "USDA FDC 170416 (SR Legacy, NDB 11297): \"Parsley, fresh\"",
+    "units": [
+      {
+        "name": "1 Tbsp (3.8 g, USDA)",
+        "g": 3.8,
+        "kcal": 1,
+        "p": 0.1,
+        "f": 0,
+        "c": 0.2
+      }
+    ],
+    "costco": "Not in costco.json; buy at Publix (produce).",
+    "costcoIds": [],
+    "note": "Lemon-herb wild rice, French dip.",
+    "verified": true,
+    "unverified": [],
+    "liveCheck": "Matched live FDC on 2026-11-01 (fdc.nal.usda.gov/portal-data/external/170416): description and kcal 36, protein 2.97, fat 0.79, carbs 6.33 per 100 g.",
+    "addedBy": "recipes"
+  },
+  {
+    "id": "chickenStock",
+    "name": "Chicken stock — Kirkland Signature Organic (label)",
+    "group": "flavor",
+    "state": "as sold",
+    "per100": {
+      "kcal": 4,
+      "p": 0.8,
+      "f": 0,
+      "c": 0,
+      "fib": 0
+    },
+    "src": "Label via USDA FDC 2655506 (Branded Foods, 2023-10-26): KIRKLAND SIGNATURE \"CHICKEN ORGANIC STOCK, CHICKEN\", GTIN 096619168224, serving 240.0 MLT (1 cup)",
+    "per": "100 ml",
+    "units": [
+      {
+        "name": "1 cup (240 ml, label)",
+        "g": 240,
+        "kcal": 10,
+        "p": 2,
+        "f": 0,
+        "c": 0
+      }
+    ],
+    "costco": "See costco.json: chicken_stock_ks_org (verified).",
+    "costcoIds": [
+      "chicken_stock_ks_org"
+    ],
+    "note": "Per 100 ml (the label is per 240 ml). Wild rice cooking liquid and the French dip jus. Measure in ml (a liquid measuring cup) or weigh it: it is about 98% water, so 1 ml weighs about 1 g.",
+    "verified": true,
+    "unverified": [],
+    "liveCheck": "Matched live FDC on 2026-11-01 (fdc.nal.usda.gov/portal-data/external/2655506): description and kcal 4, protein 0.83, fat 0, carbs 0 per 100 g/ml.",
+    "addedBy": "recipes"
+  },
+  {
+    "id": "cheddar",
+    "name": "Sharp cheddar, shredded — Kirkland Signature (label)",
+    "group": "fat",
+    "state": "as sold",
+    "per100": {
+      "kcal": 393,
+      "p": 25,
+      "f": 32.1,
+      "c": 3.6,
+      "fib": 0
+    },
+    "src": "Label via USDA FDC 2429357 (Branded Foods, 2022-12-22): KIRKLAND SIGNATURE \"SHREDDED SHARP CHEDDAR CHEESE, SHARP CHEDDAR\", GTIN 096619364756, serving 28.0 g (1/4 cup)",
+    "units": [
+      {
+        "name": "1/4 cup (28 g, label)",
+        "g": 28,
+        "kcal": 110,
+        "p": 7,
+        "f": 9,
+        "c": 1
+      },
+      {
+        "name": "15 g (one burger)",
+        "g": 15,
+        "kcal": 59,
+        "p": 3.8,
+        "f": 4.8,
+        "c": 0.5
+      }
+    ],
+    "costco": "See costco.json: cheese_sharp_cheddar_shred (verified).",
+    "costcoIds": [
+      "cheese_sharp_cheddar_shred"
+    ],
+    "note": "The smash burger. Weigh it: a loose handful is 25-30 g.",
+    "verified": true,
+    "unverified": [],
+    "liveCheck": "Matched live FDC on 2026-11-01 (fdc.nal.usda.gov/portal-data/external/2429357): description and kcal 393, protein 25, fat 32.1, carbs 3.57 per 100 g/ml.",
+    "addedBy": "recipes"
+  },
+  {
+    "id": "salt",
+    "name": "Salt (kosher or table), weighed",
+    "group": "flavor",
+    "state": "as sold",
+    "per100": {
+      "kcal": 0,
+      "p": 0,
+      "f": 0,
+      "c": 0,
+      "fib": 0
+    },
+    "src": "USDA FDC 173468 (SR Legacy, NDB 2047): \"Salt, table\"",
+    "units": [
+      {
+        "name": "1 tsp table salt (6 g, USDA)",
+        "g": 6,
+        "kcal": 0,
+        "p": 0,
+        "f": 0,
+        "c": 0
+      }
+    ],
+    "costco": "See costco.json: salt (unverified).",
+    "costcoIds": [
+      "salt"
+    ],
+    "note": "0 kcal. Weighed only so sodium stays steady from day to day (the scale reads water). Kosher salt is the same NaCl by weight; only its volume differs (Diamond Crystal is about half as dense as table salt), so weigh it, never spoon it.",
+    "verified": true,
+    "unverified": [],
+    "liveCheck": "Matched live FDC on 2026-11-01 (fdc.nal.usda.gov/portal-data/external/173468): description and kcal 0, protein 0, fat 0, carbs 0 per 100 g.",
+    "addedBy": "recipes"
+  },
+  {
+    "id": "blackPepper",
+    "name": "Black pepper, ground",
+    "group": "flavor",
+    "state": "as sold",
+    "per100": {
+      "kcal": 251,
+      "p": 10.4,
+      "f": 3.3,
+      "c": 64,
+      "fib": 25.3
+    },
+    "src": "USDA FDC 170931 (SR Legacy, NDB 2030): \"Spices, pepper, black\"",
+    "units": [
+      {
+        "name": "1 tsp ground (2.3 g, USDA)",
+        "g": 2.3,
+        "kcal": 6,
+        "p": 0.2,
+        "f": 0.1,
+        "c": 1.5
+      }
+    ],
+    "costco": "See costco.json: ks_black_pepper_grinder (verified).",
+    "costcoIds": [
+      "ks_black_pepper_grinder"
+    ],
+    "note": "Counted when a recipe uses 1 g or more.",
+    "verified": true,
+    "unverified": [],
+    "liveCheck": "Matched live FDC on 2026-11-01 (fdc.nal.usda.gov/portal-data/external/170931): description and kcal 251, protein 10.4, fat 3.26, carbs 64 per 100 g.",
+    "addedBy": "recipes"
+  },
+  {
+    "id": "paprika",
+    "name": "Paprika (smoked or sweet)",
+    "group": "flavor",
+    "state": "as sold",
+    "per100": {
+      "kcal": 282,
+      "p": 14.1,
+      "f": 12.9,
+      "c": 54,
+      "fib": 34.9
+    },
+    "src": "USDA FDC 171329 (SR Legacy, NDB 2028): \"Spices, paprika\"",
+    "units": [
+      {
+        "name": "1 tsp (2.3 g, USDA)",
+        "g": 2.3,
+        "kcal": 6,
+        "p": 0.3,
+        "f": 0.3,
+        "c": 1.2
+      }
+    ],
+    "costco": "See costco.json: smoked_paprika (unverified).",
+    "costcoIds": [
+      "smoked_paprika"
+    ],
+    "note": "USDA has no separate smoked-paprika entry; the paprika entry is used for both.",
+    "verified": true,
+    "unverified": [
+      "smoked paprika values (USDA paprika used as the proxy)"
+    ],
+    "liveCheck": "Matched live FDC on 2026-11-01 (fdc.nal.usda.gov/portal-data/external/171329): description and kcal 282, protein 14.1, fat 12.9, carbs 54 per 100 g.",
+    "addedBy": "recipes"
+  },
+  {
+    "id": "garlicPowder",
+    "name": "Garlic powder / granulated garlic",
+    "group": "flavor",
+    "state": "as sold",
+    "per100": {
+      "kcal": 331,
+      "p": 16.6,
+      "f": 0.7,
+      "c": 72.7,
+      "fib": 9
+    },
+    "src": "USDA FDC 171325 (SR Legacy, NDB 2020): \"Spices, garlic powder\"",
+    "units": [
+      {
+        "name": "1 tsp (3.1 g, USDA)",
+        "g": 3.1,
+        "kcal": 10,
+        "p": 0.5,
+        "f": 0,
+        "c": 2.3
+      }
+    ],
+    "costco": "See costco.json: ks_granulated_garlic (verified).",
+    "costcoIds": [
+      "ks_granulated_garlic"
+    ],
+    "note": "Granulated garlic (the Costco shaker) is the same dried garlic, coarser; USDA garlic powder values used for both.",
+    "verified": true,
+    "unverified": [
+      "granulated garlic values (USDA garlic powder used as the proxy)"
+    ],
+    "liveCheck": "Matched live FDC on 2026-11-01 (fdc.nal.usda.gov/portal-data/external/171325): description and kcal 331, protein 16.6, fat 0.73, carbs 72.7 per 100 g.",
+    "addedBy": "recipes"
+  },
+  {
+    "id": "cinnamon",
+    "name": "Cinnamon, ground",
+    "group": "flavor",
+    "state": "as sold",
+    "per100": {
+      "kcal": 247,
+      "p": 4,
+      "f": 1.2,
+      "c": 80.6,
+      "fib": 53.1
+    },
+    "src": "USDA FDC 171320 (SR Legacy, NDB 2010): \"Spices, cinnamon, ground\"",
+    "units": [
+      {
+        "name": "1 tsp (2.6 g, USDA)",
+        "g": 2.6,
+        "kcal": 6,
+        "p": 0.1,
+        "f": 0,
+        "c": 2.1
+      }
+    ],
+    "costco": "See costco.json: ks_saigon_cinnamon (verified).",
+    "costcoIds": [
+      "ks_saigon_cinnamon"
+    ],
+    "note": "Saigon cinnamon at Costco; USDA cinnamon values.",
+    "verified": true,
+    "unverified": [],
+    "liveCheck": "Matched live FDC on 2026-11-01 (fdc.nal.usda.gov/portal-data/external/171320): description and kcal 247, protein 3.99, fat 1.24, carbs 80.6 per 100 g.",
+    "addedBy": "recipes"
+  },
+  {
+    "id": "horseradish",
+    "name": "Horseradish, prepared (jar)",
+    "group": "flavor",
+    "state": "as sold",
+    "per100": {
+      "kcal": 48,
+      "p": 1.2,
+      "f": 0.7,
+      "c": 11.3,
+      "fib": 3.3
+    },
+    "src": "USDA FDC 173472 (SR Legacy, NDB 2055): \"Horseradish, prepared\"",
+    "units": [
+      {
+        "name": "1 tsp (5 g, USDA)",
+        "g": 5,
+        "kcal": 2,
+        "p": 0.1,
+        "f": 0,
+        "c": 0.6
+      },
+      {
+        "name": "1 Tbsp (15 g, USDA)",
+        "g": 15,
+        "kcal": 7,
+        "p": 0.2,
+        "f": 0.1,
+        "c": 1.7
+      }
+    ],
+    "costco": "Not in costco.json; buy at Publix (refrigerated prepared horseradish).",
+    "costcoIds": [],
+    "note": "The French dip horseradish cream.",
+    "verified": true,
+    "unverified": [],
+    "liveCheck": "Matched live FDC on 2026-11-01 (fdc.nal.usda.gov/portal-data/external/173472): description and kcal 48, protein 1.18, fat 0.69, carbs 11.3 per 100 g.",
+    "addedBy": "recipes"
+  },
+  {
+    "id": "pickles",
+    "name": "Dill pickles (cucumber, dill or kosher dill)",
+    "group": "veg",
+    "state": "as sold",
+    "per100": {
+      "kcal": 12,
+      "p": 0.5,
+      "f": 0.3,
+      "c": 2.4,
+      "fib": 1
+    },
+    "src": "USDA FDC 168558 (SR Legacy, NDB 11937): \"Pickles, cucumber, dill or kosher dill\"",
+    "units": [
+      {
+        "name": "1 slice (7 g, USDA)",
+        "g": 7,
+        "kcal": 1,
+        "p": 0,
+        "f": 0,
+        "c": 0.2
+      },
+      {
+        "name": "1 small spear (35 g, USDA)",
+        "g": 35,
+        "kcal": 4,
+        "p": 0.2,
+        "f": 0.1,
+        "c": 0.8
+      }
+    ],
+    "costco": "Not in costco.json; buy at Publix (or any grocery).",
+    "costcoIds": [],
+    "note": "The burger. Low calorie, high sodium: weigh them.",
+    "verified": true,
+    "unverified": [],
+    "liveCheck": "Matched live FDC on 2026-11-01 (fdc.nal.usda.gov/portal-data/external/168558): description and kcal 12, protein 0.5, fat 0.3, carbs 2.41 per 100 g.",
+    "addedBy": "recipes"
+  },
+  {
+    "id": "water",
+    "name": "Water (tap)",
+    "group": "flavor",
+    "state": "as sold",
+    "per100": {
+      "kcal": 0,
+      "p": 0,
+      "f": 0,
+      "c": 0,
+      "fib": 0
+    },
+    "src": "USDA FDC 173647 (SR Legacy, NDB 14411): \"Beverages, water, tap, drinking\"",
+    "units": [],
+    "costco": "Not in costco.json; buy at any grocery.",
+    "costcoIds": [],
+    "note": "0 kcal. Listed so that a dressing cup or a soak has an exact total weight to divide.",
+    "verified": true,
+    "unverified": [],
+    "liveCheck": "Matched live FDC on 2026-11-01 (fdc.nal.usda.gov/portal-data/external/173647): description and kcal 0, protein 0, fat 0, carbs 0 per 100 g.",
+    "addedBy": "recipes"
+  },
+  {
+    "id": "wheyAscent",
+    "name": "Whey — Ascent 100% Whey / Native Fuel, Chocolate (label; Informed Sport)",
+    "group": "protein",
+    "state": "as sold",
+    "per100": {
+      "kcal": 364,
+      "p": 75.8,
+      "f": 3,
+      "c": 9.1,
+      "fib": 3
+    },
+    "src": "Label via USDA FDC 2664129 (Branded Foods, live record read 2026-11-01): ASCENT NATIVE FUEL \"CHOCOLATE FLAVORED WHEY PROTEIN POWDER BLEND, CHOCOLATE\", GTIN 815863020016, serving 33 GRM (1 Rounded Scoop), package 32 OZ/2 LB/907 g",
+    "units": [
+      {
+        "name": "1 rounded scoop (33 g, label)",
+        "g": 33,
+        "kcal": 120,
+        "p": 25,
+        "f": 1,
+        "c": 3
+      },
+      {
+        "name": "30 g",
+        "g": 30,
+        "kcal": 109,
+        "p": 22.7,
+        "f": 0.9,
+        "c": 2.7
+      }
+    ],
+    "logAs": "weigh the powder (a rounded scoop varies)",
+    "costco": "See costco.json supplements: whey_ascent_100 (verified; Informed Sport), Chocolate 4.25 lb (Item 1666598) or Vanilla Bean 4.25 lb (Item 1667705).",
+    "costcoIds": [],
+    "note": "The plan's whey: Informed Sport certified and sold at Costco (costco.json). The live FDC record is the 2 lb bag (GTIN 815863020016); the Vanilla Bean 2 lb record (FDC 2608632) is also 120 kcal and 25 g protein per 31 g scoop. Check the Informed Sport logo and lot on the bag, and log the bag's own label if it differs.",
+    "verified": true,
+    "unverified": [
+      "the Costco 4.25 lb bag's label: its GTIN is not in FDC, so the 2 lb record of the same product line is used"
+    ],
+    "liveCheck": "Matched live FDC on 2026-11-01 (fdc.nal.usda.gov/portal-data/external/2664129): description and kcal 364, protein 75.8, fat 3.03, carbs 9.09 per 100 g/ml.",
+    "addedBy": "recipes"
+  }
+]

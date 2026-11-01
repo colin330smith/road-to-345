@@ -298,6 +298,7 @@ const MODEL2 = {
     ["Logging", "Extra sets visible, edited weights carry to the next set, rest timer starts itself, swaps and 'last time' per exercise."],
     ["Data safety", "Imports checked before they replace anything, a recovery screen, dated schedule shifts that never move past logs."],
     ["Nutrition", "Accurate weekly rate, no trims in Cycles 5–6, a sleep gate that needs logged sleep, adjustments that move the targets."],
+    ["The strict home-cooked plan", "Zero Hillstone food. MAINTAIN through the peak on 14 restaurant-style recipes cooked at home: a plan for every shift, off and rest day, one tap per weighed portion, two cooks a week, a Costco list computed from the plan, and a maintenance number measured from your own complete days and weigh-ins."],
     ["Goal tracking", "Each goal shows the pace it needs vs the pace you have, and the lever to pull when you fall behind."],
     ["Now card", "Today walks you set by set: primers, the warm-up ramp with plates, the single with meet commands, a rating that shows the back-offs it sets, a rest ring, the rep ladder, then what the session built."],
     ["Body map", "A real anatomy map of this week's sets per muscle, your goal muscles in gold; tap one to see every set that feeds it. Road draws your frame inside the goal frame from your tape."],

@@ -1828,5 +1828,56 @@ eq(E.sessionFor(2, 1, 1, {}, E.DEFAULT_SPEC).find((b) => b.type === "warmup").ro
   ok(E.ALT["wide-grip-pull-up"].every((n) => /Pull-Up/.test(n)), "pull-up: swaps stay bodyweight pull-ups, so the added-load display stays true");
 }
 
+// ═══ AUDIT-2027: the 2027 changes start at Wave 7 (EVIDENCE.md "The 2027 audit") ═══
+{
+  const G = require("./goals.js");
+  const LOGT = ["accessory", "single", "backoff", "paused", "ohp"];
+  const day = (w, k, d, sp) => E.sessionFor(w, k, d, {}, sp || E.DEFAULT_SPEC);
+  const sat = (w, k) => day(w, k, 6).filter((b) => b.type === "accessory");
+  const setsBy = (bs) => Object.fromEntries(bs.map((b) => [b.pkey, b.sets]));
+  // Saturday: full in week 3 and in Intensification from Wave 7; trimmed before it
+  for (const w of [7, 8, 9, 10]) eq(setsBy(sat(w, 3)), setsBy(sat(w, 1)), `audit: Wave ${w} week-3 Saturday carries the same sets as week 1`);
+  for (const k of [1, 2, 3]) eq(setsBy(sat(11, k)), setsBy(sat(7, 1)), `audit: Intensification (Wave 11) week ${k} Saturday is a full Saturday`);
+  ok(sat(5, 1).every((b) => b.sets <= 3) && sat(4, 3).reduce((n, b) => n + b.sets, 0) < sat(4, 1).reduce((n, b) => n + b.sets, 0), "audit: Waves 4-6 keep the trims they ran with");
+  // the peak: weeks 1-2 keep the week-3 dose at RPE 8 and a 2-set Saturday; the opener and test weeks stay empty
+  for (const k of [1, 2]) {
+    const s12 = sat(12, k);
+    ok(s12.length >= 9 && s12.every((b) => b.rpe === "8" && b.sets <= 3) && s12.filter((b) => !/Y-Raise/.test(b.name)).every((b) => b.sets === 2), `audit: peak W12 week ${k} runs a maintenance Saturday (2 sets each, RPE 8)`);
+    for (const d of [1, 2, 3, 4, 5]) {
+      const acc = day(12, k, d).filter((b) => b.type === "accessory" && !/^(PRIMER|FILLER)/.test(b.cap || "") && b.pkey !== "bander" && b.pkey !== "pullapart");
+      const w3 = Object.fromEntries(E.ACC.map((a) => [a.id, (Array.isArray(a.up) ? a.up : a.up ? [a.up] : []).reduce((o, u) => (12 >= u.from ? { ...o, ...u } : o), a).w3]));
+      ok(acc.every((b) => b.rpe === "8" && b.sets <= w3[b.pkey] && !b.lastHard), `audit: peak W12 week ${k} day ${d} accessories run at the week-3 dose, RPE 8, no failure set`);
+    }
+    ok(!sat(6, k).length, `audit: the Wave 6 peak in progress keeps no Saturday (week ${k})`);
+  }
+  for (const k of [3, 4]) ok(![1, 2, 3, 4, 5, 6].some((d) => day(12, k, d).some((b) => b.type === "accessory" && !/^(PRIMER)/.test(b.cap || ""))), `audit: peak W12 week ${k} still has no accessory work (the taper)`);
+  { const tot = (w, k) => { let n = 0; for (let d = 1; d <= 6; d++) n += day(w, k, d).filter((b) => LOGT.includes(b.type) && !/^(PRIMER|FILLER)/.test(b.cap || "")).reduce((a, b) => a + b.sets, 0); return n; };
+    ok(tot(12, 1) >= tot(6, 1) + 20 && tot(12, 1) < tot(7, 3), `audit: peak week 1 working sets ${tot(6, 1)} -> ${tot(12, 1)}, still under a normal week 3 (${tot(7, 3)})`); }
+  // Thursday: pushdown out, side-delt raise in; the triceps session ceiling holds
+  const thu = (w) => day(w, 1, 4);
+  ok(thu(6).length && day(5, 1, 4).some((b) => b.pkey === "pushdown") && !day(5, 1, 4).some((b) => b.pkey === "latthu7"), "audit: Wave 5 Thursday still has the pushdown and no Thursday lateral");
+  ok(!thu(7).some((b) => b.pkey === "pushdown") && thu(7).some((b) => b.pkey === "latthu7" && b.sets === 2 && b.rpe === "8" && !b.lastHard), "audit: Wave 7 Thursday swaps the pushdown for 2 side-delt sets at RPE 8");
+  for (const k of [1, 2, 3]) { const tri = G.muscleSets(day(7, k, 4)).triceps; ok(tri <= 11, `audit: Thursday triceps fractional sets ${tri} <= 11 a session (week ${k})`); }
+  { const wk = (w, k) => { const a = []; for (let d = 1; d <= 7; d++) a.push(...day(w, k, d)); return a; };
+    const side = (w, k) => wk(w, k).filter((b) => b.type === "accessory" && isSideDelt(b.name)).reduce((n, b) => n + b.sets, 0);
+    eq([side(6, 1), side(7, 1)], [6, 15], "audit: direct side-delt sets 13 -> 15 from Wave 7 (the Wave 6 peak in progress runs 6)");
+    eq([side(4, 1), G.muscleSets(wk(7, 1)).sidedelt, G.muscleSets(wk(7, 1)).triceps], [13, 16.5, 27.5], "audit: Wave 4 ran 13; Wave 7 reads side delts 16.5 and triceps 27.5 fractional");
+    // every frame: the Thursday raise gives way to the 16 cap
+    let worst = 0; for (const fp of E.FRAME_OPTS) for (const fs of [...E.FRAME_OPTS, "none"]) { if (fs === fp) continue; const sp = { framePrimary: fp, frameSecondary: fs, detail: "triceps", sundayOn: false };
+      for (const k of [1, 2, 3]) { let n = 0; for (let d = 1; d <= 6; d++) n += day(7, k, d, sp).filter((b) => b.type === "accessory" && isSideDelt(b.name)).reduce((a, b) => a + b.sets, 0); worst = Math.max(worst, n); } }
+    ok(worst <= 16, `audit: every frame keeps Mon-Sat side-delt sets at or under 16 (worst ${worst})`);
+    // the body map's mid-back count agrees with EVIDENCE.md
+    eq(G.muscleSets(wk(7, 1)).midtraps, 13.5, "audit: the body map reads the mid back at 13.5 weekly sets (rows 1, rear-delt flys 0.5)");
+    eq([G.muscleRule("Chest-Supported DB Row").midtraps, G.muscleRule("Reverse Pec Deck").midtraps, G.muscleRule("Chest-Supported Rear-Delt Raise (thumbs up)").midtraps, G.muscleRule("Wide-Grip Pull-Up").midtraps], [1, 0.5, 0.5, undefined], "audit: mid-back credits: row 1, rear-delt fly and raise 0.5, vertical pulls none"); }
+  // Saturday order: grip work after the last pull
+  { const names = (w) => sat(w, 1).map((b) => b.name), at = (w, re) => names(w).findIndex((n) => re.test(n));
+    ok(at(7, /Farmer/) > at(7, /Pulldown/) && at(7, /Farmer/) > at(7, /Pull-Up/) && at(7, /Farmer/) < at(7, /Ab Wheel/), "audit: Wave 7 Saturday runs the farmer hold after the pulldown, before the abs");
+    ok(at(4, /Farmer/) < at(4, /Pulldown/), "audit: Waves 4-6 keep the order they ran"); }
+  // the forecast the Road card shows
+  { const hi = {}; for (let w = 6; w <= 60; w++) hi[w] = { bn: "clean", sq: "clean", dl: "clean" };
+    eq([E.cbFor(12), E.cbFor(12, hi)], [{ bn: 277.5, sq: 340, dl: 430 }, { bn: 295, sq: 375, dl: 465 }], "audit: the Wave 12 test day ranges 277.5-295 / 340-375 / 430-465");
+    eq([Math.max(...E.LIFTS.map((L) => E.etaWave(L, { bn: 315, sq: 405, dl: 495 }[L], {}))), Math.max(...E.LIFTS.map((L) => E.etaWave(L, { bn: 315, sq: 405, dl: 495 }[L], hi)))], [27, 16], "audit: 3/4/5 lands between Wave 16 (every gate clean) and Wave 27 (small steps)"); }
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

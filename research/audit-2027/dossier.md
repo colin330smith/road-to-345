@@ -222,14 +222,12 @@ Test days: Wave 6 week 4 Friday = 2027-01-01 (max test); Wave 12 week 4 Friday =
   - Wed: Paused Squat (easy): 3×5 @ 225 (66.2% of base) · RPE 6
   - Thu: Paused Bench (easy): 3×5 @ 190 (68.5% of base) · RPE 6
   - Fri: Deadlift — top single: 1×1 @ 385 (89.5% of base) · RPE 8 · Deadlift — back-offs: 3×3 @ 330 (76.7% of base) · RPE 7
-  - Sat: TEST: Peak week — no specialization
 - **Week 2**
   - Mon: Squat — top single: 1×1 @ 310 (91.2% of base) · RPE 8–8.5 · Squat — back-offs: 3×2 @ 270 (79.4% of base) · RPE 7–7.5
   - Tue: Bench — top single: 1×1 @ 255 (91.9% of base) · RPE 8–8.5 · Bench — back-offs: 3×2 @ 220 (79.3% of base) · RPE 7–7.5
   - Wed: Paused Squat (easy): 2×5 @ 205 (60.3% of base) · RPE 6
   - Thu: Paused Bench (easy): 2×5 @ 165 (59.5% of base) · RPE 6
   - Fri: Deadlift — top single: 1×1 @ 390 (90.7% of base) · RPE 8–8.5 · Deadlift — back-offs: 3×2 @ 340 (79.1% of base) · RPE 7–7.5
-  - Sat: TEST: Peak week — no specialization
 - **Week 3**
   - Mon: Squat — opener 142.5 kg: 1×1 @ 312.5 (91.9% of base) · RPE 7–8 · the weight you hand in · Squat — back-offs: 2×2 @ 240 (70.6% of base) · RPE easy
   - Tue: Bench — opener 117.5 kg: 1×1 @ 257.5 (92.8% of base) · RPE 7–8 · the weight you hand in · Bench — back-offs: 2×2 @ 195 (70.3% of base) · RPE easy
@@ -331,7 +329,7 @@ Test days: Wave 6 week 4 Friday = 2027-01-01 (max test); Wave 12 week 4 Friday =
   - Ab Wheel / Cable Crunch: 2×12 @ 80 · RPE 8–9
 - **Sun** — 0 working sets · est. 0 min
   - spechead: Optional detail day — off — No weekend specialization in this cycle. Rest or an easy walk + conditioning.
-- **Weekly fractional sets per muscle** (direct 1, a compound's secondary muscles 0.5): Upper chest 16.5 · Mid chest 17 · Front delts 13.5 · Side delts 12.5 · Rear delts 11.5 · Upper traps 8.5 · Mid back 7 · Lats 12 · Biceps 19.5 · Triceps 24 · Forearms 16.5 · Abs 4 · Lower back 7 · Quads 14 · Hamstrings 13.5 · Glutes 10.5 · Calves 6
+- **Weekly fractional sets per muscle** (direct 1, a compound's secondary muscles 0.5): Upper chest 16.5 · Mid chest 17 · Front delts 13.5 · Side delts 12.5 · Rear delts 11.5 · Upper traps 8.5 · Mid back 11 · Lats 12 · Biceps 19.5 · Triceps 24 · Forearms 16.5 · Abs 4 · Lower back 7 · Quads 14 · Hamstrings 13.5 · Glutes 10.5 · Calves 6
 
 ### Wave 5 week 3 — Intensification
 - **Mon** — 19 working sets · est. 56 min
@@ -415,7 +413,7 @@ Test days: Wave 6 week 4 Friday = 2027-01-01 (max test); Wave 12 week 4 Friday =
   - Ab Wheel / Cable Crunch: 2×10–12 @ 80 · RPE 8–9
 - **Sun** — 0 working sets · est. 0 min
   - spechead: Optional detail day — off — No weekend specialization in this cycle. Rest or an easy walk + conditioning.
-- **Weekly fractional sets per muscle** (direct 1, a compound's secondary muscles 0.5): Upper chest 15.5 · Mid chest 16.5 · Front delts 12.5 · Side delts 10 · Rear delts 9 · Upper traps 7 · Mid back 6 · Lats 11 · Biceps 17 · Triceps 21.5 · Forearms 12 · Abs 4 · Lower back 6 · Quads 11 · Hamstrings 11 · Glutes 9 · Calves 4
+- **Weekly fractional sets per muscle** (direct 1, a compound's secondary muscles 0.5): Upper chest 15.5 · Mid chest 16.5 · Front delts 12.5 · Side delts 10 · Rear delts 9 · Upper traps 7 · Mid back 9 · Lats 11 · Biceps 17 · Triceps 21.5 · Forearms 12 · Abs 4 · Lower back 6 · Quads 11 · Hamstrings 11 · Glutes 9 · Calves 4
 
 ### Wave 5 week 4 — Intensification
 - **Mon** — 17 working sets · est. 48 min
@@ -483,7 +481,7 @@ Test days: Wave 6 week 4 Friday = 2027-01-01 (max test); Wave 12 week 4 Friday =
   - Ab Wheel / Cable Crunch: 2×10 @ 55 · RPE 6–7
 - **Sun** — 0 working sets · est. 0 min
   - spechead: Optional detail day — off — No weekend specialization in this cycle. Rest or an easy walk + conditioning.
-- **Weekly fractional sets per muscle** (direct 1, a compound's secondary muscles 0.5): Upper chest 8 · Mid chest 9.5 · Front delts 7.5 · Side delts 7 · Rear delts 9 · Upper traps 3.5 · Mid back 6 · Lats 5 · Biceps 9 · Triceps 15.5 · Forearms 9.5 · Abs 4 · Lower back 4 · Quads 9 · Hamstrings 7.5 · Glutes 6 · Calves 4
+- **Weekly fractional sets per muscle** (direct 1, a compound's secondary muscles 0.5): Upper chest 8 · Mid chest 9.5 · Front delts 7.5 · Side delts 7 · Rear delts 9 · Upper traps 3.5 · Mid back 9 · Lats 5 · Biceps 9 · Triceps 15.5 · Forearms 9.5 · Abs 4 · Lower back 4 · Quads 9 · Hamstrings 7.5 · Glutes 6 · Calves 4
 
 ### Wave 6 week 1 — Peak
 - **Mon** — 18 working sets · est. 47 min
@@ -538,7 +536,7 @@ Test days: Wave 6 week 4 Friday = 2027-01-01 (max test); Wave 12 week 4 Friday =
   - TEST: Peak week — no specialization — Brief maintenance only if anything. Frame work resumes next macro — the peak exposes strength, it doesn't build the physique.
 - **Sun** — 0 working sets · est. 0 min
   - spechead: Optional detail day — off — No weekend specialization in this cycle. Rest or an easy walk + conditioning.
-- **Weekly fractional sets per muscle** (direct 1, a compound's secondary muscles 0.5): Upper chest 6.5 · Mid chest 8.5 · Front delts 3.5 · Side delts 6 · Rear delts 7 · Upper traps 4 · Mid back 5.5 · Lats 4 · Biceps 8.5 · Triceps 8.5 · Forearms 10 · Abs 1 · Lower back 4 · Quads 10 · Hamstrings 7 · Glutes 6.5 · Calves 4
+- **Weekly fractional sets per muscle** (direct 1, a compound's secondary muscles 0.5): Upper chest 6.5 · Mid chest 8.5 · Front delts 3.5 · Side delts 6 · Rear delts 7 · Upper traps 4 · Mid back 8 · Lats 4 · Biceps 8.5 · Triceps 8.5 · Forearms 10 · Abs 1 · Lower back 4 · Quads 10 · Hamstrings 7 · Glutes 6.5 · Calves 4
 
 ### Wave 6 week 3 — Peak
 - **Mon** — 3 working sets · est. 19 min
@@ -629,8 +627,8 @@ Test days: Wave 6 week 4 Friday = 2027-01-01 (max test); Wave 12 week 4 Friday =
   - Overhead Press: 3×6 @ 110 · RPE 7–8
   - Weighted Dip — top set: 1×6 @ +30 · RPE 7
   - Weighted Dip — back-offs: 3×8 @ +20 · RPE 7–8
-  - Rope Pushdown: 2×10 @ 105 · RPE 8
   - Overhead Cable Extension: 3×10 @ 85 · RPE 8–9 [F] [LP]
+  - Cable Lateral Raise (Thursday): 2×10 @ 20 · RPE 8
   - Face Pull: 3×12 @ 70 · RPE 8
   - Prone Y-Raise: 2×12 @ 12.5 · RPE 8–9 (filler)
   - Wrist Extension: 3×15 @ 20 · RPE 8–9 (filler)
@@ -659,13 +657,13 @@ Test days: Wave 6 week 4 Friday = 2027-01-01 (max test); Wave 12 week 4 Friday =
   - Chest-Supported Rear-Delt Raise (thumbs up): 3×15–20 @ 15 · RPE 8
   - Wide-Grip Pull-Up: 3×12–15 @ 5 · RPE 8
   - Cable Y-Shrug (arms 30° out): 3×12–15 @ 55 · RPE 8
-  - Heavy Farmer Hold (seconds): 2×30–40 @ 100 · RPE 8–9
   - Unilateral Cable Pulldown: 3×10–12 @ 125 · RPE 8
   - Rope / Single-Arm Pushdown: 3×10–12 @ 105 · RPE 8–9
+  - Heavy Farmer Hold (seconds): 2×30–40 @ 100 · RPE 8–9
   - Ab Wheel / Cable Crunch: 2×8–10 @ 90 · RPE 8–9
 - **Sun** — 0 working sets · est. 0 min
   - spechead: Optional detail day — off — REST. Six hard days need a seventh off — recovery is where the sets you already did turn into muscle. Easy walk at most. (Optional detail day can be re-enabled 
-- **Weekly fractional sets per muscle** (direct 1, a compound's secondary muscles 0.5): Upper chest 18 · Mid chest 17 · Front delts 14 · Side delts 14.5 · Rear delts 13.5 · Upper traps 9 · Mid back 8.5 · Lats 15.5 · Biceps 22.5 · Triceps 29.5 · Forearms 16 · Abs 4 · Lower back 6 · Quads 14 · Hamstrings 13 · Glutes 10 · Calves 6
+- **Weekly fractional sets per muscle** (direct 1, a compound's secondary muscles 0.5): Upper chest 18 · Mid chest 17 · Front delts 14 · Side delts 16.5 · Rear delts 13.5 · Upper traps 9 · Mid back 13.5 · Lats 15.5 · Biceps 22.5 · Triceps 27.5 · Forearms 16 · Abs 4 · Lower back 6 · Quads 14 · Hamstrings 13 · Glutes 10 · Calves 6
 
 ### Wave 7 week 3 — Calibration
 - **Mon** — 21 working sets · est. 61 min
@@ -714,8 +712,8 @@ Test days: Wave 6 week 4 Friday = 2027-01-01 (max test); Wave 12 week 4 Friday =
   - Overhead Press: 2×7 @ 110 · RPE 7–8
   - Weighted Dip — top set: 1×4 @ +50 · RPE 8
   - Weighted Dip — back-offs: 3×6 @ +30 · RPE 7–8
-  - Rope Pushdown: 2×10 @ 105 · RPE 8
   - Overhead Cable Extension: 2×10 @ 85 · RPE 8
+  - Cable Lateral Raise (Thursday): 2×10 @ 20 · RPE 8
   - Face Pull: 2×12 @ 70 · RPE 8
   - Prone Y-Raise: 2×12 @ 12.5 · RPE 8 (filler)
   - Wrist Extension: 2×15 @ 20 · RPE 8 (filler)
@@ -734,22 +732,23 @@ Test days: Wave 6 week 4 Friday = 2027-01-01 (max test); Wave 12 week 4 Friday =
   - Reverse Cable Curl: 2×12 @ 75 · RPE 8
   - Cable / DB Wrist Curl: 2×15 @ 45 · RPE 8 (filler)
   - cooldown: Cooldown — 5 min — Hamstring 60s/side · figure-4 glute 45s/side · shake the grip out · easy breathing, no bouncing
-- **Sat** — 23 working sets · est. 42 min
-  - spechead: Frame Specialization — Arms (bi + tri) priority — Reduced sets this week.
-  - Incline DB Curl: 2×10–12 @ 50 · RPE 8–9
+- **Sat** — 37 working sets · est. 68 min
+  - spechead: Frame Specialization — Arms (bi + tri) priority — Overload day. Hit your weak point fresh — quality reps, not a set count.
+  - Incline DB Curl: 3×10–12 @ 50 · RPE 8–9
   - Bayesian Cable Curl: 2×10–12 @ 40 · RPE 8–9
-  - Cross-Body Cable Y-Raise: 3×10–12 @ 35 · RPE 8
-  - Overhead Cable Extension: 2×10–12 @ 85 · RPE 8–9
-  - Incline DB Press (30°): 2×8–10 @ 70 · RPE 8
-  - Chest-Supported Rear-Delt Raise (thumbs up): 2×15–20 @ 15 · RPE 8
-  - Wide-Grip Pull-Up: 2×12–15 @ 5 · RPE 8
-  - Cable Y-Shrug (arms 30° out): 2×12–15 @ 55 · RPE 8
+  - Cross-Body Cable Y-Raise: 5×10–12 @ 35 · RPE 8
+  - Overhead Cable Extension: 4×10–12 @ 85 · RPE 8–9
+  - Incline DB Press (30°): 4×8–10 @ 70 · RPE 8
+  - Chest-Supported Rear-Delt Raise (thumbs up): 3×15–20 @ 15 · RPE 8
+  - Wide-Grip Pull-Up: 3×12–15 @ 5 · RPE 8
+  - Cable Y-Shrug (arms 30° out): 3×12–15 @ 55 · RPE 8
+  - Unilateral Cable Pulldown: 3×10–12 @ 125 · RPE 8
+  - Rope / Single-Arm Pushdown: 3×10–12 @ 105 · RPE 8–9
   - Heavy Farmer Hold (seconds): 2×30–40 @ 100 · RPE 8–9
-  - Unilateral Cable Pulldown: 2×10–12 @ 125 · RPE 8
   - Ab Wheel / Cable Crunch: 2×8–10 @ 90 · RPE 8–9
 - **Sun** — 0 working sets · est. 0 min
   - spechead: Optional detail day — off — Sunday detail runs only Weeks 1–2 of a cycle. Rest today.
-- **Weekly fractional sets per muscle** (direct 1, a compound's secondary muscles 0.5): Upper chest 16 · Mid chest 17.5 · Front delts 13 · Side delts 10 · Rear delts 10 · Upper traps 7.5 · Mid back 7.5 · Lats 12.5 · Biceps 18 · Triceps 22 · Forearms 12.5 · Abs 4 · Lower back 7 · Quads 13 · Hamstrings 11.5 · Glutes 10.5 · Calves 4
+- **Weekly fractional sets per muscle** (direct 1, a compound's secondary muscles 0.5): Upper chest 18 · Mid chest 18.5 · Front delts 14 · Side delts 14 · Rear delts 11 · Upper traps 8.5 · Mid back 11.5 · Lats 14.5 · Biceps 20 · Triceps 26 · Forearms 12.5 · Abs 4 · Lower back 7 · Quads 13 · Hamstrings 11.5 · Glutes 10.5 · Calves 4
 
 ### Wave 7 week 4 — Calibration
 - **Mon** — 17 working sets · est. 48 min
@@ -792,8 +791,8 @@ Test days: Wave 6 week 4 Friday = 2027-01-01 (max test); Wave 12 week 4 Friday =
   - Paused Bench (1–2 sec pause): 3×5 @ 150 · RPE 5–6
   - Overhead Press: 2×6 @ 85 · RPE 5–6
   - Weighted Dip — light: 2×8 @ +0 · RPE 5–6
-  - Rope Pushdown: 2×10 @ 75 · RPE 6–7
   - Overhead Cable Extension: 2×10 @ 60 · RPE 6–7
+  - Cable Lateral Raise (Thursday): 2×10 @ 15 · RPE 6–7
   - Face Pull: 2×12 @ 50 · RPE 6–7
   - Prone Y-Raise: 2×12 @ 10 · RPE 6–7 (filler)
   - Wrist Extension: 2×15 @ 15 · RPE 6–7 (filler)
@@ -817,7 +816,7 @@ Test days: Wave 6 week 4 Friday = 2027-01-01 (max test); Wave 12 week 4 Friday =
   - Ab Wheel / Cable Crunch: 2×10 @ 65 · RPE 6–7
 - **Sun** — 0 working sets · est. 0 min
   - spechead: Optional detail day — off — Sunday detail runs only Weeks 1–2 of a cycle. Rest today.
-- **Weekly fractional sets per muscle** (direct 1, a compound's secondary muscles 0.5): Upper chest 8 · Mid chest 9.5 · Front delts 7.5 · Side delts 7 · Rear delts 9 · Upper traps 3.5 · Mid back 6 · Lats 5 · Biceps 9 · Triceps 15.5 · Forearms 9.5 · Abs 4 · Lower back 4 · Quads 9 · Hamstrings 7.5 · Glutes 6 · Calves 4
+- **Weekly fractional sets per muscle** (direct 1, a compound's secondary muscles 0.5): Upper chest 8 · Mid chest 9.5 · Front delts 7.5 · Side delts 9 · Rear delts 9 · Upper traps 3.5 · Mid back 9 · Lats 5 · Biceps 9 · Triceps 13.5 · Forearms 9.5 · Abs 4 · Lower back 4 · Quads 9 · Hamstrings 7.5 · Glutes 6 · Calves 4
 
 ### Wave 8 week 1 — Build
 - **Mon** — 26 working sets · est. 68 min
@@ -866,8 +865,8 @@ Test days: Wave 6 week 4 Friday = 2027-01-01 (max test); Wave 12 week 4 Friday =
   - Overhead Press: 3×7 @ 110 · RPE 7–8
   - Weighted Dip — top set: 1×6 @ +30 · RPE 7
   - Weighted Dip — back-offs: 3×8 @ +20 · RPE 7–8
-  - Rope Pushdown: 2×12 @ 105 · RPE 8
   - Overhead Cable Extension: 3×12 @ 85 · RPE 8–9 [F] [LP]
+  - Cable Lateral Raise (Thursday): 2×12 @ 20 · RPE 8
   - Face Pull: 3×15 @ 70 · RPE 8
   - Prone Y-Raise: 2×15 @ 12.5 · RPE 8–9 (filler)
   - Wrist Extension: 3×20 @ 20 · RPE 8–9 (filler)
@@ -896,13 +895,13 @@ Test days: Wave 6 week 4 Friday = 2027-01-01 (max test); Wave 12 week 4 Friday =
   - Chest-Supported Rear-Delt Raise (thumbs up): 3×12–15 @ 17.5 · RPE 8
   - Wide-Grip Pull-Up: 3×10–12 @ 10 · RPE 8
   - Cable Y-Shrug (arms 30° out): 3×10–12 @ 60 · RPE 8
-  - Heavy Farmer Hold (seconds): 2×40–50 @ 100 · RPE 8–9
   - Unilateral Cable Pulldown: 3×12–15 @ 125 · RPE 8
   - Rope / Single-Arm Pushdown: 3×12–15 @ 105 · RPE 8–9
+  - Heavy Farmer Hold (seconds): 2×40–50 @ 100 · RPE 8–9
   - Ab Wheel / Cable Crunch: 2×10–12 @ 90 · RPE 8–9
 - **Sun** — 0 working sets · est. 0 min
   - spechead: Optional detail day — off — REST. Six hard days need a seventh off — recovery is where the sets you already did turn into muscle. Easy walk at most. (Optional detail day can be re-enabled 
-- **Weekly fractional sets per muscle** (direct 1, a compound's secondary muscles 0.5): Upper chest 18 · Mid chest 17 · Front delts 14 · Side delts 14.5 · Rear delts 13.5 · Upper traps 9 · Mid back 8.5 · Lats 15.5 · Biceps 22.5 · Triceps 29.5 · Forearms 16 · Abs 4 · Lower back 6 · Quads 14 · Hamstrings 13 · Glutes 10 · Calves 6
+- **Weekly fractional sets per muscle** (direct 1, a compound's secondary muscles 0.5): Upper chest 18 · Mid chest 17 · Front delts 14 · Side delts 16.5 · Rear delts 13.5 · Upper traps 9 · Mid back 13.5 · Lats 15.5 · Biceps 22.5 · Triceps 27.5 · Forearms 16 · Abs 4 · Lower back 6 · Quads 14 · Hamstrings 13 · Glutes 10 · Calves 6
 
 ### Wave 9 week 1 — Accumulate
 - **Mon** — 26 working sets · est. 68 min
@@ -951,8 +950,8 @@ Test days: Wave 6 week 4 Friday = 2027-01-01 (max test); Wave 12 week 4 Friday =
   - Overhead Press: 3×6 @ 115 · RPE 7–8
   - Weighted Dip — top set: 1×6 @ +35 · RPE 7
   - Weighted Dip — back-offs: 3×8 @ +20 · RPE 7–8
-  - Rope Pushdown: 2×10 @ 110 · RPE 8
   - Overhead Cable Extension: 3×10 @ 90 · RPE 8–9 [F] [LP]
+  - Cable Lateral Raise (Thursday): 2×10 @ 22.5 · RPE 8
   - Face Pull: 3×12 @ 75 · RPE 8
   - Prone Y-Raise: 2×12 @ 15 · RPE 8–9 (filler)
   - Wrist Extension: 3×15 @ 22.5 · RPE 8–9 (filler)
@@ -981,13 +980,13 @@ Test days: Wave 6 week 4 Friday = 2027-01-01 (max test); Wave 12 week 4 Friday =
   - Chest-Supported Rear-Delt Raise (thumbs up): 3×15–20 @ 17.5 · RPE 8
   - Wide-Grip Pull-Up: 3×12–15 @ 10 · RPE 8
   - Cable Y-Shrug (arms 30° out): 3×12–15 @ 60 · RPE 8
-  - Heavy Farmer Hold (seconds): 2×30–40 @ 110 · RPE 8–9
   - Unilateral Cable Pulldown: 3×10–12 @ 135 · RPE 8
   - Rope / Single-Arm Pushdown: 3×10–12 @ 110 · RPE 8–9
+  - Heavy Farmer Hold (seconds): 2×30–40 @ 110 · RPE 8–9
   - Ab Wheel / Cable Crunch: 2×12–15 @ 90 · RPE 8–9
 - **Sun** — 0 working sets · est. 0 min
   - spechead: Optional detail day — off — REST. Six hard days need a seventh off — recovery is where the sets you already did turn into muscle. Easy walk at most. (Optional detail day can be re-enabled 
-- **Weekly fractional sets per muscle** (direct 1, a compound's secondary muscles 0.5): Upper chest 18 · Mid chest 17 · Front delts 14 · Side delts 14.5 · Rear delts 13.5 · Upper traps 9 · Mid back 8.5 · Lats 15.5 · Biceps 22.5 · Triceps 29.5 · Forearms 16 · Abs 4 · Lower back 6 · Quads 14 · Hamstrings 13 · Glutes 10 · Calves 6
+- **Weekly fractional sets per muscle** (direct 1, a compound's secondary muscles 0.5): Upper chest 18 · Mid chest 17 · Front delts 14 · Side delts 16.5 · Rear delts 13.5 · Upper traps 9 · Mid back 13.5 · Lats 15.5 · Biceps 22.5 · Triceps 27.5 · Forearms 16 · Abs 4 · Lower back 6 · Quads 14 · Hamstrings 13 · Glutes 10 · Calves 6
 
 ### Wave 10 week 1 — Specificity
 - **Mon** — 26 working sets · est. 68 min
@@ -1036,8 +1035,8 @@ Test days: Wave 6 week 4 Friday = 2027-01-01 (max test); Wave 12 week 4 Friday =
   - Overhead Press: 3×7 @ 115 · RPE 7–8
   - Weighted Dip — top set: 1×6 @ +35 · RPE 7
   - Weighted Dip — back-offs: 3×8 @ +20 · RPE 7–8
-  - Rope Pushdown: 2×12 @ 110 · RPE 8
   - Overhead Cable Extension: 3×12 @ 90 · RPE 8–9 [F] [LP]
+  - Cable Lateral Raise (Thursday): 2×12 @ 22.5 · RPE 8
   - Face Pull: 3×15 @ 75 · RPE 8
   - Prone Y-Raise: 2×15 @ 15 · RPE 8–9 (filler)
   - Wrist Extension: 3×20 @ 22.5 · RPE 8–9 (filler)
@@ -1066,13 +1065,13 @@ Test days: Wave 6 week 4 Friday = 2027-01-01 (max test); Wave 12 week 4 Friday =
   - Chest-Supported Rear-Delt Raise (thumbs up): 3×12–15 @ 20 · RPE 8
   - Wide-Grip Pull-Up: 3×10–12 @ 15 · RPE 8
   - Cable Y-Shrug (arms 30° out): 3×10–12 @ 65 · RPE 8
-  - Heavy Farmer Hold (seconds): 2×40–50 @ 110 · RPE 8–9
   - Unilateral Cable Pulldown: 3×12–15 @ 135 · RPE 8
   - Rope / Single-Arm Pushdown: 3×12–15 @ 110 · RPE 8–9
+  - Heavy Farmer Hold (seconds): 2×40–50 @ 110 · RPE 8–9
   - Ab Wheel / Cable Crunch: 2×8–10 @ 100 · RPE 8–9
 - **Sun** — 0 working sets · est. 0 min
   - spechead: Optional detail day — off — REST. Six hard days need a seventh off — recovery is where the sets you already did turn into muscle. Easy walk at most. (Optional detail day can be re-enabled 
-- **Weekly fractional sets per muscle** (direct 1, a compound's secondary muscles 0.5): Upper chest 18 · Mid chest 17 · Front delts 14 · Side delts 14.5 · Rear delts 13.5 · Upper traps 9 · Mid back 8.5 · Lats 15.5 · Biceps 22.5 · Triceps 29.5 · Forearms 16 · Abs 4 · Lower back 6 · Quads 14 · Hamstrings 13 · Glutes 10 · Calves 6
+- **Weekly fractional sets per muscle** (direct 1, a compound's secondary muscles 0.5): Upper chest 18 · Mid chest 17 · Front delts 14 · Side delts 16.5 · Rear delts 13.5 · Upper traps 9 · Mid back 13.5 · Lats 15.5 · Biceps 22.5 · Triceps 27.5 · Forearms 16 · Abs 4 · Lower back 6 · Quads 14 · Hamstrings 13 · Glutes 10 · Calves 6
 
 ### Wave 11 week 1 — Intensification
 - **Mon** — 25 working sets · est. 66 min
@@ -1121,8 +1120,8 @@ Test days: Wave 6 week 4 Friday = 2027-01-01 (max test); Wave 12 week 4 Friday =
   - Overhead Press: 3×6 @ 120 · RPE 7–8
   - Weighted Dip — top set: 1×6 @ +35 · RPE 7
   - Weighted Dip — back-offs: 3×8 @ +20 · RPE 7–8
-  - Rope Pushdown: 2×10 @ 115 · RPE 8
   - Overhead Cable Extension: 3×10 @ 95 · RPE 8–9
+  - Cable Lateral Raise (Thursday): 2×10 @ 25 · RPE 8
   - Face Pull: 3×12 @ 80 · RPE 8
   - Prone Y-Raise: 2×12 @ 17.5 · RPE 8–9 (filler)
   - Wrist Extension: 3×15 @ 25 · RPE 8–9 (filler)
@@ -1141,77 +1140,88 @@ Test days: Wave 6 week 4 Friday = 2027-01-01 (max test); Wave 12 week 4 Friday =
   - Reverse Cable Curl: 3×12 @ 95 · RPE 8–9
   - Cable / DB Wrist Curl: 3×15 @ 55 · RPE 8–9 (filler)
   - cooldown: Cooldown — 5 min — Hamstring 60s/side · figure-4 glute 45s/side · shake the grip out · easy breathing, no bouncing
-- **Sat** — 23 working sets · est. 42 min
-  - spechead: Frame Specialization — Arms (bi + tri) priority — Reduced sets this week.
-  - Incline DB Curl: 2×10–12 @ 60 · RPE 8–9
+- **Sat** — 37 working sets · est. 68 min
+  - spechead: Frame Specialization — Arms (bi + tri) priority — Overload day. Hit your weak point fresh — quality reps, not a set count.
+  - Incline DB Curl: 3×10–12 @ 60 · RPE 8–9
   - Bayesian Cable Curl: 2×10–12 @ 50 · RPE 8–9
-  - Cross-Body Cable Y-Raise: 3×10–12 @ 45 · RPE 8
-  - Overhead Cable Extension: 2×10–12 @ 95 · RPE 8–9
-  - Incline DB Press (30°): 2×8–10 @ 80 · RPE 8
-  - Chest-Supported Rear-Delt Raise (thumbs up): 2×15–20 @ 20 · RPE 8
-  - Wide-Grip Pull-Up: 2×12–15 @ 15 · RPE 8
-  - Cable Y-Shrug (arms 30° out): 2×12–15 @ 65 · RPE 8
+  - Cross-Body Cable Y-Raise: 5×10–12 @ 45 · RPE 8
+  - Overhead Cable Extension: 4×10–12 @ 95 · RPE 8–9
+  - Incline DB Press (30°): 4×8–10 @ 80 · RPE 8
+  - Chest-Supported Rear-Delt Raise (thumbs up): 3×15–20 @ 20 · RPE 8
+  - Wide-Grip Pull-Up: 3×12–15 @ 15 · RPE 8
+  - Cable Y-Shrug (arms 30° out): 3×12–15 @ 65 · RPE 8
+  - Unilateral Cable Pulldown: 3×10–12 @ 145 · RPE 8
+  - Rope / Single-Arm Pushdown: 3×10–12 @ 115 · RPE 8–9
   - Heavy Farmer Hold (seconds): 2×30–40 @ 120 · RPE 8–9
-  - Unilateral Cable Pulldown: 2×10–12 @ 145 · RPE 8
   - Ab Wheel / Cable Crunch: 2×10–12 @ 100 · RPE 8–9
 - **Sun** — 0 working sets · est. 0 min
   - spechead: Optional detail day — off — No weekend specialization in this cycle. Rest or an easy walk + conditioning.
-- **Weekly fractional sets per muscle** (direct 1, a compound's secondary muscles 0.5): Upper chest 16 · Mid chest 16 · Front delts 13 · Side delts 12.5 · Rear delts 11.5 · Upper traps 8 · Mid back 7 · Lats 12 · Biceps 19.5 · Triceps 23.5 · Forearms 16 · Abs 4 · Lower back 6 · Quads 13 · Hamstrings 13 · Glutes 9.5 · Calves 6
+- **Weekly fractional sets per muscle** (direct 1, a compound's secondary muscles 0.5): Upper chest 18 · Mid chest 17 · Front delts 14 · Side delts 16.5 · Rear delts 12.5 · Upper traps 9 · Mid back 11.5 · Lats 14 · Biceps 21.5 · Triceps 27.5 · Forearms 16 · Abs 4 · Lower back 6 · Quads 13 · Hamstrings 13 · Glutes 9.5 · Calves 6
 
 ### Wave 12 week 1 — Peak
-- **Mon** — 18 working sets · est. 47 min
+- **Mon** — 19 working sets · est. 49 min
   - warm-up: Bar×10, 95×5, 135×5, 185×3, 225×1 · indicator — film, 260×1 · bridge
   - Squat — top single: 1×1 @ 305 · RPE 8
   - Squat — back-offs: 3×3 @ 260 · RPE 7
-  - Seated Leg Curl: 2×12 @ 185 · RPE 7 (easy)
-  - Leg Press: 2×10 @ 670 · RPE 7 (easy)
-  - Standing Calf Raise: 2×12 @ 270 · RPE 7 (easy)
-  - Hanging Leg Raise: 1×12 @ 0 · RPE 7 (easy)
-  - Low-to-High Cable Fly: 3×15 @ 55 · RPE 7 (easy)
-  - Machine / DB Shrug: 2×10 @ 200 · RPE 7 (easy)
-  - Bayesian Cable Curl (Mon): 2×10 @ 45 · RPE 7 (easy)
+  - Seated Leg Curl: 2×12 @ 185 · RPE 8
+  - Leg Press: 2×10 @ 670 · RPE 8
+  - Standing Calf Raise: 2×12 @ 270 · RPE 8
+  - Hanging Leg Raise: 2×12 @ 0 · RPE 8
+  - Low-to-High Cable Fly: 3×15 @ 55 · RPE 8
+  - Machine / DB Shrug: 2×10 @ 200 · RPE 8
+  - Bayesian Cable Curl (Mon): 2×10 @ 45 · RPE 8
 - **Tue** — 14 working sets · est. 42 min
   - warm-up: Bar×15, 95×8, 135×5, 155×3, 165×1 · indicator — film, 220×1 · bridge
-  - Band External Rotation: 1×15 @ 0 · RPE 7 (filler)
-  - Band Pull-Apart: 1×25 @ 0 · RPE 7 (filler)
+  - Band External Rotation: 2×15 @ 0 · RPE 7 (filler)
+  - Band Pull-Apart: 2×25 @ 0 · RPE 7 (filler)
   - Bench — top single: 1×1 @ 245 · RPE 8
   - Bench — back-offs: 3×3 @ 215 · RPE 7
-  - Chest-Supported DB Row: 3×10 @ 85 · RPE 7 (easy)
-  - Leaning DB Lateral Raise: 3×12 @ 32.5 · RPE 7 (easy)
-  - Overhead Cable Extension (Tue): 2×10 @ 85 · RPE 7 (easy)
-  - Reverse Pec Deck: 2×12 @ 210 · RPE 7 (easy)
-  - Neck Curl: 1×15 @ 17.5 · RPE 7 (easy) (filler)
-- **Wed** — 14 working sets · est. 29 min
+  - Chest-Supported DB Row: 3×10 @ 85 · RPE 8
+  - Leaning DB Lateral Raise: 3×12 @ 32.5 · RPE 8
+  - Overhead Cable Extension (Tue): 2×10 @ 85 · RPE 8
+  - Reverse Pec Deck: 2×12 @ 210 · RPE 8
+  - Neck Curl: 2×15 @ 17.5 · RPE 8 (filler)
+- **Wed** — 15 working sets · est. 31 min
   - Paused Squat (easy): 3×5 @ 225 · RPE 6
-  - Seated Leg Curl: 3×12 @ 185 · RPE 7 (easy)
-  - Cable Preacher Curl: 2×10 @ 75 · RPE 7 (easy)
-  - Hammer Curl: 2×12 @ 60 · RPE 7 (easy)
-  - Leg Extension: 1×12 @ 235 · RPE 7 (easy)
-  - Cable Lateral Raise: 3×12 @ 32.5 · RPE 7 (easy)
-  - Stomach Vacuum (seconds): 1×45 @ 0 · RPE 7 (easy) (filler)
-- **Thu** — 8 working sets · est. 18 min
-  - Band External Rotation: 1×15 @ 0 · RPE 7 (filler)
+  - Seated Leg Curl: 3×12 @ 185 · RPE 8
+  - Cable Preacher Curl: 3×10 @ 75 · RPE 8
+  - Hammer Curl: 2×12 @ 60 · RPE 8
+  - Leg Extension: 1×12 @ 235 · RPE 8
+  - Cable Lateral Raise: 3×12 @ 32.5 · RPE 8
+  - Stomach Vacuum (seconds): 2×45 @ 0 · RPE 8 (filler)
+- **Thu** — 9 working sets · est. 20 min
+  - Band External Rotation: 2×15 @ 0 · RPE 7 (filler)
   - Paused Bench (easy): 3×5 @ 190 · RPE 6
-  - Rope Pushdown: 1×12 @ 115 · RPE 7 (easy)
-  - Overhead Cable Extension: 2×12 @ 95 · RPE 7 (easy)
-  - Face Pull: 2×15 @ 80 · RPE 7 (easy)
-  - Prone Y-Raise: 1×15 @ 17.5 · RPE 7 (easy) (filler)
-  - Wrist Extension: 2×20 @ 25 · RPE 7 (easy) (filler)
-  - Neck Extension: 1×15 @ 22.5 · RPE 7 (easy) (filler)
-- **Fri** — 10 working sets · est. 33 min
+  - Overhead Cable Extension: 2×12 @ 95 · RPE 8
+  - Cable Lateral Raise (Thursday): 2×12 @ 25 · RPE 8
+  - Face Pull: 2×15 @ 80 · RPE 8
+  - Prone Y-Raise: 2×15 @ 17.5 · RPE 8 (filler)
+  - Wrist Extension: 2×20 @ 25 · RPE 8 (filler)
+  - Neck Extension: 2×15 @ 22.5 · RPE 8 (filler)
+- **Fri** — 11 working sets · est. 35 min
   - warm-up: 135×5, 225×3, 275×2, 315×1 · indicator — film, 350×1 · bridge
   - Deadlift — top single: 1×1 @ 385 · RPE 8
   - Deadlift — back-offs: 3×3 @ 330 · RPE 7
-  - Leg Press Calf Raise: 2×12 @ 330 · RPE 7 (easy)
-  - High-Elbow Chest-Supported Row: 2×10 @ 120 · RPE 7 (easy)
-  - Reverse Cable Curl: 2×12 @ 100 · RPE 7 (easy)
-  - Cable / DB Wrist Curl: 2×20 @ 55 · RPE 7 (easy) (filler)
-- **Sat** — 0 working sets · est. 0 min
-  - spechead: Frame Specialization — Arms (bi + tri) priority — Peak macro — spec paused.
-  - TEST: Peak week — no specialization — Brief maintenance only if anything. Frame work resumes next macro — the peak exposes strength, it doesn't build the physique.
+  - Leg Press Calf Raise: 2×12 @ 330 · RPE 8
+  - High-Elbow Chest-Supported Row: 3×10 @ 120 · RPE 8
+  - Reverse Cable Curl: 2×12 @ 100 · RPE 8
+  - Cable / DB Wrist Curl: 2×20 @ 55 · RPE 8 (filler)
+- **Sat** — 23 working sets · est. 42 min
+  - spechead: Frame Specialization — Arms (bi + tri) priority — Peak: maintenance dose. 2 sets each, stop at RPE 8. The taper starts next week.
+  - Incline DB Curl: 2×12–15 @ 60 · RPE 8
+  - Bayesian Cable Curl: 2×12–15 @ 50 · RPE 8
+  - Cross-Body Cable Y-Raise: 3×12–15 @ 45 · RPE 8
+  - Overhead Cable Extension: 2×12–15 @ 95 · RPE 8
+  - Incline DB Press (30°): 2×10–12 @ 80 · RPE 8
+  - Chest-Supported Rear-Delt Raise (thumbs up): 2×12–15 @ 22.5 · RPE 8
+  - Wide-Grip Pull-Up: 2×10–12 @ 20 · RPE 8
+  - Cable Y-Shrug (arms 30° out): 2×10–12 @ 70 · RPE 8
+  - Unilateral Cable Pulldown: 2×12–15 @ 145 · RPE 8
+  - Heavy Farmer Hold (seconds): 2×40–50 @ 120 · RPE 8
+  - Ab Wheel / Cable Crunch: 2×12–15 @ 100 · RPE 8
 - **Sun** — 0 working sets · est. 0 min
   - spechead: Optional detail day — off — No weekend specialization in this cycle. Rest or an easy walk + conditioning.
-- **Weekly fractional sets per muscle** (direct 1, a compound's secondary muscles 0.5): Upper chest 6.5 · Mid chest 8.5 · Front delts 3.5 · Side delts 6 · Rear delts 7 · Upper traps 4 · Mid back 5.5 · Lats 4 · Biceps 8.5 · Triceps 8.5 · Forearms 10 · Abs 1 · Lower back 4 · Quads 10 · Hamstrings 7 · Glutes 6.5 · Calves 4
+- **Weekly fractional sets per muscle** (direct 1, a compound's secondary muscles 0.5): Upper chest 8.5 · Mid chest 9.5 · Front delts 4.5 · Side delts 11 · Rear delts 10 · Upper traps 7 · Mid back 11 · Lats 8.5 · Biceps 16 · Triceps 10.5 · Forearms 12 · Abs 4 · Lower back 4 · Quads 10 · Hamstrings 7 · Glutes 6.5 · Calves 4
 
 ### Wave 12 week 4 — Peak
 - **Mon** — 0 working sets · est. 0 min
@@ -1235,42 +1245,42 @@ Test days: Wave 6 week 4 Friday = 2027-01-01 (max test); Wave 12 week 4 Friday =
 
 | Wave.wk | Cycle | Upper chest | Mid chest | Front delts | Side delts | Rear delts | Upper traps | Mid back | Lats | Biceps | Triceps | Forearms | Abs | Lower back | Quads | Hamstrings | Glutes | Calves | Failure sets | Working sets | Minutes Mon–Sat |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 5.1 | Intensification | 16 | 16 | 13 | 12.5 | 11.5 | 8 | 7 | 12 | 19.5 | 23.5 | 16 | 4 | 6 | 13 | 13 | 9.5 | 6 | 0 | 130 | 66 / 71 / 72 / 60 / 65 / 42 |
-| 5.2 | Intensification | 16.5 | 17 | 13.5 | 12.5 | 11.5 | 8.5 | 7 | 12 | 19.5 | 24 | 16.5 | 4 | 7 | 14 | 13.5 | 10.5 | 6 | 0 | 133 | 70 / 71 / 72 / 63 / 68 / 42 |
-| 5.3 | Intensification | 15.5 | 16.5 | 12.5 | 10 | 9 | 7 | 6 | 11 | 17 | 21.5 | 12 | 4 | 6 | 11 | 11 | 9 | 4 | 0 | 112 | 56 / 63 / 65 / 56 / 61 / 42 |
-| 5.4 | Intensification | 8 | 9.5 | 7.5 | 7 | 9 | 3.5 | 6 | 5 | 9 | 15.5 | 9.5 | 4 | 4 | 9 | 7.5 | 6 | 4 | 0 | 77 | 48 / 46 / 55 / 44 / 44 / 14 |
-| 6.1 | Peak | 6.5 | 8.5 | 3.5 | 6 | 7 | 4 | 5.5 | 4 | 8.5 | 8.5 | 10 | 1 | 4 | 10 | 7 | 6.5 | 4 | 0 | 64 | 47 / 42 / 29 / 18 / 33 / 0 |
-| 6.2 | Peak | 5 | 7 | 3 | 4 | 6.5 | 4 | 5 | 3 | 8 | 8 | 10 | 1 | 4 | 9 | 6 | 6 | 4 | 0 | 57 | 45 / 38 / 22 / 15 / 33 / 0 |
+| 5.1 | Intensification | 16 | 16 | 13 | 12.5 | 11.5 | 8 | 11 | 12 | 19.5 | 23.5 | 16 | 4 | 6 | 13 | 13 | 9.5 | 6 | 0 | 130 | 66 / 71 / 72 / 60 / 65 / 42 |
+| 5.2 | Intensification | 16.5 | 17 | 13.5 | 12.5 | 11.5 | 8.5 | 11 | 12 | 19.5 | 24 | 16.5 | 4 | 7 | 14 | 13.5 | 10.5 | 6 | 0 | 133 | 70 / 71 / 72 / 63 / 68 / 42 |
+| 5.3 | Intensification | 15.5 | 16.5 | 12.5 | 10 | 9 | 7 | 9 | 11 | 17 | 21.5 | 12 | 4 | 6 | 11 | 11 | 9 | 4 | 0 | 112 | 56 / 63 / 65 / 56 / 61 / 42 |
+| 5.4 | Intensification | 8 | 9.5 | 7.5 | 7 | 9 | 3.5 | 9 | 5 | 9 | 15.5 | 9.5 | 4 | 4 | 9 | 7.5 | 6 | 4 | 0 | 77 | 48 / 46 / 55 / 44 / 44 / 14 |
+| 6.1 | Peak | 6.5 | 8.5 | 3.5 | 6 | 7 | 4 | 8 | 4 | 8.5 | 8.5 | 10 | 1 | 4 | 10 | 7 | 6.5 | 4 | 0 | 64 | 47 / 42 / 29 / 18 / 33 / 0 |
+| 6.2 | Peak | 5 | 7 | 3 | 4 | 6.5 | 4 | 7 | 3 | 8 | 8 | 10 | 1 | 4 | 9 | 6 | 6 | 4 | 0 | 57 | 45 / 38 / 22 / 15 / 33 / 0 |
 | 6.3 | Peak | 1.5 | 3 | 1.5 | 0 | 0 | 1.5 | 0 | 0 | 0 | 1.5 | 1.5 | 0 | 3 | 3 | 1.5 | 3 | 0 | 0 | 9 | 19 / 19 / 0 / 0 / 19 / 0 |
 | 6.4 | Peak | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 / 0 / 0 / 0 / 0 / 0 |
-| 7.1 | Calibration | 18 | 17 | 14 | 14.5 | 13.5 | 9 | 8.5 | 15.5 | 22.5 | 29.5 | 16 | 4 | 6 | 14 | 13 | 10 | 6 | 14 | 147 | 68 / 73 / 72 / 60 / 66 / 68 |
-| 7.2 | Calibration | 18.5 | 18 | 14.5 | 14.5 | 13.5 | 9.5 | 8.5 | 15.5 | 22.5 | 30 | 16.5 | 4 | 7 | 15 | 13.5 | 11 | 6 | 14 | 150 | 71 / 73 / 72 / 63 / 70 / 68 |
-| 7.3 | Calibration | 16 | 17.5 | 13 | 10 | 10 | 7.5 | 7.5 | 12.5 | 18 | 22 | 12.5 | 4 | 7 | 13 | 11.5 | 10.5 | 4 | 0 | 118 | 61 / 69 / 65 / 56 / 66 / 42 |
-| 7.4 | Calibration | 8 | 9.5 | 7.5 | 7 | 9 | 3.5 | 6 | 5 | 9 | 15.5 | 9.5 | 4 | 4 | 9 | 7.5 | 6 | 4 | 0 | 77 | 48 / 46 / 55 / 44 / 44 / 14 |
-| 8.1 | Build | 18 | 17 | 14 | 14.5 | 13.5 | 9 | 8.5 | 15.5 | 22.5 | 29.5 | 16 | 4 | 6 | 14 | 13 | 10 | 6 | 14 | 147 | 68 / 73 / 72 / 60 / 66 / 68 |
-| 8.2 | Build | 18.5 | 18 | 14.5 | 14.5 | 13.5 | 9.5 | 8.5 | 15.5 | 22.5 | 30 | 16.5 | 4 | 7 | 15 | 13.5 | 11 | 6 | 14 | 150 | 71 / 73 / 72 / 63 / 70 / 68 |
-| 8.3 | Build | 16 | 17.5 | 13 | 10 | 10 | 7.5 | 7.5 | 12.5 | 18 | 22 | 12.5 | 4 | 7 | 13 | 11.5 | 10.5 | 4 | 0 | 118 | 61 / 69 / 65 / 56 / 66 / 42 |
-| 8.4 | Build | 8 | 9.5 | 7.5 | 7 | 9 | 3.5 | 6 | 5 | 9 | 15.5 | 9.5 | 4 | 4 | 9 | 7.5 | 6 | 4 | 0 | 77 | 48 / 46 / 55 / 44 / 44 / 14 |
-| 9.1 | Accumulate | 18 | 17 | 14 | 14.5 | 13.5 | 9 | 8.5 | 15.5 | 22.5 | 29.5 | 16 | 4 | 6 | 14 | 13 | 10 | 6 | 14 | 147 | 68 / 73 / 72 / 60 / 66 / 68 |
-| 9.2 | Accumulate | 18.5 | 18 | 14.5 | 14.5 | 13.5 | 9.5 | 8.5 | 15.5 | 22.5 | 30 | 16.5 | 4 | 7 | 15 | 13.5 | 11 | 6 | 14 | 150 | 71 / 73 / 72 / 63 / 70 / 68 |
-| 9.3 | Accumulate | 16 | 17.5 | 13 | 10 | 10 | 7.5 | 7.5 | 12.5 | 18 | 22 | 12.5 | 4 | 7 | 13 | 11.5 | 10.5 | 4 | 0 | 118 | 61 / 69 / 65 / 56 / 66 / 42 |
-| 9.4 | Accumulate | 8 | 9.5 | 7.5 | 7 | 9 | 3.5 | 6 | 5 | 9 | 15.5 | 9.5 | 4 | 4 | 9 | 7.5 | 6 | 4 | 0 | 77 | 48 / 46 / 55 / 44 / 44 / 14 |
-| 10.1 | Specificity | 18 | 17 | 14 | 14.5 | 13.5 | 9 | 8.5 | 15.5 | 22.5 | 29.5 | 16 | 4 | 6 | 14 | 13 | 10 | 6 | 14 | 147 | 68 / 73 / 72 / 60 / 66 / 68 |
-| 10.2 | Specificity | 18.5 | 18 | 14.5 | 14.5 | 13.5 | 9.5 | 8.5 | 15.5 | 22.5 | 30 | 16.5 | 4 | 7 | 15 | 13.5 | 11 | 6 | 14 | 150 | 71 / 73 / 72 / 63 / 70 / 68 |
-| 10.3 | Specificity | 16 | 17.5 | 13 | 10 | 10 | 7.5 | 7.5 | 12.5 | 18 | 22 | 12.5 | 4 | 7 | 13 | 11.5 | 10.5 | 4 | 0 | 118 | 61 / 69 / 65 / 56 / 66 / 42 |
-| 10.4 | Specificity | 8 | 9.5 | 7.5 | 7 | 9 | 3.5 | 6 | 5 | 9 | 15.5 | 9.5 | 4 | 4 | 9 | 7.5 | 6 | 4 | 0 | 77 | 48 / 46 / 55 / 44 / 44 / 14 |
-| 11.1 | Intensification | 16 | 16 | 13 | 12.5 | 11.5 | 8 | 7 | 12 | 19.5 | 23.5 | 16 | 4 | 6 | 13 | 13 | 9.5 | 6 | 0 | 130 | 66 / 71 / 72 / 60 / 65 / 42 |
-| 11.2 | Intensification | 16.5 | 17 | 13.5 | 12.5 | 11.5 | 8.5 | 7 | 12 | 19.5 | 24 | 16.5 | 4 | 7 | 14 | 13.5 | 10.5 | 6 | 0 | 133 | 70 / 71 / 72 / 63 / 68 / 42 |
-| 11.3 | Intensification | 15.5 | 16.5 | 12.5 | 10 | 9 | 7 | 6 | 11 | 17 | 21.5 | 12 | 4 | 6 | 11 | 11 | 9 | 4 | 0 | 112 | 56 / 63 / 65 / 56 / 61 / 42 |
-| 11.4 | Intensification | 8 | 9.5 | 7.5 | 7 | 9 | 3.5 | 6 | 5 | 9 | 15.5 | 9.5 | 4 | 4 | 9 | 7.5 | 6 | 4 | 0 | 77 | 48 / 46 / 55 / 44 / 44 / 14 |
-| 12.1 | Peak | 6.5 | 8.5 | 3.5 | 6 | 7 | 4 | 5.5 | 4 | 8.5 | 8.5 | 10 | 1 | 4 | 10 | 7 | 6.5 | 4 | 0 | 64 | 47 / 42 / 29 / 18 / 33 / 0 |
-| 12.2 | Peak | 5 | 7 | 3 | 4 | 6.5 | 4 | 5 | 3 | 8 | 8 | 10 | 1 | 4 | 9 | 6 | 6 | 4 | 0 | 57 | 45 / 38 / 22 / 15 / 33 / 0 |
+| 7.1 | Calibration | 18 | 17 | 14 | 16.5 | 13.5 | 9 | 13.5 | 15.5 | 22.5 | 27.5 | 16 | 4 | 6 | 14 | 13 | 10 | 6 | 14 | 147 | 68 / 73 / 72 / 60 / 66 / 68 |
+| 7.2 | Calibration | 18.5 | 18 | 14.5 | 16.5 | 13.5 | 9.5 | 13.5 | 15.5 | 22.5 | 28 | 16.5 | 4 | 7 | 15 | 13.5 | 11 | 6 | 14 | 150 | 71 / 73 / 72 / 63 / 70 / 68 |
+| 7.3 | Calibration | 18 | 18.5 | 14 | 14 | 11 | 8.5 | 11.5 | 14.5 | 20 | 26 | 12.5 | 4 | 7 | 13 | 11.5 | 10.5 | 4 | 0 | 132 | 61 / 69 / 65 / 56 / 66 / 68 |
+| 7.4 | Calibration | 8 | 9.5 | 7.5 | 9 | 9 | 3.5 | 9 | 5 | 9 | 13.5 | 9.5 | 4 | 4 | 9 | 7.5 | 6 | 4 | 0 | 77 | 48 / 46 / 55 / 44 / 44 / 14 |
+| 8.1 | Build | 18 | 17 | 14 | 16.5 | 13.5 | 9 | 13.5 | 15.5 | 22.5 | 27.5 | 16 | 4 | 6 | 14 | 13 | 10 | 6 | 14 | 147 | 68 / 73 / 72 / 60 / 66 / 68 |
+| 8.2 | Build | 18.5 | 18 | 14.5 | 16.5 | 13.5 | 9.5 | 13.5 | 15.5 | 22.5 | 28 | 16.5 | 4 | 7 | 15 | 13.5 | 11 | 6 | 14 | 150 | 71 / 73 / 72 / 63 / 70 / 68 |
+| 8.3 | Build | 18 | 18.5 | 14 | 14 | 11 | 8.5 | 11.5 | 14.5 | 20 | 26 | 12.5 | 4 | 7 | 13 | 11.5 | 10.5 | 4 | 0 | 132 | 61 / 69 / 65 / 56 / 66 / 68 |
+| 8.4 | Build | 8 | 9.5 | 7.5 | 9 | 9 | 3.5 | 9 | 5 | 9 | 13.5 | 9.5 | 4 | 4 | 9 | 7.5 | 6 | 4 | 0 | 77 | 48 / 46 / 55 / 44 / 44 / 14 |
+| 9.1 | Accumulate | 18 | 17 | 14 | 16.5 | 13.5 | 9 | 13.5 | 15.5 | 22.5 | 27.5 | 16 | 4 | 6 | 14 | 13 | 10 | 6 | 14 | 147 | 68 / 73 / 72 / 60 / 66 / 68 |
+| 9.2 | Accumulate | 18.5 | 18 | 14.5 | 16.5 | 13.5 | 9.5 | 13.5 | 15.5 | 22.5 | 28 | 16.5 | 4 | 7 | 15 | 13.5 | 11 | 6 | 14 | 150 | 71 / 73 / 72 / 63 / 70 / 68 |
+| 9.3 | Accumulate | 18 | 18.5 | 14 | 14 | 11 | 8.5 | 11.5 | 14.5 | 20 | 26 | 12.5 | 4 | 7 | 13 | 11.5 | 10.5 | 4 | 0 | 132 | 61 / 69 / 65 / 56 / 66 / 68 |
+| 9.4 | Accumulate | 8 | 9.5 | 7.5 | 9 | 9 | 3.5 | 9 | 5 | 9 | 13.5 | 9.5 | 4 | 4 | 9 | 7.5 | 6 | 4 | 0 | 77 | 48 / 46 / 55 / 44 / 44 / 14 |
+| 10.1 | Specificity | 18 | 17 | 14 | 16.5 | 13.5 | 9 | 13.5 | 15.5 | 22.5 | 27.5 | 16 | 4 | 6 | 14 | 13 | 10 | 6 | 14 | 147 | 68 / 73 / 72 / 60 / 66 / 68 |
+| 10.2 | Specificity | 18.5 | 18 | 14.5 | 16.5 | 13.5 | 9.5 | 13.5 | 15.5 | 22.5 | 28 | 16.5 | 4 | 7 | 15 | 13.5 | 11 | 6 | 14 | 150 | 71 / 73 / 72 / 63 / 70 / 68 |
+| 10.3 | Specificity | 18 | 18.5 | 14 | 14 | 11 | 8.5 | 11.5 | 14.5 | 20 | 26 | 12.5 | 4 | 7 | 13 | 11.5 | 10.5 | 4 | 0 | 132 | 61 / 69 / 65 / 56 / 66 / 68 |
+| 10.4 | Specificity | 8 | 9.5 | 7.5 | 9 | 9 | 3.5 | 9 | 5 | 9 | 13.5 | 9.5 | 4 | 4 | 9 | 7.5 | 6 | 4 | 0 | 77 | 48 / 46 / 55 / 44 / 44 / 14 |
+| 11.1 | Intensification | 18 | 17 | 14 | 16.5 | 12.5 | 9 | 11.5 | 14 | 21.5 | 27.5 | 16 | 4 | 6 | 13 | 13 | 9.5 | 6 | 0 | 144 | 66 / 71 / 72 / 60 / 65 / 68 |
+| 11.2 | Intensification | 18.5 | 18 | 14.5 | 16.5 | 12.5 | 9.5 | 11.5 | 14 | 21.5 | 28 | 16.5 | 4 | 7 | 14 | 13.5 | 10.5 | 6 | 0 | 147 | 70 / 71 / 72 / 63 / 68 / 68 |
+| 11.3 | Intensification | 17.5 | 17.5 | 13.5 | 14 | 10 | 8 | 9.5 | 13 | 19 | 25.5 | 12 | 4 | 6 | 11 | 11 | 9 | 4 | 0 | 126 | 56 / 63 / 65 / 56 / 61 / 68 |
+| 11.4 | Intensification | 8 | 9.5 | 7.5 | 9 | 9 | 3.5 | 9 | 5 | 9 | 13.5 | 9.5 | 4 | 4 | 9 | 7.5 | 6 | 4 | 0 | 77 | 48 / 46 / 55 / 44 / 44 / 14 |
+| 12.1 | Peak | 8.5 | 9.5 | 4.5 | 11 | 10 | 7 | 11 | 8.5 | 16 | 10.5 | 12 | 4 | 4 | 10 | 7 | 6.5 | 4 | 0 | 91 | 49 / 42 / 31 / 20 / 35 / 42 |
+| 12.2 | Peak | 8 | 8.5 | 4 | 11 | 10 | 7 | 11 | 8.5 | 16 | 10 | 12 | 4 | 4 | 9 | 7 | 6 | 4 | 0 | 89 | 49 / 42 / 28 / 17 / 35 / 42 |
 | 12.3 | Peak | 1.5 | 3 | 1.5 | 0 | 0 | 1.5 | 0 | 0 | 0 | 1.5 | 1.5 | 0 | 3 | 3 | 1.5 | 3 | 0 | 0 | 9 | 19 / 19 / 0 / 0 / 19 / 0 |
 | 12.4 | Peak | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 / 0 / 0 / 0 / 0 / 0 |
 
 ## 5. Exposure frequency per muscle (days per week with at least one direct set), Wave 7 week 1
 
-Upper chest: Mon/Tue/Thu/Sat · Mid chest: Tue/Thu · Front delts: Thu · Side delts: Tue/Wed/Sat · Rear delts: Tue/Thu/Sat · Upper traps: Mon/Sat · Mid back: Thu/Fri · Lats: Tue/Fri/Sat · Biceps: Mon/Wed/Sat · Triceps: Tue/Thu/Sat · Forearms: Wed/Thu/Fri/Sat · Abs: Mon/Sat · Lower back: Fri · Quads: Mon/Wed · Hamstrings: Mon/Wed/Fri · Glutes: — · Calves: Mon/Fri
+Upper chest: Mon/Tue/Thu/Sat · Mid chest: Tue/Thu · Front delts: Thu · Side delts: Tue/Wed/Thu/Sat · Rear delts: Tue/Thu/Sat · Upper traps: Mon/Sat · Mid back: Tue/Thu/Fri · Lats: Tue/Fri/Sat · Biceps: Mon/Wed/Sat · Triceps: Tue/Thu/Sat · Forearms: Wed/Thu/Fri/Sat · Abs: Mon/Sat · Lower back: Fri · Quads: Mon/Wed · Hamstrings: Mon/Wed/Fri · Glutes: — · Calves: Mon/Fri
 
 ## 6. Nutrition modes (nutrition.js)
 

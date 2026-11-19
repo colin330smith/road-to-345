@@ -352,8 +352,13 @@ const ACC = [
   { id: "vacuum",    name: "Stomach Vacuum (seconds)", day: 3, sets: 2, w3: 2, steps: [30, 45, 60],     w: 0,    inc: 0,   db: false, comp: false, arch: "hlr",       cap: "FILLER \u2014 superset into rests, costs no clock. WAIST: exhale fully, pull the navel to the spine, hold. A zero-clock habit, not a proven waist shrinker: no trial shows it narrows the waist (judgment). The obliques stay unloaded by choice (judgment): the waist is a leanness number" },
   { id: "latthu",    name: "Lateral Raise (Thu)",    day: 4, sets: 4, w3: 3, steps: [12, 15, 18, 20], w: 17.5,   inc: 2.5, db: true,  comp: false, arch: "lateral",   cap: "4 sets — the big side-delt day" },
   { id: "rdf",       name: "Rear-Delt Fly",          day: 4, sets: 3, w3: 3, steps: [15, 20, 25],     w: 17.5, inc: 2.5, db: true,  comp: false, arch: "rearfly",   cap: "Think 'throw, don't lift'" },
-  { id: "pushdown",  name: "Rope Pushdown",          day: 4, sets: 2, w3: 2, steps: [10, 12, 15],     w: 90,   inc: 5,   db: false, comp: false, arch: "pushdown",  cap: "Second triceps movement — the overhead extension took the failure set. Stop at RPE 8", rpe8: true },
+  // AUDIT-2027: Thursday's pushdown ends with Wave 6. Thursday was past the per-session triceps ceiling
+  // (12.5 fractional sets against about 11: Remmert 2025), and the pushdown is the short-length exercise.
+  { id: "pushdown",  name: "Rope Pushdown",          day: 4, sets: 2, w3: 2, steps: [10, 12, 15],     w: 90,   inc: 5,   db: false, comp: false, until: 6, arch: "pushdown",  cap: "Second triceps movement — the overhead extension took the failure set. Stop at RPE 8", rpe8: true },
   { id: "ohthu",     name: "Overhead Cable Extension", day: 4, sets: 3, w3: 2, steps: [10, 12, 15],   w: 70,   inc: 5,   db: false, comp: false, anchor: true, lp: true, arch: "ohtri",     cap: "LONG HEAD at length. Triceps are ~55% of upper-arm muscle and the long head is the biggest head. Overhead grew it ~1.5x and the whole triceps ~1.4x more than pushdowns (Maeo 2023). Elbows in, full stretch behind the head" },
+  // AUDIT-2027 (Wave 7+): the pushdown's two sets go to the side delt, the muscle that moves the
+  // shoulder-to-waist ratio. Own key and ladder, so Wednesday's cable lateral rung never sees it.
+  { id: "latthu7",   name: "Cable Lateral Raise (Thursday)", day: 4, sets: 2, w3: 2, steps: [10, 12, 15],  w: 20,   inc: 2.5, db: false, comp: false, rpe8: true, since: 7, from: 7, moveId: "cablelat", arch: "lateral", cap: "SIDE DELT, fourth exposure (from Wave 7, in place of the pushdown). After all pressing. Cable at hand height, elbow nearly straight, thumb level, stop at shoulder height. Stop at RPE 8: Tuesday and Wednesday carry the failure sets. Weekly side-delt sets 13 → 15, inside the 16 cap" },
   { id: "facepull",  name: "Face Pull",              day: 4, sets: 2, w3: 2, steps: [12, 15, 20],     w: 55,   inc: 5,   db: false, comp: false, arch: "rearfly",   cap: "Rear delts + posture. Pull to the forehead, elbows high",
     up: { from: 4, sets: 3, rpe8: true, cap: "REAR DELTS + MID/LOWER TRAPS + CUFF. Rope at forehead height, elbows up at shoulder level. Pull apart until the hands sit beside the ears with the thumbs pointing back, 1-s squeeze, no leaning back: that externally rotated finish is close to the position that topped rear-delt activity in an EMG study (Reinold 2004). Stop at RPE 8: deadlifts are tomorrow" } },
   { id: "proneY",    name: "Prone Y-Raise",          day: 4, sets: 2, w3: 2, steps: [12, 15, 20],     w: 5,    inc: 2.5, db: true,  comp: false, arch: "proneY",    cap: "FILLER — superset into main-lift rests, costs no clock. LOWER traps — the muscle that holds your shoulders back. Thumbs up, arms at 45°, tiny weight" },
@@ -472,7 +477,10 @@ function accFor(a0, wave, week) {
   let sets = week === 3 ? a.w3 : a.sets;
   if (cyc === 5 && a.comp) sets = Math.max(1, sets - 1);
   if (cyc === 6) {
-    if (week === 1) sets = Math.max(1, Math.round(sets * 0.7));
+    // AUDIT-2027 (Wave 7+): the first two peak weeks keep the week-3 set counts. Lifters cut volume in
+    // the last 5-9 days (about 40-45%), not four weeks out (Winwood 2026; Travis 2020: a 1-2 week taper).
+    if (week <= 2 && wave >= 7) sets = Math.min(sets, a.w3);
+    else if (week === 1) sets = Math.max(1, Math.round(sets * 0.7));
     else if (week === 2) sets = Math.max(1, Math.round(sets * 0.5));
     else return null; // wk 3–4 of a peak: no accessory work
   }
@@ -640,7 +648,9 @@ function saturdaySession(wave, week, spec) {
   spec = spec || DEFAULT_SPEC;
   const cyc = cycleOf(wave);
   const blocks = [];
-  if (cyc === 6) { // peak: no specialization
+  // AUDIT-2027 (Wave 7+): the first two peak weeks keep a maintenance Saturday (2 sets each, RPE 8).
+  const peakHold = cyc === 6 && wave >= 7 && week <= 2;
+  if (cyc === 6 && !peakHold) { // peak: no specialization
     blocks.push({ type: "test", name: "Peak week — no specialization", note: "Brief maintenance only if anything. Frame work resumes next macro — the peak exposes strength, it doesn't build the physique." });
     return blocks;
   }
@@ -654,7 +664,9 @@ function saturdaySession(wave, week, spec) {
     } else blocks.push(sx("Ab Wheel / Cable Crunch", 100, [10, 15], 2, "6–7", "crunch", "crunch", false, "", 0, 1));
     return blocks;
   }
-  const reduced = week === 3 || cyc === 5; // Wk3 and Cycle 5: fewer sets
+  // Wk3 and Cycle 5: fewer sets (Waves 1-6). AUDIT-2027 (Wave 7+): Saturday follows the week's last heavy
+  // single, so trimming it protects no gate lift; it runs full except as the peak's maintenance dose.
+  const reduced = wave >= 7 ? peakHold : week === 3 || cyc === 5;
   const frame = FRAME_MODULE[spec.framePrimary](wave);
   frame.forEach((ex) => blocks.push({ ...ex, sets: reduced ? 2 : ex.sets, primary: true }));
   // declared weak points (Wave 3 feedback): a second upper-chest press angle and real grip work
@@ -697,6 +709,13 @@ function saturdaySession(wave, week, spec) {
   // Wave 4+: the rear-delt raise sits right after the incline DB press: same bench, antagonist superset (Zhang 2025)
   const ri = blocks.findIndex((b) => b.pkey === "chest-supported-rear-delt-raise-thumbs-up");
   if (ri > -1) { const [r] = blocks.splice(ri, 1); blocks.splice(blocks.findIndex((b) => /Incline DB Press/.test(b.name || "")) + 1, 0, r); }
+  if (wave >= 7) {
+    // the farmer hold fries the grip, so it goes after the last pull (it ran before the pulldown)
+    const fi = blocks.findIndex((b) => /Farmer/.test(b.name || ""));
+    if (fi > -1) { const [f] = blocks.splice(fi, 1); const ai = blocks.findIndex((b) => /Ab Wheel/.test(b.name || "")); blocks.splice(ai > -1 ? ai : blocks.length, 0, f); }
+    // a peak never pushes: every Saturday set stops at RPE 8
+    if (peakHold) return blocks.map((b) => (b.type === "accessory" ? { ...b, rpe: "8" } : b));
+  }
   return blocks;
 }
 
@@ -785,7 +804,7 @@ function sessionForInner(wave, week, day, gates, spec, opts) {
   // ── Saturday (day 6): frame-specialization overload ──
   if (day === 6) {
     const label = FRAME_LABEL[spec.framePrimary] || "Frame";
-    const head = { type: "spechead", name: "Frame Specialization — " + label + " priority", note: cycEarly === 6 ? "Peak macro — spec paused." : week === 4 ? "Light week — maintenance only." : (week === 3 || cycEarly === 5) ? "Reduced sets this week." : "Overload day. Hit your weak point fresh — quality reps, not a set count.", moveId: null };
+    const head = { type: "spechead", name: "Frame Specialization — " + label + " priority", note: cycEarly === 6 ? (wave >= 7 && week <= 2 ? "Peak: maintenance dose. 2 sets each, stop at RPE 8. The taper starts next week." : "Peak macro — spec paused.") : week === 4 ? "Light week — maintenance only." : wave < 7 && (week === 3 || cycEarly === 5) ? "Reduced sets this week." : "Overload day. Hit your weak point fresh — quality reps, not a set count.", moveId: null };
     return [head, ...topWeek(saturdaySession(wave, week, spec), week)];
   }
   // ── Sunday (day 7): optional detail ──
@@ -869,6 +888,8 @@ function sessionForInner(wave, week, day, gates, spec, opts) {
     // frame bias: lat-width / upper-back priority trims the Friday row to 2 sets
     let sets = p.sets;
     if (day === 5 && (a.id === "rowfri" || a.id === "rowhi") && (spec.framePrimary === "latwidth" || spec.framePrimary === "upperback") && week < 4) sets = Math.min(sets, 2);
+    // AUDIT-2027: Thursday's lateral raise yields to the weekly side-delt cap on frames whose Saturday already loads it
+    if (a.id === "latthu7" && week < 4) { sets = Math.max(0, sets - Math.max(0, sideDeltSetsMonSat(wave, week, saturdaySession(wave, week, spec)) - CAP_SIDE)); if (!sets) continue; }
     push({ type: "accessory", name: a.name, w: p.w, reps: p.reps, sets, rpe: p.rpe, db: a.db, top: p.top, moveId: a.moveId || a.id, cap: a.cap, pkey: a.id, prog: p.prog, lastHard: p.lastHard, lp: !!(a.lp && p.lastHard), inc: a.inc, light: !!p.light });
   }
   if (day === 4 && week < 4 && xfer) push(wave >= 4
@@ -933,7 +954,7 @@ function peakSession(wave, week, day, cb, gates, opts) {
       if (a0.primer || !accLive(a0, wave) || (day === 4 && THU_DROP.has(a0.id))) continue;
       const a = accAt(a0, wave), p = accFor(a0, wave, week);
       if (!p) continue;
-      push({ type: "accessory", name: a.name, w: p.w, reps: p.reps, sets: p.sets, rpe: "7 (easy)", db: a.db, moveId: a.moveId || a.id, cap: a.cap, pkey: a.id, prog: p.prog });
+      push({ type: "accessory", name: a.name, w: p.w, reps: p.reps, sets: p.sets, rpe: wave >= 7 ? "8" : "7 (easy)", db: a.db, moveId: a.moveId || a.id, cap: a.cap, pkey: a.id, prog: p.prog });
     }
   }
   return blocks;

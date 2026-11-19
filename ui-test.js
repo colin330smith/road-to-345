@@ -594,6 +594,36 @@ T["measure: the guided measure day saves weight and tape, and Road draws the fra
   await ctx.close();
 };
 
+// ═══ AUDIT-2027 ═══
+T["audit: the Road card gives the test-day range and the 3/4/5 window"] = async (b) => {
+  const { ctx, page, errors } = await open(b, { time: "2026-11-19T07:05:00", state: { ...BASE, seen: { m2: 1 } } });
+  await page.evaluate(() => goTab("road"));
+  const t = await page.$eval("#view", (e) => e.innerText);
+  ok(/Test day, Wave 12 \(Jun 18, 2027\): bench 277\.5–295 · squat 340–375 · deadlift 430–465\./.test(t), "the Wave 12 test day shows the small-step to all-clean range");
+  ok(/All three reach 315 · 405 · 495 between Sep 2027 \(every gate clean\) and Jul 2028 \(small steps\)/.test(t), "the 3/4/5 window is stated with both ends");
+  await page.evaluate(() => goTab("more"));
+  await page.fill("#meetdate", "2027-07-10"); await page.$eval("#meetdate", (e) => e.dispatchEvent(new Event("change")));
+  await page.evaluate(() => goTab("road"));
+  ok(/Meet day \(Jul 10, 2027\): bench 277\.5–295/.test(await page.$eval("#view", (e) => e.innerText)), "with a meet date the line reads Meet day on that date");
+  const errs = errors.filter((e) => !/^dialog: Line the Wave 12 test up/.test(e)); // the meet date asks before it shifts the calendar
+  ok(!errs.length, "no page errors " + errs.join(" | "));
+  await ctx.close();
+};
+T["audit: a refused save is said out loud, with a backup button, and clears when saving works"] = async (b) => {
+  const { ctx, page, errors } = await open(b, { time: "2026-11-19T07:05:00", state: { ...BASE, seen: { m2: 1 } } });
+  ok(!(await page.$('#view [role="alert"]')), "no warning while saves work");
+  await page.evaluate(() => { window.__set = Storage.prototype.setItem; Storage.prototype.setItem = function () { throw new DOMException("full", "QuotaExceededError"); }; });
+  await (await page.$("#view .setrow .chip")).click();
+  const warn = await page.$eval('#view [role="alert"]', (e) => e.innerText).catch(() => "");
+  ok(/not saved/i.test(warn) && /back up now/i.test(warn), "a refused save shows the Not saved card with Back up now: " + warn.slice(0, 60));
+  await page.evaluate(() => { Storage.prototype.setItem = window.__set; });
+  await (await page.$$("#view .setrow .chip"))[1].click();
+  ok(!(await page.$('#view [role="alert"]')), "the warning clears once a save goes through");
+  ok(Object.keys((await getS(page)).logs).length === 1, "and the set is stored");
+  ok(!errors.length, "no page errors " + errors.join(" | "));
+  await ctx.close();
+};
+
 (async () => {
   const browser = await pw.chromium.launch();
   const only = process.argv[2];

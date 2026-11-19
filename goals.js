@@ -183,10 +183,12 @@ const MUSCLE_RULES = [
   [/Extension|Pushdown|Triceps/i, { triceps: 1 }],
   [/Prone Y-Raise/i, { midtraps: 1, reardelt: 0.5 }],
   [/Lateral Raise|Y-Raise/i, { sidedelt: 1 }],
-  [/Rear-Delt|Reverse[- ]Pec/i, { reardelt: 1 }],
+  // AUDIT-2027: a rear-delt fly or raise also works the mid traps and rhomboids (the plan's own cue says so), and a row
+  // retracts the shoulder blades whatever the elbow path: the map under-counted the mid back against EVIDENCE.md
+  [/Rear-Delt|Reverse[- ]Pec/i, { reardelt: 1, midtraps: 0.5 }],
   [/Face Pull/i, { reardelt: 1, midtraps: 0.5 }],
   [/High-Elbow/i, { midtraps: 1, reardelt: 0.5, lats: 0.5, biceps: 0.5 }],
-  [/Row/i, { lats: 1, midtraps: 0.5, reardelt: 0.5, biceps: 0.5 }],
+  [/Row/i, { lats: 1, midtraps: 1, reardelt: 0.5, biceps: 0.5 }],
   [/Chin-Up|Pull-Up|Pulldown/i, { lats: 1, biceps: 0.5 }],
 ];
 const muscleRule = (name) => { const r = MUSCLE_RULES.find(([re]) => re.test(name || "")); return r ? r[1] : {}; };
@@ -298,6 +300,7 @@ const MODEL2 = {
     ["Logging", "Extra sets visible, edited weights carry to the next set, rest timer starts itself, swaps and 'last time' per exercise."],
     ["Data safety", "Imports checked before they replace anything, a recovery screen, dated schedule shifts that never move past logs."],
     ["Nutrition", "Accurate weekly rate, no trims in Cycles 5–6, a sleep gate that needs logged sleep, adjustments that move the targets."],
+    ["The 2027 audit (from Wave 7, Jan 4)", "Saturday keeps its full sets in week 3 and in Intensification. The first two peak weeks keep a maintenance dose instead of dropping the accessories four weeks out. Thursday's two pushdown sets become side-delt raises. The farmer hold moves after the last pull. The Road card now shows the honest range for meet day. Waves 4–6 are untouched."],
     ["The strict home-cooked plan", "Zero Hillstone food. MAINTAIN through the peak on 14 restaurant-style recipes cooked at home: a plan for every shift, off and rest day, one tap per weighed portion, two cooks a week, a Costco list computed from the plan, and a maintenance number measured from your own complete days and weigh-ins."],
     ["Goal tracking", "Each goal shows the pace it needs vs the pace you have, and the lever to pull when you fall behind."],
     ["Now card", "Today walks you set by set: primers, the warm-up ramp with plates, the single with meet commands, a rating that shows the back-offs it sets, a rest ring, the rep ladder, then what the session built."],

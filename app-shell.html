@@ -344,7 +344,9 @@ function normalize(d) {
   try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
 // the schedule's dated shifts (DATA-1)
 const SHIFT = () => S.settings.shifts || [];
-const save = () => { _gx = null; try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} };
+// AUDIT-2027: a refused write (storage full or blocked) is never silent: Today shows a warning until a save succeeds
+let saveErr = false;
+const save = () => { _gx = null; try { localStorage.setItem(KEY, JSON.stringify(S)); saveErr = false; } catch (e) { saveErr = true; } };
 // effective gates: what the lifter set, plus Rule D (rated singles) wherever he has not
 let _gx = null;
 const GX = () => _gx || (_gx = E.withAutoGates(S.gates, { index: histIndex(), shifts: SHIFT() }));
@@ -763,6 +765,7 @@ function renderToday() {
       <label>Sleep <input type="number" step="0.5" inputmode="decimal" value="${Number.isFinite(log.sleep) ? log.sleep : ""}" onchange="setLog('${dk}','sleep',this.value)"> hr</label>
     </div>`;
 
+  if (saveErr) inner += `<div class="card single" role="alert"><div class="eyebrow sig">⚠ Not saved</div><p class="note">The phone refused to store your last change (storage full or blocked). It is in memory only until a save works. Back up now, free some space, then reopen the app.</p><div class="rowbtns"><button class="btn" onclick="exportData()">Back up now</button></div></div>`;
   if (loc.pre) { $("#view").innerHTML = inner + `<div class="card single"><div class="eyebrow sig">Countdown</div><div class="rx">Wave 1 starts <small>${fmt(E.waveStartUTC(1, off))} · 7:00 AM</small></div>
       <div class="wu" style="margin-top:9px"><span>☐ waist + neck tape</span><span>☐ photos ×3</span><span>☐ first weigh-in</span><span>☐ creatine started</span></div>
       <p class="note" style="margin-top:8px">Full baseline steps live in the 🍚 nutrition note. Day 1 is Squat: 265 × 1 @ cap 7.</p></div>`; return; }
@@ -1206,6 +1209,13 @@ function projectionCard() {
   const mj = meetW && meetW >= w0 && meetW <= wEnd ? W.indexOf(meetW) : -1;
   const ym = (w) => new Date(E.waveStartUTC(w, off)).toLocaleDateString("en-US", { month: "short", year: "numeric", timeZone: "UTC" });
   const cb = E.cbFor(w0, GX());
+  // AUDIT-2027: the honest range. Low = your gates, then the small-step default; high = every gate from here clean.
+  const hi = JSON.parse(JSON.stringify(GX()));
+  for (let w = w0 + 1; w <= 60; w++) { const g = (hi[w] = hi[w] || {}); for (const L of E.LIFTS) if (!g[L] && !(g.cb && g.cb[L] != null)) g[L] = "clean"; }
+  const mw = meetW && meetW >= w0 ? meetW : [12, 18, 24, 30].find((w) => w >= w0) || w0, lowM = E.cbFor(mw, GX()), hiM = E.cbFor(mw, hi);
+  const lastOf = (g) => { const e = E.LIFTS.map((L) => E.etaWave(L, goal[L], g)); return e.every(Boolean) ? Math.max(...e) : null; };
+  const etaLo = lastOf(GX()), etaHi = lastOf(hi), mDay = new Date(meetW && meetW >= w0 ? Date.parse(S.settings.meetDate) : E.sessionDayUTC(mw, 4, 5, off)).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
+  const forecast = `<p class="note" style="margin-top:6px"><b style="color:var(--chalk)">${meetW && meetW >= w0 ? "Meet day" : `Test day, Wave ${mw}`} (${esc(mDay)}):</b> bench ${lowM.bn}–${hiM.bn} · squat ${lowM.sq}–${hiM.sq} · deadlift ${lowM.dl}–${hiM.dl}. Low is the small-step pace, high is every gate clean from here; a third attempt lands near the base. All three reach 315 · 405 · 495 ${etaHi && etaLo ? (etaHi === etaLo ? `around ${ym(etaLo)}` : `between ${ym(etaHi)} (every gate clean) and ${ym(etaLo)} (small steps)`) : "beyond this chart"}.</p>`;
   return `<div class="card"><div class="eyebrow sig">Road to 315 · 405 · 495</div>
     <div class="chartwrap"><svg viewBox="0 0 340 146" role="img" aria-label="Projected bases as a percent of goal">
       <line x1="30" x2="326" y1="${Y(1)}" y2="${Y(1)}" stroke="#e9e7e1" stroke-opacity=".45" stroke-dasharray="4 4"/>
@@ -1215,7 +1225,7 @@ function projectionCard() {
       <text x="30" y="140" fill="#5d636e" font-size="9">${ym(w0)}</text><text x="326" y="140" text-anchor="end" fill="#5d636e" font-size="9">${ym(wEnd)}</text>
     </svg></div>
     <div class="legend">${E.LIFTS.map((L) => `<span><span class="k" style="background:${COL[L]}"></span>${E.LIFT_NAME[L]} ${cb[L]}→${goal[L]}${eta[L] ? ` · W${eta[L]} ${ym(eta[L])}` : ""}</span>`).join("")}</div>
-    <p class="note" style="margin-top:6px">Training bases from the engine with your gates. Every rated single moves these lines.${mj < 0 ? " Set the meet date on its card to mark it here." : ""}</p></div>`;
+    <p class="note" style="margin-top:6px">Training bases from the engine with your gates. Every rated single moves these lines.${mj < 0 ? " Set the meet date on its card to mark it here." : ""}</p>${forecast}</div>`;
 }
 // ── measure day: one number per screen, a keypad, last time beside it, then the read ──
 const MD_STEPS = [

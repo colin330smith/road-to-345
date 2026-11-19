@@ -449,7 +449,13 @@ function accStateLogged(def, wave, ctx) {
 // An ACC entry as prescribed at a wave. `up` holds the fields that change from up.from on
 // (sets, w3, anchor, rpe8, cap; `since` only to restart a ladder at up.from); earlier waves are
 // history and print what was run. A different movement gets a new id, never a new w/steps/inc.
-const accAt = (a, wave) => (a.up && wave >= a.up.from ? { ...a, ...a.up } : a);
+// `up` may be one stage or a list of stages in wave order (AUDIT-2027: a Wave 7 stage on top of Wave 4's).
+const accAt = (a, wave) => {
+  if (!a.up) return a;
+  let out = a;
+  for (const u of Array.isArray(a.up) ? a.up : [a.up]) if (wave >= u.from) out = { ...out, ...u };
+  return out;
+};
 // is the entry in the plan this wave? `from` = first wave it runs, `until` = last
 const accLive = (a, wave) => !(a.from && wave < a.from) && !(a.until && wave > a.until);
 // Thursday shed its delt isolation to Saturday in v32; the peak builder honours it too

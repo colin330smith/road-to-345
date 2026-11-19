@@ -1348,6 +1348,29 @@ eq(E.sessionFor(2, 1, 1, {}, E.DEFAULT_SPEC).find((b) => b.type === "warmup").ro
     for (let w = 1; w <= 3; w++) for (let wk = 1; wk <= 4; wk++) for (let d = 1; d <= 7; d++) h2.update(canon(E.sessionFor(w, wk, d, E.withAutoGates({}, ctx, w), E.DEFAULT_SPEC, ctx)) + "\n");
     eq(h2.digest("hex"), "5f69ea44014da4ac2c7b77fd9320ad36d14bc3baf9c7e3ffa39ee4d194d094b8", "history: Waves 1-3 recomputed from a logged history are unchanged since v61");
   }
+  { // AUDIT-2027: Waves 4-6 (Oct 12 2026 - Jan 3 2027) were run, or are the peak in progress, when the 2027
+    // audit landed. The 2027 changes start at Wave 7, so every Wave 4-6 prescription is frozen at v66.
+    const h46 = crypto.createHash("sha256");
+    for (const fp of ["shoulders", "upperchest", "latwidth", "upperback", "traps", "arms"])
+      for (const fs of ["shoulders", "upperchest", "latwidth", "upperback", "traps", "arms", "none"])
+        for (const dt of ["triceps", "biceps", "brachialis"]) for (const sun of [false, true]) {
+          const spec = { framePrimary: fp, frameSecondary: fs, detail: dt, sundayOn: sun, secondaryPress: "incline" };
+          for (let w = 4; w <= 6; w++) for (let wk = 1; wk <= 4; wk++) for (let d = 1; d <= 7; d++) h46.update(canon(E.sessionFor(w, wk, d, {}, spec)) + "\n");
+        }
+    eq(h46.digest("hex"), "8ad81b7ed44978ffc5a2c244c82179bbcedb82e12b86ce441870a0eded34219a", "history: every Wave 4-6 prescription for every spec is unchanged since v66 (the 2027 changes start at Wave 7)");
+    const ix = {}, ctx = { index: ix, offsetWeeks: 0 }, RATES = ["O", "E", "H"];
+    for (let wv = 1; wv <= 6; wv++) for (let wk = 1; wk <= 4; wk++) for (let d = 1; d <= 7; d++) {
+      const t = E.sessionDayUTC(wv, wk, d, 0);
+      E.sessionFor(wv, wk, d, E.withAutoGates({}, ctx, wv), E.DEFAULT_SPEC, ctx).forEach((b, bi) => {
+        if (!["single", "backoff", "paused", "ohp", "accessory"].includes(b.type) || !b.pkey) return;
+        const n = b.type === "single" ? 1 : b.sets, r = +String(b.repN ?? b.reps).split(/\D/)[0] || 1;
+        for (let k = 0; k < n; k++) (ix[b.pkey] = ix[b.pkey] || []).push({ t, w: b.w + ((wv + bi) % 3 === 0 ? 5 : 0), r: r + ((wv + wk + bi) % 2), rate: k === n - 1 ? RATES[(wv + wk + d + bi) % 3] : undefined });
+      });
+    }
+    const h46b = crypto.createHash("sha256");
+    for (let w = 4; w <= 6; w++) for (let wk = 1; wk <= 4; wk++) for (let d = 1; d <= 7; d++) h46b.update(canon(E.sessionFor(w, wk, d, E.withAutoGates({}, ctx, w), E.DEFAULT_SPEC, ctx)) + "\n");
+    eq(h46b.digest("hex"), "3ecff8309a9eff4fa2a4b1bc8dec8c079488b5570f2d9eef9c50fb94e1806c01", "history: Waves 4-6 recomputed from a logged history are unchanged since v66");
+  }
 
   const week = (wv, wk, spec) => { const o = []; for (let d = 1; d <= 7; d++) for (const b of E.sessionFor(wv, wk, d, {}, spec || E.DEFAULT_SPEC)) o.push({ ...b, d }); return o; };
   const LOG = ["accessory", "single", "backoff"];
